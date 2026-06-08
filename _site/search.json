@@ -6,7 +6,6 @@
     "section": "",
     "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
     "crumbs": [
-      "Home",
       "Mangiamele Lab RNA-seq Resource"
     ]
   },
@@ -28,7 +27,6 @@
     "section": "2 Tutorial path",
     "text": "2 Tutorial path\n\nSet up your environment\nRun the pipeline\nUnderstand the results\nFix common issues",
     "crumbs": [
-      "Home",
       "Mangiamele Lab RNA-seq Resource"
     ]
   },
@@ -39,7 +37,6 @@
     "section": "3 Prerequisites",
     "text": "3 Prerequisites\nYou will need:\n\nA terminal\nJava\nNextflow\nA container engine such as Docker, Apptainer, or Singularity\nEnough disk space for reference files, intermediate files, and outputs",
     "crumbs": [
-      "Home",
       "Mangiamele Lab RNA-seq Resource"
     ]
   },
@@ -50,7 +47,6 @@
     "section": "4 Example workflow",
     "text": "4 Example workflow\nflowchart LR\n  A[\"Samplesheet\"] --&gt; B[\"Nextflow\"]\n  C[\"Reference genome\"] --&gt; B\n  D[\"Container engine\"] --&gt; B\n  B --&gt; E[\"QC reports\"]\n  B --&gt; F[\"Quantification\"]\n  B --&gt; G[\"MultiQC summary\"]",
     "crumbs": [
-      "Home",
       "Mangiamele Lab RNA-seq Resource"
     ]
   },
@@ -61,7 +57,6 @@
     "section": "5 Citation and credit",
     "text": "5 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow. Update this page with the specific pipeline version, dataset, and citation details used in your workshop.",
     "crumbs": [
-      "Home",
       "Mangiamele Lab RNA-seq Resource"
     ]
   },
@@ -336,7 +331,6 @@
     "section": "",
     "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
     "crumbs": [
-      "Home",
       "Mangiamele Lab RNA-seq Resource"
     ]
   }

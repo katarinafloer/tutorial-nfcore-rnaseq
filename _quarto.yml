@@ -8,25 +8,7 @@ website:
   site-url: "https://katarinafloer.github.io/tutorial-nfcore-rnaseq/"
   repo-url: "https://github.com/katarinafloer/tutorial-nfcore-rnaseq"
   repo-actions: [edit, issue]
-  navbar:
-    background: primary
-    left:
-      - href: index.qmd
-        text: Home
-      - href: rna-seq-concepts.qmd
-        text: RNA-seq
-      - href: file-types-storage.qmd
-        text: Files
-      - href: connecting-to-unity.qmd
-        text: Unity
-      - href: setup.qmd
-        text: Setup
-      - href: running.qmd
-        text: Run
-      - href: results.qmd
-        text: Results
-      - href: troubleshooting.qmd
-        text: Troubleshooting
+  search: true
   sidebar:
     style: docked
     contents:
