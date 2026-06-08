@@ -1,0 +1,116 @@
+---
+title: "Using Unity"
+---
+
+## Why this page matters
+
+Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.
+
+For RNA-seq, it is important to know the difference between:
+
+- Login nodes
+- Interactive jobs
+- Compute jobs
+
+Using the right place keeps the cluster responsive for everyone and helps your own work run more reliably.
+
+## Login nodes
+
+When you first connect to Unity with SSH, you land on a login node.
+
+Your prompt may look like this:
+
+```text
+(base) kfloer_smith_edu@login1:~$
+```
+
+Login nodes are for light work, such as:
+
+- Navigating directories
+- Editing small text files
+- Checking file names
+- Submitting jobs
+- Looking at small log files
+
+Do not run large RNA-seq pipelines directly on a login node.
+
+::: {.callout-warning}
+If a command will use lots of CPU, memory, or disk for more than a few seconds, it probably should not run on the login node.
+:::
+
+## Interactive jobs
+
+An interactive job gives you a temporary compute session where you can run commands directly.
+
+Interactive jobs are useful for:
+
+- Testing commands
+- Running small demos
+- Debugging a pipeline
+- Checking that software loads correctly
+- Trying a short nf-core test run
+
+In an interactive job, you still type commands yourself, but the commands run on a compute node instead of the login node.
+
+Add the exact Unity command for starting an interactive job here:
+
+```bash
+# Add Unity interactive job command here
+```
+
+Example prompt after starting an interactive job:
+
+```text
+(base) kfloer_smith_edu@compute-node:~$
+```
+
+::: {.callout-note}
+Interactive jobs are good for learning and testing. They are not always the best choice for long production runs.
+:::
+
+## Compute jobs
+
+A compute job is a job submitted to the cluster scheduler. Instead of typing commands one by one, you write a job script and submit it.
+
+Compute jobs are useful for:
+
+- Full RNA-seq pipeline runs
+- Long analyses
+- Analyses that need many CPUs
+- Analyses that need lots of memory
+- Work that should keep running after you log out
+
+A compute job usually includes:
+
+- Requested time
+- Requested CPUs
+- Requested memory
+- Output log file names
+- Commands to run
+
+Add the exact Unity scheduler example here:
+
+```bash
+# Add Unity batch job submission command here
+```
+
+## Which one should I use?
+
+| Task | Where to run it |
+|---|---|
+| Log in to Unity | Login node |
+| Look at files with `ls` | Login node |
+| Edit `samplesheet.csv` | Login node |
+| Check available workspaces with `ws_list` | Login node |
+| Test a small command | Interactive job |
+| Run an nf-core test profile | Interactive job or compute job |
+| Run a full RNA-seq pipeline | Compute job |
+| Run a long analysis overnight | Compute job |
+
+## A useful mental model
+
+Think of the login node as the front desk. It helps you get organized and submit work.
+
+Think of interactive jobs as a temporary workbench. They are useful when you need to test something hands-on.
+
+Think of compute jobs as the production workspace. They are where long or heavy analyses should run.

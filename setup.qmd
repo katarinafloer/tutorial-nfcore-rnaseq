@@ -1,5 +1,5 @@
 ---
-title: "Setup"
+title: "Run a Demo Pipeline"
 ---
 
 ## Creating a Demo Scratch Directory
