@@ -24,6 +24,12 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
+      - name: Set last updated date
+        run: |
+          LAST_UPDATED="$(git log -1 --date=short --format=%cd)"
+          export LAST_UPDATED
+          perl -0pi -e 's/Last updated: AUTO_LAST_UPDATED/Last updated: $ENV{LAST_UPDATED}/g' _quarto.yml
+
       - name: Render website
         uses: quarto-dev/quarto-actions/render@v2
 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nf-core RNA-seq tutorial</title>
+<title>Mangiamele Lab RNA-seq Resource – Mangiamele Lab nf-core RNA-seq tutorial</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -38,7 +38,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad81377a940ba66186b50ef659a756fc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-48e90fa1bdc358c5c4200354173990f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -78,7 +78,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nf-core RNA-seq tutorial</span>
+    <span class="navbar-title">Mangiamele Lab nf-core RNA-seq tutorial</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -118,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">nf-core RNA-seq tutorial</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Mangiamele Lab RNA-seq Resource</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -133,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">nf-core RNA-seq tutorial</span></a>
+ <span class="menu-text">Mangiamele Lab RNA-seq Resource</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -170,7 +170,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-you-will-learn" id="toc-what-you-will-learn" class="nav-link active" data-scroll-target="#what-you-will-learn"><span class="header-section-number">1</span> What you will learn</a></li>
+  <li><a href="#about-this-resource" id="toc-about-this-resource" class="nav-link active" data-scroll-target="#about-this-resource"><span class="header-section-number">1</span> About this resource</a></li>
   <li><a href="#tutorial-path" id="toc-tutorial-path" class="nav-link" data-scroll-target="#tutorial-path"><span class="header-section-number">2</span> Tutorial path</a></li>
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites"><span class="header-section-number">3</span> Prerequisites</a></li>
   <li><a href="#example-workflow" id="toc-example-workflow" class="nav-link" data-scroll-target="#example-workflow"><span class="header-section-number">4</span> Example workflow</a></li>
@@ -183,8 +183,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">nf-core RNA-seq tutorial</h1>
-<p class="subtitle lead">From a clean setup to interpretable pipeline results</p>
+<h1 class="title">Mangiamele Lab RNA-seq Resource</h1>
+<p class="subtitle lead">RNA-seq analysis for Staurois parvus using nf-core</p>
 </div>
 
 
@@ -201,9 +201,11 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="what-you-will-learn" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="what-you-will-learn"><span class="header-section-number">1</span> What you will learn</h2>
-<p>This tutorial walks through running an nf-core RNA-seq workflow in a reproducible way. It is designed for learners who are comfortable with the command line but new to Nextflow or nf-core.</p>
+<section id="about-this-resource" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="about-this-resource"><span class="header-section-number">1</span> About this resource</h2>
+<p>This website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
+<p>The workflow uses <a href="https://nf-co.re/">nf-core</a>, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on <code>nf-core/rnaseq</code>, but the same general approach applies to other nf-core workflows.</p>
+<p>Maintained by Katarina Flöer.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -214,7 +216,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The examples use <code>nf-core/rnaseq</code>, but the same structure applies to many nf-core pipelines.</p>
+<p>Use this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.</p>
 </div>
 </div>
 </section>
@@ -674,8 +676,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Maintained by Katarina Flöer</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p><span class="last-updated">Last updated: AUTO_LAST_UPDATED</span></p>
+</div>
+  </div>
+</footer>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+</body></html>

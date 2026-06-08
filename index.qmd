@@ -1,14 +1,18 @@
 ---
-title: "nf-core RNA-seq tutorial"
-subtitle: "From a clean setup to interpretable pipeline results"
+title: "Mangiamele Lab RNA-seq Resource"
+subtitle: "RNA-seq analysis for Staurois parvus using nf-core"
 ---
 
-## What you will learn
+## About this resource
 
-This tutorial walks through running an nf-core RNA-seq workflow in a reproducible way. It is designed for learners who are comfortable with the command line but new to Nextflow or nf-core.
+This website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog *Staurois parvus*.
+
+The workflow uses [nf-core](https://nf-co.re/), a community collection of standardized, reproducible Nextflow pipelines. The examples focus on `nf-core/rnaseq`, but the same general approach applies to other nf-core workflows.
+
+Maintained by Katarina Flöer.
 
 ::: {.callout-tip}
-The examples use `nf-core/rnaseq`, but the same structure applies to many nf-core pipelines.
+Use this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.
 :::
 
 ## Tutorial path

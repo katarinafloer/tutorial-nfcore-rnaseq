@@ -3,7 +3,7 @@ project:
   output-dir: _site
 
 website:
-  title: "nf-core RNA-seq tutorial"
+  title: "Mangiamele Lab nf-core RNA-seq tutorial"
   description: "A practical, beginner-friendly tutorial for running nf-core/rnaseq."
   site-url: "https://katarinafloer.github.io/tutorial-nfcore-rnaseq/"
   repo-url: "https://github.com/katarinafloer/tutorial-nfcore-rnaseq"
@@ -29,6 +29,9 @@ website:
       - running.qmd
       - results.qmd
       - troubleshooting.qmd
+  page-footer:
+    left: "Maintained by Katarina Flöer"
+    right: "<span class=\"last-updated\">Last updated: AUTO_LAST_UPDATED</span>"
 
 format:
   html:
