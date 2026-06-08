@@ -57,6 +57,12 @@ An RNA-seq pipeline usually performs steps like:
 
 In this tutorial, we use `nf-core/rnaseq` to run these steps in a standardized and reproducible way.
 
+The nf-core/rnaseq pipeline can be visualized as a "metro map" of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.
+
+![nf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.](assets/nf-core-rnaseq-metro-map.svg){fig-align="center" width="100%"}
+
+Source: [nf-core/rnaseq version 3.26.0](https://nf-co.re/rnaseq/3.26.0/).
+
 ## What do we get at the end?
 
 The main outputs are:
