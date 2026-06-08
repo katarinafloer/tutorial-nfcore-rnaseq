@@ -1,0 +1,61 @@
+---
+title: "Run the Pipeline"
+---
+
+## Pull the pipeline
+
+```bash
+nextflow pull nf-core/rnaseq
+```
+
+## Run a test profile
+
+Start with the built-in test profile before using your own data:
+
+```bash
+nextflow run nf-core/rnaseq \
+  -profile test,docker \
+  --outdir results/test
+```
+
+If you use Apptainer:
+
+```bash
+nextflow run nf-core/rnaseq \
+  -profile test,apptainer \
+  --outdir results/test
+```
+
+## Run your own samples
+
+```bash
+nextflow run nf-core/rnaseq \
+  -profile docker \
+  --input samplesheet.csv \
+  --outdir results/rnaseq \
+  --genome GRCh38
+```
+
+## Resume an interrupted run
+
+```bash
+nextflow run nf-core/rnaseq \
+  -profile docker \
+  --input samplesheet.csv \
+  --outdir results/rnaseq \
+  --genome GRCh38 \
+  -resume
+```
+
+::: {.callout-warning}
+Use the same command with `-resume`. Changing key parameters can invalidate cached work.
+:::
+
+## Record the exact command
+
+Keep a copy of the final command in your notes or repository:
+
+```bash
+mkdir -p logs
+nextflow run nf-core/rnaseq -profile docker --input samplesheet.csv --outdir results/rnaseq --genome GRCh38 2>&1 | tee logs/rnaseq.log
+```

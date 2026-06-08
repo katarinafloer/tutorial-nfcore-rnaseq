@@ -1,0 +1,50 @@
+---
+title: "Interpret Results"
+---
+
+## Start with MultiQC
+
+Open the MultiQC report:
+
+```bash
+open results/rnaseq/multiqc/star_salmon/multiqc_report.html
+```
+
+On Linux:
+
+```bash
+xdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html
+```
+
+## What to check first
+
+Focus on:
+
+- Sequencing quality
+- Adapter content
+- Alignment rate
+- Duplication levels
+- Gene body coverage
+- Sample outliers
+
+## Common output folders
+
+| Folder | What it contains |
+|---|---|
+| `fastqc/` | Per-sample read quality reports |
+| `multiqc/` | Aggregated quality-control report |
+| `star_salmon/` | Alignment and transcript quantification outputs |
+| `pipeline_info/` | Commands, software versions, reports, and provenance |
+
+## Save provenance
+
+Archive these files with your analysis:
+
+- `pipeline_info/software_versions.yml`
+- `pipeline_info/execution_report.html`
+- `pipeline_info/execution_timeline.html`
+- `pipeline_info/params_*.json`
+
+::: {.callout-tip}
+The `pipeline_info` directory is one of the most useful places to look when you need to reproduce or debug a run later.
+:::

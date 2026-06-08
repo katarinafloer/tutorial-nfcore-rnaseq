@@ -1,0 +1,1 @@
+Sitemap: https://katarinafloer.github.io/tutorial-nfcore-rnaseq/sitemap.xml

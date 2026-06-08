@@ -1,0 +1,46 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "nf-core RNA-seq tutorial"
+  description: "A practical, beginner-friendly tutorial for running nf-core/rnaseq."
+  site-url: "https://katarinafloer.github.io/tutorial-nfcore-rnaseq/"
+  repo-url: "https://github.com/katarinafloer/tutorial-nfcore-rnaseq"
+  repo-actions: [edit, issue]
+  navbar:
+    background: primary
+    left:
+      - href: index.qmd
+        text: Home
+      - href: setup.qmd
+        text: Setup
+      - href: running.qmd
+        text: Run
+      - href: results.qmd
+        text: Results
+      - href: troubleshooting.qmd
+        text: Troubleshooting
+  sidebar:
+    style: docked
+    contents:
+      - index.qmd
+      - setup.qmd
+      - running.qmd
+      - results.qmd
+      - troubleshooting.qmd
+
+format:
+  html:
+    theme:
+      - cosmo
+      - styles.scss
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-copy: true
+    code-overflow: wrap
+    page-layout: full
+
+execute:
+  freeze: auto

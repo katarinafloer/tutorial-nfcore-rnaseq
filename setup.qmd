@@ -1,0 +1,68 @@
+---
+title: "Setup"
+---
+
+## Install Nextflow
+
+Check that Java is available:
+
+```bash
+java -version
+```
+
+Install Nextflow:
+
+```bash
+curl -s https://get.nextflow.io | bash
+mkdir -p ~/bin
+mv nextflow ~/bin/
+```
+
+Then check:
+
+```bash
+nextflow -version
+```
+
+## Choose a container engine
+
+For local tutorials, Docker is often the easiest option:
+
+```bash
+docker --version
+```
+
+On HPC systems, Apptainer or Singularity is usually preferred:
+
+```bash
+apptainer --version
+```
+
+## Install nf-core tools
+
+```bash
+pip install nf-core
+nf-core --version
+```
+
+## Create a project folder
+
+```bash
+mkdir nfcore-rnaseq-tutorial
+cd nfcore-rnaseq-tutorial
+mkdir data results work
+```
+
+## Prepare a samplesheet
+
+Create `samplesheet.csv`:
+
+```csv
+sample,fastq_1,fastq_2,strandedness
+sample1,data/sample1_R1.fastq.gz,data/sample1_R2.fastq.gz,auto
+sample2,data/sample2_R1.fastq.gz,data/sample2_R2.fastq.gz,auto
+```
+
+::: {.callout-note}
+For a real tutorial, replace these paths with your actual FASTQ files or a small public test dataset.
+:::

@@ -1,0 +1,321 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "nf-core RNA-seq tutorial",
+    "section": "",
+    "text": "This tutorial walks through running an nf-core RNA-seq workflow in a reproducible way. It is designed for learners who are comfortable with the command line but new to Nextflow or nf-core.\n\n\n\n\n\n\nTip\n\n\n\nThe examples use nf-core/rnaseq, but the same structure applies to many nf-core pipelines.",
+    "crumbs": [
+      "Home",
+      "nf-core RNA-seq tutorial"
+    ]
+  },
+  {
+    "objectID": "index.html#what-you-will-learn",
+    "href": "index.html#what-you-will-learn",
+    "title": "nf-core RNA-seq tutorial",
+    "section": "",
+    "text": "This tutorial walks through running an nf-core RNA-seq workflow in a reproducible way. It is designed for learners who are comfortable with the command line but new to Nextflow or nf-core.\n\n\n\n\n\n\nTip\n\n\n\nThe examples use nf-core/rnaseq, but the same structure applies to many nf-core pipelines.",
+    "crumbs": [
+      "Home",
+      "nf-core RNA-seq tutorial"
+    ]
+  },
+  {
+    "objectID": "index.html#tutorial-path",
+    "href": "index.html#tutorial-path",
+    "title": "nf-core RNA-seq tutorial",
+    "section": "2 Tutorial path",
+    "text": "2 Tutorial path\n\nSet up your environment\nRun the pipeline\nUnderstand the results\nFix common issues",
+    "crumbs": [
+      "Home",
+      "nf-core RNA-seq tutorial"
+    ]
+  },
+  {
+    "objectID": "index.html#prerequisites",
+    "href": "index.html#prerequisites",
+    "title": "nf-core RNA-seq tutorial",
+    "section": "3 Prerequisites",
+    "text": "3 Prerequisites\nYou will need:\n\nA terminal\nJava\nNextflow\nA container engine such as Docker, Apptainer, or Singularity\nEnough disk space for reference files, intermediate files, and outputs",
+    "crumbs": [
+      "Home",
+      "nf-core RNA-seq tutorial"
+    ]
+  },
+  {
+    "objectID": "index.html#example-workflow",
+    "href": "index.html#example-workflow",
+    "title": "nf-core RNA-seq tutorial",
+    "section": "4 Example workflow",
+    "text": "4 Example workflow\nflowchart LR\n  A[\"Samplesheet\"] --&gt; B[\"Nextflow\"]\n  C[\"Reference genome\"] --&gt; B\n  D[\"Container engine\"] --&gt; B\n  B --&gt; E[\"QC reports\"]\n  B --&gt; F[\"Quantification\"]\n  B --&gt; G[\"MultiQC summary\"]",
+    "crumbs": [
+      "Home",
+      "nf-core RNA-seq tutorial"
+    ]
+  },
+  {
+    "objectID": "index.html#citation-and-credit",
+    "href": "index.html#citation-and-credit",
+    "title": "nf-core RNA-seq tutorial",
+    "section": "5 Citation and credit",
+    "text": "5 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow. Update this page with the specific pipeline version, dataset, and citation details used in your workshop.",
+    "crumbs": [
+      "Home",
+      "nf-core RNA-seq tutorial"
+    ]
+  },
+  {
+    "objectID": "setup.html",
+    "href": "setup.html",
+    "title": "Setup",
+    "section": "",
+    "text": "Check that Java is available:\njava -version\nInstall Nextflow:\ncurl -s https://get.nextflow.io | bash\nmkdir -p ~/bin\nmv nextflow ~/bin/\nThen check:\nnextflow -version",
+    "crumbs": [
+      "Home",
+      "Setup"
+    ]
+  },
+  {
+    "objectID": "setup.html#install-nextflow",
+    "href": "setup.html#install-nextflow",
+    "title": "Setup",
+    "section": "",
+    "text": "Check that Java is available:\njava -version\nInstall Nextflow:\ncurl -s https://get.nextflow.io | bash\nmkdir -p ~/bin\nmv nextflow ~/bin/\nThen check:\nnextflow -version",
+    "crumbs": [
+      "Home",
+      "Setup"
+    ]
+  },
+  {
+    "objectID": "setup.html#choose-a-container-engine",
+    "href": "setup.html#choose-a-container-engine",
+    "title": "Setup",
+    "section": "2 Choose a container engine",
+    "text": "2 Choose a container engine\nFor local tutorials, Docker is often the easiest option:\ndocker --version\nOn HPC systems, Apptainer or Singularity is usually preferred:\napptainer --version",
+    "crumbs": [
+      "Home",
+      "Setup"
+    ]
+  },
+  {
+    "objectID": "setup.html#install-nf-core-tools",
+    "href": "setup.html#install-nf-core-tools",
+    "title": "Setup",
+    "section": "3 Install nf-core tools",
+    "text": "3 Install nf-core tools\npip install nf-core\nnf-core --version",
+    "crumbs": [
+      "Home",
+      "Setup"
+    ]
+  },
+  {
+    "objectID": "setup.html#create-a-project-folder",
+    "href": "setup.html#create-a-project-folder",
+    "title": "Setup",
+    "section": "4 Create a project folder",
+    "text": "4 Create a project folder\nmkdir nfcore-rnaseq-tutorial\ncd nfcore-rnaseq-tutorial\nmkdir data results work",
+    "crumbs": [
+      "Home",
+      "Setup"
+    ]
+  },
+  {
+    "objectID": "setup.html#prepare-a-samplesheet",
+    "href": "setup.html#prepare-a-samplesheet",
+    "title": "Setup",
+    "section": "5 Prepare a samplesheet",
+    "text": "5 Prepare a samplesheet\nCreate samplesheet.csv:\nsample,fastq_1,fastq_2,strandedness\nsample1,data/sample1_R1.fastq.gz,data/sample1_R2.fastq.gz,auto\nsample2,data/sample2_R1.fastq.gz,data/sample2_R2.fastq.gz,auto\n\n\n\n\n\n\nNote\n\n\n\nFor a real tutorial, replace these paths with your actual FASTQ files or a small public test dataset.",
+    "crumbs": [
+      "Home",
+      "Setup"
+    ]
+  },
+  {
+    "objectID": "running.html",
+    "href": "running.html",
+    "title": "Run the Pipeline",
+    "section": "",
+    "text": "nextflow pull nf-core/rnaseq",
+    "crumbs": [
+      "Home",
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#pull-the-pipeline",
+    "href": "running.html#pull-the-pipeline",
+    "title": "Run the Pipeline",
+    "section": "",
+    "text": "nextflow pull nf-core/rnaseq",
+    "crumbs": [
+      "Home",
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#run-a-test-profile",
+    "href": "running.html#run-a-test-profile",
+    "title": "Run the Pipeline",
+    "section": "2 Run a test profile",
+    "text": "2 Run a test profile\nStart with the built-in test profile before using your own data:\nnextflow run nf-core/rnaseq \\\n  -profile test,docker \\\n  --outdir results/test\nIf you use Apptainer:\nnextflow run nf-core/rnaseq \\\n  -profile test,apptainer \\\n  --outdir results/test",
+    "crumbs": [
+      "Home",
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#run-your-own-samples",
+    "href": "running.html#run-your-own-samples",
+    "title": "Run the Pipeline",
+    "section": "3 Run your own samples",
+    "text": "3 Run your own samples\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38",
+    "crumbs": [
+      "Home",
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#resume-an-interrupted-run",
+    "href": "running.html#resume-an-interrupted-run",
+    "title": "Run the Pipeline",
+    "section": "4 Resume an interrupted run",
+    "text": "4 Resume an interrupted run\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38 \\\n  -resume\n\n\n\n\n\n\nWarning\n\n\n\nUse the same command with -resume. Changing key parameters can invalidate cached work.",
+    "crumbs": [
+      "Home",
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#record-the-exact-command",
+    "href": "running.html#record-the-exact-command",
+    "title": "Run the Pipeline",
+    "section": "5 Record the exact command",
+    "text": "5 Record the exact command\nKeep a copy of the final command in your notes or repository:\nmkdir -p logs\nnextflow run nf-core/rnaseq -profile docker --input samplesheet.csv --outdir results/rnaseq --genome GRCh38 2&gt;&1 | tee logs/rnaseq.log",
+    "crumbs": [
+      "Home",
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "results.html",
+    "href": "results.html",
+    "title": "Interpret Results",
+    "section": "",
+    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
+    "crumbs": [
+      "Home",
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#start-with-multiqc",
+    "href": "results.html#start-with-multiqc",
+    "title": "Interpret Results",
+    "section": "",
+    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
+    "crumbs": [
+      "Home",
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#what-to-check-first",
+    "href": "results.html#what-to-check-first",
+    "title": "Interpret Results",
+    "section": "2 What to check first",
+    "text": "2 What to check first\nFocus on:\n\nSequencing quality\nAdapter content\nAlignment rate\nDuplication levels\nGene body coverage\nSample outliers",
+    "crumbs": [
+      "Home",
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#common-output-folders",
+    "href": "results.html#common-output-folders",
+    "title": "Interpret Results",
+    "section": "3 Common output folders",
+    "text": "3 Common output folders\n\n\n\n\n\n\n\nFolder\nWhat it contains\n\n\n\n\nfastqc/\nPer-sample read quality reports\n\n\nmultiqc/\nAggregated quality-control report\n\n\nstar_salmon/\nAlignment and transcript quantification outputs\n\n\npipeline_info/\nCommands, software versions, reports, and provenance",
+    "crumbs": [
+      "Home",
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#save-provenance",
+    "href": "results.html#save-provenance",
+    "title": "Interpret Results",
+    "section": "4 Save provenance",
+    "text": "4 Save provenance\nArchive these files with your analysis:\n\npipeline_info/software_versions.yml\npipeline_info/execution_report.html\npipeline_info/execution_timeline.html\npipeline_info/params_*.json\n\n\n\n\n\n\n\nTip\n\n\n\nThe pipeline_info directory is one of the most useful places to look when you need to reproduce or debug a run later.",
+    "crumbs": [
+      "Home",
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html",
+    "href": "troubleshooting.html",
+    "title": "Troubleshooting",
+    "section": "",
+    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
+    "crumbs": [
+      "Home",
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#nextflow-is-not-found",
+    "href": "troubleshooting.html#nextflow-is-not-found",
+    "title": "Troubleshooting",
+    "section": "",
+    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
+    "crumbs": [
+      "Home",
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#docker-is-not-running",
+    "href": "troubleshooting.html#docker-is-not-running",
+    "title": "Troubleshooting",
+    "section": "2 Docker is not running",
+    "text": "2 Docker is not running\nCheck Docker:\ndocker info\nIf this fails, open Docker Desktop or restart the Docker service.",
+    "crumbs": [
+      "Home",
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#a-run-failed-halfway-through",
+    "href": "troubleshooting.html#a-run-failed-halfway-through",
+    "title": "Troubleshooting",
+    "section": "3 A run failed halfway through",
+    "text": "3 A run failed halfway through\nUse -resume after fixing the problem:\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38 \\\n  -resume",
+    "crumbs": [
+      "Home",
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#disk-space-errors",
+    "href": "troubleshooting.html#disk-space-errors",
+    "title": "Troubleshooting",
+    "section": "4 Disk space errors",
+    "text": "4 Disk space errors\nCheck the size of the work directory:\ndu -sh work results\nMove large outputs to persistent storage before deleting anything.",
+    "crumbs": [
+      "Home",
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#where-to-look-for-help",
+    "href": "troubleshooting.html#where-to-look-for-help",
+    "title": "Troubleshooting",
+    "section": "5 Where to look for help",
+    "text": "5 Where to look for help\n\nThe terminal error message\n.nextflow.log\nresults/rnaseq/pipeline_info/\nThe nf-core pipeline documentation\nThe nf-core Slack community",
+    "crumbs": [
+      "Home",
+      "Troubleshooting"
+    ]
+  }
+]

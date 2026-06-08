@@ -1,0 +1,31 @@
+/*-- scss:defaults --*/
+
+$primary: #235789;
+$secondary: #38a3a5;
+$body-bg: #fbfbfd;
+$body-color: #1f2933;
+$link-color: #235789;
+$font-family-sans-serif: "Aptos", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+/*-- scss:rules --*/
+
+.quarto-title-banner {
+  background: linear-gradient(120deg, #17324d, #235789 48%, #38a3a5);
+}
+
+.quarto-title-banner .title,
+.quarto-title-banner .subtitle {
+  color: #ffffff;
+}
+
+.callout {
+  border-radius: 8px;
+}
+
+pre.sourceCode {
+  border-radius: 8px;
+}
+
+table {
+  font-size: 0.95rem;
+}

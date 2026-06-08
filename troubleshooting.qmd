@@ -1,0 +1,54 @@
+---
+title: "Troubleshooting"
+---
+
+## Nextflow is not found
+
+Check whether `nextflow` is on your `PATH`:
+
+```bash
+which nextflow
+```
+
+If it is missing, add the install location to your shell profile.
+
+## Docker is not running
+
+Check Docker:
+
+```bash
+docker info
+```
+
+If this fails, open Docker Desktop or restart the Docker service.
+
+## A run failed halfway through
+
+Use `-resume` after fixing the problem:
+
+```bash
+nextflow run nf-core/rnaseq \
+  -profile docker \
+  --input samplesheet.csv \
+  --outdir results/rnaseq \
+  --genome GRCh38 \
+  -resume
+```
+
+## Disk space errors
+
+Check the size of the work directory:
+
+```bash
+du -sh work results
+```
+
+Move large outputs to persistent storage before deleting anything.
+
+## Where to look for help
+
+- The terminal error message
+- `.nextflow.log`
+- `results/rnaseq/pipeline_info/`
+- The nf-core pipeline documentation
+- The nf-core Slack community

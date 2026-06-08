@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://YOUR-USERNAME.github.io/RNAseq/index.html</loc>
+    <lastmod>2026-06-08T10:19:54.076Z</lastmod>
+  </url>
+  <url>
+    <loc>https://YOUR-USERNAME.github.io/RNAseq/setup.html</loc>
+    <lastmod>2026-06-08T10:19:54.177Z</lastmod>
+  </url>
+  <url>
+    <loc>https://YOUR-USERNAME.github.io/RNAseq/running.html</loc>
+    <lastmod>2026-06-08T10:19:54.277Z</lastmod>
+  </url>
+  <url>
+    <loc>https://YOUR-USERNAME.github.io/RNAseq/results.html</loc>
+    <lastmod>2026-06-08T10:19:54.376Z</lastmod>
+  </url>
+  <url>
+    <loc>https://YOUR-USERNAME.github.io/RNAseq/troubleshooting.html</loc>
+    <lastmod>2026-06-08T10:19:54.477Z</lastmod>
+  </url>
+  <url>
+    <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/index.html</loc>
+    <lastmod>2026-06-08T10:19:54.076Z</lastmod>
+  </url>
+</urlset>
