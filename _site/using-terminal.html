@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Mangiamele Lab RNA-seq Resource – Mangiamele Lab RNA-seq tutorial</title>
+<title>Using Terminal – Mangiamele Lab RNA-seq tutorial</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -78,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Mangiamele Lab RNA-seq Resource</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./using-terminal.html">Using Terminal</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -105,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Mangiamele Lab RNA-seq Resource</span></a>
   </div>
 </li>
@@ -129,7 +163,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
+  <a href="./using-terminal.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Using Terminal</span></a>
   </div>
 </li>
@@ -179,20 +213,26 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#about-this-resource" id="toc-about-this-resource" class="nav-link active" data-scroll-target="#about-this-resource"><span class="header-section-number">1</span> About this resource</a></li>
-  <li><a href="#tutorial-path-needs-updating" id="toc-tutorial-path-needs-updating" class="nav-link" data-scroll-target="#tutorial-path-needs-updating"><span class="header-section-number">2</span> Tutorial path (needs updating)</a></li>
-  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites"><span class="header-section-number">3</span> Prerequisites</a></li>
-  <li><a href="#citation-and-credit" id="toc-citation-and-credit" class="nav-link" data-scroll-target="#citation-and-credit"><span class="header-section-number">4</span> Citation and credit</a></li>
+  <li><a href="#why-use-the-terminal" id="toc-why-use-the-terminal" class="nav-link active" data-scroll-target="#why-use-the-terminal"><span class="header-section-number">1</span> Why use the terminal?</a></li>
+  <li><a href="#open-a-terminal" id="toc-open-a-terminal" class="nav-link" data-scroll-target="#open-a-terminal"><span class="header-section-number">2</span> Open a terminal</a></li>
+  <li><a href="#where-am-i" id="toc-where-am-i" class="nav-link" data-scroll-target="#where-am-i"><span class="header-section-number">3</span> Where am I?</a></li>
+  <li><a href="#list-files" id="toc-list-files" class="nav-link" data-scroll-target="#list-files"><span class="header-section-number">4</span> List files</a></li>
+  <li><a href="#change-directories" id="toc-change-directories" class="nav-link" data-scroll-target="#change-directories"><span class="header-section-number">5</span> Change directories</a></li>
+  <li><a href="#make-a-new-directory" id="toc-make-a-new-directory" class="nav-link" data-scroll-target="#make-a-new-directory"><span class="header-section-number">6</span> Make a new directory</a></li>
+  <li><a href="#move-or-rename-files" id="toc-move-or-rename-files" class="nav-link" data-scroll-target="#move-or-rename-files"><span class="header-section-number">7</span> Move or rename files</a></li>
+  <li><a href="#look-at-text-files" id="toc-look-at-text-files" class="nav-link" data-scroll-target="#look-at-text-files"><span class="header-section-number">8</span> Look at text files</a></li>
+  <li><a href="#copy-files-with-scp" id="toc-copy-files-with-scp" class="nav-link" data-scroll-target="#copy-files-with-scp"><span class="header-section-number">9</span> Copy files with scp</a></li>
+  <li><a href="#common-patterns" id="toc-common-patterns" class="nav-link" data-scroll-target="#common-patterns"><span class="header-section-number">10</span> Common patterns</a></li>
+  <li><a href="#tips-for-beginners" id="toc-tips-for-beginners" class="nav-link" data-scroll-target="#tips-for-beginners"><span class="header-section-number">11</span> Tips for beginners</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/using-terminal.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content column-body" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Mangiamele Lab RNA-seq Resource</h1>
-<p class="subtitle lead">RNA-seq analysis for <em>Staurois parvus</em> using nf-core</p>
+<h1 class="title">Using Terminal</h1>
 </div>
 
 
@@ -209,18 +249,34 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="about-this-resource" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="about-this-resource"><span class="header-section-number">1</span> About this resource</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/staurois-parvus.png" class="img-fluid figure-img" width="280"></p>
-<figcaption>Illustration of the frog Staurois parvus.</figcaption>
-</figure>
-</div>
-<p>This website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
-<p>The workflow uses <a href="https://nf-co.re/">nf-core</a>, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on <code>nf-core/rnaseq</code>, but the same general approach applies to other nf-core workflows.</p>
-<p>Visit the <a href="https://www.science.smith.edu/mangiamele/">Mangiamele Lab website</a> for more information about the lab and its research.</p>
-<p>Maintained by Katarina Flöer.</p>
+<section id="why-use-the-terminal" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="why-use-the-terminal"><span class="header-section-number">1</span> Why use the terminal?</h2>
+<p>RNA-seq analysis often happens on remote computers and high-performance computing clusters. The terminal lets you move around folders, create files, transfer data, and run analysis commands.</p>
+<p>You do not need to memorize every command. The goal is to understand the basic pattern:</p>
+<pre class="text"><code>command options input</code></pre>
+</section>
+<section id="open-a-terminal" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="open-a-terminal"><span class="header-section-number">2</span> Open a terminal</h2>
+<p>On macOS, open <strong>Terminal</strong>.</p>
+<p>On Windows, open <strong>Windows Terminal</strong>, <strong>PowerShell</strong>, or another SSH-compatible terminal.</p>
+<p>On Linux, open your terminal application.</p>
+</section>
+<section id="where-am-i" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="where-am-i"><span class="header-section-number">3</span> Where am I?</h2>
+<p>Print your current working directory:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>/Users/katefloer/Documents/RNAseq</code></pre>
+</section>
+<section id="list-files" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="list-files"><span class="header-section-number">4</span> List files</h2>
+<p>List files in the current directory:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Show more information, including file sizes:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>-rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv
+drwxr-xr-x  4 user  group   128B Jun  8 results</code></pre>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -231,43 +287,131 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.</p>
+<p>The columns in <code>ls -lh</code> output have specific meanings. In <code>-rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv</code>, the first column shows file permissions. <code>-rw-r--r--</code> means this is a regular file. The owner can read and write it (<code>rw-</code>), the group can read it (<code>r--</code>), and everyone else can read it (<code>r--</code>). A directory usually starts with <code>d</code>, such as <code>drwxr-xr-x</code>. The <code>1</code> is the number of links to the file, <code>user</code> is the owner, <code>group</code> is the group, <code>2.1K</code> is the file size, <code>Jun 8</code> is the last modified date, and <code>samplesheet.csv</code> is the file name.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+</section>
+<section id="change-directories" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="change-directories"><span class="header-section-number">5</span> Change directories</h2>
+<p>Move into a folder:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Move up one folder:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Move to your home directory:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="make-a-new-directory" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="make-a-new-directory"><span class="header-section-number">6</span> Make a new directory</h2>
+<p>Create a folder:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> nf-core-demo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Create a nested folder path:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> projects/nf-core-demo/results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="move-or-rename-files" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="move-or-rename-files"><span class="header-section-number">7</span> Move or rename files</h2>
+<p>Move a file into a folder:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> samplesheet.csv nf-core-demo/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Rename a file:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> old_name.csv new_name.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="look-at-text-files" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="look-at-text-files"><span class="header-section-number">8</span> Look at text files</h2>
+<p>Print a whole file to the terminal:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> samplesheet.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Show the first lines of a file:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> samplesheet.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Show the last lines of a file:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> samplesheet.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For large log files, <code>tail</code> is often more useful than <code>cat</code>.</p>
+</section>
+<section id="copy-files-with-scp" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="copy-files-with-scp"><span class="header-section-number">9</span> Copy files with scp</h2>
+<p><code>scp</code> copies files between your personal computer and a remote server.</p>
+<p>Copy a file from your computer to Unity:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> samplesheet.csv your_username@unity.rc.umass.edu:/path/to/destination/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Copy a file from Unity to your computer:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> your_username@unity.rc.umass.edu:/path/to/file.txt .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The final <code>.</code> means “copy the file here, into my current directory.”</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.</p>
+<p>Replace <code>your_username</code> and the file paths with your own username and locations.</p>
 </div>
 </div>
 </section>
-<section id="tutorial-path-needs-updating" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="tutorial-path-needs-updating"><span class="header-section-number">2</span> Tutorial path (needs updating)</h2>
-<ol type="1">
-<li><a href="./setup.html">Set up your environment</a></li>
-<li><a href="./running.html">Run the pipeline</a></li>
-<li><a href="./results.html">Understand the results</a></li>
-<li><a href="./troubleshooting.html">Fix common issues</a></li>
-</ol>
+<section id="common-patterns" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="common-patterns"><span class="header-section-number">10</span> Common patterns</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>See where you are</td>
+<td><code>pwd</code></td>
+</tr>
+<tr class="even">
+<td>List files</td>
+<td><code>ls</code></td>
+</tr>
+<tr class="odd">
+<td>List files with sizes</td>
+<td><code>ls -lh</code></td>
+</tr>
+<tr class="even">
+<td>Move into a folder</td>
+<td><code>cd folder_name</code></td>
+</tr>
+<tr class="odd">
+<td>Move up one folder</td>
+<td><code>cd ..</code></td>
+</tr>
+<tr class="even">
+<td>Create a folder</td>
+<td><code>mkdir folder_name</code></td>
+</tr>
+<tr class="odd">
+<td>Move or rename files</td>
+<td><code>mv old new</code></td>
+</tr>
+<tr class="even">
+<td>Print a file</td>
+<td><code>cat file.txt</code></td>
+</tr>
+<tr class="odd">
+<td>Preview the start of a file</td>
+<td><code>head file.txt</code></td>
+</tr>
+<tr class="even">
+<td>Preview the end of a file</td>
+<td><code>tail file.txt</code></td>
+</tr>
+<tr class="odd">
+<td>Copy files to/from a server</td>
+<td><code>scp source destination</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="prerequisites" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="prerequisites"><span class="header-section-number">3</span> Prerequisites</h2>
-<p>You will need:</p>
+<section id="tips-for-beginners" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="tips-for-beginners"><span class="header-section-number">11</span> Tips for beginners</h2>
 <ul>
-<li>Lisa to register your email with Unity</li>
-<li>A laptop with a terminal</li>
+<li>File and folder names are case-sensitive on many systems.</li>
+<li>Spaces in file names can make terminal work harder.</li>
+<li>Press the <code>Tab</code> key to autocomplete file and folder names.</li>
+<li>Use the up arrow to repeat a previous command.</li>
+<li>Read error messages slowly. They often tell you what went wrong.</li>
 </ul>
-</section>
-<section id="citation-and-credit" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="citation-and-credit"><span class="header-section-number">4</span> Citation and credit</h2>
-<p>This tutorial uses community tools from <a href="https://nf-co.re/">nf-core</a> and <a href="https://www.nextflow.io/">Nextflow</a>.</p>
 
 
 </section>
@@ -698,7 +842,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/using-terminal.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><span class="last-updated">Last updated: AUTO_LAST_UPDATED</span></p>
 </div>

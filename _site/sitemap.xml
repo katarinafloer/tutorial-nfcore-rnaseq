@@ -22,11 +22,11 @@
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/index.html</loc>
-    <lastmod>2026-06-08T11:44:05.858Z</lastmod>
+    <lastmod>2026-06-08T13:32:05.235Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/setup.html</loc>
-    <lastmod>2026-06-08T11:20:39.927Z</lastmod>
+    <lastmod>2026-06-08T13:17:03.785Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/rna-seq-concepts.html</loc>
@@ -43,5 +43,13 @@
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/frog-data-availability.html</loc>
     <lastmod>2026-06-08T13:15:01.110Z</lastmod>
+  </url>
+  <url>
+    <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/using-terminal.html</loc>
+    <lastmod>2026-06-08T13:38:34.897Z</lastmod>
+  </url>
+  <url>
+    <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/using-unity.html</loc>
+    <lastmod>2026-06-08T13:18:44.889Z</lastmod>
   </url>
 </urlset>

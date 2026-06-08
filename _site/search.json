@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Mangiamele Lab RNA-seq Resource",
     "section": "",
-    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
+    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
@@ -35,7 +35,7 @@
     "href": "index.html#prerequisites",
     "title": "Mangiamele Lab RNA-seq Resource",
     "section": "3 Prerequisites",
-    "text": "3 Prerequisites\nYou will need:\n\nA terminal\nJava\nNextflow\nA container engine such as Docker, Apptainer, or Singularity\nEnough disk space for reference files, intermediate files, and outputs",
+    "text": "3 Prerequisites\nYou will need:\n\nLisa to register your email with Unity\nA laptop with a terminal",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
@@ -54,8 +54,8 @@
     "objectID": "index.html#citation-and-credit",
     "href": "index.html#citation-and-credit",
     "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "5 Citation and credit",
-    "text": "5 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow. Update this page with the specific pipeline version, dataset, and citation details used in your workshop.",
+    "section": "4 Citation and credit",
+    "text": "4 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow.",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
@@ -63,12 +63,11 @@
   {
     "objectID": "setup.html",
     "href": "setup.html",
-    "title": "Setup",
+    "title": "Run a Demo Pipeline",
     "section": "",
     "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
     "crumbs": [
-      "Home",
-      "Setup"
+      "Run a Demo Pipeline"
     ]
   },
   {
@@ -316,12 +315,11 @@
   {
     "objectID": "setup.html#creating-a-demo-scratch-directory",
     "href": "setup.html#creating-a-demo-scratch-directory",
-    "title": "Setup",
+    "title": "Run a Demo Pipeline",
     "section": "",
     "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
     "crumbs": [
-      "Home",
-      "Setup"
+      "Run a Demo Pipeline"
     ]
   },
   {
@@ -329,7 +327,7 @@
     "href": "index.html#about-this-resource",
     "title": "Mangiamele Lab RNA-seq Resource",
     "section": "",
-    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
+    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
@@ -662,6 +660,206 @@
     "text": "6 Download Notes\nWhen adding data links, record:\n\nRepository name\nAccession number\nDate accessed\nFile names downloaded\nGenome or annotation version\nAny filtering or processing already performed\n\nThis information makes the analysis easier to reproduce later.",
     "crumbs": [
       "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html",
+    "href": "using-terminal.html",
+    "title": "Using Terminal",
+    "section": "",
+    "text": "RNA-seq analysis often happens on remote computers and high-performance computing clusters. The terminal lets you move around folders, create files, transfer data, and run analysis commands.\nYou do not need to memorize every command. The goal is to understand the basic pattern:\ncommand options input",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#why-use-the-terminal",
+    "href": "using-terminal.html#why-use-the-terminal",
+    "title": "Using Terminal",
+    "section": "",
+    "text": "RNA-seq analysis often happens on remote computers and high-performance computing clusters. The terminal lets you move around folders, create files, transfer data, and run analysis commands.\nYou do not need to memorize every command. The goal is to understand the basic pattern:\ncommand options input",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#open-a-terminal",
+    "href": "using-terminal.html#open-a-terminal",
+    "title": "Using Terminal",
+    "section": "2 Open a terminal",
+    "text": "2 Open a terminal\nOn macOS, open Terminal.\nOn Windows, open Windows Terminal, PowerShell, or another SSH-compatible terminal.\nOn Linux, open your terminal application.",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#where-am-i",
+    "href": "using-terminal.html#where-am-i",
+    "title": "Using Terminal",
+    "section": "3 Where am I?",
+    "text": "3 Where am I?\nPrint your current working directory:\npwd\nExample output:\n/Users/katefloer/Documents/RNAseq",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#list-files",
+    "href": "using-terminal.html#list-files",
+    "title": "Using Terminal",
+    "section": "4 List files",
+    "text": "4 List files\nList files in the current directory:\nls\nShow more information, including file sizes:\nls -lh\nExample output:\n-rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv\ndrwxr-xr-x  4 user  group   128B Jun  8 results\n\n\n\n\n\n\nNote\n\n\n\nThe columns in ls -lh output have specific meanings. In -rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv, the first column shows file permissions. -rw-r--r-- means this is a regular file. The owner can read and write it (rw-), the group can read it (r--), and everyone else can read it (r--). A directory usually starts with d, such as drwxr-xr-x. The 1 is the number of links to the file, user is the owner, group is the group, 2.1K is the file size, Jun 8 is the last modified date, and samplesheet.csv is the file name.",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#change-directories",
+    "href": "using-terminal.html#change-directories",
+    "title": "Using Terminal",
+    "section": "5 Change directories",
+    "text": "5 Change directories\nMove into a folder:\ncd results\nMove up one folder:\ncd ..\nMove to your home directory:\ncd",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#make-a-new-directory",
+    "href": "using-terminal.html#make-a-new-directory",
+    "title": "Using Terminal",
+    "section": "6 Make a new directory",
+    "text": "6 Make a new directory\nCreate a folder:\nmkdir nf-core-demo\nCreate a nested folder path:\nmkdir -p projects/nf-core-demo/results",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#move-or-rename-files",
+    "href": "using-terminal.html#move-or-rename-files",
+    "title": "Using Terminal",
+    "section": "7 Move or rename files",
+    "text": "7 Move or rename files\nMove a file into a folder:\nmv samplesheet.csv nf-core-demo/\nRename a file:\nmv old_name.csv new_name.csv",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#look-at-text-files",
+    "href": "using-terminal.html#look-at-text-files",
+    "title": "Using Terminal",
+    "section": "8 Look at text files",
+    "text": "8 Look at text files\nPrint a whole file to the terminal:\ncat samplesheet.csv\nShow the first lines of a file:\nhead samplesheet.csv\nShow the last lines of a file:\ntail samplesheet.csv\nFor large log files, tail is often more useful than cat.",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#copy-files-with-scp",
+    "href": "using-terminal.html#copy-files-with-scp",
+    "title": "Using Terminal",
+    "section": "9 Copy files with scp",
+    "text": "9 Copy files with scp\nscp copies files between your personal computer and a remote server.\nCopy a file from your computer to Unity:\nscp samplesheet.csv your_username@unity.rc.umass.edu:/path/to/destination/\nCopy a file from Unity to your computer:\nscp your_username@unity.rc.umass.edu:/path/to/file.txt .\nThe final . means “copy the file here, into my current directory.”\n\n\n\n\n\n\nNote\n\n\n\nReplace your_username and the file paths with your own username and locations.",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#common-patterns",
+    "href": "using-terminal.html#common-patterns",
+    "title": "Using Terminal",
+    "section": "10 Common patterns",
+    "text": "10 Common patterns\n\n\n\nGoal\nCommand\n\n\n\n\nSee where you are\npwd\n\n\nList files\nls\n\n\nList files with sizes\nls -lh\n\n\nMove into a folder\ncd folder_name\n\n\nMove up one folder\ncd ..\n\n\nCreate a folder\nmkdir folder_name\n\n\nMove or rename files\nmv old new\n\n\nPrint a file\ncat file.txt\n\n\nPreview the start of a file\nhead file.txt\n\n\nPreview the end of a file\ntail file.txt\n\n\nCopy files to/from a server\nscp source destination",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#tips-for-beginners",
+    "href": "using-terminal.html#tips-for-beginners",
+    "title": "Using Terminal",
+    "section": "11 Tips for beginners",
+    "text": "11 Tips for beginners\n\nFile and folder names are case-sensitive on many systems.\nSpaces in file names can make terminal work harder.\nPress the Tab key to autocomplete file and folder names.\nUse the up arrow to repeat a previous command.\nRead error messages slowly. They often tell you what went wrong.",
+    "crumbs": [
+      "Using Terminal"
+    ]
+  },
+  {
+    "objectID": "index.html#tutorial-path-needs-updating",
+    "href": "index.html#tutorial-path-needs-updating",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "2 Tutorial path (needs updating)",
+    "text": "2 Tutorial path (needs updating)\n\nSet up your environment\nRun the pipeline\nUnderstand the results\nFix common issues",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "using-unity.html",
+    "href": "using-unity.html",
+    "title": "Using Unity",
+    "section": "",
+    "text": "Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.\nFor RNA-seq, it is important to know the difference between:\n\nLogin nodes\nInteractive jobs\nCompute jobs\n\nUsing the right place keeps the cluster responsive for everyone and helps your own work run more reliably.",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#why-this-page-matters",
+    "href": "using-unity.html#why-this-page-matters",
+    "title": "Using Unity",
+    "section": "",
+    "text": "Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.\nFor RNA-seq, it is important to know the difference between:\n\nLogin nodes\nInteractive jobs\nCompute jobs\n\nUsing the right place keeps the cluster responsive for everyone and helps your own work run more reliably.",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#login-nodes",
+    "href": "using-unity.html#login-nodes",
+    "title": "Using Unity",
+    "section": "2 Login nodes",
+    "text": "2 Login nodes\nWhen you first connect to Unity with SSH, you land on a login node.\nYour prompt may look like this:\n(base) kfloer_smith_edu@login1:~$\nLogin nodes are for light work, such as:\n\nNavigating directories\nEditing small text files\nChecking file names\nSubmitting jobs\nLooking at small log files\n\nDo not run large RNA-seq pipelines directly on a login node.\n\n\n\n\n\n\nWarning\n\n\n\nIf a command will use lots of CPU, memory, or disk for more than a few seconds, it probably should not run on the login node.",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#interactive-jobs",
+    "href": "using-unity.html#interactive-jobs",
+    "title": "Using Unity",
+    "section": "3 Interactive jobs",
+    "text": "3 Interactive jobs\nAn interactive job gives you a temporary compute session where you can run commands directly.\nInteractive jobs are useful for:\n\nTesting commands\nRunning small demos\nDebugging a pipeline\nChecking that software loads correctly\nTrying a short nf-core test run\n\nIn an interactive job, you still type commands yourself, but the commands run on a compute node instead of the login node.\nAdd the exact Unity command for starting an interactive job here:\n# Add Unity interactive job command here\nExample prompt after starting an interactive job:\n(base) kfloer_smith_edu@compute-node:~$\n\n\n\n\n\n\nNote\n\n\n\nInteractive jobs are good for learning and testing. They are not always the best choice for long production runs.",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#compute-jobs",
+    "href": "using-unity.html#compute-jobs",
+    "title": "Using Unity",
+    "section": "4 Compute jobs",
+    "text": "4 Compute jobs\nA compute job is a job submitted to the cluster scheduler. Instead of typing commands one by one, you write a job script and submit it.\nCompute jobs are useful for:\n\nFull RNA-seq pipeline runs\nLong analyses\nAnalyses that need many CPUs\nAnalyses that need lots of memory\nWork that should keep running after you log out\n\nA compute job usually includes:\n\nRequested time\nRequested CPUs\nRequested memory\nOutput log file names\nCommands to run\n\nAdd the exact Unity scheduler example here:\n# Add Unity batch job submission command here",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#which-one-should-i-use",
+    "href": "using-unity.html#which-one-should-i-use",
+    "title": "Using Unity",
+    "section": "5 Which one should I use?",
+    "text": "5 Which one should I use?\n\n\n\nTask\nWhere to run it\n\n\n\n\nLog in to Unity\nLogin node\n\n\nLook at files with ls\nLogin node\n\n\nEdit samplesheet.csv\nLogin node\n\n\nCheck available workspaces with ws_list\nLogin node\n\n\nTest a small command\nInteractive job\n\n\nRun an nf-core test profile\nInteractive job or compute job\n\n\nRun a full RNA-seq pipeline\nCompute job\n\n\nRun a long analysis overnight\nCompute job",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#a-useful-mental-model",
+    "href": "using-unity.html#a-useful-mental-model",
+    "title": "Using Unity",
+    "section": "6 A useful mental model",
+    "text": "6 A useful mental model\nThink of the login node as the front desk. It helps you get organized and submit work.\nThink of interactive jobs as a temporary workbench. They are useful when you need to test something hands-on.\nThink of compute jobs as the production workspace. They are where long or heavy analyses should run.",
+    "crumbs": [
+      "Using Unity"
     ]
   }
 ]

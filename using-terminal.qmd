@@ -55,6 +55,10 @@ Example output:
 drwxr-xr-x  4 user  group   128B Jun  8 results
 ```
 
+::: {.callout-note}
+The columns in `ls -lh` output have specific meanings. In `-rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv`, the first column shows file permissions. `-rw-r--r--` means this is a regular file. The owner can read and write it (`rw-`), the group can read it (`r--`), and everyone else can read it (`r--`). A directory usually starts with `d`, such as `drwxr-xr-x`. The `1` is the number of links to the file, `user` is the owner, `group` is the group, `2.1K` is the file size, `Jun 8` is the last modified date, and `samplesheet.csv` is the file name.
+:::
+
 ## Change directories
 
 Move into a folder:

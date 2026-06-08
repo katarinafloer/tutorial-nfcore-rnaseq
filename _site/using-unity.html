@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Mangiamele Lab RNA-seq Resource – Mangiamele Lab RNA-seq tutorial</title>
+<title>Using Unity – Mangiamele Lab RNA-seq tutorial</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -78,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Mangiamele Lab RNA-seq Resource</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./using-unity.html">Using Unity</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -105,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Mangiamele Lab RNA-seq Resource</span></a>
   </div>
 </li>
@@ -141,7 +175,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./using-unity.html" class="sidebar-item-text sidebar-link">
+  <a href="./using-unity.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Using Unity</span></a>
   </div>
 </li>
@@ -179,20 +213,21 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#about-this-resource" id="toc-about-this-resource" class="nav-link active" data-scroll-target="#about-this-resource"><span class="header-section-number">1</span> About this resource</a></li>
-  <li><a href="#tutorial-path-needs-updating" id="toc-tutorial-path-needs-updating" class="nav-link" data-scroll-target="#tutorial-path-needs-updating"><span class="header-section-number">2</span> Tutorial path (needs updating)</a></li>
-  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites"><span class="header-section-number">3</span> Prerequisites</a></li>
-  <li><a href="#citation-and-credit" id="toc-citation-and-credit" class="nav-link" data-scroll-target="#citation-and-credit"><span class="header-section-number">4</span> Citation and credit</a></li>
+  <li><a href="#why-this-page-matters" id="toc-why-this-page-matters" class="nav-link active" data-scroll-target="#why-this-page-matters"><span class="header-section-number">1</span> Why this page matters</a></li>
+  <li><a href="#login-nodes" id="toc-login-nodes" class="nav-link" data-scroll-target="#login-nodes"><span class="header-section-number">2</span> Login nodes</a></li>
+  <li><a href="#interactive-jobs" id="toc-interactive-jobs" class="nav-link" data-scroll-target="#interactive-jobs"><span class="header-section-number">3</span> Interactive jobs</a></li>
+  <li><a href="#compute-jobs" id="toc-compute-jobs" class="nav-link" data-scroll-target="#compute-jobs"><span class="header-section-number">4</span> Compute jobs</a></li>
+  <li><a href="#which-one-should-i-use" id="toc-which-one-should-i-use" class="nav-link" data-scroll-target="#which-one-should-i-use"><span class="header-section-number">5</span> Which one should I use?</a></li>
+  <li><a href="#a-useful-mental-model" id="toc-a-useful-mental-model" class="nav-link" data-scroll-target="#a-useful-mental-model"><span class="header-section-number">6</span> A useful mental model</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/using-unity.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content column-body" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Mangiamele Lab RNA-seq Resource</h1>
-<p class="subtitle lead">RNA-seq analysis for <em>Staurois parvus</em> using nf-core</p>
+<h1 class="title">Using Unity</h1>
 </div>
 
 
@@ -209,18 +244,61 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="about-this-resource" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="about-this-resource"><span class="header-section-number">1</span> About this resource</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/staurois-parvus.png" class="img-fluid figure-img" width="280"></p>
-<figcaption>Illustration of the frog Staurois parvus.</figcaption>
-</figure>
+<section id="why-this-page-matters" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="why-this-page-matters"><span class="header-section-number">1</span> Why this page matters</h2>
+<p>Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.</p>
+<p>For RNA-seq, it is important to know the difference between:</p>
+<ul>
+<li>Login nodes</li>
+<li>Interactive jobs</li>
+<li>Compute jobs</li>
+</ul>
+<p>Using the right place keeps the cluster responsive for everyone and helps your own work run more reliably.</p>
+</section>
+<section id="login-nodes" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="login-nodes"><span class="header-section-number">2</span> Login nodes</h2>
+<p>When you first connect to Unity with SSH, you land on a login node.</p>
+<p>Your prompt may look like this:</p>
+<pre class="text"><code>(base) kfloer_smith_edu@login1:~$</code></pre>
+<p>Login nodes are for light work, such as:</p>
+<ul>
+<li>Navigating directories</li>
+<li>Editing small text files</li>
+<li>Checking file names</li>
+<li>Submitting jobs</li>
+<li>Looking at small log files</li>
+</ul>
+<p>Do not run large RNA-seq pipelines directly on a login node.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<p>This website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
-<p>The workflow uses <a href="https://nf-co.re/">nf-core</a>, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on <code>nf-core/rnaseq</code>, but the same general approach applies to other nf-core workflows.</p>
-<p>Visit the <a href="https://www.science.smith.edu/mangiamele/">Mangiamele Lab website</a> for more information about the lab and its research.</p>
-<p>Maintained by Katarina Flöer.</p>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If a command will use lots of CPU, memory, or disk for more than a few seconds, it probably should not run on the login node.</p>
+</div>
+</div>
+</section>
+<section id="interactive-jobs" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="interactive-jobs"><span class="header-section-number">3</span> Interactive jobs</h2>
+<p>An interactive job gives you a temporary compute session where you can run commands directly.</p>
+<p>Interactive jobs are useful for:</p>
+<ul>
+<li>Testing commands</li>
+<li>Running small demos</li>
+<li>Debugging a pipeline</li>
+<li>Checking that software loads correctly</li>
+<li>Trying a short nf-core test run</li>
+</ul>
+<p>In an interactive job, you still type commands yourself, but the commands run on a compute node instead of the login node.</p>
+<p>Add the exact Unity command for starting an interactive job here:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add Unity interactive job command here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example prompt after starting an interactive job:</p>
+<pre class="text"><code>(base) kfloer_smith_edu@compute-node:~$</code></pre>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -231,43 +309,82 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.</p>
+<p>Interactive jobs are good for learning and testing. They are not always the best choice for long production runs.</p>
 </div>
 </div>
 </section>
-<section id="tutorial-path-needs-updating" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="tutorial-path-needs-updating"><span class="header-section-number">2</span> Tutorial path (needs updating)</h2>
-<ol type="1">
-<li><a href="./setup.html">Set up your environment</a></li>
-<li><a href="./running.html">Run the pipeline</a></li>
-<li><a href="./results.html">Understand the results</a></li>
-<li><a href="./troubleshooting.html">Fix common issues</a></li>
-</ol>
-</section>
-<section id="prerequisites" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="prerequisites"><span class="header-section-number">3</span> Prerequisites</h2>
-<p>You will need:</p>
+<section id="compute-jobs" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="compute-jobs"><span class="header-section-number">4</span> Compute jobs</h2>
+<p>A compute job is a job submitted to the cluster scheduler. Instead of typing commands one by one, you write a job script and submit it.</p>
+<p>Compute jobs are useful for:</p>
 <ul>
-<li>Lisa to register your email with Unity</li>
-<li>A laptop with a terminal</li>
+<li>Full RNA-seq pipeline runs</li>
+<li>Long analyses</li>
+<li>Analyses that need many CPUs</li>
+<li>Analyses that need lots of memory</li>
+<li>Work that should keep running after you log out</li>
 </ul>
+<p>A compute job usually includes:</p>
+<ul>
+<li>Requested time</li>
+<li>Requested CPUs</li>
+<li>Requested memory</li>
+<li>Output log file names</li>
+<li>Commands to run</li>
+</ul>
+<p>Add the exact Unity scheduler example here:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add Unity batch job submission command here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="citation-and-credit" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="citation-and-credit"><span class="header-section-number">4</span> Citation and credit</h2>
-<p>This tutorial uses community tools from <a href="https://nf-co.re/">nf-core</a> and <a href="https://www.nextflow.io/">Nextflow</a>.</p>
+<section id="which-one-should-i-use" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="which-one-should-i-use"><span class="header-section-number">5</span> Which one should I use?</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Where to run it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Log in to Unity</td>
+<td>Login node</td>
+</tr>
+<tr class="even">
+<td>Look at files with <code>ls</code></td>
+<td>Login node</td>
+</tr>
+<tr class="odd">
+<td>Edit <code>samplesheet.csv</code></td>
+<td>Login node</td>
+</tr>
+<tr class="even">
+<td>Check available workspaces with <code>ws_list</code></td>
+<td>Login node</td>
+</tr>
+<tr class="odd">
+<td>Test a small command</td>
+<td>Interactive job</td>
+</tr>
+<tr class="even">
+<td>Run an nf-core test profile</td>
+<td>Interactive job or compute job</td>
+</tr>
+<tr class="odd">
+<td>Run a full RNA-seq pipeline</td>
+<td>Compute job</td>
+</tr>
+<tr class="even">
+<td>Run a long analysis overnight</td>
+<td>Compute job</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="a-useful-mental-model" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="a-useful-mental-model"><span class="header-section-number">6</span> A useful mental model</h2>
+<p>Think of the login node as the front desk. It helps you get organized and submit work.</p>
+<p>Think of interactive jobs as a temporary workbench. They are useful when you need to test something hands-on.</p>
+<p>Think of compute jobs as the production workspace. They are where long or heavy analyses should run.</p>
 
 
 </section>
@@ -698,7 +815,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/using-unity.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><span class="last-updated">Last updated: AUTO_LAST_UPDATED</span></p>
 </div>
