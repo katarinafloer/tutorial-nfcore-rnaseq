@@ -1,18 +1,14 @@
 ---
-title: "File Types, File Sizes, and Storage"
+title: "File Types and File Sizes"
 ---
 
 ## Why this matters
 
-RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing, alignment, or intermediate files that can quickly use hundreds of gigabytes.
+RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing or alignment files that can use a lot of space.
 
-Before running a pipeline, it helps to know:
+This page is a gentle introduction to the file types you may see during RNA-seq analysis. You do not need to understand every detail yet. The goal is to become familiar with the names and what they are generally used for.
 
-- Which files are inputs
-- Which files are outputs
-- Which files are temporary
-- Which files need to be saved
-- Which files can be deleted later
+Before running a pipeline, it helps to recognize which files are raw data, which files describe the reference genome, and which files are results.
 
 ## Common file types
 
@@ -81,20 +77,16 @@ The most useful output to open first is usually:
 multiqc_report.html
 ```
 
-## Temporary files
+## Intermediate files
 
-Nextflow creates a work directory that stores intermediate files:
+RNA-seq pipelines also create intermediate files while they are running.
 
-```text
-work/
-```
+Intermediate files are files created between the raw input files and the final results. They are useful for the pipeline, but they are not always files you need to inspect directly.
 
-This folder can become very large. It is useful while the pipeline is running and if you need to resume a failed run.
+One common example is the Nextflow `work/` directory. This directory can become large because it stores temporary files for many pipeline steps.
 
-After the analysis is complete and you are sure you do not need to resume, the `work/` directory can often be deleted to save space.
-
-::: {.callout-warning}
-Do not delete `work/` while a pipeline is running. Do not delete it before confirming that your final outputs were created successfully.
+::: {.callout-note}
+For now, just know that intermediate files can take up space. Later pages will show how to check file sizes and decide what can be cleaned up.
 :::
 
 ## Typical storage needs
@@ -112,37 +104,7 @@ As a rough guide:
 
 For this tutorial, we create a workspace with 30 GB because it is meant for a small demo.
 
-## Check file sizes
-
-To see the size of files and folders in your current directory, run:
-
-```bash
-du -sh *
-```
-
-Example output:
-
-```text
-4.2G    data
-18G     work
-2.1G    results
-8.0K    samplesheet.csv
-```
-
-To check free space in a filesystem, run:
-
-```bash
-df -h .
-```
-
-Example output:
-
-```text
-Filesystem      Size  Used Avail Use% Mounted on
-workspace        30G   24G  6.0G  80% /scratch4/workspace
-```
-
-## What should you keep?
+## What files are most important?
 
 Usually keep:
 
@@ -160,15 +122,14 @@ Usually do not keep forever:
 - Duplicate downloaded references
 - Old intermediate files that can be regenerated
 
-## Good habits
+## Big picture
 
-- Use clear folder names
-- Keep raw data separate from results
-- Record where files came from
-- Do not edit raw FASTQ files
-- Check available space before starting a large run
-- Clean up temporary files after confirming final results
+- Raw FASTQ files are the original sequencing data.
+- Reference files tell the pipeline what genome or annotation to use.
+- Output files are the results and reports from the pipeline.
+- Intermediate files help the pipeline run but may be large.
+- Metadata and notes make the analysis reproducible.
 
 ::: {.callout-tip}
-When in doubt, ask before deleting large files. It is much easier to delete temporary files later than to recover important data after it is gone.
+When in doubt, do not delete raw data, metadata, or final results. Temporary and intermediate files are easier to regenerate than original data.
 :::
