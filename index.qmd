@@ -1,13 +1,17 @@
 ---
 title: "Mangiamele Lab RNA-seq Resource"
-subtitle: "RNA-seq analysis for Staurois parvus using nf-core"
+subtitle: "RNA-seq analysis for *Staurois parvus* using nf-core"
 ---
 
 ## About this resource
 
+![Illustration of the frog Staurois parvus.](assets/staurois-parvus.png){fig-align="center" width="280"}
+
 This website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog *Staurois parvus*.
 
 The workflow uses [nf-core](https://nf-co.re/), a community collection of standardized, reproducible Nextflow pipelines. The examples focus on `nf-core/rnaseq`, but the same general approach applies to other nf-core workflows.
+
+Visit the [Mangiamele Lab website](https://www.science.smith.edu/mangiamele/) for more information about the lab and its research.
 
 Maintained by Katarina Flöer.
 

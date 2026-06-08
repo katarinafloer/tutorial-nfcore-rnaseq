@@ -3,7 +3,7 @@ project:
   output-dir: _site
 
 website:
-  title: "Mangiamele Lab nf-core RNA-seq tutorial"
+  title: "Mangiamele Lab RNA-seq tutorial"
   description: "A practical, beginner-friendly tutorial for running nf-core/rnaseq."
   site-url: "https://katarinafloer.github.io/tutorial-nfcore-rnaseq/"
   repo-url: "https://github.com/katarinafloer/tutorial-nfcore-rnaseq"
