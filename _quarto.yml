@@ -18,6 +18,7 @@ website:
       - rna-seq-concepts.qmd
       - file-types-storage.qmd
       - frog-data-availability.qmd
+      - using-terminal.qmd
       - connecting-to-unity.qmd
       - using-unity.qmd
       - setup.qmd

@@ -15,11 +15,15 @@ Visit the [Mangiamele Lab website](https://www.science.smith.edu/mangiamele/) fo
 
 Maintained by Katarina Flöer.
 
+::: {.callout-note}
+This tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.
+:::
+
 ::: {.callout-tip}
 Use this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.
 :::
 
-## Tutorial path
+## Tutorial path (needs updating)
 
 1. [Set up your environment](setup.qmd)
 2. [Run the pipeline](running.qmd)
@@ -30,24 +34,9 @@ Use this site as a practical guide for setting up a workspace, running the pipel
 
 You will need:
 
-- A terminal
-- Java
-- Nextflow
-- A container engine such as Docker, Apptainer, or Singularity
-- Enough disk space for reference files, intermediate files, and outputs
-
-## Example workflow
-
-```mermaid
-flowchart LR
-  A["Samplesheet"] --> B["Nextflow"]
-  C["Reference genome"] --> B
-  D["Container engine"] --> B
-  B --> E["QC reports"]
-  B --> F["Quantification"]
-  B --> G["MultiQC summary"]
-```
+- Lisa to register your email with Unity
+- A laptop with a terminal 
 
 ## Citation and credit
 
-This tutorial uses community tools from [nf-core](https://nf-co.re/) and [Nextflow](https://www.nextflow.io/). Update this page with the specific pipeline version, dataset, and citation details used in your workshop.
+This tutorial uses community tools from [nf-core](https://nf-co.re/) and [Nextflow](https://www.nextflow.io/). 

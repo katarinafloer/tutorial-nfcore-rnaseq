@@ -1,0 +1,172 @@
+---
+title: "Using Terminal"
+---
+
+## Why use the terminal?
+
+RNA-seq analysis often happens on remote computers and high-performance computing clusters. The terminal lets you move around folders, create files, transfer data, and run analysis commands.
+
+You do not need to memorize every command. The goal is to understand the basic pattern:
+
+```text
+command options input
+```
+
+## Open a terminal
+
+On macOS, open **Terminal**.
+
+On Windows, open **Windows Terminal**, **PowerShell**, or another SSH-compatible terminal.
+
+On Linux, open your terminal application.
+
+## Where am I?
+
+Print your current working directory:
+
+```bash
+pwd
+```
+
+Example output:
+
+```text
+/Users/katefloer/Documents/RNAseq
+```
+
+## List files
+
+List files in the current directory:
+
+```bash
+ls
+```
+
+Show more information, including file sizes:
+
+```bash
+ls -lh
+```
+
+Example output:
+
+```text
+-rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv
+drwxr-xr-x  4 user  group   128B Jun  8 results
+```
+
+## Change directories
+
+Move into a folder:
+
+```bash
+cd results
+```
+
+Move up one folder:
+
+```bash
+cd ..
+```
+
+Move to your home directory:
+
+```bash
+cd
+```
+
+## Make a new directory
+
+Create a folder:
+
+```bash
+mkdir nf-core-demo
+```
+
+Create a nested folder path:
+
+```bash
+mkdir -p projects/nf-core-demo/results
+```
+
+## Move or rename files
+
+Move a file into a folder:
+
+```bash
+mv samplesheet.csv nf-core-demo/
+```
+
+Rename a file:
+
+```bash
+mv old_name.csv new_name.csv
+```
+
+## Look at text files
+
+Print a whole file to the terminal:
+
+```bash
+cat samplesheet.csv
+```
+
+Show the first lines of a file:
+
+```bash
+head samplesheet.csv
+```
+
+Show the last lines of a file:
+
+```bash
+tail samplesheet.csv
+```
+
+For large log files, `tail` is often more useful than `cat`.
+
+## Copy files with scp
+
+`scp` copies files between your personal computer and a remote server.
+
+Copy a file from your computer to Unity:
+
+```bash
+scp samplesheet.csv your_username@unity.rc.umass.edu:/path/to/destination/
+```
+
+Copy a file from Unity to your computer:
+
+```bash
+scp your_username@unity.rc.umass.edu:/path/to/file.txt .
+```
+
+The final `.` means "copy the file here, into my current directory."
+
+::: {.callout-note}
+Replace `your_username` and the file paths with your own username and locations.
+:::
+
+## Common patterns
+
+| Goal | Command |
+|---|---|
+| See where you are | `pwd` |
+| List files | `ls` |
+| List files with sizes | `ls -lh` |
+| Move into a folder | `cd folder_name` |
+| Move up one folder | `cd ..` |
+| Create a folder | `mkdir folder_name` |
+| Move or rename files | `mv old new` |
+| Print a file | `cat file.txt` |
+| Preview the start of a file | `head file.txt` |
+| Preview the end of a file | `tail file.txt` |
+| Copy files to/from a server | `scp source destination` |
+
+## Tips for beginners
+
+- File and folder names are case-sensitive on many systems.
+- Spaces in file names can make terminal work harder.
+- Press the `Tab` key to autocomplete file and folder names.
+- Use the up arrow to repeat a previous command.
+- Read error messages slowly. They often tell you what went wrong.
