@@ -1,0 +1,54 @@
+---
+title: "Frog Data Availability"
+---
+
+## Purpose
+
+This page collects links to public data resources used for *Staurois parvus* RNA-seq analysis in the Mangiamele Lab.
+
+
+## Genome Resources
+
+| Resource | Link | Notes |
+|---|---|---|
+| Old genome assembly | Add link | Add assembly version, accession, or source |
+| New Genome assembly | Add link | Add assembly version, accession, or source |
+| Genome FASTA | Add link | Add file name and date downloaded |
+| Gene annotation | Add link | Add GTF/GFF source and version |
+| Transcriptome | Add link | Optional |
+
+## RNA-seq Reads
+
+| Dataset | Repository | Accession or link | Notes |
+|---|---|---|---|
+| RNA-seq reads | NCBI SRA | Add link | Add tissue, treatment, or project notes |
+| RNA-seq reads | GEO | Add link | Optional |
+| RNA-seq reads | ENA | Add link | Optional |
+
+## Sample Metadata
+
+| File or record | Link | Notes |
+|---|---|---|
+| Sample metadata | Add link | Sample IDs, tissue, sex, treatment, collection details |
+| Experimental design | Add link | Group comparisons or design notes |
+
+## Other Useful Data
+
+| Resource | Link | Notes |
+|---|---|---|
+| Related publication | Add link | Paper, preprint, or thesis |
+| Supplementary files | Add link | Tables, scripts, or additional references |
+| Lab notes | Add link | Internal notes if appropriate |
+
+## Download Notes
+
+When adding data links, record:
+
+- Repository name
+- Accession number
+- Date accessed
+- File names downloaded
+- Genome or annotation version
+- Any filtering or processing already performed
+
+This information makes the analysis easier to reproduce later.

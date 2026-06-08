@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>What is RNA-seq? – Mangiamele Lab RNA-seq tutorial</title>
+<title>Frog Data Availability – Mangiamele Lab RNA-seq tutorial</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -78,7 +78,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rna-seq-concepts.html">What is RNA-seq?</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./frog-data-availability.html">Frog Data Availability</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -111,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./rna-seq-concepts.html" class="sidebar-item-text sidebar-link active">
+  <a href="./rna-seq-concepts.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">What is RNA-seq?</span></a>
   </div>
 </li>
@@ -123,7 +123,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./frog-data-availability.html" class="sidebar-item-text sidebar-link">
+  <a href="./frog-data-availability.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Frog Data Availability</span></a>
   </div>
 </li>
@@ -167,28 +167,21 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-big-idea" id="toc-the-big-idea" class="nav-link active" data-scroll-target="#the-big-idea"><span class="header-section-number">1</span> The big idea</a></li>
-  <li><a href="#the-nf-corernaseq-workflow" id="toc-the-nf-corernaseq-workflow" class="nav-link" data-scroll-target="#the-nf-corernaseq-workflow"><span class="header-section-number">2</span> The nf-core/rnaseq workflow</a></li>
-  <li><a href="#what-are-fastq-files" id="toc-what-are-fastq-files" class="nav-link" data-scroll-target="#what-are-fastq-files"><span class="header-section-number">3</span> What are FASTQ files?</a></li>
-  <li><a href="#what-does-the-pipeline-do" id="toc-what-does-the-pipeline-do" class="nav-link" data-scroll-target="#what-does-the-pipeline-do"><span class="header-section-number">4</span> What does the pipeline do?</a>
-  <ul class="collapse">
-  <li><a href="#pre-processing" id="toc-pre-processing" class="nav-link" data-scroll-target="#pre-processing"><span class="header-section-number">4.1</span> Pre-processing</a></li>
-  <li><a href="#alignment-and-quantification" id="toc-alignment-and-quantification" class="nav-link" data-scroll-target="#alignment-and-quantification"><span class="header-section-number">4.2</span> Alignment and quantification</a></li>
-  <li><a href="#post-processing" id="toc-post-processing" class="nav-link" data-scroll-target="#post-processing"><span class="header-section-number">4.3</span> Post-processing</a></li>
-  <li><a href="#contamination-screening" id="toc-contamination-screening" class="nav-link" data-scroll-target="#contamination-screening"><span class="header-section-number">4.4</span> Contamination screening</a></li>
-  <li><a href="#quality-control-and-reporting" id="toc-quality-control-and-reporting" class="nav-link" data-scroll-target="#quality-control-and-reporting"><span class="header-section-number">4.5</span> Quality control and reporting</a></li>
-  </ul></li>
-  <li><a href="#what-do-we-get-at-the-end" id="toc-what-do-we-get-at-the-end" class="nav-link" data-scroll-target="#what-do-we-get-at-the-end"><span class="header-section-number">5</span> What do we get at the end?</a></li>
-  <li><a href="#what-rna-seq-does-not-tell-us-by-itself" id="toc-what-rna-seq-does-not-tell-us-by-itself" class="nav-link" data-scroll-target="#what-rna-seq-does-not-tell-us-by-itself"><span class="header-section-number">6</span> What RNA-seq does not tell us by itself</a></li>
+  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose"><span class="header-section-number">1</span> Purpose</a></li>
+  <li><a href="#genome-resources" id="toc-genome-resources" class="nav-link" data-scroll-target="#genome-resources"><span class="header-section-number">2</span> Genome Resources</a></li>
+  <li><a href="#rna-seq-reads" id="toc-rna-seq-reads" class="nav-link" data-scroll-target="#rna-seq-reads"><span class="header-section-number">3</span> RNA-seq Reads</a></li>
+  <li><a href="#sample-metadata" id="toc-sample-metadata" class="nav-link" data-scroll-target="#sample-metadata"><span class="header-section-number">4</span> Sample Metadata</a></li>
+  <li><a href="#other-useful-data" id="toc-other-useful-data" class="nav-link" data-scroll-target="#other-useful-data"><span class="header-section-number">5</span> Other Useful Data</a></li>
+  <li><a href="#download-notes" id="toc-download-notes" class="nav-link" data-scroll-target="#download-notes"><span class="header-section-number">6</span> Download Notes</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/rna-seq-concepts.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/frog-data-availability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content column-body" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">What is RNA-seq?</h1>
+<h1 class="title">Frog Data Availability</h1>
 </div>
 
 
@@ -205,148 +198,168 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="the-big-idea" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="the-big-idea"><span class="header-section-number">1</span> The big idea</h2>
-<p>RNA-seq is a way to measure which genes are being expressed in a biological sample.</p>
-<p>Cells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.</p>
-<p>In this tutorial, we are interested in RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
+<section id="purpose" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="purpose"><span class="header-section-number">1</span> Purpose</h2>
+<p>This page collects links to public data resources used for <em>Staurois parvus</em> RNA-seq analysis in the Mangiamele Lab.</p>
 </section>
-<section id="the-nf-corernaseq-workflow" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="the-nf-corernaseq-workflow"><span class="header-section-number">2</span> The nf-core/rnaseq workflow</h2>
-<p>In this tutorial, we use <code>nf-core/rnaseq</code> to process RNA-seq data in a standardized and reproducible way.</p>
-<p>The nf-core/rnaseq pipeline can be visualized as a “metro map” of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/nf-core-rnaseq-metro-map.svg" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption>nf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.</figcaption>
-</figure>
-</div>
-<p>Source: <a href="https://nf-co.re/rnaseq/3.26.0/">nf-core/rnaseq version 3.26.0</a>.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For this tutorial, we are following the default green path: <code>STAR</code> for alignment and <code>Salmon</code> for quantification. There are multiple valid ways to analyze RNA-seq data, but we will focus on this route.</p>
-</div>
-</div>
+<section id="genome-resources" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="genome-resources"><span class="header-section-number">2</span> Genome Resources</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Resource</th>
+<th>Link</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Old genome assembly</td>
+<td>Add link</td>
+<td>Add assembly version, accession, or source</td>
+</tr>
+<tr class="even">
+<td>New Genome assembly</td>
+<td>Add link</td>
+<td>Add assembly version, accession, or source</td>
+</tr>
+<tr class="odd">
+<td>Genome FASTA</td>
+<td>Add link</td>
+<td>Add file name and date downloaded</td>
+</tr>
+<tr class="even">
+<td>Gene annotation</td>
+<td>Add link</td>
+<td>Add GTF/GFF source and version</td>
+</tr>
+<tr class="odd">
+<td>Transcriptome</td>
+<td>Add link</td>
+<td>Optional</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="what-are-fastq-files" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="what-are-fastq-files"><span class="header-section-number">3</span> What are FASTQ files?</h2>
-<p>Sequencing machines produce reads. A read is a short sequence from an RNA molecule. These reads are usually stored in FASTQ files.</p>
-<p>FASTQ files often come in pairs:</p>
-<pre class="text"><code>sample1_R1.fastq.gz
-sample1_R2.fastq.gz</code></pre>
-<p>For paired-end sequencing:</p>
+<section id="rna-seq-reads" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="rna-seq-reads"><span class="header-section-number">3</span> RNA-seq Reads</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Repository</th>
+<th>Accession or link</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RNA-seq reads</td>
+<td>NCBI SRA</td>
+<td>Add link</td>
+<td>Add tissue, treatment, or project notes</td>
+</tr>
+<tr class="even">
+<td>RNA-seq reads</td>
+<td>GEO</td>
+<td>Add link</td>
+<td>Optional</td>
+</tr>
+<tr class="odd">
+<td>RNA-seq reads</td>
+<td>ENA</td>
+<td>Add link</td>
+<td>Optional</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sample-metadata" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sample-metadata"><span class="header-section-number">4</span> Sample Metadata</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File or record</th>
+<th>Link</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sample metadata</td>
+<td>Add link</td>
+<td>Sample IDs, tissue, sex, treatment, collection details</td>
+</tr>
+<tr class="even">
+<td>Experimental design</td>
+<td>Add link</td>
+<td>Group comparisons or design notes</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="other-useful-data" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="other-useful-data"><span class="header-section-number">5</span> Other Useful Data</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Resource</th>
+<th>Link</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Related publication</td>
+<td>Add link</td>
+<td>Paper, preprint, or thesis</td>
+</tr>
+<tr class="even">
+<td>Supplementary files</td>
+<td>Add link</td>
+<td>Tables, scripts, or additional references</td>
+</tr>
+<tr class="odd">
+<td>Lab notes</td>
+<td>Add link</td>
+<td>Internal notes if appropriate</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="download-notes" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="download-notes"><span class="header-section-number">6</span> Download Notes</h2>
+<p>When adding data links, record:</p>
 <ul>
-<li><code>R1</code> contains the first read from each fragment</li>
-<li><code>R2</code> contains the second read from each fragment</li>
-<li><code>.gz</code> means the file is compressed</li>
+<li>Repository name</li>
+<li>Accession number</li>
+<li>Date accessed</li>
+<li>File names downloaded</li>
+<li>Genome or annotation version</li>
+<li>Any filtering or processing already performed</li>
 </ul>
-</section>
-<section id="what-does-the-pipeline-do" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="what-does-the-pipeline-do"><span class="header-section-number">4</span> What does the pipeline do?</h2>
-<p>The pipeline takes raw sequencing reads and turns them into quality-control reports, alignments, and expression estimates. These are the major steps shown in the nf-core/rnaseq workflow.</p>
-<section id="pre-processing" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="pre-processing"><span class="header-section-number">4.1</span> Pre-processing</h3>
-<p>These steps clean up and check the raw sequencing reads before alignment or quantification.</p>
-<ul>
-<li>Merge re-sequenced FASTQ files with <code>cat</code></li>
-<li>Auto-infer strandedness by subsampling reads and pseudoaligning them with <code>fq</code> and <code>Salmon</code></li>
-<li>Check raw read quality with <code>FastQC</code></li>
-<li>Extract unique molecular identifiers, if present, with <code>UMI-tools</code></li>
-<li>Trim adapters and low-quality sequence with <code>Trim Galore!</code></li>
-<li>Remove genome contaminants with <code>BBSplit</code></li>
-<li>Remove ribosomal RNA with <code>SortMeRNA</code></li>
-</ul>
-</section>
-<section id="alignment-and-quantification" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="alignment-and-quantification"><span class="header-section-number">4.2</span> Alignment and quantification</h3>
-<p>After pre-processing, the pipeline can follow different routes. The route depends on whether you want genome alignment, transcript quantification, or pseudoalignment.</p>
-<p>The default route used in this tutorial is:</p>
-<pre class="text"><code>STAR -&gt; Salmon</code></pre>
-<p>Other available routes include:</p>
-<ul>
-<li><code>STAR -&gt; RSEM</code></li>
-<li><code>HISAT2 -&gt; no quantification</code></li>
-<li>Pseudoalignment and quantification with <code>Salmon</code> or <code>Kallisto</code></li>
-</ul>
-<p>For <code>STAR</code>, the Sentieon implementation can also be chosen if it is available and configured.</p>
-</section>
-<section id="post-processing" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="post-processing"><span class="header-section-number">4.3</span> Post-processing</h3>
-<p>After alignment and quantification, the pipeline organizes and summarizes the mapped reads.</p>
-<ul>
-<li>Sort and index alignments with <code>SAMtools</code></li>
-<li>Deduplicate reads using UMIs with <code>UMI-tools</code>, if UMIs are present</li>
-<li>Mark duplicate reads with <code>picard MarkDuplicates</code></li>
-<li>Assemble and quantify transcripts with <code>StringTie</code></li>
-<li>Create bigWig coverage files with <code>BEDTools</code> and <code>bedGraphToBigWig</code></li>
-</ul>
-</section>
-<section id="contamination-screening" class="level3" data-number="4.4">
-<h3 data-number="4.4" class="anchored" data-anchor-id="contamination-screening"><span class="header-section-number">4.4</span> Contamination screening</h3>
-<p>The pipeline can optionally screen selected reads for contamination. By default, this is done on unaligned reads.</p>
-<p>Optional tools include:</p>
-<ul>
-<li><code>Kraken2 -&gt; Bracken</code></li>
-<li><code>Sylph</code></li>
-</ul>
-</section>
-<section id="quality-control-and-reporting" class="level3" data-number="4.5">
-<h3 data-number="4.5" class="anchored" data-anchor-id="quality-control-and-reporting"><span class="header-section-number">4.5</span> Quality control and reporting</h3>
-<p>Quality control helps us decide whether the sequencing and analysis worked well enough to trust the results.</p>
-<p>The pipeline performs extensive QC with tools such as:</p>
-<ul>
-<li><code>RSeQC</code></li>
-<li><code>Qualimap</code></li>
-<li><code>dupRadar</code></li>
-<li><code>Preseq</code></li>
-<li><code>DESeq2</code></li>
-<li><code>MultiQC</code></li>
-<li><code>R</code></li>
-</ul>
-<p>The final report summarizes raw read quality, alignment metrics, gene biotypes, sample similarity, and strand-specificity checks.</p>
-</section>
-</section>
-<section id="what-do-we-get-at-the-end" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="what-do-we-get-at-the-end"><span class="header-section-number">5</span> What do we get at the end?</h2>
-<p>The main outputs are:</p>
-<ul>
-<li>Quality-control reports</li>
-<li>Alignment or mapping summaries</li>
-<li>Gene or transcript expression estimates</li>
-<li>Pipeline logs and software version information</li>
-</ul>
-<p>These outputs help answer questions such as:</p>
-<ul>
-<li>Did the sequencing work well?</li>
-<li>Are any samples low quality or unusual?</li>
-<li>Which genes are expressed in each sample?</li>
-<li>Which samples are ready for downstream analysis?</li>
-</ul>
-</section>
-<section id="what-rna-seq-does-not-tell-us-by-itself" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="what-rna-seq-does-not-tell-us-by-itself"><span class="header-section-number">6</span> What RNA-seq does not tell us by itself</h2>
-<p>RNA-seq measures RNA abundance, not every part of biology directly. Gene expression can suggest biological patterns, but interpretation depends on experimental design, replication, annotation quality, and downstream statistics.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Good RNA-seq analysis starts before sequencing. Sample design, metadata, replication, and careful record keeping matter just as much as the computational pipeline.</p>
-</div>
-</div>
+<p>This information makes the analysis easier to reproduce later.</p>
 
 
 </section>
@@ -777,7 +790,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/rna-seq-concepts.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/frog-data-availability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><span class="last-updated">Last updated: AUTO_LAST_UPDATED</span></p>
 </div>

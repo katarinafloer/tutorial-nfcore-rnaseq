@@ -593,5 +593,75 @@
     "crumbs": [
       "What is RNA-seq?"
     ]
+  },
+  {
+    "objectID": "frog-data-availability.html",
+    "href": "frog-data-availability.html",
+    "title": "Frog Data Availability",
+    "section": "",
+    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#purpose",
+    "href": "frog-data-availability.html#purpose",
+    "title": "Frog Data Availability",
+    "section": "",
+    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#genome-resources",
+    "href": "frog-data-availability.html#genome-resources",
+    "title": "Frog Data Availability",
+    "section": "2 Genome Resources",
+    "text": "2 Genome Resources\n\n\n\n\n\n\n\n\nResource\nLink\nNotes\n\n\n\n\nOld genome assembly\nAdd link\nAdd assembly version, accession, or source\n\n\nNew Genome assembly\nAdd link\nAdd assembly version, accession, or source\n\n\nGenome FASTA\nAdd link\nAdd file name and date downloaded\n\n\nGene annotation\nAdd link\nAdd GTF/GFF source and version\n\n\nTranscriptome\nAdd link\nOptional",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#rna-seq-reads",
+    "href": "frog-data-availability.html#rna-seq-reads",
+    "title": "Frog Data Availability",
+    "section": "3 RNA-seq Reads",
+    "text": "3 RNA-seq Reads\n\n\n\n\n\n\n\n\n\nDataset\nRepository\nAccession or link\nNotes\n\n\n\n\nRNA-seq reads\nNCBI SRA\nAdd link\nAdd tissue, treatment, or project notes\n\n\nRNA-seq reads\nGEO\nAdd link\nOptional\n\n\nRNA-seq reads\nENA\nAdd link\nOptional",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#sample-metadata",
+    "href": "frog-data-availability.html#sample-metadata",
+    "title": "Frog Data Availability",
+    "section": "4 Sample Metadata",
+    "text": "4 Sample Metadata\n\n\n\n\n\n\n\n\nFile or record\nLink\nNotes\n\n\n\n\nSample metadata\nAdd link\nSample IDs, tissue, sex, treatment, collection details\n\n\nExperimental design\nAdd link\nGroup comparisons or design notes",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#other-useful-data",
+    "href": "frog-data-availability.html#other-useful-data",
+    "title": "Frog Data Availability",
+    "section": "5 Other Useful Data",
+    "text": "5 Other Useful Data\n\n\n\n\n\n\n\n\nResource\nLink\nNotes\n\n\n\n\nRelated publication\nAdd link\nPaper, preprint, or thesis\n\n\nSupplementary files\nAdd link\nTables, scripts, or additional references\n\n\nLab notes\nAdd link\nInternal notes if appropriate",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#download-notes",
+    "href": "frog-data-availability.html#download-notes",
+    "title": "Frog Data Availability",
+    "section": "6 Download Notes",
+    "text": "6 Download Notes\nWhen adding data links, record:\n\nRepository name\nAccession number\nDate accessed\nFile names downloaded\nGenome or annotation version\nAny filtering or processing already performed\n\nThis information makes the analysis easier to reproduce later.",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
   }
 ]
