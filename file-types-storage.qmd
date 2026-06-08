@@ -1,0 +1,174 @@
+---
+title: "File Types, File Sizes, and Storage"
+---
+
+## Why this matters
+
+RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing, alignment, or intermediate files that can quickly use hundreds of gigabytes.
+
+Before running a pipeline, it helps to know:
+
+- Which files are inputs
+- Which files are outputs
+- Which files are temporary
+- Which files need to be saved
+- Which files can be deleted later
+
+## Common file types
+
+| File type | Example | What it is |
+|---|---|---|
+| FASTQ | `sample_R1.fastq.gz` | Raw sequencing reads |
+| CSV | `samplesheet.csv` | Table describing samples and input files |
+| FASTA | `genome.fa` | Reference genome or transcript sequences |
+| GTF/GFF | `annotation.gtf` | Gene annotation file |
+| BAM | `sample.bam` | Aligned reads |
+| BAI | `sample.bam.bai` | Index for a BAM file |
+| TSV/CSV | `salmon.merged.gene_counts.tsv` | Count or expression table |
+| HTML | `multiqc_report.html` | Interactive report opened in a browser |
+| LOG/TXT | `.nextflow.log` | Logs and command output |
+
+## FASTQ files
+
+FASTQ files are usually the main input for RNA-seq pipelines.
+
+Paired-end data often has two files per sample:
+
+```text
+sample1_R1.fastq.gz
+sample1_R2.fastq.gz
+```
+
+The file names usually tell you:
+
+- The sample name
+- Whether the file is read 1 (`R1`) or read 2 (`R2`)
+- Whether the file is compressed (`.gz`)
+
+FASTQ files can be large. A single compressed FASTQ file may be several gigabytes.
+
+## Reference files
+
+Reference files describe the genome or transcriptome you want to compare your reads against.
+
+Common reference files include:
+
+```text
+genome.fa
+annotation.gtf
+```
+
+For non-model organisms like *Staurois parvus*, reference files may come from a lab assembly or a closely related species, depending on the project.
+
+::: {.callout-note}
+The choice of reference affects the interpretation of RNA-seq results. Always record which genome and annotation files were used.
+:::
+
+## Pipeline outputs
+
+nf-core pipelines create organized output folders. The exact files depend on the options you choose, but common outputs include:
+
+- Quality-control reports
+- Quantification tables
+- Alignment files
+- Pipeline logs
+- Software version files
+- MultiQC summary reports
+
+The most useful output to open first is usually:
+
+```text
+multiqc_report.html
+```
+
+## Temporary files
+
+Nextflow creates a work directory that stores intermediate files:
+
+```text
+work/
+```
+
+This folder can become very large. It is useful while the pipeline is running and if you need to resume a failed run.
+
+After the analysis is complete and you are sure you do not need to resume, the `work/` directory can often be deleted to save space.
+
+::: {.callout-warning}
+Do not delete `work/` while a pipeline is running. Do not delete it before confirming that your final outputs were created successfully.
+:::
+
+## Typical storage needs
+
+Exact storage needs depend on the number of samples, read depth, reference files, and pipeline options.
+
+As a rough guide:
+
+| Project size | Input FASTQs | Suggested scratch space |
+|---|---:|---:|
+| Small test run | Less than 5 GB | 30 GB |
+| Small project | 10-50 GB | 100-300 GB |
+| Medium project | 50-200 GB | 300 GB-1 TB |
+| Large project | More than 200 GB | 1 TB or more |
+
+For this tutorial, we create a workspace with 30 GB because it is meant for a small demo.
+
+## Check file sizes
+
+To see the size of files and folders in your current directory, run:
+
+```bash
+du -sh *
+```
+
+Example output:
+
+```text
+4.2G    data
+18G     work
+2.1G    results
+8.0K    samplesheet.csv
+```
+
+To check free space in a filesystem, run:
+
+```bash
+df -h .
+```
+
+Example output:
+
+```text
+Filesystem      Size  Used Avail Use% Mounted on
+workspace        30G   24G  6.0G  80% /scratch4/workspace
+```
+
+## What should you keep?
+
+Usually keep:
+
+- `samplesheet.csv`
+- Final results folder
+- MultiQC report
+- Count or expression tables
+- Pipeline information files
+- Exact commands and parameters used
+
+Usually do not keep forever:
+
+- Large temporary `work/` files
+- Failed test outputs
+- Duplicate downloaded references
+- Old intermediate files that can be regenerated
+
+## Good habits
+
+- Use clear folder names
+- Keep raw data separate from results
+- Record where files came from
+- Do not edit raw FASTQ files
+- Check available space before starting a large run
+- Clean up temporary files after confirming final results
+
+::: {.callout-tip}
+When in doubt, ask before deleting large files. It is much easier to delete temporary files later than to recover important data after it is gone.
+:::

@@ -13,6 +13,12 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: rna-seq-concepts.qmd
+        text: RNA-seq
+      - href: file-types-storage.qmd
+        text: Files
+      - href: connecting-to-unity.qmd
+        text: Unity
       - href: setup.qmd
         text: Setup
       - href: running.qmd
@@ -25,6 +31,9 @@ website:
     style: docked
     contents:
       - index.qmd
+      - rna-seq-concepts.qmd
+      - file-types-storage.qmd
+      - connecting-to-unity.qmd
       - setup.qmd
       - running.qmd
       - results.qmd

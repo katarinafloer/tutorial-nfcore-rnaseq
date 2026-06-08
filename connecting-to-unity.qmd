@@ -1,0 +1,105 @@
+---
+title: "Connecting to Unity"
+---
+
+## What is Unity?
+
+Unity is the high-performance computing cluster we use to run analyses that are too large for a personal laptop. For RNA-seq, Unity gives us access to more storage, more memory, and more computing power.
+
+Most of the work in this tutorial happens in a terminal after you log in to Unity.
+
+## Before you start
+
+You will need:
+
+- A Unity account
+- Your Unity username
+- An internet connection
+- A terminal application
+- Duo or another multi-factor authentication method, if required by your account
+
+On macOS, you can use the built-in Terminal app. On Windows, you can use PowerShell, Windows Terminal, or an SSH client.
+
+## Connect with SSH
+
+From your terminal, run:
+
+```bash
+ssh your_username@unity.rc.umass.edu
+```
+
+Replace `your_username` with your own Unity username.
+
+For example:
+
+```bash
+ssh kfloer_smith_edu@unity.rc.umass.edu
+```
+
+Example output:
+
+```text
+The authenticity of host 'unity.rc.umass.edu' can't be established.
+Are you sure you want to continue connecting (yes/no/[fingerprint])?
+```
+
+If this is your first time connecting, type:
+
+```text
+yes
+```
+
+Then enter your password and complete multi-factor authentication if prompted.
+
+## Check where you are
+
+After logging in, your terminal prompt should change. It may look something like this:
+
+```text
+(base) kfloer_smith_edu@login1:~$
+```
+
+This means you are on a Unity login node.
+
+Run:
+
+```bash
+hostname
+```
+
+Example output:
+
+```text
+login1
+```
+
+## Important login node rule
+
+The login node is for light work only, such as:
+
+- Editing files
+- Moving files
+- Checking directories
+- Submitting jobs
+- Starting interactive sessions
+
+Do not run large RNA-seq analyses directly on the login node.
+
+::: {.callout-warning}
+nf-core pipelines can use a lot of CPU, memory, and disk space. Run pipeline work through the appropriate Unity compute resources, not directly on the login node.
+:::
+
+## Disconnect from Unity
+
+When you are finished, run:
+
+```bash
+exit
+```
+
+Example output:
+
+```text
+logout
+Connection to unity.rc.umass.edu closed.
+```
