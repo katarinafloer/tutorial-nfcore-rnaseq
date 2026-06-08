@@ -24,6 +24,19 @@ $font-family-sans-serif: "Aptos", "Segoe UI", system-ui, -apple-system, sans-ser
 
 pre.sourceCode {
   border-radius: 8px;
+  background-color: #f1f7f4;
+  border: 1px solid #b7d7c4;
+}
+
+pre:not(.sourceCode) {
+  border-radius: 8px;
+  background-color: #101418;
+  border: 1px solid #2d3742;
+  color: #7ee787;
+}
+
+pre:not(.sourceCode) code {
+  color: #7ee787;
 }
 
 table {

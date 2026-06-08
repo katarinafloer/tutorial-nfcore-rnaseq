@@ -2,67 +2,174 @@
 title: "Setup"
 ---
 
-## Install Nextflow
+## Creating a Demo Scratch Directory
 
-Check that Java is available:
+Before running an `nf-core` pipeline, we need a place with enough temporary storage. On Unity, this is called a **workspace**. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.
 
-```bash
-java -version
-```
+Workspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.
 
-Install Nextflow:
+More information: <https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/>
 
-```bash
-curl -s https://get.nextflow.io | bash
-mkdir -p ~/bin
-mv nextflow ~/bin/
-```
+### Check your existing workspaces
 
-Then check:
+Run:
 
 ```bash
-nextflow -version
+ws_list
 ```
 
-## Choose a container engine
+Example output:
 
-For local tutorials, Docker is often the easiest option:
+```text
+(base) kfloer_smith_edu@login1:~$ ws_list
+id: simple
+     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
+     remaining time       : 11 days 7 hours
+     creation time        : Wed May 20 18:42:17 2026
+     expiration date      : Fri Jun 19 18:42:17 2026
+     filesystem name      : workspace
+     available extensions : 9998
+```
+
+In this example, I already have one workspace from a different project called `simple`.
+
+### Create a new workspace
+
+Now create a new workspace called `nf-core-demo` that will last for 30 days.
+
+Run:
 
 ```bash
-docker --version
+ws_allocate nf-core-demo 30
 ```
 
-On HPC systems, Apptainer or Singularity is usually preferred:
+Example output:
+
+```text
+(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30
+Info: could not read email from users config ~/.ws_user.conf.
+Info: reminder email will be sent to local user account
+Info: creating workspace.
+/scratch4/workspace/kfloer_smith_edu-nf-core-demo
+remaining extensions  : 10000
+remaining time in days: 30
+```
+
+The important line is the workspace path:
+
+```text
+/scratch4/workspace/kfloer_smith_edu-nf-core-demo
+```
+
+This is the directory we will use for the tutorial.
+
+### Check that the new workspace was created
+
+Run:
 
 ```bash
-apptainer --version
+ws_list
 ```
 
-## Install nf-core tools
+Example output:
+
+```text
+(base) kfloer_smith_edu@login1:~$ ws_list
+id: nf-core-demo
+     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo
+     remaining time       : 29 days 23 hours
+     creation time        : Mon Jun  8 11:03:16 2026
+     expiration date      : Wed Jul  8 11:03:16 2026
+     filesystem name      : workspace
+     available extensions : 10000
+
+id: simple
+     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
+     remaining time       : 11 days 7 hours
+     creation time        : Wed May 20 18:42:17 2026
+     expiration date      : Fri Jun 19 18:42:17 2026
+     filesystem name      : workspace
+     available extensions : 9998
+```
+
+Now I have two workspaces:
+
+- `nf-core-demo`, which we just created
+- `simple`, from an older project
+
+### Move into the workspace
+
+Run:
 
 ```bash
-pip install nf-core
-nf-core --version
+cd /scratch4/workspace/kfloer_smith_edu-nf-core-demo
 ```
 
-## Create a project folder
+Your exact path may be different, so copy the path shown by your own `ws_list` output.
+
+### Extend a workspace
+
+If your workspace is about to expire but you still need it, you can extend it.
+
+Run:
 
 ```bash
-mkdir nfcore-rnaseq-tutorial
-cd nfcore-rnaseq-tutorial
-mkdir data results work
+ws_extend nf-core-demo 30
 ```
 
-## Prepare a samplesheet
+Example output:
 
-Create `samplesheet.csv`:
-
-```csv
-sample,fastq_1,fastq_2,strandedness
-sample1,data/sample1_R1.fastq.gz,data/sample1_R2.fastq.gz,auto
-sample2,data/sample2_R1.fastq.gz,data/sample2_R2.fastq.gz,auto
+```text
+(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30
+Info: extending workspace.
+remaining extensions  : 9999
+remaining time in days: 30
 ```
 
-::: {.callout-note}
-For a real tutorial, replace these paths with your actual FASTQ files or a small public test dataset.
-:::
+Check that the expiration date changed:
+
+```bash
+ws_list
+```
+
+Example output:
+
+```text
+id: nf-core-demo
+     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo
+     remaining time       : 29 days 23 hours
+     expiration date      : Fri Aug  7 11:03:16 2026
+```
+
+Your exact expiration date will be different.
+
+### Delete the demo workspace when finished
+
+**Only do this when you are completely finished with the tutorial files.**
+
+Run:
+
+```bash
+ws_release nf-core-demo
+```
+
+Then check your workspaces again:
+
+```bash
+ws_list
+```
+
+Example output:
+
+```text
+(base) kfloer_smith_edu@login1:~$ ws_list
+id: simple
+     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
+     remaining time       : 11 days 7 hours
+     creation time        : Wed May 20 18:42:17 2026
+     expiration date      : Fri Jun 19 18:42:17 2026
+     filesystem name      : workspace
+     available extensions : 9998
+```
+
+Now `nf-core-demo` is gone, and only the older workspace remains.

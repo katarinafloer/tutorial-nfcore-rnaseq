@@ -72,7 +72,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad81377a940ba66186b50ef659a756fc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-9d8776f547ca2f6435bda94498368be9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -204,13 +204,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#install-nextflow" id="toc-install-nextflow" class="nav-link active" data-scroll-target="#install-nextflow"><span class="header-section-number">1</span> Install Nextflow</a></li>
-  <li><a href="#choose-a-container-engine" id="toc-choose-a-container-engine" class="nav-link" data-scroll-target="#choose-a-container-engine"><span class="header-section-number">2</span> Choose a container engine</a></li>
-  <li><a href="#install-nf-core-tools" id="toc-install-nf-core-tools" class="nav-link" data-scroll-target="#install-nf-core-tools"><span class="header-section-number">3</span> Install nf-core tools</a></li>
-  <li><a href="#create-a-project-folder" id="toc-create-a-project-folder" class="nav-link" data-scroll-target="#create-a-project-folder"><span class="header-section-number">4</span> Create a project folder</a></li>
-  <li><a href="#prepare-a-samplesheet" id="toc-prepare-a-samplesheet" class="nav-link" data-scroll-target="#prepare-a-samplesheet"><span class="header-section-number">5</span> Prepare a samplesheet</a></li>
+  <li><a href="#creating-a-demo-scratch-directory" id="toc-creating-a-demo-scratch-directory" class="nav-link active" data-scroll-target="#creating-a-demo-scratch-directory"><span class="header-section-number">1</span> Creating a Demo Scratch Directory</a>
+  <ul class="collapse">
+  <li><a href="#check-your-existing-workspaces" id="toc-check-your-existing-workspaces" class="nav-link" data-scroll-target="#check-your-existing-workspaces"><span class="header-section-number">1.1</span> Check your existing workspaces</a></li>
+  <li><a href="#create-a-new-workspace" id="toc-create-a-new-workspace" class="nav-link" data-scroll-target="#create-a-new-workspace"><span class="header-section-number">1.2</span> Create a new workspace</a></li>
+  <li><a href="#check-that-the-new-workspace-was-created" id="toc-check-that-the-new-workspace-was-created" class="nav-link" data-scroll-target="#check-that-the-new-workspace-was-created"><span class="header-section-number">1.3</span> Check that the new workspace was created</a></li>
+  <li><a href="#move-into-the-workspace" id="toc-move-into-the-workspace" class="nav-link" data-scroll-target="#move-into-the-workspace"><span class="header-section-number">1.4</span> Move into the workspace</a></li>
+  <li><a href="#extend-a-workspace" id="toc-extend-a-workspace" class="nav-link" data-scroll-target="#extend-a-workspace"><span class="header-section-number">1.5</span> Extend a workspace</a></li>
+  <li><a href="#delete-the-demo-workspace-when-finished" id="toc-delete-the-demo-workspace-when-finished" class="nav-link" data-scroll-target="#delete-the-demo-workspace-when-finished"><span class="header-section-number">1.6</span> Delete the demo workspace when finished</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/YOUR-USERNAME/RNAseq/edit/main/setup.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YOUR-USERNAME/RNAseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/setup.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content column-body" id="quarto-document-content">
@@ -234,56 +238,115 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="install-nextflow" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="install-nextflow"><span class="header-section-number">1</span> Install Nextflow</h2>
-<p>Check that Java is available:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">java</span> <span class="at">-version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Install Nextflow:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> https://get.nextflow.io <span class="kw">|</span> <span class="fu">bash</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/bin</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> nextflow ~/bin/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then check:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> <span class="at">-version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="creating-a-demo-scratch-directory" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="creating-a-demo-scratch-directory"><span class="header-section-number">1</span> Creating a Demo Scratch Directory</h2>
+<p>Before running an <code>nf-core</code> pipeline, we need a place with enough temporary storage. On Unity, this is called a <strong>workspace</strong>. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.</p>
+<p>Workspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.</p>
+<p>More information: <a href="https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/" class="uri">https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/</a></p>
+<section id="check-your-existing-workspaces" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="check-your-existing-workspaces"><span class="header-section-number">1.1</span> Check your existing workspaces</h3>
+<p>Run:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ws_list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>(base) kfloer_smith_edu@login1:~$ ws_list
+id: simple
+     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
+     remaining time       : 11 days 7 hours
+     creation time        : Wed May 20 18:42:17 2026
+     expiration date      : Fri Jun 19 18:42:17 2026
+     filesystem name      : workspace
+     available extensions : 9998</code></pre>
+<p>In this example, I already have one workspace from a different project called <code>simple</code>.</p>
 </section>
-<section id="choose-a-container-engine" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="choose-a-container-engine"><span class="header-section-number">2</span> Choose a container engine</h2>
-<p>For local tutorials, Docker is often the easiest option:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>On HPC systems, Apptainer or Singularity is usually preferred:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="create-a-new-workspace" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="create-a-new-workspace"><span class="header-section-number">1.2</span> Create a new workspace</h3>
+<p>Now create a new workspace called <code>nf-core-demo</code> that will last for 30 days.</p>
+<p>Run:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ws_allocate</span> nf-core-demo 30</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30
+Info: could not read email from users config ~/.ws_user.conf.
+Info: reminder email will be sent to local user account
+Info: creating workspace.
+/scratch4/workspace/kfloer_smith_edu-nf-core-demo
+remaining extensions  : 10000
+remaining time in days: 30</code></pre>
+<p>The important line is the workspace path:</p>
+<pre class="text"><code>/scratch4/workspace/kfloer_smith_edu-nf-core-demo</code></pre>
+<p>This is the directory we will use for the tutorial.</p>
 </section>
-<section id="install-nf-core-tools" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="install-nf-core-tools"><span class="header-section-number">3</span> Install nf-core tools</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install nf-core</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nf-core</span> <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="check-that-the-new-workspace-was-created" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="check-that-the-new-workspace-was-created"><span class="header-section-number">1.3</span> Check that the new workspace was created</h3>
+<p>Run:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ws_list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>(base) kfloer_smith_edu@login1:~$ ws_list
+id: nf-core-demo
+     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo
+     remaining time       : 29 days 23 hours
+     creation time        : Mon Jun  8 11:03:16 2026
+     expiration date      : Wed Jul  8 11:03:16 2026
+     filesystem name      : workspace
+     available extensions : 10000
+
+id: simple
+     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
+     remaining time       : 11 days 7 hours
+     creation time        : Wed May 20 18:42:17 2026
+     expiration date      : Fri Jun 19 18:42:17 2026
+     filesystem name      : workspace
+     available extensions : 9998</code></pre>
+<p>Now I have two workspaces:</p>
+<ul>
+<li><code>nf-core-demo</code>, which we just created</li>
+<li><code>simple</code>, from an older project</li>
+</ul>
 </section>
-<section id="create-a-project-folder" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="create-a-project-folder"><span class="header-section-number">4</span> Create a project folder</h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> nfcore-rnaseq-tutorial</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> nfcore-rnaseq-tutorial</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> data results work</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="move-into-the-workspace" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="move-into-the-workspace"><span class="header-section-number">1.4</span> Move into the workspace</h3>
+<p>Run:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /scratch4/workspace/kfloer_smith_edu-nf-core-demo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Your exact path may be different, so copy the path shown by your own <code>ws_list</code> output.</p>
 </section>
-<section id="prepare-a-samplesheet" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="prepare-a-samplesheet"><span class="header-section-number">5</span> Prepare a samplesheet</h2>
-<p>Create <code>samplesheet.csv</code>:</p>
-<pre class="csv"><code>sample,fastq_1,fastq_2,strandedness
-sample1,data/sample1_R1.fastq.gz,data/sample1_R2.fastq.gz,auto
-sample2,data/sample2_R1.fastq.gz,data/sample2_R2.fastq.gz,auto</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For a real tutorial, replace these paths with your actual FASTQ files or a small public test dataset.</p>
-</div>
-</div>
+<section id="extend-a-workspace" class="level3" data-number="1.5">
+<h3 data-number="1.5" class="anchored" data-anchor-id="extend-a-workspace"><span class="header-section-number">1.5</span> Extend a workspace</h3>
+<p>If your workspace is about to expire but you still need it, you can extend it.</p>
+<p>Run:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ws_extend</span> nf-core-demo 30</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30
+Info: extending workspace.
+remaining extensions  : 9999
+remaining time in days: 30</code></pre>
+<p>Check that the expiration date changed:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ws_list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>id: nf-core-demo
+     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo
+     remaining time       : 29 days 23 hours
+     expiration date      : Fri Aug  7 11:03:16 2026</code></pre>
+<p>Your exact expiration date will be different.</p>
+</section>
+<section id="delete-the-demo-workspace-when-finished" class="level3" data-number="1.6">
+<h3 data-number="1.6" class="anchored" data-anchor-id="delete-the-demo-workspace-when-finished"><span class="header-section-number">1.6</span> Delete the demo workspace when finished</h3>
+<p><strong>Only do this when you are completely finished with the tutorial files.</strong></p>
+<p>Run:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ws_release</span> nf-core-demo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then check your workspaces again:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ws_list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>(base) kfloer_smith_edu@login1:~$ ws_list
+id: simple
+     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
+     remaining time       : 11 days 7 hours
+     creation time        : Wed May 20 18:42:17 2026
+     expiration date      : Fri Jun 19 18:42:17 2026
+     filesystem name      : workspace
+     available extensions : 9998</code></pre>
+<p>Now <code>nf-core-demo</code> is gone, and only the older workspace remains.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -377,7 +440,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/YOUR-USERNAME\.github\.io\/RNAseq\/");
+      var filterRegex = new RegExp("https:\/\/katarinafloer\.github\.io\/tutorial-nfcore-rnaseq\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -709,4 +772,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YOUR-USERNAME/RNAseq/edit/main/setup.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YOUR-USERNAME/RNAseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/setup.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
