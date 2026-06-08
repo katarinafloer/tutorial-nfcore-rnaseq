@@ -333,5 +333,265 @@
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html",
+    "href": "rna-seq-concepts.html",
+    "title": "What is RNA-seq?",
+    "section": "",
+    "text": "RNA-seq is a way to measure which genes are being expressed in a biological sample.\nCells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.\nIn this tutorial, we are interested in RNA-seq analysis for the frog Staurois parvus.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#the-big-idea",
+    "href": "rna-seq-concepts.html#the-big-idea",
+    "title": "What is RNA-seq?",
+    "section": "",
+    "text": "RNA-seq is a way to measure which genes are being expressed in a biological sample.\nCells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.\nIn this tutorial, we are interested in RNA-seq analysis for the frog Staurois parvus.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#from-tissue-to-data",
+    "href": "rna-seq-concepts.html#from-tissue-to-data",
+    "title": "What is RNA-seq?",
+    "section": "2 From tissue to data",
+    "text": "2 From tissue to data\nConceptually, RNA-seq looks like this:\nflowchart LR\n  A[\"Tissue sample\"] --&gt; B[\"Extract RNA\"]\n  B --&gt; C[\"Prepare sequencing library\"]\n  C --&gt; D[\"Sequence reads\"]\n  D --&gt; E[\"Quality control\"]\n  E --&gt; F[\"Map or quantify reads\"]\n  F --&gt; G[\"Gene expression table\"]\n  G --&gt; H[\"Biological interpretation\"]\nThe wet lab steps produce sequencing files. The computational steps turn those files into quality-control reports and expression estimates.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#what-are-fastq-files",
+    "href": "rna-seq-concepts.html#what-are-fastq-files",
+    "title": "What is RNA-seq?",
+    "section": "3 What are FASTQ files?",
+    "text": "3 What are FASTQ files?\nSequencing machines produce reads. A read is a short sequence from an RNA molecule. These reads are usually stored in FASTQ files.\nFASTQ files often come in pairs:\nsample1_R1.fastq.gz\nsample1_R2.fastq.gz\nFor paired-end sequencing:\n\nR1 contains the first read from each fragment\nR2 contains the second read from each fragment\n.gz means the file is compressed",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#what-does-the-pipeline-do",
+    "href": "rna-seq-concepts.html#what-does-the-pipeline-do",
+    "title": "What is RNA-seq?",
+    "section": "4 What does the pipeline do?",
+    "text": "4 What does the pipeline do?\nThe pipeline takes raw sequencing reads and turns them into quality-control reports, alignments, and expression estimates. These are the major steps shown in the nf-core/rnaseq workflow.\n\n4.1 Pre-processing\nThese steps clean up and check the raw sequencing reads before alignment or quantification.\n\nMerge re-sequenced FASTQ files with cat\nAuto-infer strandedness by subsampling reads and pseudoaligning them with fq and Salmon\nCheck raw read quality with FastQC\nExtract unique molecular identifiers, if present, with UMI-tools\nTrim adapters and low-quality sequence with Trim Galore!\nRemove genome contaminants with BBSplit\nRemove ribosomal RNA with SortMeRNA\n\n\n\n4.2 Alignment and quantification\nAfter pre-processing, the pipeline can follow different routes. The route depends on whether you want genome alignment, transcript quantification, or pseudoalignment.\nThe default route used in this tutorial is:\nSTAR -&gt; Salmon\nOther available routes include:\n\nSTAR -&gt; RSEM\nHISAT2 -&gt; no quantification\nPseudoalignment and quantification with Salmon or Kallisto\n\nFor STAR, the Sentieon implementation can also be chosen if it is available and configured.\n\n\n4.3 Post-processing\nAfter alignment and quantification, the pipeline organizes and summarizes the mapped reads.\n\nSort and index alignments with SAMtools\nDeduplicate reads using UMIs with UMI-tools, if UMIs are present\nMark duplicate reads with picard MarkDuplicates\nAssemble and quantify transcripts with StringTie\nCreate bigWig coverage files with BEDTools and bedGraphToBigWig\n\n\n\n4.4 Contamination screening\nThe pipeline can optionally screen selected reads for contamination. By default, this is done on unaligned reads.\nOptional tools include:\n\nKraken2 -&gt; Bracken\nSylph\n\n\n\n4.5 Quality control and reporting\nQuality control helps us decide whether the sequencing and analysis worked well enough to trust the results.\nThe pipeline performs extensive QC with tools such as:\n\nRSeQC\nQualimap\ndupRadar\nPreseq\nDESeq2\nMultiQC\nR\n\nThe final report summarizes raw read quality, alignment metrics, gene biotypes, sample similarity, and strand-specificity checks.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#what-do-we-get-at-the-end",
+    "href": "rna-seq-concepts.html#what-do-we-get-at-the-end",
+    "title": "What is RNA-seq?",
+    "section": "5 What do we get at the end?",
+    "text": "5 What do we get at the end?\nThe main outputs are:\n\nQuality-control reports\nAlignment or mapping summaries\nGene or transcript expression estimates\nPipeline logs and software version information\n\nThese outputs help answer questions such as:\n\nDid the sequencing work well?\nAre any samples low quality or unusual?\nWhich genes are expressed in each sample?\nWhich samples are ready for downstream analysis?",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#what-rna-seq-does-not-tell-us-by-itself",
+    "href": "rna-seq-concepts.html#what-rna-seq-does-not-tell-us-by-itself",
+    "title": "What is RNA-seq?",
+    "section": "6 What RNA-seq does not tell us by itself",
+    "text": "6 What RNA-seq does not tell us by itself\nRNA-seq measures RNA abundance, not every part of biology directly. Gene expression can suggest biological patterns, but interpretation depends on experimental design, replication, annotation quality, and downstream statistics.\n\n\n\n\n\n\nNote\n\n\n\nGood RNA-seq analysis starts before sequencing. Sample design, metadata, replication, and careful record keeping matter just as much as the computational pipeline.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "connecting-to-unity.html",
+    "href": "connecting-to-unity.html",
+    "title": "Connecting to Unity",
+    "section": "",
+    "text": "Unity is the high-performance computing cluster we use to run analyses that are too large for a personal laptop. For RNA-seq, Unity gives us access to more storage, more memory, and more computing power.\nMost of the work in this tutorial happens in a terminal after you log in to Unity.",
+    "crumbs": [
+      "Connecting to Unity"
+    ]
+  },
+  {
+    "objectID": "connecting-to-unity.html#what-is-unity",
+    "href": "connecting-to-unity.html#what-is-unity",
+    "title": "Connecting to Unity",
+    "section": "",
+    "text": "Unity is the high-performance computing cluster we use to run analyses that are too large for a personal laptop. For RNA-seq, Unity gives us access to more storage, more memory, and more computing power.\nMost of the work in this tutorial happens in a terminal after you log in to Unity.",
+    "crumbs": [
+      "Connecting to Unity"
+    ]
+  },
+  {
+    "objectID": "connecting-to-unity.html#before-you-start",
+    "href": "connecting-to-unity.html#before-you-start",
+    "title": "Connecting to Unity",
+    "section": "2 Before you start",
+    "text": "2 Before you start\nYou will need:\n\nA Unity account\nYour Unity username\nAn internet connection\nA terminal application\nDuo or another multi-factor authentication method, if required by your account\n\nOn macOS, you can use the built-in Terminal app. On Windows, you can use PowerShell, Windows Terminal, or an SSH client.",
+    "crumbs": [
+      "Connecting to Unity"
+    ]
+  },
+  {
+    "objectID": "connecting-to-unity.html#connect-with-ssh",
+    "href": "connecting-to-unity.html#connect-with-ssh",
+    "title": "Connecting to Unity",
+    "section": "3 Connect with SSH",
+    "text": "3 Connect with SSH\nFrom your terminal, run:\nssh your_username@unity.rc.umass.edu\nReplace your_username with your own Unity username.\nFor example:\nssh kfloer_smith_edu@unity.rc.umass.edu\nExample output:\nThe authenticity of host 'unity.rc.umass.edu' can't be established.\nAre you sure you want to continue connecting (yes/no/[fingerprint])?\nIf this is your first time connecting, type:\nyes\nThen enter your password and complete multi-factor authentication if prompted.",
+    "crumbs": [
+      "Connecting to Unity"
+    ]
+  },
+  {
+    "objectID": "connecting-to-unity.html#check-where-you-are",
+    "href": "connecting-to-unity.html#check-where-you-are",
+    "title": "Connecting to Unity",
+    "section": "4 Check where you are",
+    "text": "4 Check where you are\nAfter logging in, your terminal prompt should change. It may look something like this:\n(base) kfloer_smith_edu@login1:~$\nThis means you are on a Unity login node.\nRun:\nhostname\nExample output:\nlogin1",
+    "crumbs": [
+      "Connecting to Unity"
+    ]
+  },
+  {
+    "objectID": "connecting-to-unity.html#important-login-node-rule",
+    "href": "connecting-to-unity.html#important-login-node-rule",
+    "title": "Connecting to Unity",
+    "section": "5 Important login node rule",
+    "text": "5 Important login node rule\nThe login node is for light work only, such as:\n\nEditing files\nMoving files\nChecking directories\nSubmitting jobs\nStarting interactive sessions\n\nDo not run large RNA-seq analyses directly on the login node.\n\n\n\n\n\n\nWarning\n\n\n\nnf-core pipelines can use a lot of CPU, memory, and disk space. Run pipeline work through the appropriate Unity compute resources, not directly on the login node.",
+    "crumbs": [
+      "Connecting to Unity"
+    ]
+  },
+  {
+    "objectID": "connecting-to-unity.html#disconnect-from-unity",
+    "href": "connecting-to-unity.html#disconnect-from-unity",
+    "title": "Connecting to Unity",
+    "section": "6 Disconnect from Unity",
+    "text": "6 Disconnect from Unity\nWhen you are finished, run:\nexit\nExample output:\nlogout\nConnection to unity.rc.umass.edu closed.",
+    "crumbs": [
+      "Connecting to Unity"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html",
+    "href": "file-types-storage.html",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "",
+    "text": "RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing, alignment, or intermediate files that can quickly use hundreds of gigabytes.\nBefore running a pipeline, it helps to know:\n\nWhich files are inputs\nWhich files are outputs\nWhich files are temporary\nWhich files need to be saved\nWhich files can be deleted later",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#why-this-matters",
+    "href": "file-types-storage.html#why-this-matters",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "",
+    "text": "RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing, alignment, or intermediate files that can quickly use hundreds of gigabytes.\nBefore running a pipeline, it helps to know:\n\nWhich files are inputs\nWhich files are outputs\nWhich files are temporary\nWhich files need to be saved\nWhich files can be deleted later",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#common-file-types",
+    "href": "file-types-storage.html#common-file-types",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "2 Common file types",
+    "text": "2 Common file types\n\n\n\n\n\n\n\n\nFile type\nExample\nWhat it is\n\n\n\n\nFASTQ\nsample_R1.fastq.gz\nRaw sequencing reads\n\n\nCSV\nsamplesheet.csv\nTable describing samples and input files\n\n\nFASTA\ngenome.fa\nReference genome or transcript sequences\n\n\nGTF/GFF\nannotation.gtf\nGene annotation file\n\n\nBAM\nsample.bam\nAligned reads\n\n\nBAI\nsample.bam.bai\nIndex for a BAM file\n\n\nTSV/CSV\nsalmon.merged.gene_counts.tsv\nCount or expression table\n\n\nHTML\nmultiqc_report.html\nInteractive report opened in a browser\n\n\nLOG/TXT\n.nextflow.log\nLogs and command output",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#fastq-files",
+    "href": "file-types-storage.html#fastq-files",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "3 FASTQ files",
+    "text": "3 FASTQ files\nFASTQ files are usually the main input for RNA-seq pipelines.\nPaired-end data often has two files per sample:\nsample1_R1.fastq.gz\nsample1_R2.fastq.gz\nThe file names usually tell you:\n\nThe sample name\nWhether the file is read 1 (R1) or read 2 (R2)\nWhether the file is compressed (.gz)\n\nFASTQ files can be large. A single compressed FASTQ file may be several gigabytes.",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#reference-files",
+    "href": "file-types-storage.html#reference-files",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "4 Reference files",
+    "text": "4 Reference files\nReference files describe the genome or transcriptome you want to compare your reads against.\nCommon reference files include:\ngenome.fa\nannotation.gtf\nFor non-model organisms like Staurois parvus, reference files may come from a lab assembly or a closely related species, depending on the project.\n\n\n\n\n\n\nNote\n\n\n\nThe choice of reference affects the interpretation of RNA-seq results. Always record which genome and annotation files were used.",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#pipeline-outputs",
+    "href": "file-types-storage.html#pipeline-outputs",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "5 Pipeline outputs",
+    "text": "5 Pipeline outputs\nnf-core pipelines create organized output folders. The exact files depend on the options you choose, but common outputs include:\n\nQuality-control reports\nQuantification tables\nAlignment files\nPipeline logs\nSoftware version files\nMultiQC summary reports\n\nThe most useful output to open first is usually:\nmultiqc_report.html",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#temporary-files",
+    "href": "file-types-storage.html#temporary-files",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "6 Temporary files",
+    "text": "6 Temporary files\nNextflow creates a work directory that stores intermediate files:\nwork/\nThis folder can become very large. It is useful while the pipeline is running and if you need to resume a failed run.\nAfter the analysis is complete and you are sure you do not need to resume, the work/ directory can often be deleted to save space.\n\n\n\n\n\n\nWarning\n\n\n\nDo not delete work/ while a pipeline is running. Do not delete it before confirming that your final outputs were created successfully.",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#typical-storage-needs",
+    "href": "file-types-storage.html#typical-storage-needs",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "7 Typical storage needs",
+    "text": "7 Typical storage needs\nExact storage needs depend on the number of samples, read depth, reference files, and pipeline options.\nAs a rough guide:\n\n\n\nProject size\nInput FASTQs\nSuggested scratch space\n\n\n\n\nSmall test run\nLess than 5 GB\n30 GB\n\n\nSmall project\n10-50 GB\n100-300 GB\n\n\nMedium project\n50-200 GB\n300 GB-1 TB\n\n\nLarge project\nMore than 200 GB\n1 TB or more\n\n\n\nFor this tutorial, we create a workspace with 30 GB because it is meant for a small demo.",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#check-file-sizes",
+    "href": "file-types-storage.html#check-file-sizes",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "8 Check file sizes",
+    "text": "8 Check file sizes\nTo see the size of files and folders in your current directory, run:\ndu -sh *\nExample output:\n4.2G    data\n18G     work\n2.1G    results\n8.0K    samplesheet.csv\nTo check free space in a filesystem, run:\ndf -h .\nExample output:\nFilesystem      Size  Used Avail Use% Mounted on\nworkspace        30G   24G  6.0G  80% /scratch4/workspace",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#what-should-you-keep",
+    "href": "file-types-storage.html#what-should-you-keep",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "9 What should you keep?",
+    "text": "9 What should you keep?\nUsually keep:\n\nsamplesheet.csv\nFinal results folder\nMultiQC report\nCount or expression tables\nPipeline information files\nExact commands and parameters used\n\nUsually do not keep forever:\n\nLarge temporary work/ files\nFailed test outputs\nDuplicate downloaded references\nOld intermediate files that can be regenerated",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "file-types-storage.html#good-habits",
+    "href": "file-types-storage.html#good-habits",
+    "title": "File Types, File Sizes, and Storage",
+    "section": "10 Good habits",
+    "text": "10 Good habits\n\nUse clear folder names\nKeep raw data separate from results\nRecord where files came from\nDo not edit raw FASTQ files\nCheck available space before starting a large run\nClean up temporary files after confirming final results\n\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, ask before deleting large files. It is much easier to delete temporary files later than to recover important data after it is gone.",
+    "crumbs": [
+      "File Types, File Sizes, and Storage"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
+    "href": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
+    "title": "What is RNA-seq?",
+    "section": "2 The nf-core/rnaseq workflow",
+    "text": "2 The nf-core/rnaseq workflow\nIn this tutorial, we use nf-core/rnaseq to process RNA-seq data in a standardized and reproducible way.\nThe nf-core/rnaseq pipeline can be visualized as a “metro map” of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.\n\n\n\nnf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.\n\n\nSource: nf-core/rnaseq version 3.26.0.\n\n\n\n\n\n\nTip\n\n\n\nFor this tutorial, we are following the default green path: STAR for alignment and Salmon for quantification. There are multiple valid ways to analyze RNA-seq data, but we will focus on this route.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
   }
 ]

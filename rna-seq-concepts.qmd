@@ -6,26 +6,23 @@ title: "What is RNA-seq?"
 
 RNA-seq is a way to measure which genes are being expressed in a biological sample.
 
-Cells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active, and how strongly, in each sample.
+Cells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.
 
 In this tutorial, we are interested in RNA-seq analysis for the frog *Staurois parvus*.
 
-## From tissue to data
+## The nf-core/rnaseq workflow
 
-Conceptually, RNA-seq looks like this:
+In this tutorial, we use `nf-core/rnaseq` to process RNA-seq data in a standardized and reproducible way.
 
-```mermaid
-flowchart LR
-  A["Tissue sample"] --> B["Extract RNA"]
-  B --> C["Prepare sequencing library"]
-  C --> D["Sequence reads"]
-  D --> E["Quality control"]
-  E --> F["Map or quantify reads"]
-  F --> G["Gene expression table"]
-  G --> H["Biological interpretation"]
-```
+The nf-core/rnaseq pipeline can be visualized as a "metro map" of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.
 
-The wet lab steps produce sequencing files. The computational steps turn those files into quality-control reports and expression estimates.
+![nf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.](assets/nf-core-rnaseq-metro-map.svg){fig-align="center" width="100%"}
+
+Source: [nf-core/rnaseq version 3.26.0](https://nf-co.re/rnaseq/3.26.0/).
+
+::: {.callout-tip}
+For this tutorial, we are following the default green path: `STAR` for alignment and `Salmon` for quantification. There are multiple valid ways to analyze RNA-seq data, but we will focus on this route.
+:::
 
 ## What are FASTQ files?
 
@@ -46,22 +43,72 @@ For paired-end sequencing:
 
 ## What does the pipeline do?
 
-An RNA-seq pipeline usually performs steps like:
+The pipeline takes raw sequencing reads and turns them into quality-control reports, alignments, and expression estimates. These are the major steps shown in the nf-core/rnaseq workflow.
 
-- Check read quality
-- Trim adapters or low-quality sequence, if needed
-- Align reads to a genome or transcriptome
-- Count or quantify gene/transcript expression
-- Summarize quality-control metrics
-- Save reports and reproducibility information
+### Pre-processing
 
-In this tutorial, we use `nf-core/rnaseq` to run these steps in a standardized and reproducible way.
+These steps clean up and check the raw sequencing reads before alignment or quantification.
 
-The nf-core/rnaseq pipeline can be visualized as a "metro map" of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.
+- Merge re-sequenced FASTQ files with `cat`
+- Auto-infer strandedness by subsampling reads and pseudoaligning them with `fq` and `Salmon`
+- Check raw read quality with `FastQC`
+- Extract unique molecular identifiers, if present, with `UMI-tools`
+- Trim adapters and low-quality sequence with `Trim Galore!`
+- Remove genome contaminants with `BBSplit`
+- Remove ribosomal RNA with `SortMeRNA`
 
-![nf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.](assets/nf-core-rnaseq-metro-map.svg){fig-align="center" width="100%"}
+### Alignment and quantification
 
-Source: [nf-core/rnaseq version 3.26.0](https://nf-co.re/rnaseq/3.26.0/).
+After pre-processing, the pipeline can follow different routes. The route depends on whether you want genome alignment, transcript quantification, or pseudoalignment.
+
+The default route used in this tutorial is:
+
+```text
+STAR -> Salmon
+```
+
+Other available routes include:
+
+- `STAR -> RSEM`
+- `HISAT2 -> no quantification`
+- Pseudoalignment and quantification with `Salmon` or `Kallisto`
+
+For `STAR`, the Sentieon implementation can also be chosen if it is available and configured.
+
+### Post-processing
+
+After alignment and quantification, the pipeline organizes and summarizes the mapped reads.
+
+- Sort and index alignments with `SAMtools`
+- Deduplicate reads using UMIs with `UMI-tools`, if UMIs are present
+- Mark duplicate reads with `picard MarkDuplicates`
+- Assemble and quantify transcripts with `StringTie`
+- Create bigWig coverage files with `BEDTools` and `bedGraphToBigWig`
+
+### Contamination screening
+
+The pipeline can optionally screen selected reads for contamination. By default, this is done on unaligned reads.
+
+Optional tools include:
+
+- `Kraken2 -> Bracken`
+- `Sylph`
+
+### Quality control and reporting
+
+Quality control helps us decide whether the sequencing and analysis worked well enough to trust the results.
+
+The pipeline performs extensive QC with tools such as:
+
+- `RSeQC`
+- `Qualimap`
+- `dupRadar`
+- `Preseq`
+- `DESeq2`
+- `MultiQC`
+- `R`
+
+The final report summarizes raw read quality, alignment metrics, gene biotypes, sample similarity, and strand-specificity checks.
 
 ## What do we get at the end?
 
