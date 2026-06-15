@@ -9,10 +9,10 @@ This page collects links to public data resources used for *Staurois parvus* RNA
 
 ## Genome Resources
 
-| Resource | Link | Notes |
-|---|---|---|
-| Old genome assembly | Add link | Add assembly version, accession, or source |
-| New Genome assembly | Add link | Add assembly version, accession, or source |
+| Resource | Link | Notes | Year |
+|---|---|---|---|
+| Old genome assembly | https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_951230385.1/ | 2023 | https://academic.oup.com/g3journal/article/13/10/jkad193/7251439 |
+| New Genome assembly | Add link | Add assembly version, accession, or source | 2026 |
 | Genome FASTA | Add link | Add file name and date downloaded |
 | Gene annotation | Add link | Add GTF/GFF source and version |
 | Transcriptome | Add link | Optional |
