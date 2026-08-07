@@ -10,6 +10,8 @@ This might feel unfamiliar at first, especially if you are used to R with RStudi
 
 This page is a follow-along exercise. Work through the steps in order and run each command yourself.
 
+{{< video https://youtu.be/TZpUua3Rg28 >}}
+
 ::: {.callout-tip}
 Every command on this page is safe to run. You will not break anything by following these steps.
 :::

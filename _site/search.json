@@ -776,7 +776,7 @@
     "href": "using-terminal.html",
     "title": "Using the Terminal",
     "section": "",
-    "text": "The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.\nThis might feel unfamiliar at first, especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.\nThis page is a follow-along exercise. Work through the steps in order and run each command yourself.\n\n\n\n\n\n\nTip\n\n\n\nEvery command on this page is safe to run. You will not break anything by following these steps.",
+    "text": "The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.\nThis might feel unfamiliar at first, especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.\nThis page is a follow-along exercise. Work through the steps in order and run each command yourself.\n\n\n\n\n\n\n\nTip\n\n\n\nEvery command on this page is safe to run. You will not break anything by following these steps.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -786,7 +786,7 @@
     "href": "using-terminal.html#what-is-the-terminal",
     "title": "Using the Terminal",
     "section": "",
-    "text": "The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.\nThis might feel unfamiliar at first, especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.\nThis page is a follow-along exercise. Work through the steps in order and run each command yourself.\n\n\n\n\n\n\nTip\n\n\n\nEvery command on this page is safe to run. You will not break anything by following these steps.",
+    "text": "The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.\nThis might feel unfamiliar at first, especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.\nThis page is a follow-along exercise. Work through the steps in order and run each command yourself.\n\n\n\n\n\n\n\nTip\n\n\n\nEvery command on this page is safe to run. You will not break anything by following these steps.",
     "crumbs": [
       "Using the Terminal"
     ]
