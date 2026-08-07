@@ -2,60 +2,179 @@
 title: "Run the Pipeline"
 ---
 
-## Pull the pipeline
+On Unity, the pipeline runs as a SLURM batch job — not interactively in the terminal. You write a shell script with `#SBATCH` settings at the top, then submit it with `sbatch`.
+
+## Run a test first
+
+Before running with your own data, submit a test job to confirm Nextflow, Apptainer, and your workspace are all working.
+
+Save the following as `nfcore-rnaseq-test.sh` in your home directory. Update the `--output`, `--error`, `--mail-user`, and `SCRATCH_RNASEQ` lines to match your username and workspace path.
 
 ```bash
-nextflow pull nf-core/rnaseq
+#!/bin/bash
+#SBATCH --job-name=nfcore-rnaseq-test
+#SBATCH --partition=cpu
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=48G
+#SBATCH --time=24:00:00
+#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.out
+#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.err
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=you@email.edu
+
+set -euo pipefail
+
+SCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE
+
+cd "$SCRATCH_RNASEQ"
+
+module purge
+module load nextflow/26.04.1
+module load apptainer/latest
+
+mkdir -p "$SCRATCH_RNASEQ/.apptainer/build-cache"
+mkdir -p "$SCRATCH_RNASEQ/.apptainer/tmp"
+mkdir -p "$SCRATCH_RNASEQ/.nextflow-apptainer-cache"
+
+export APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.apptainer/build-cache"
+export APPTAINER_TMPDIR="$SCRATCH_RNASEQ/.apptainer/tmp"
+export NXF_APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.nextflow-apptainer-cache"
+export NXF_OPTS='-Xms1g -Xmx4g'
+export PROOT_NO_SECCOMP=1
+
+# Clean up any partial container pulls from a previous attempt
+find "$NXF_APPTAINER_CACHEDIR" -type f -name "*.pulling.*" -delete || true
+
+nextflow run nf-core/rnaseq \
+  -r 3.26.0 \
+  -profile test,unity \
+  --outdir test_results \
+  -resume
 ```
 
-## Run a test profile
-
-Start with the built-in test profile before using your own data:
+Create the log directory and submit:
 
 ```bash
-nextflow run nf-core/rnaseq \
-  -profile test,docker \
-  --outdir results/test
+mkdir -p ~/rnaseq_nf_core/job-logs
+sbatch nfcore-rnaseq-test.sh
 ```
 
-If you use Apptainer:
+Watch progress with:
 
 ```bash
-nextflow run nf-core/rnaseq \
-  -profile test,apptainer \
-  --outdir results/test
+squeue --me
 ```
 
-## Run your own samples
+And check the output log once it starts:
 
 ```bash
+tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.*.out
+```
+
+::: {.callout-tip}
+The test profile uses a small built-in dataset and finishes in a few hours. If it completes without errors, your environment is ready.
+:::
+
+## Run with your own samples
+
+For a real run you need:
+
+1. A **samplesheet** CSV listing your samples
+2. A **genome FASTA** and **GTF annotation** file
+3. A **params JSON** file pointing to all of the above
+
+### The samplesheet
+
+The samplesheet must have these four columns:
+
+```text
+sample,fastq_1,fastq_2,strandedness
+C45-1B,/path/to/C45-1B_R1_001.fastq.gz,/path/to/C45-1B_R2_001.fastq.gz,reverse
+C45-1H,/path/to/C45-1H_R1_001.fastq.gz,/path/to/C45-1H_R2_001.fastq.gz,reverse
+```
+
+Set `strandedness` to `reverse`, `forward`, or `unstranded` to match your library prep kit. If you are unsure, check the kit documentation or use the nf-core/rnaseq `--salmon_quant_libtype A` option to detect it automatically.
+
+### The params file
+
+Rather than putting all options on the command line, save them in a JSON file. Example `params.json`:
+
+```json
+{
+  "input": "/path/to/samplesheet.csv",
+  "outdir": "/path/to/results",
+  "fasta": "/path/to/genome.fna",
+  "gtf": "/path/to/annotation.gtf",
+  "igenomes_ignore": true,
+  "aligner": "star_salmon",
+  "pseudo_aligner": "salmon",
+  "gtf_extra_attributes": "gene",
+  "featurecounts_group_type": "transcript_biotype",
+  "max_cpus": 48,
+  "max_memory": "256.GB",
+  "max_time": "72.h"
+}
+```
+
+### The SLURM script
+
+Save the following as `run-rnaseq.sh`, filling in your paths:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=nfcore-rnaseq
+#SBATCH --partition=cpu
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=48G
+#SBATCH --time=3-00:00:00
+#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.out
+#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.err
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=you@email.edu
+
+set -euo pipefail
+
+SCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE
+PARAMS="$SCRATCH_RNASEQ/params.json"
+
+cd "$SCRATCH_RNASEQ"
+
+module purge
+module load nextflow/26.04.1
+module load apptainer/latest
+
+mkdir -p "$SCRATCH_RNASEQ/.apptainer/build-cache"
+mkdir -p "$SCRATCH_RNASEQ/.apptainer/tmp"
+
+export APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.apptainer/build-cache"
+export APPTAINER_TMPDIR="$SCRATCH_RNASEQ/.apptainer/tmp"
+export PROOT_TMP_DIR="$SCRATCH_RNASEQ/.apptainer/tmp"
+export TMPDIR="$SCRATCH_RNASEQ/.apptainer/tmp"
+export NXF_APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.nextflow-apptainer-cache"
+export NXF_OPTS='-Xms1g -Xmx4g'
+export PROOT_NO_SECCOMP=1
+
 nextflow run nf-core/rnaseq \
-  -profile docker \
-  --input samplesheet.csv \
-  --outdir results/rnaseq \
-  --genome GRCh38
+  -r 3.26.0 \
+  -profile unity \
+  -params-file "$PARAMS" \
+  -resume
+```
+
+Submit:
+
+```bash
+sbatch run-rnaseq.sh
 ```
 
 ## Resume an interrupted run
 
-```bash
-nextflow run nf-core/rnaseq \
-  -profile docker \
-  --input samplesheet.csv \
-  --outdir results/rnaseq \
-  --genome GRCh38 \
-  -resume
-```
+Add `-resume` to your `nextflow run` command (it is already included in the scripts above). Nextflow caches completed tasks, so resuming picks up from where it stopped without re-running finished steps.
 
 ::: {.callout-warning}
-Use the same command with `-resume`. Changing key parameters can invalidate cached work.
+Only resume with the same params file and the same scratch directory. Changing the output path or key parameters will invalidate the cache.
 :::
 
 ## Record the exact command
 
-Keep a copy of the final command in your notes or repository:
-
-```bash
-mkdir -p logs
-nextflow run nf-core/rnaseq -profile docker --input samplesheet.csv --outdir results/rnaseq --genome GRCh38 2>&1 | tee logs/rnaseq.log
-```
+Keep a copy of your params file and SLURM script alongside your results. The `pipeline_info/` folder in your output directory also records the exact parameters, software versions, and execution timeline automatically.

@@ -1,0 +1,650 @@
+G3, 2023, 13(10), jkad193
+https://doi.org/10.1093/g3journal/jkad193
+Advance Access Publication Date: 25 August 2023
+Genome Report
+Genome assembly of the foot-flagging frog, Staurois
+parvus: a resource for understanding mechanisms
+of behavior
+Mika A. Holtz,1 Riccardo Racicot,1 Doris Preininger,2,3 Adam M.M. Stuckert,4,* Lisa A. Mangiamele 1,*
+1Department of Biological Sciences, Smith College, Northampton, MA 01053, USA
+2Vienna Zoo, 1130 Vienna, Austria
+3Department of Evolutionary Biology, University of Vienna, 1030 Vienna, Austria
+4Department of Biology & Biochemistry, University of Houston, Houston, TX 77204, USA
+*Corresponding author: Department of Biology and Biochemistry, University of Houston, Science & Research Building 2, 3455 Cullen Blvd, Houston, TX 77204-5001, USA.
+Email: astuckert@uh.edu; *Corresponding author: Department of Biological Sciences, Smith College, 44 College Ln, Northampton, MA 01063, USA. Email: lmangiamele@
+smith.edu
+Elaborate and skilled movements of the body have been selected in a variety of species as courtship and rivalry signals. One roadblock in
+studying these behaviors has been a lack of resources for understanding how they evolved at the genetic level. The Bornean rock frog
+(Staurois parvus) is an ideal species in which to address this issue. Males wave their hindlimbs in a “foot-flagging” display when compet-
+ing for mates. The evolution of foot flagging in S. parvus and other species is accompanied by increases in the expression of the andro-
+gen receptor gene within its neuromuscular system, but it remains unclear what genetic or transcriptional changes are associated with
+this behavioral phenotype. We have now assembled the genome of S. parvus, resulting in 3.98 Gbp of 22,402 contigs with an N50 of
+611,229 bp. The genome will be a resource for finding genes related to the physiology underlying foot flagging and to adaptations
+of the neuromuscular system. As a first application of the genome, we also began work in comparative genomics and differential
+gene expression analysis. We show that the androgen receptor is diverged from other anuran species, and we identify unique expression
+patterns of genes in the spinal cord and leg muscle that are important for axial patterning, cell specification and morphology, or muscle
+contraction. This genome will continue to be an important tool for future -omics studies to understand the evolution of elaborate sig-
+naling behaviors in this and potentially related species.
+Keywords: Staurois parvus; foot-flagging frog; genome; RNAseq; communication behavior
+Introduction 2001). The independent evolution of similar displays across the
+anuran phylogeny provides an opportunity to test whether com-
+Sexual selection has resulted in a diversity of elaborate and phys-
+mon neuromuscular mechanisms have evolved in foot-flagging
+ically impressive behaviors that have evolved in males to compete
+species or whether there are many mechanistic solutions that
+with rivals and attract mates (Byers et al. 2010; Barske et al. 2011).
+produce similar motor behaviors. For example, in S. parvus, foot
+In many cases, these behaviors evolve by co-opting existing phys-
+flagging is an androgen hormone-mediated behavior
+ical capabilities, but in other cases this requires the evolution of
+(Mangiamele et al. 2016; Smith et al. 2021) and the evolution of
+novel motor skills (reviewed in Fuxjager et al. 2022; Goller 2022).
+foot flagging in multiple anuran lineages is associated with dra-
+The emergence of such motor skills is presumably accompanied
+matic changes in tissue sensitivity to androgens. Compared with
+by modifications to neural circuits and their connected muscles, frogs that cannot foot flag, S. parvus and other foot-flagging spe-
+which control how the body and limbs are moved to enable im- cies have much higher androgen receptor (AR) expression in their
+pressive feats of acrobatics, coordination, and/or rapid move- hind limb muscles (Mangiamele et al. 2016; Anderson et al. 2021).
+ments (Fuxjager et al. 2022; Schwark et al. 2022). Yet, little is These findings give us some insight into how novel motor beha-
+known about these neuromotor adaptations and their underlying viors could evolve through changes in neuromuscular gene ex-
+genetic mechanisms (Fuxjager et al. 2016; Pease et al. 2022). pression. However, in order to make further progress, we are in
+To address this issue, we study the Bornean rock frog (Staurois need of a resource that enables us to uncover sources of genetic
+parvus), which has a novel form of hind limb display called “foot variation between different individuals and species and to probe
+flagging” (Fig. 1a; Supplementary Video 1) that is used primarily the functional consequences of such variation (Miller et al. 2019;
+in agonistic encounters with other males at breeding sites. Foot Gallant and O’Connell 2020).
+flagging has convergently evolved 5 times in the anuran lineage Next-generation sequencing has made it possible to access
+(Fig. 1b), arising in roughly 2 dozen species (Hödl and Amézquita genomic information in “non-model” species and to identify suites
+Received on 22 March 2023; accepted on 13 August 2023
+© The Author(s) 2023. Published by Oxford University Press on behalf of The Genetics Society of America.
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (https://creativecommons.org/licenses/by/4.0/), which
+permits unrestricted reuse, distribution, and reproduction in any medium, provided the original work is properly cited.
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+2 | M. A. Holtz et al.
+(a) (b)
+Fig. 1. a) A Staurois parvus male foot flagging. The hind foot is raised above the head in a slow, arcing motion (1), while displaying bright-white foot
+webbing, and then quickly retracted back into the body (2). Photo credit: Doris Preininger. b) Family-level phylogeny showing independent evolution of
+foot-flagging behavior (denoted with stars) in diverse anuran clades. S. parvus belongs to the family Ranidae. Phylogeny pruned from Pyron and Wiens
+2011.
+of genes that are expressed in specific neuromuscular tissues. Here, Genomic DNA extraction and sequencing
+we introduce the genome of the foot-flagging frog, S. parvus. Using
+We generated genomic DNA from a single adult male frog using
+PacBio CLR sequencing, we produced a 3.98-Gbp genome assembly
+whole-body fresh tissue. We completely removed the skin and dis-
+with a total of 22,402 contigs (contig N50 of 611,229 base pairs), repre-
+sected out and discarded intestinal tissue. We rinsed the tissue
+senting 91.4% of conserved vertebrate genes. Interestingly, we have
+with 1× sterile PBS and ground it to a fine powder in a pre-chilled
+found significant divergence in AR in the lineage that led to S. parvus.
+mortar and pestle. The ground tissue was transferred to a tube
+We also present an RNA sequencing analysis that identifies patterns
+containing 5 mL of lysis buffer consisting of 1% SDS, 100 mM
+of gene expression within relevant neuromuscular pathways. The NaCl, 10 mM Tris HCl pH 8.0, 10 mM EDTA, 40 mM DTT, and pro-
+genome will be a critical resource for future comparative work that
+teinase K. Lysis was performed overnight at 55°C on a rotating
+will help identify other genes that could be relevant to the evolution
+mixer. Lysate was spun down at 12,000 × g for 10 minutes at
+of foot-flagging behavior.
+room temperature, and the supernatant was transferred to a
+new tube. We added 15 μL of RNase A to the lysate and incubated
+the sample for 30 minutes at room temperature. We added an
+Methods
+equal volume of phenol chloroform isoamyl 25:24:1 to the sample
+IACUC statement
+and gently rocked it back and forth for 1 minute and then centri-
+Adult male S. parvus frogs were collected from a captive colony fuged at 12,000 × g for 10 minutes at room temperature. We trans-
+at the Vienna Zoo in Vienna, Austria, which was derived from ferred the upper phase to a new tube and an equal volume of
+wild frogs collected in Ulu Temburong National Park, Brunei chloroform isoamyl 24:1 to the sample which was then gently
+Darussalam in 2010. Animals were maintained, and our tissue rocked back and forth for 1 minute and centrifuged at 12,000 × g
+collection protocol was approved, by the appropriate Institutional for 10 minutes at room temperature. The upper phase was trans-
+and Animal Care and Use Committees at Smith College ferred to another new tube, and 2× volume of absolute ethanol
+(ASAF#17R-LM-290), the University of Vienna (Protocol #2014-013), and 0.1 volume of 3M sodium acetate were added. DNA was pre-
+and the Vienna Zoo. cipitated for 2 hours at room temperature and then centrifuged
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+Foot-flagging frog (Staurois parvus) genome | 3
+at 12,000 × g for 30 minutes at 4°C to turn the gDNA into pellets. merges the assembled transcripts from each into a single assembly.
+We removed the ethanol and washed the pellet with 1 mL of fresh We then used TransDecoder (https://github.com/TransDecoder/
+70% ethanol. We centrifuged the gDNA at 12,000 × g for 5 minutes TransDecoder) to predict protein coding regions from the assembled
+at 4°C. We then discarded the ethanol and allowed the pellet to transcriptome. We used “TrasDecoder.LongOrfs” to create a file of
+dry before resuspending in 200 μL of 1× TE buffer. gDNA was al- open reading frames and then used the Uniprot database (The
+lowed to go into solution at room temperature overnight on a ro- UniProt Consortium 2019) and “blastp” (Camacho et al. 2009) as
+tating mixer at 150 rpm. We quantified the gDNA using Nanodrop well as “hmmscan” (Zhang and Wood 2003) and the Pfam database
+and Qubit. (Mistry et al. 2021) to identify known peptides.
+We sent the gDNA to the Icahn Institute for Data Science and
+Genomic Technology at Mount Sinai, New York, New York, for se- Genome assembly
+quencing. PacBio SMRTBell libraries were generated and se-
+We converted the reads that the sequencer classified as “good”
+quenced on a PacBio Sequel II using continuous long read
+subreads from “.bam” format into fasta files using the samtools
+chemistry. Libraries were sequenced to a depth of 57× coverage,
+“fasta” command (Li et al. 2009). We then used the contig assem-
+assuming a genome size of 3.98 Gbp, with 227 GB of raw data gen-
+bler wtdbg2 version 2.5 (Ruan and Li 2020) to create our initial as-
+erated across 3 independent runs.
+sembly. Wtdbg2 uses a fuzzy de bruijn graph approach to combine
+reads into contigs. We set the kmer size to 21 (“-p 21”), subsampled
+mRNA extraction and sequencing
+half of our kmers (“-S 2”), removed reads smaller than 5,000 base
+To identify patterns of gene expression associated with neuro-
+pairs prior to assembling (“-L 5000”) per the software developers’
+muscular tissues involved in motor control and foot-flagging be-
+suggestion, and retained edges in the de bruijn graph that had
+havior, we dissected out the whole brain, spinal cord, and thigh
+low coverage (“–rescue-low-cov-edges”). We then used the func-
+muscles from adult male S. parvus and placed fresh tissue in
+tion “wtpoa-cns” from wtdbg2 to error correct the initial assembly
+RNAlater (Thermo Fisher) until further processing. In total, we
+using aligned reads.
+were able to obtain 2 brains, 4 spinal cords, and 5 leg muscles.
+Following this, we did a second round of error correction using
+To extract mRNA, we rinsed the tissue with 1× sterile PBS, added
+the program Racon version v1.4.19 (Vaser et al. 2017). To do this,
+1 mL of TRIzol (Invitrogen), and completely disrupted the tissue
+we first aligned our PacBio reads back to the assembled genome
+using a homogenizer. We then added 0.2 mL of chloroform. We
+using minimap2 version 2.10-r761 (Li 2018). We then used the
+gently shook the tubes and allowed them to incubate for 10 min-
+reads and read alignments to error correct using Racon with de-
+utes. We then centrifuged the samples at 12,000 × g for 15 minutes
+fault settings.
+at 4°C and transferred the top phase to a new tube and added
+To try and rescue additional genetic content, we used our RNA
+500 μL of isopropanol. The RNA then precipitated overnight at
+sequencing (RNAseq) data to scaffold the genome. To do this, we
+−20°C. We pelleted the RNA by centrifugation at 12,000 × g for
+used the subsampled RNAseq dataset used to assemble the tran-
+30 minutes at 4°C. Pellets were washed with 1 mL of fresh 70%
+scriptome (i.e. 60 million forward and 60 million reverse reads
+ethanol and centrifuged at 12,000 × g for 5 minutes at 4°C. We dis-
+across tissue types), aligned these reads to the draft genome using
+carded the ethanol and allowed the pellets to dry. We resus-
+BWA (Li and Durbin 2009), and scaffolded with P_RNA_scaffolder
+pended the RNA in 50 μL of nuclease-free water and quantified
+(Zhu et al. 2018) using default settings.
+them using Nanodrop and Qubit. We treated the samples with
+We examined the genome quality in two main ways. First, we
+TURBO DNase (Invitrogen) to remove contaminating DNA. We
+examined the presence of the genic content in our genome using
+cleaned up the RNA using 2× Ampure RNAclean beads
+miniBUSCO (Huang and Li, 2023) using the tetrapod database
+(Beckman Coulter) and eluted RNA in 25 μL water. We generated
+(tetrapoda_odb10; 2021-02-19). Our second method of
+cDNA libraries using the Illumina stranded mRNA ligation kit
+genome examination was genome contiguity. We used the
+according to the manufacturer’s protocol. Briefly, 100 ng of Assemblathon perl script (Bradnam et al. 2013) to calculate the
+DNase-treated RNA was used to perform mRNA selection using overall numbers of scaffolds and contigs as well as contiguity
+oligo-dT linked beads. First-strand cDNA was then generated
+metrics, such as N50, for both.
+from polyadenylated RNA. Second-strand synthesis was per-
+formed using dUTP to achieve strand specificity. Illumina RNA in- Repeat modeling and masking
+dex anchors and dual-index adaptors were then ligated. The
+We modeled genomic repeats with Repeat Modeler2 (Flynn et al.
+libraries were amplified for 13 cycles and cleaned up with 1× vol-
+2020) using RepBase database 20170127. We identified the classi- ume of Ampure XP beads (Beckman Coulter). Fragment Analysis
+fied consensus output from Repeat Modeler2 using Transposon
+was performed to assess library quality and size distribution.
+Classifier “RFSB” (Riehl et al. 2022). We used known repeats from
+Libraries were sequenced by Novogene (Durham, NC) on an
+vertebrates within a combined database of Dfam_3.1 and
+Illumina Novaseq 6000 with 150 bp paired-end reads.
+RepBase-20181026 (Bao et al. 2015) and our modeled repeats as a
+Transcriptome assembly repeat library input to mask our genome using Repeat Masker ver-
+sion 4.1.2-p1 (Smit et al. 2013-2015).
+We used data from all 3 tissue types (brain, leg muscle, and spinal
+cord) to assemble a de novo transcriptome for S. parvus. First, we
+Genome annotation
+concatenated all of the reads before randomly subsampling 20 mil-
+lion forward and 20 million reverse reads from each tissue type using We then annotated the genome using MAKER version 3.01.02
+seqtk (Li, 2023; https://github.com/lh3/seqtk). We concatenated all (Campbell et al. 2014). We used transcript evidence from our newly
+of these reads into a single forward and reverse dataset, composed predicted coding regions of S. parvus to aid in annotation and used
+of 60 million forward and 60 million reverse reads. We then as- the Uniprot database from December 2020 (The UniProt
+sembled a de novo transcriptome using the Oyster River Protocol Consortium 2019) as protein evidence to identify genes and
+using a minimum filter of 1 Transcript Per Million (“TPM=1”) gene products. Maker was run with repeat masking done by
+(MacManes 2018). This pipeline uses multiple assemblers and Repeat Masker version 4.1.0 (Smit et al. 2013-2015) and ab initio
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+4 | M. A. Holtz et al.
+gene predictions done by SNAP. Maker was run with the related species. Due to a combination of AR’s length, low expres-
+“-fix_nucleotides” flag. sion levels in our samples, and the presence of nested genes with-
+in AR, the annotation of this gene was poor. We recovered only 5
+Differential expression analysis
+exons, with no 5′ or 3′ regions. To get a better understanding of
+We used the RNAseq data to also conduct differential expression AR in S. parvus we then manually annotated this gene. We first ex-
+analysis to compare gene expression patterns of each tissue type. tracted available AR protein sequences from frogs (genera Bufo,
+RNAseq data were aligned to our reference genome using STAR Nanorana, Rana, and Xenopus) as well as Anolis carolinensis. We
+version 2.7 (Dobin et al. 2013) in the gene count mode then used blastx (Camacho et al. 2009) to map these proteins to
+(“–quantMode GeneCounts”), allowing for up to 20 multiple map- the genomic scaffold containing AR. We extracted these matches
+pings (“–outFilterMultimapNmax 20”) and 10 mismatched bases and visualized individual exons using JBrowse2 (Buels et al. 2016),
+(“–outFilterMismatchNmax 10”). We then quantified the expres- then extracted overlapping sequences from the S. parvus genome
+sion of genes using the program “htseq-count” (Putri et al. 2022). using bedtools “getfasta” (Quinlan and Hall 2010). We then aligned
+We conducted the alignment and counts at the transcript level AR mRNAs using MAFFT version 7.515 (Katoh and Standley 2013)
+in order to observe the expression of different isoforms. Then, allowing for gaps (flag “–leavegappyregion”). We built a phylogen-
+we normalized the gene counts with the trimmed mean of etic tree using IQ-TREE version 2.2.0.3 (Minh et al. 2020) with 1,000
+M-values (TMM) method and conducted DE analysis using edgeR ultra fast bootstraps (“-bb 1000”) and specifying Anolis carolinensis
+to reveal the identity and number of transcripts that are unique as the outgroup. We plotted the resulting tree using ggtree (Yu
+to each tissue (Robinson et al. 2010). We used the default settings et al. 2017).
+of the function filterByExpr() from edgeR to filter out low abun-
+dance genes, specifically genes with raw expression levels of less
+Results and discussion
+than 10 in more than 2 samples (2 is the smallest group size we
+Genome
+had). These lenient criteria allow us to compile all possible genes
+that are differentially expressed in the neuromuscular system In total, we had 312,472,731,406 bases of data across 32,110,985
+that could be relevant to the evolution of foot-flagging behavior. reads of genomic data, with an average read length of 9,731 base
+We feel these criteria are justified in this case, because evidence pairs. Our final draft assembly was 3.98 Gbp in total length. This
+from mammals and birds suggests that genes that are expressed assembly was split into a total of 22,402 contigs, with a contig
+in a tissue-specific manner, especially those expressed at low le- N50 of 611,229 base pairs. The assembly contained 22,068 scaf-
+vels, may evolve more rapidly (Axelson et al. 2008; Zhang and folds with a scaffold N50 of 627,225 base pairs. BUSCO analyses in-
+Yang 2015; Bentz et al. 2019; Hao et al. 2019). We determined differ- dicated that the genome has 91.4% of vertebrate orthologs in
+entially expressed genes (DEGs), or genes that are significantly dif- complete, single copies, 0.5% of orthologs were present in com-
+ferent in expression levels between tissues, by producing a false plete, duplicated copies, 3.5% were fragmented, and 4.6% were
+discovery rate (FDR) for each gene based on the Benjamini– missing (N = 5,310 total orthologs).
+Hochberg method (Benjamini and Hochberg 1995), using average
+Repeats
+counts per million (CPM) and log2 fold change (Log2FC) values.
+Log2FC was calculated using the average CPM value of each tissue We identified most of the S. parvus genome as repeat elements
+sample group using the glmQLfit() function. Thus, the fold change (62.46% repeats). This is similar to other work to date on amphi-
+values that we report for DEGs represent the ratio between the bians, which indicates that they are rife with repeat elements
+average CPM of one tissue group (e.g. brain) and the average spread throughout the genome (Sun et al. 2015; Rogers et al.
+CPM of another (e.g. spinal cord). 2018; Funk et al. 2021; Stuckert et al. 2021; Wang et al. 2021). Over
+We then conducted gene ontology (GO) analysis using the man- a third of the genome are DNA transposons (41.87%), many of
+ual gene list search tool and the GO overrepresentation test (GO which were hob-Activator (12.93%) or Tc1-IS630-Pogo (10.93%).
+biological process complete, Fisher’s exact test with FDR correc- Retroelements make up a large portion of the genome as well
+tion) on PANTHER to reveal the categorical function of DEGs in (20.47%). The retroelements found within the S. parvus genome
+each tissue type and GO terms enriched in each tissue (Thomas are dominated by LINEs which represent 7.41% of the genome
+et al. 2022). The PANTHER GO overrepresentation test requires and LTR elements that make up 13.0%. Like several other species
+an input list of gene names, and in our case, we input the DEGs of amphibian (e.g. the poison frogs Oophaga pumilio and Ranitomeya
+for each tissue from pairwise comparisons. PANTHER also re- imitator and the caecilian Ichthyophis bannanicus), gypsy/DIRS1
+quires choosing a reference genome already loaded into the web- make up a large portion of the genome (8.72%), potentially indicat-
+site to be used to match and identify orthologous genes from the ing a proliferation of these elements early in the history of am-
+input list. Out of the available genomes, Xenopus tropicalis was phibia. As we continue to produce newer amphibian genome
+the most closely related species to S. parvus and the only frog gen- assemblies of higher quality (e.g. contiguity, per-base-accuracy),
+ome. Thus, we chose it as our reference for the test. As a result, 86 we will be able to identify trends in repeat elements across this
+out of 118 DEGs were uniquely mapped to the X. tropicalis genome clade. Of particular interest are when these elements proliferated
+for the spinal cord (differentially expressed from the brain) and in genomes, and if particular families of repeat elements are more
+2,058 genes out of 3,220 DEGs and 2,480 out of 3,795 DEGs were abundant in certain taxa within amphibia.
+uniquely mapped for leg muscle (differentially expressed from
+AR sequence divergence
+the brain and spinal cord, respectively).
+Of particular interest is whether the AR gene in S. parvus has di-
+AR analyses
+verged from other frog species, given known species differences
+Previous evidence indicates the likely important role that AR plays in AR expression that are associated with differences in sexual
+in the evolution of foot-flagging behavior (Mangiamele et al. 2016; display behavior (Mangiamele et al. 2016; Anderson et al. 2021).
+Anderson et al. 2021), therefore we were interested in identifying We found that the S. parvus AR gene exhibits significant diver-
+both gene expression of AR and how its sequence compares to gence from other ranids within the coding sequences of these
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+Foot-flagging frog (Staurois parvus) genome | 5
+Fig. 2. Consensus tree of the AR gene based on available cDNA sequences. Values at nodes indicate bootstrap support values.
+species (Fig. 2; Supplementary Fig. 1). Further, we observed low electrical signals that coordinate movement, while muscle tissue
+gene expression of AR in our samples, likely precluding gene must provide the contractile force to physically move limbs.
+expression from being the only marker of behavioral evolution Conversely, the brain and spinal cord have few DEGs and a more
+in foot-flagging frogs. Together, this indicates that protein evolu- similar expression pattern, showing their similarity in structure
+tion is also a plausible mechanism contributing to the emergence and function, with slight differences in expression levels reflecting
+of foot-flagging behavior, as has been previously predicted their specialized roles within the nervous system. However, this
+(Mangiamele et al. 2016; Mangiamele and Fuxjager 2018). Further small group of genes could be useful in future studies that aim to
+analysis of AR sequence, potentially in combination with full- help us understand the relative contributions of different neural
+length isoform sequencing, will be particularly informative in pathways to the emergence of foot-flagging behavior. For example,
+this system. from the 118 spinal cord DEGs, we might target genetic manipula-
+tions, such as loss of function, that we predict would primarily influ-
+RNAseq and differential expression ence spinal control of foot-flagging behavior.
+Next, when we analyzed the top significant DEGs between tissue
+On average, each RNAseq readset contained 89,721,414 reads,
+types in pairwise comparisons, several notable patterns emerged with an 81.03% (±4.44% SD) mapping to the genome. We received
+(Fig. 4). First, the top DEGs between the brain and spinal cord include
+a total of 240 GB of data across 11 samples that show similar gene
+a group of homeobox (HOX) genes that are highly expressed in the
+expression patterns.
+spinal cord but are much lower in the brain, with some showing a
+The DE analysis revealed the number and identity of DEGs in
+relatively higher expression in the leg muscle as well (Fig. 4a).
+each pairwise tissue comparison (Supplementary Table 1). All 3
+Additionally, there is a different set of genes that are much more ex-
+comparisons had a total of close to 14,000 transcripts, where the
+pressed in the brain compared with the spinal cord and leg muscle.
+comparison of the brain and spinal cord had the fewest DEGs (283
+When looking at the top DEGs between the spinal cord and leg mus-
+total) and the comparisons between leg muscle and the nervous
+cle, there is a clear distinction between genes that are more expressed
+system had thousands more DEGs (7,000–8,000) (Fig. 3a). Overall,
+in one tissue than the other, with no gradient of expression levels be-
+the expression profiles of the brain and spinal cord are the closest,
+tween different tissues, meaning that these DEGs show robust differ-
+with leg muscle deviating from the other two (Fig. 3b). Among the
+ences in expression levels between the tissues (Fig. 4b).
+top 100 DEGs (i.e. genes with the lowest FDR), we found the most di-
+vergent gene expression patterns between the nervous system and
+Gene ontology
+leg muscle tissues (Fig. 3c), presumably for supporting different
+functions within the neuromotor circuitry; for example, nervous The GO analysis helped categorize the DEGs, identify GO terms
+system tissue must have the cellular machinery to send the that were significantly enriched within each tissue, and pull out
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+6 | M. A. Holtz et al.
+Fig. 3. Distinctive patterns of gene expression associated with the nervous system and muscle tissue. a) Venn diagram showing the number of DEGs and
+genes shared in expression between tissue types in pairwise comparisons. b) Multidimensional scaling (MDS) plot comparing overall expression patterns
+between samples. BR, brain; LM, leg muscle; SP, spinal cord. c) Heat map of z-scores of the top 100 DEGs between tissue groups shows sample clustering
+based on tissue type. Yellow color indicates a higher expression of a gene in a sample compared with other samples while blue color indicates a lower
+expression. The dendrograms show the grouping of samples that show similar gene expression patterns. (For interpretation of the references to color in
+this figure legend, the reader is referred to the web version of this article).
+terms that could be related to the structure and function of expressed into adulthood in Xenopus frogs (Kondo et al. 2017).
+hind limb motor circuitry in S. parvus (Supplementary Tables 2 Another HOX gene that was among the spinal cord DEGs was mo-
+and 3). Overall, the GO terms of interest for the spinal cord were tor neuron and pancreas homeobox 1 (Mnx1, also known as
+related to spinal cord development and morphology, neuronal sig- homeobox HB9; Fig. 4c: abs(Log2FC) = 9.72). Knockouts and muta-
+naling, cell fate specification, and transcriptional processes. The tions of Mnx1 have led to impairments of motor axon projections,
+GO terms of interest for leg muscle were related to muscle devel- abnormal organization of spinal cells and motor neuron migra-
+opment, muscle contraction, metabolic processes, and motor ac- tion, and disorganized expression of interneuron and motor neu-
+tin dynamics. Then, the genes within these terms became of ron marker genes in mice (Arber et al. 1999; Thaler et al. 1999).
+interest for future study (Supplementary Table 4). Future studies may manipulate the expression of these genes
+Again, many of the key genes that emerged in our analysis were and observe their effects on the foot-flagging performance in S.
+HOX genes (Fig. 4a and 4c), which are expressed primarily in the parvus males (e.g. rate, speed, and path of the foot) or the morph-
+spinal cord. HOXC10 (Fig. 4c: abs(Log2FC) = 9.27) and HOXD10 ology of the motor neurons that control hind limb movement in S.
+(Fig. 4c: abs(Log2FC) = 10.4) in particular have previously been parvus and other foot-flagging frogs.
+found to be important for lumbar spinal cord development and As prior studies have identified AR gene expression as a marker
+motor neuron organization and patterning in mice (Choe et al. of divergence between foot-flagging and non–foot-flagging frog
+2006; Wu et al. 2008; Mallo et al. 2010). These two genes are also species, we first looked to see if this gene was included in our
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+Foot-flagging frog (Staurois parvus) genome | 7
+Fig. 4. Pairwise comparisons reveal target genes that are most differentially expressed in neuromuscular tissues that control foot-flagging behavior. Heat
+maps depicting genes that are most differentially expressed between the (a) brain and spinal cord and (b) leg muscle and spinal cord. These heat maps
+highlight the top 30 genes within each comparison, while showing z-scores of these genes in every sample in our dataset. Tissues are shown on the x-axis
+and gene names are on the y-axis. Yellow color indicates a higher expression of a gene in a sample compared with other samples while blue color
+indicates a lower expression. The dendrograms show the grouping of samples showing similar gene expression patterns. Bar graphs compare
+absolute-value log2 fold changes of the top 5 genes (gray) and other genes of interest (blue) in the (c) spinal cord when compared with the brain, d) leg
+muscle when compared with the spinal cord, and (e) spinal cord when compared with leg muscle from the differential expression analyses. BR, brain; LM,
+leg muscle; SP, spinal cord. (For interpretation of the references to color in this figure legend, the reader is referred to the web version of this article).
+results. We did not find androgen signaling molecules among our domains as SRC1, was one of our DEGs; however, it is not clear
+significantly enriched GO terms, and AR was not differentially ex- whether it interacts with AR in the same way. In addition, previ-
+pressed across any of the tissues examined in this study. These re- ous work in birds has shown that androgen-regulated genes are
+sults might be expected based on our prior qPCR study showing highly expressed in muscle tissues that are used for the super-fast
+that S. parvus has similar AR expression levels in its hind limb wing snap courtship displays of male golden-collared manakins
+musculature, spinal cord, and brain (Mangiamele et al. 2016). (Manacus vitellinus) (Fuxjager et al. 2012, 2016). Although those
+Yet, the AR itself is a transcription factor with many downstream genes were not in the top 100 most DEGs in our analysis, some
+genes whose expression depends not only on AR expression but of the androgen-regulated genes identified in Fuxjager et al. 2016
+also several cofactors (Schuppe and Fuxjager 2019). For example, are also among S. parvus’ leg muscle DEGs. One such gene is par-
+SRC1 is a cofactor that upregulates AR activity. The SRC-like adap- valbumin (PVALB), which is involved in calcium signaling that al-
+tor [SLA; Fig. 3d: abs(Log2FC) = 1.30], which contains the same SH lows for fast muscle relaxation [Fuxjager et al. 2012; Fig. 4d: PVALB
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+8 | M. A. Holtz et al.
+alpha abs(Log2FC) = 6.47, PVALB beta type 1 abs(Log2FC) = 7.87, through GEO Series accession number GSE232203 (https://www.
+PVALB beta type 2 abs(Log2FC) = 8.03]. Another gene is glycogen ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE232203).
+phosphorylase (PYGL; Fig. 4d: abs(Log2FC) = 1.364), which is im- Supplementary Video 1 contains a video of the foot-flagging
+portant for glucose synthesis from glycogen breakdown in muscle display. Supplementary Table 1 contains raw results from the dif-
+tissue (Newgard et al. 1989). These androgen-regulated genes, ferential expression analyses. Supplementary Table 2 contains
+which appear to be highly expressed in the muscles of both man- raw results from gene ontology overrepresentation analyses.
+akins and foot-flagging frogs, may indicate that athletic courtship Supplementary Table 3 contains select gene ontology terms of
+displays are driven by common downstream AR-regulated tran- interest. Supplementary Table 4 contains genes of interest and
+scriptional changes in the neuromuscular system. their corresponding gene ontology terms. Supplementary Fig. 1
+Doublesex and mab-3-related transcription factor (DMRT) contains the consensus tree of the androgen receptor gene based
+genes have previously been studied for their role in sex differenti- on available predicted protein sequences. Note that the S.
+ation and gonadal development, with diverse functions in other parvus-predicted protein is not full length.
+tissues (Hong et al. 2007; Picard et al. 2015). In S. parvus, we found Supplemental material available at G3 online.
+that DMRT2 (Fig. 4d; abs(Log2FC) = 6.22) was differentially ex-
+pressed in the leg muscle and DMRT3 (Fig. 4e; abs(Log2FC) =
+Acknowledgments
+10.6) in the spinal cord. DMRT2 has been shown to be important
+for skeletal muscle development and axial patterning in other ver- This project would not have been possible without support from
+tebrate species (Seo et al. 2006; Seo 2007; Sato et al. 2010). DMRT3 the Northeast Cyberteam Project (NSF OAC-1659377), which allo-
+has been studied for its role in the diversity of gait in horse species cated computational resources at the Massachusetts Green High
+(Andersson et al. 2012). DMRT3 is expressed in the interneurons of Performance Computing Center and the Boston University
+networks important for limb locomotion and coordination, and Shared Computing Cluster and provided training for undergradu-
+inhibiting this gene resulted in abnormal gait and locomotor abil- ate students. This work was completed in part with resources pro-
+ity in mice (Perry et al. 2019; Vieillard et al. 2023). Based on this vided by the Research Computing Data Core at the University of
+knowledge, perhaps both DMRT2 and DMRT3 have roles in the de- Houston.
+velopment of the neuromuscular system in S. parvus and their
+functions can be further studied by comparing the two sexes in
+S. parvus or seeing the effect that a loss of function of these genes Funding
+could have on the development of the spinal motor circuit that
+This work was supported by National Science Foundation grant
+contributes to foot flagging.
+IOS-1655574 to L.A.M., Smith College’s Blakeslee endowment
+fund, and B. Elizabeth Horner endowment fund.
+Future directions
+The foot-flagging frog, S. parvus, is an emerging model organism
+for studying the evolution of sexual display behaviors, especially Conflicts of interest
+those involving novel or impressive motor abilities. The de novo
+The authors declare no conflict of interest.
+genome we present in this report will help us identify genes of
+interest that could be related to neuromotor system development
+or hind limb muscle performance, thus giving us direction for fu- Author contributions
+ture experiments in manipulating such genes to understand their
+M.A.H. conducted differential expression analyses, produced fig-
+mechanistic role in foot flagging. We will also be able to use the
+ures, and wrote the paper. R.R. extracted gDNA and mRNA from
+genome as a resource for comparative genomics to understand
+samples and prepared the PacBio and Illumina libraries. D.P. pro-
+in detail the genetic evolution between foot-flagging species and
+vided animal samples to be used for the study. A.M.M.S. as-
+non–foot-flagging species, thereby identifying potential targets
+sembled the de novo transcriptome and genome, analyzed
+for selection on motor skills for sexual display. Future differential
+repeats, conducted AR sequence analyses, and wrote the paper.
+expression analyses will also help us identify patterns of gene ex-
+L.A.M. conceived and designed the project, secured funding, and
+pression associated with differences in motor behaviors and foot-
+wrote the paper.
+flagging performance between sexes and between frog species
+(both foot flagging and non-foot flagging) and due to the effects
+of hormone treatments. The building of genetic knowledge on
+Literature cited
+S. parvus is an exciting next step for further understanding the
+evolution of unique signaling behaviors. Anderson NK, Schuppe ER, Gururaja KV, Mangiamele LA, Martinez
+JCC, Priti H, von May R, Preininger D, Fuxjager MJ. A common
+endocrine signature marks the convergent evolution of an elab-
+Data availability
+orate dance display in frogs. Am Nat. 2021;198(4):522–539. doi:
+All read data, de novo transcriptome assemblies, our de novo gen- 10.1086/716213.
+ome assembly, and our annotations are archived with the Andersson LS, Larhammar M, Memic F, Wootz H, Schwochow D,
+European Nucleotide Archive (accession number PRJEB40591; Rubin C-J, Patra K, Arnason T, Wellbring L, Hjälm G, et al.
+https://www.ebi.ac.uk/ena/browser/view/PRJEB40591). Code for Mutations in DMRT3 affect locomotion in horses and spinal cir-
+assemblies, annotation, gene counts, and all subsequent analyses cuit function in mice. Nature. 2012;488(7413):642–646. doi:10.
+are available on GitHub (https://github.com/AdamStuckert/ 1038/nature11399.
+Footloose_genome). Raw RNASeq data from the S. parvus brain, Arber S, Han B, Mendelsohn M, Smith M, Jessell TM, Sockanathan S.
+spinal cord, and leg muscle tissue samples, along with a FASTA Requirement for the homeobox gene Hb9 in the consolidation of
+file of the assembled sequences, have been deposited in NCBI’s motor neuron identity. Neuron. 1999;23(4):659–674. doi:10.1016/
+Gene Expression Omnibus (Edgar et al. 2002) and are accessible S0896-6273(01)80026-X.
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+Foot-flagging frog (Staurois parvus) genome | 9
+Axelson E, Hultin-Rosenberg L, Brandström M, Zwahlén M, Clayton of androgens on the avian muscular transcriptome. Mol
+DF, Ellegren H. Natural selection in avian protein-coding genes Endocrinol. 2016;30(2):254–271. doi:10.1210/me.2015-1270.
+expressed in brain. Mol Ecol. 2008;17(12):3008–3017. doi:10. Gallant JR, O’Connell LA. Studying convergent evolution to relate
+1111/j.1365-294X.2008.03795.x. genotype to behavioral phenotype. J Exp Biol. 2020;223(Suppl_1):
+Bao W, Kojima KK, Kohany O. Repbase Update, a database of repeti- jeb213447. doi:10.1242/jeb.213447.
+tive elements in eukaryotic genomes. Mob DNA. 2015;6(1):11. doi: Goller F. Vocal athletics—from birdsong production mechanisms to
+10.1186/s13100-015-0041-9. sexy songs. Anim Behav. 2022;184:173–184. doi:10.1016/j.
+Barske J, Schlinger BA, Wikelski M, Fusani L. Female choice for male anbehav.2021.04.009.
+motor skills. Proc Biol Sci. 2011;278(1724):3523–3528. doi:10.1098/ Hao Y, Xiong Y, Cheng Y, Song G, Jia X, Qu Y, Lei F. Comparative
+rspb.2011.0382. transcriptomics of 3 high-altitude passerine birds and their low-
+Benjamini Y, Hochberg Y. Controlling the false discovery rate: a prac- altitude relatives. Proc Natl Acad Sci U S A. 2019;116(24):
+tical and powerful approach to multiple testing. J R Stat Soc: Ser B 11851–11856. doi:10.1073/pnas.1819657116.
+(Methodol). 1995;57(1):289–300. doi:10.1111/j.2517-6161.1995. Hödl W, Amézquita A. Visual signaling in anuran amphibians. In:
+tb02031.x. Ryan MJ, editors. Anuran Communication. Washington, D.C:
+Bentz AB, Thomas GWC, Rusch DB, Rosvall KA. Tissue-specific ex- Smithsonian Institution Press; 2001. p. 121–141.
+pression profiles and positive selection analysis in the tree swal- Hong C-S, Park B-Y, Saint-Jeannet J-P. The function of Dmrt genes in
+low (Tachycineta bicolor) using a de novo transcriptome assembly. vertebrate development: it is not just about sex. Dev Biol. 2007;
+Sci Rep. 2019;9(1):15849. doi:10.1038/s41598-019-52312-4. 310(1):1–9. doi:10.1016/j.ydbio.2007.07.035.
+Bradnam KR, Fass JN, Alexandrov A, Baranay P, Bechner M, Birol I, Huang N, Li H. miniBUSCO: a faster and more accurate reimplemen-
+Boisvert S, Chapman JA, Chapuis G, Chikhi R, et al. tation of BUSCO. bioRxiv 543588. https://doi.org/10.1101/2023.06.
+Assemblathon 2: evaluating de novo methods of genome assem- 03.543588, 06 June 2023, preprint: not peer reviewed.
+bly in three vertebrate species. GigaScience. 2013;2(1): Katoh K, Standley DM. MAFFT Multiple sequence alignment soft-
+2047-217X-2-10. doi:10.1186/2047-217X-2-10. ware version 7: improvements in performance and usability.
+Buels R, Yao E, Diesh CM, Hayes RD, Munoz-Torres M, Helt G, Mol Biol Evol. 2013;30(4):772–780. doi:10.1093/molbev/mst010.
+Goodstein DM, Elsik CG, Lewis SE, Stein L, et al. JBrowse: a dynam- Kondo M, Yamamoto T, Takahashi S, Taira M. Comprehensive ana-
+ic web platform for genome visualization and analysis. Genome lyses of hox gene expression in Xenopus laevis embryos and adult
+Biol. 2016;17(1):66. doi:10.1186/s13059-016-0924-1. tissues. Dev Growth Differ. 2017;59(6):526–539. doi:10.1111/dgd.
+Byers J, Hebets E, Podos J. Female mate choice based upon male mo- 12382.
+tor performance. Anim Behav. 2010;79(4):771–778. doi:10.1016/j. Li H. Minimap2: pairwise alignment for nucleotide sequences.
+anbehav.2010.01.009. Bioinformatics. 2018;34(18):3094–3100. doi:10.1093/bioinformatics/
+Camacho C, Coulouris G, Avagyan V, Ma N, Papadopoulos J, Bealer K, bty191.
+Madden TL. BLAST+: architecture and applications. BMC Li H. lh3/seqtk 2023.
+Bioinformatics. 2009;10(1):421. doi:10.1186/1471-2105-10-421. Li H, Durbin R. Fast and accurate short read alignment with
+Campbell MS, Holt C, Moore B, Yandell M. Genome annotation and cur- Burrows–Wheeler transform. Bioinformatics. 2009;25(14):
+ation using MAKER and MAKER-P. Curr Protoc Bioinformatics. 2014; 1754–1760. doi:10.1093/bioinformatics/btp324.
+48(1):4.11.1–4.11.39. doi:10.1002/0471250953.bi0411s48. Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N,
+Choe A, Phun HQ, Tieu DD, Hu YH, Carpenter EM. Expression pat- Marth G, Abecasis G, Durbin R, 1000 Genome Project Data
+terns of Hox10 paralogous genes during lumbar spinal cord de- Processing Subgroup. The Sequence Alignment/Map format and
+velopment. Gene Expr Patterns. 2006;6(7):730–737. doi:10.1016/j. SAMtools. Bioinformatics. 2009;25(16):2078–2079. doi:10.1093/
+modgep.2005.12.004. bioinformatics/btp352.
+Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, MacManes MD. The Oyster River Protocol: a multi-assembler and
+Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. kmer approach for de novo transcriptome assembly. PeerJ.
+Bioinformatics. 2013;29(1):15–21. doi:10.1093/bioinformatics/bts635. 2018;6:e5428. doi:10.7717/peerj.5428.
+Edgar R, Domrachev M, Lash AE. Gene Expression Omnibus: NCBI Mallo M, Wellik DM, Deschamps J. Hox genes and regional patterning
+gene expression and hybridization array data repository. of the vertebrate body plan. Dev Biol. 2010;344(1):7–15. doi:10.
+Nucleic Acids Res. 2002;30(1):207–210. doi:10.1093/nar/30.1.207. 1016/j.ydbio.2010.04.024.
+Flynn JM, Hubley R, Goubert C, Rosen J, Clark AG, Feschotte C, Smit Mangiamele LA, Fuxjager MJ. Insight into the neuroendocrine basis
+AF. Repeatmodeler2 for automated genomic discovery of trans- of signal evolution: a case study in foot-flagging frogs. J Comp
+posable element families. Proc Natl Acad Scis U S A. 2020; Physiol. 2018;204(1):61–70. doi:10.1007/s00359-017-1218-0.
+117(17):9451–9457. doi:10.1073/pnas.1921046117. Mangiamele LA, Fuxjager MJ, Schuppe ER, Taylor RS, Hödl W,
+Funk WC, Zamudio KR, Crawford AJ. Advancing understanding of Preininger D. Increased androgenic sensitivity in the hind limb
+amphibian evolution, ecology, behavior, and conservation with muscular system marks the evolution of a derived gestural dis-
+massively parallel sequencing. In: Hohenlohe PA, Rajora OP, edi- play. Proc Natl Acad Sci U S A. 2016;113(20):5664–5669. doi:10.
+tors. Population Genomics: Wildlife. Cham: Springer 1073/pnas.1603329113.
+International Publishing; 2021. p. 211–254. Miller CT, Hale ME, Okano H, Okabe S, Mitra P. Comparative princi-
+Fuxjager MJ, Barske J, Du S, Day LB, Schlinger BA. Androgens regulate ples for next-generation neuroscience. Front Behav Neurosci.
+gene expression in avian skeletal muscles. PLoS One. 2012;7(12): 2019;13:12. doi:10.3389/fnbeh.2019.00012.
+e51482. doi:10.1371/journal.pone.0051482. Minh BQ, Schmidt HA, Chernomor O, Schrempf D, Woodhams MD,
+Fuxjager MJ, Fusani L, Schlinger BA. Physiological innovation and the von Haeseler A, Lanfear R. IQ-TREE 2: new models and efficient
+evolutionary elaboration of courtship behaviour. Anim Behav. methods for phylogenetic inference in the genomic era. Mol Biol
+2022;184:185–195. doi:10.1016/j.anbehav.2021.03.017. Evol. 2020;37(5):1530–1534. doi:10.1093/molbev/msaa015.
+Fuxjager MJ, Lee J-H, Chan T-M, Bahn JH, Chew JG, Xiao X, Schlinger Mistry J, Chuguransky S, Williams L, Qureshi M, Salazar GA,
+BA. Research resource: hormones, genes, and athleticism: effect Sonnhammer ELL, Tosatto SCE, Paladin L, Raj S, Richardson LJ,
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026
+10 | M. A. Holtz et al.
+et al. Pfam: the protein families database in 2021. Nucleic Acids Smit A, Hubley R, Green P. RepeatMasker 2013–2015.
+Res. 2021;49(D1):D412–D419. doi:10.1093/nar/gkaa913. Smith SM, Eigerman AR, LeCure KM, Kironde E, Privett-Mendoza AG,
+Newgard CB, Hwang PK, Fletterick RJ. The family of glycogen phos- Fuxjager MJ, Preininger D, Mangiamele LA. Androgen receptor
+phorylases: structure and function. Crit Rev Biochem Mol Biol. modulates multimodal displays in the Bornean rock frog
+1989;24(1):69–99. doi:10.3109/10409238909082552. (Staurois parvus). Integr Comp Biol. 2021;61(1):221–230. doi:10.
+Pease JB, Driver RJ, de la Cerda DA, Day LB, Lindsay WR, Schlinger BA, 1093/icb/icab042.
+Schuppe ER, Balakrishnan CN, Fuxjager MJ. Layered evolution of Stuckert AMM, Chouteau M, McClure M, LaPolice TM, Linderoth T,
+gene expression in “superfast” muscles for courtship. Proc Natl Nielsen R, Summers K, MacManes MD. The genomics of mimic-
+Acad Sci U S A. 2022;119(14):e2119671119. doi:10.1073/pnas. ry: gene expression throughout development provides insights
+2119671119. into convergent and divergent phenotypes in a Müllerian mim-
+Perry S, Larhammar M, Vieillard J, Nagaraja C, Hilscher MM, Tafreshiha icry system. Mol Ecol. 2021;30(16):4039–4061. doi:10.1111/mec.
+A, Rofo F, Caixeta FV, Kullander K. Characterization of Dmrt3-derived 16024.
+neurons suggest a role within locomotor circuits. J Neurosci. 2019; Sun Y-B, Xiong Z-J, Xiang X-Y, Liu S-P, Zhou W-W, Tu X-L, Zhong L,
+39(10):1771–1782. doi:10.1523/JNEUROSCI.0326-18.2018. Wang L, Wu D-D, Zhang B-L, et al. Whole-genome sequence of
+Picard MA-L, Cosseau C, Mouahid G, Duval D, Grunau C, Toulza È, the Tibetan frog Nanorana parkeri and the comparative evolution
+Allienne J-F, Boissier J. The roles of Dmrt (double sex/ of tetrapod genomes. Proc Natl Acad Sci U S A. 2015;112(11):
+male-abnormal-3 related transcription factor) genes in sex deter- E1257–E1262. doi:10.1073/pnas.1501764112.
+mination and differentiation mechanisms: ubiquity and diversity Thaler J, Harrison K, Sharma K, Lettieri K, Kehrl J, Pfaff SL. Active sup-
+across the animal kingdom. C R Biol. 2015;338(7):451–462. doi:10. pression of interneuron programs within developing motor neu-
+1016/j.crvi.2015.04.010. rons revealed by analysis of homeodomain factor HB9. Neuron.
+Putri GH, Anders S, Pyl PT, Pimanda JE, Zanini F. Analysing high- 1999;23(4):675–687. doi:10.1016/S0896-6273(01)80027-1.
+throughput sequencing data in Python with HTSeq 2.0. Thomas PD, Ebert D, Muruganujan A, Mushayahama T, Albou L-P, Mi
+Bioinformatics. 2022;38(10):2943–2945. doi:10.1093/bioinformatics/ H. PANTHER: making genome-scale phylogenetics accessible to
+btac166. all. Protein Sci. 2022;31(1):8–22. doi:10.1002/pro.4218.
+Pyron RA, Wiens JJ. A large-scale phylogeny of Amphibia including The UniProt Consortium. Uniprot: a worldwide hub of protein knowl-
+over 2800 species, and a revised classification of extant frogs, sal- edge. Nucleic Acids Res. 2019;47(D1):D506–D515. doi:10.1093/
+amanders, and caecilians. Mol Phylogenet Evol. 2011;61(2): nar/gky1049.
+543–583. doi:10.1016/j.ympev.2011.06.012. Vaser R, Sović I, Nagarajan N, Šikić M. Fast and accurate de novo gen-
+Quinlan AR, Hall IM. BEDTools: a flexible suite of utilities for compar- ome assembly from long uncorrected reads. Genome Res. 2017;
+ing genomic features. Bioinformatics. 2010;26(6):841–842. doi:10. 27(5):737–746. doi:10.1101/gr.214270.116.
+1093/bioinformatics/btq033. Vieillard J, Franck MCM, Hartung S, Jakobsson JET, Ceder MM, Welsh
+Riehl K, Riccio C, Miska EA, Hemberg M. Transposonultimate: soft- RE, Lagerström MC, Kullander K. Adult spinal Dmrt3 neurons re-
+ware for transposon classification, annotation and detection. ceive direct somatosensory inputs from ipsi- and contralateral
+Nucleic Acids Res. 2022;50(11):e64. doi:10.1093/nar/gkac136. primary afferents and from brainstem motor nuclei. J Comp
+Robinson MD, McCarthy DJ, Smyth GK. Edger: a Bioconductor Neurol. 2023;531(1):5–24. doi:10.1002/cne.25405.
+package for differential expression analysis of digital gene Wang J, Itgen MW, Wang H, Gong Y, Jiang J, Li J, Sun C, Sessions SK,
+expression data. Bioinformatics. 2010;26(1):139–140. doi:10. Mueller RL. Gigantic genomes provide empirical tests of trans-
+1093/bioinformatics/btp616. posable element dynamics models. Genomics Proteomics
+Rogers RL, Zhou L, Chu C, Márquez R, Corl A, Linderoth T, Freeborn L, Bioinformatics. 2021;19(1):123–139. doi:10.1016/j.gpb.2020.11.
+MacManes MD, Xiong Z, Zheng J, et al. Genomic takeover by trans- 005.
+posable elements in the strawberry poison frog. Mol Biol Evol. Wu Y, Wang G, Scott SA, Capecchi MR. Hoxc10 and Hoxd10 regulate
+2018;35(12):2913–2927. doi:10.1093/molbev/msy185. mouse columnar, divisional and motor pool identity of lumbar
+Ruan J, Li H. Fast and accurate long-read assembly with wtdbg2. Nat motoneurons. Development. 2008;135(1):171–182. doi:10.1242/
+Methods. 2020;17(2):155–158. doi:10.1038/s41592-019-0669-3. dev.009225.
+Sato T, Rocancourt D, Marques L, Thorsteinsdóttir S, Buckingham M. Yu G, Smith D, Zhu H, Guan Y, Lam YT. ggtree: an R package for visu-
+A Pax3/Dmrt2/Myf5 regulatory cascade functions at the onset of alization and annotation of phylogenetic trees with their covari-
+myogenesis. PLoS Genet. 2010;6(4):e1000897. doi:10.1371/journal. ates and other associated data. Methods Ecol Evol. 2017;8(1):
+pgen.1000897. 28–36. doi:10.1111/2041-210X.12628.
+Schuppe ER, Fuxjager MJ. Phenotypic variation reveals sites of evolu- Zhang J, Yang JR. Determinants of the rate of protein sequence evo-
+tionary constraint in the androgen signaling pathway. Horm lution. Nat Rev Genet. 2015;16(7):409–420. doi:10.1038/nrg3950.
+Behav. 2019;115:104538. doi:10.1016/j.yhbeh.2019.06.002. Zhang Z, Wood WI. A profile hidden Markov model for signal pep-
+Schwark RW, Fuxjager MJ, Schmidt MF. Proposing a neural frame- tides generated by HMMER. Bioinformatics. 2003;19(2):307–308.
+work for the evolution of elaborate courtship displays. Elife. doi:10.1093/bioinformatics/19.2.307.
+2022;11:e74860. doi:10.7554/eLife.74860. Zhu B-H, Xiao J, Xue W, Xu G-C, Sun M-Y, Li J-T. P_RNA_scaffolder: a
+Seo K. Dmrt2 and Pax3 double-knockout mice show severe defects in fast and accurate genome scaffolder using paired-end
+embryonic myogenesis. Comp Med. 2007;57:460–468. RNA-sequencing reads. BMC Genomics. 2018;19(1):175. doi:10.
+Seo KW, Wang Y, Kokubo H, Kettlewell JR, Zarkower DA, Johnson RL. 1186/s12864-018-4567-3.
+Targeted disruption of the DM domain containing transcription
+factor Dmrt2 reveals an essential role in somite patterning. Dev
+Biol. 2006;290(1):200–210. doi:10.1016/j.ydbio.2005.11.027. Editor: J. Parker
+Downloaded
+from
+https://academic.oup.com/g3journal/article/13/10/jkad193/7251439
+by
+guest
+on
+25
+June
+2026

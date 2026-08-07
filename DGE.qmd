@@ -1,0 +1,1018 @@
+---
+title: "Differential Gene Expression Analysis"
+subtitle: "DESeq2 analysis with design, QC, and sensitivity audits"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+editor: visual
+execute:
+  eval: false
+  warning: true
+  message: true
+---
+
+## Scope and inferential limits
+
+This analysis contains head and body RNA-seq libraries from one frog clutch. Day-45 tadpoles were collected before the tank treatment period. At day 103, tadpoles were sampled from one control tank and one flutamide tank.
+
+Important limits are built into the analysis and must accompany interpretation:
+
+- Treatment is confounded with tank because there is one tank per condition. The treatment-assignment unit is the tank, so tadpoles within a tank are subsamples rather than independent treatment replicates. Results are therefore described as **flutamide-tank versus control-tank associations**, not definitive causal effects of flutamide.
+- The experiment is not a complete tissue × treatment × stage factorial: no young flutamide samples exist. Overall treatment effects across stages, treatment-by-stage interactions, and three-way interactions are not estimable.
+- All tadpoles came from one clutch, so inference is clutch-specific.
+- Stage comparisons use different animals collected on different days. They combine age/development with any day- or cohort-specific differences.
+- Only two old-control head libraries exist. Head contrasts and the tissue-by-treatment interaction are consequently fragile.
+
+## Setup
+
+```{r}
+#| label: setup
+library(DESeq2)
+library(tximport)
+library(ggplot2)
+library(ggrepel)
+library(pheatmap)
+library(matrixStats)
+
+if (!requireNamespace("ashr", quietly = TRUE)) {
+  stop("Install 'ashr' with BiocManager::install('ashr').")
+}
+if (!requireNamespace("rtracklayer", quietly = TRUE)) {
+  stop("Install 'rtracklayer' with BiocManager::install('rtracklayer').")
+}
+
+dir.create("DESeq2_results", showWarnings = FALSE)
+dir.create("DESeq2_results/QC", showWarnings = FALSE)
+dir.create("DESeq2_results/DGE", showWarnings = FALSE)
+dir.create("DESeq2_results/volcano", showWarnings = FALSE)
+dir.create("DESeq2_results/sensitivity", showWarnings = FALSE)
+```
+
+## Authoritative sample manifest
+
+The manifest is explicit rather than inferred solely from filenames. `tank` is recorded for provenance but cannot be added beside treatment in a model because the two are perfectly confounded at day 103.
+
+```{r}
+#| label: sample-manifest
+sample_manifest <- data.frame(
+  sample_id = c(
+    "C103-2B_S10_L002", "C103-3B_S11_L002", "C103-4B_S13_L002",
+    "C103-4H_S12_L002", "C103-5B_S15_L002", "C103-5H_S14_L002",
+    "C45-1B_S2_L002", "C45-1H_S1_L002", "C45-2B_S4_L002",
+    "C45-2H_S3_L002", "C45-3B_S5_L002", "C45-4B_S7_L002",
+    "C45-4H_S6_L002", "C45-5B_S9_L002", "C45-5H_S8_L002",
+    "F103-1B_S17_L002", "F103-1H_S16_L002", "F103-2B_S19_L002",
+    "F103-2H_S18_L002", "F103-3B_S21_L002", "F103-3H_S20_L002",
+    "F103-4B_S22_L002", "F103-5B_S24_L002", "F103-5H_S23_L002"
+  ),
+  tadpole = c(
+    "C103-2", "C103-3", "C103-4", "C103-4", "C103-5", "C103-5",
+    "C45-1", "C45-1", "C45-2", "C45-2", "C45-3", "C45-4",
+    "C45-4", "C45-5", "C45-5",
+    "F103-1", "F103-1", "F103-2", "F103-2", "F103-3", "F103-3",
+    "F103-4", "F103-5", "F103-5"
+  ),
+  day = c(rep(103L, 6), rep(45L, 9), rep(103L, 9)),
+  treatment = c(rep("Control", 15), rep("Flutamide", 9)),
+  tissue = c(
+    "Body", "Body", "Body", "Head", "Body", "Head",
+    "Body", "Head", "Body", "Head", "Body", "Body", "Head", "Body", "Head",
+    "Body", "Head", "Body", "Head", "Body", "Head", "Body", "Body", "Head"
+  ),
+  clutch = "clutch_1",
+  tank = c(rep("control_tank_1", 6), rep("pre_treatment", 9), rep("flutamide_tank_1", 9)),
+  stringsAsFactors = FALSE
+)
+
+stopifnot(nrow(sample_manifest) == 24L)
+stopifnot(!anyDuplicated(sample_manifest$sample_id))
+stopifnot(!anyNA(sample_manifest))
+
+sample_manifest$stage <- factor(
+  ifelse(sample_manifest$day == 45L, "Young", "Old"),
+  levels = c("Young", "Old")
+)
+sample_manifest$treatment <- factor(
+  sample_manifest$treatment,
+  levels = c("Control", "Flutamide")
+)
+sample_manifest$tissue <- factor(
+  sample_manifest$tissue,
+  levels = c("Body", "Head")
+)
+sample_manifest$group <- factor(
+  paste(sample_manifest$stage, sample_manifest$treatment,
+        sample_manifest$tissue, sep = "_"),
+  levels = c(
+    "Young_Control_Body", "Young_Control_Head",
+    "Old_Control_Body", "Old_Control_Head",
+    "Old_Flutamide_Body", "Old_Flutamide_Head"
+  )
+)
+
+expected_group_counts <- c(
+  Young_Control_Body = 5L, Young_Control_Head = 4L,
+  Old_Control_Body = 4L, Old_Control_Head = 2L,
+  Old_Flutamide_Body = 5L, Old_Flutamide_Head = 4L
+)
+observed_group_counts <- table(sample_manifest$group)
+stopifnot(identical(as.integer(observed_group_counts), unname(expected_group_counts)))
+
+sample_manifest
+observed_group_counts
+```
+
+## Salmon import with tximport
+
+DESeq2 recommends importing Salmon transcript quantifications with `tximport`, then constructing the dataset with `DESeqDataSetFromTximport()`. This retains gene-specific average transcript-length offsets. TPM values are not used for testing.
+
+```{r}
+#| label: tximport
+quant_dir <- "salmon_quant"
+tx2gene_file <- "salmon.merged.tx2gene.tsv"
+gtf_file <- "complete.genomic.gtf"
+
+files <- file.path(quant_dir, sample_manifest$sample_id, "quant.sf")
+names(files) <- sample_manifest$sample_id
+stopifnot(all(file.exists(files)))
+stopifnot(length(files) == 24L)
+
+tx2gene_raw <- read.delim(
+  tx2gene_file,
+  header = TRUE,
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+stopifnot(all(c("transcript_id", "gene_id") %in% names(tx2gene_raw)))
+tx2gene <- unique(tx2gene_raw[, c("transcript_id", "gene_id")])
+stopifnot(!anyNA(tx2gene), !anyDuplicated(tx2gene$transcript_id))
+
+txi <- tximport(
+  files,
+  type = "salmon",
+  tx2gene = tx2gene,
+  countsFromAbundance = "no"
+)
+stopifnot(identical(colnames(txi$counts), sample_manifest$sample_id))
+
+input_checksums <- data.frame(
+  file = c(files, tx2gene_file, gtf_file),
+  md5 = unname(tools::md5sum(c(files, tx2gene_file, gtf_file))),
+  stringsAsFactors = FALSE
+)
+write.csv(
+  input_checksums,
+  "DESeq2_results/input_file_md5_checksums.csv",
+  row.names = FALSE
+)
+```
+
+## Gene annotation
+
+```{r}
+#| label: gene-annotation
+gene_annotation <- unique(tx2gene_raw[, c("gene_id", "gene")])
+names(gene_annotation)[2] <- "gene_name"
+
+gtf <- rtracklayer::import(gtf_file)
+gtf_mcols <- mcols(gtf)
+stopifnot(all(c("gene_id", "type", "product") %in% names(gtf_mcols)))
+
+gtf_products <- data.frame(
+  gene_id = as.character(gtf_mcols$gene_id),
+  feature_type = as.character(gtf_mcols$type),
+  product = as.character(gtf_mcols$product),
+  stringsAsFactors = FALSE
+)
+gtf_products <- subset(
+  gtf_products,
+  !is.na(gene_id) & gene_id != "" & !is.na(product) & product != ""
+)
+product_annotation <- do.call(rbind, lapply(
+  split(gtf_products, gtf_products$gene_id),
+  function(x) {
+    preferred <- unique(x$product[x$feature_type %in% c("transcript", "mRNA")])
+    products <- if (length(preferred)) preferred else unique(x$product)
+    data.frame(
+      gene_id = x$gene_id[1],
+      product_description = paste(products, collapse = " | "),
+      stringsAsFactors = FALSE
+    )
+  }
+))
+rownames(product_annotation) <- NULL
+rm(gtf, gtf_mcols, gtf_products)
+```
+
+## DESeq2 construction and fit
+
+The observed cell combinations are represented by one `group` factor. This is the DESeq2 manual's recommended simple strategy for explicit cell contrasts and avoids a non-estimable full factorial model.
+
+```{r}
+#| label: construct-and-fit
+coldata <- sample_manifest
+rownames(coldata) <- coldata$sample_id
+
+dds <- DESeqDataSetFromTximport(
+  txi,
+  colData = coldata,
+  design = ~ group
+)
+stopifnot(identical(rownames(colData(dds)), colnames(dds)))
+stopifnot(qr(model.matrix(design(dds), as.data.frame(colData(dds))))$rank ==
+            nlevels(dds$group))
+
+mcols(dds)$gene_name <- gene_annotation$gene_name[
+  match(rownames(dds), gene_annotation$gene_id)
+]
+mcols(dds)$product_description <- product_annotation$product_description[
+  match(rownames(dds), product_annotation$gene_id)
+]
+
+# Intentional information filter: count >=10 in at least 3 libraries.
+# Three is stricter than the actual smallest cell (old-control head, n=2).
+genes_before_filter <- nrow(dds)
+keep <- rowSums(counts(dds) >= 10) >= 3
+dds <- dds[keep, ]
+filter_audit <- data.frame(
+  genes_before_filter = genes_before_filter,
+  genes_after_filter = nrow(dds),
+  genes_removed = genes_before_filter - nrow(dds),
+  rule = "count >= 10 in at least 3 libraries"
+)
+write.csv(filter_audit, "DESeq2_results/prefilter_audit.csv", row.names = FALSE)
+filter_audit
+
+dds <- DESeq(dds)
+resultsNames(dds)
+
+write.csv(as.data.frame(colData(dds)),
+          "DESeq2_results/sample_metadata.csv", row.names = FALSE)
+saveRDS(dds, "DESeq2_results/dds_fitted.rds")
+```
+
+## Quality control
+
+### Library sizes, effective scaling factors, and zero fractions
+
+```{r}
+#| label: library-qc
+library_qc <- data.frame(
+  sample_id = colnames(dds),
+  sample_core = sub("_S[0-9]+_L[0-9]+$", "", colnames(dds)),
+  group = dds$group,
+  raw_gene_count_sum = colSums(counts(dds)),
+  # tximport supplies gene-by-sample normalization factors that combine
+  # average transcript-length offsets with library scaling. Their column
+  # geometric means provide a sample-level scaling summary for QC only.
+  effective_library_scaling = exp(
+    colMeans(log(normalizationFactors(dds)))
+  ),
+  zero_fraction = colMeans(counts(dds) == 0),
+  stringsAsFactors = FALSE
+)
+write.csv(library_qc, "DESeq2_results/QC/library_size_factor_zero_fraction.csv",
+          row.names = FALSE)
+
+library_qc_plot <- ggplot(
+  library_qc,
+  aes(x = reorder(sample_core, effective_library_scaling),
+      y = effective_library_scaling, fill = group)
+) +
+  geom_col() + coord_flip() +
+  labs(title = "tximport/DESeq2 effective library scaling", x = NULL,
+       y = "Geometric mean of normalization factors", fill = "Group") +
+  theme_classic(base_size = 11)
+ggsave("DESeq2_results/QC/effective_library_scaling.pdf", library_qc_plot,
+       width = 10, height = 7)
+library_qc_plot
+```
+
+Small effective library-scaling values are flags for upstream MultiQC review,
+not automatic exclusion criteria. Because tximport supplies gene-specific
+length offsets, these summaries must not be described as ordinary DESeq2 size
+factors.
+
+### Dispersion and Cook's-distance diagnostics
+
+```{r}
+#| label: dispersion-cooks-qc
+pdf("DESeq2_results/QC/dispersion_estimates.pdf", width = 8, height = 6)
+plotDispEsts(dds)
+dev.off()
+
+cooks <- assays(dds)[["cooks"]]
+cooks_summary <- data.frame(
+  sample_id = colnames(dds),
+  median_cooks = apply(cooks, 2, median, na.rm = TRUE),
+  q99_cooks = apply(cooks, 2, quantile, probs = 0.99, na.rm = TRUE),
+  max_cooks = apply(cooks, 2, max, na.rm = TRUE)
+)
+write.csv(cooks_summary, "DESeq2_results/QC/cooks_distance_by_sample.csv",
+          row.names = FALSE)
+
+pdf("DESeq2_results/QC/cooks_distance_boxplot.pdf", width = 11, height = 7)
+par(mar = c(9, 5, 2, 2))
+boxplot(log10(cooks), range = 0, las = 2,
+        ylab = "log10 Cook's distance", main = "Cook's distance by library")
+dev.off()
+```
+
+### VST, PCA, sample distances, and heatmaps
+
+`blind=FALSE` uses the fitted dispersion trend for biological visualization and does not remove group effects. A second `blind=TRUE` PCA is included as design-blind sample QA.
+
+```{r}
+#| label: transformation-pca
+vsd <- vst(dds, blind = FALSE)
+vsd_blind <- vst(dds, blind = TRUE)
+saveRDS(vsd, "DESeq2_results/vsd.rds")
+
+make_pca <- function(vsd_object, label, filename) {
+  mat <- assay(vsd_object)
+  vars <- rowVars(mat)
+  top <- names(sort(setNames(vars, rownames(mat)), decreasing = TRUE))[
+    seq_len(min(500, nrow(mat)))
+  ]
+  pca <- prcomp(t(mat[top, , drop = FALSE]), scale. = FALSE)
+  percent <- 100 * pca$sdev^2 / sum(pca$sdev^2)
+  pd <- cbind(as.data.frame(pca$x[, 1:2, drop = FALSE]),
+              as.data.frame(colData(vsd_object)))
+  p <- ggplot(pd, aes(PC1, PC2, color = group, shape = tissue,
+                     label = sub("_S[0-9]+_L[0-9]+$", "", sample_id))) +
+    geom_point(size = 3.5) +
+    geom_text_repel(size = 2.8, max.overlaps = Inf, show.legend = FALSE) +
+    labs(title = paste("PCA:", label),
+         subtitle = "500 most variable genes",
+         x = sprintf("PC1 (%.1f%%)", percent[1]),
+         y = sprintf("PC2 (%.1f%%)", percent[2]), color = "Group") +
+    coord_fixed() + theme_classic(base_size = 11)
+  ggsave(filename, p, width = 10, height = 7)
+  list(plot = p, data = pd, top = top, variance = vars)
+}
+
+pca_bio <- make_pca(vsd, "VST, blind=FALSE",
+                    "DESeq2_results/QC/PCA_top500_variable_genes.pdf")
+pca_blind <- make_pca(vsd_blind, "VST, blind=TRUE",
+                      "DESeq2_results/QC/PCA_top500_variable_genes_blind.pdf")
+write.csv(pca_bio$data, "DESeq2_results/QC/PCA_sample_coordinates.csv",
+          row.names = FALSE)
+write.csv(data.frame(
+  gene_id = pca_bio$top,
+  gene_name = mcols(dds)[pca_bio$top, "gene_name"],
+  VST_variance = pca_bio$variance[pca_bio$top]
+), "DESeq2_results/QC/top500_variable_genes.csv", row.names = FALSE)
+pca_bio$plot
+pca_blind$plot
+```
+
+```{r}
+#| label: distance-heatmaps
+vst_matrix <- assay(vsd)
+top500 <- pca_bio$top
+sample_dist <- dist(t(vst_matrix[top500, , drop = FALSE]))
+sample_dist_matrix <- as.matrix(sample_dist)
+annotation_col <- as.data.frame(colData(vsd)[, c("stage", "treatment", "tissue", "group")])
+
+pheatmap(sample_dist_matrix, annotation_col = annotation_col,
+         annotation_row = annotation_col,
+         clustering_distance_rows = sample_dist,
+         clustering_distance_cols = sample_dist,
+         filename = "DESeq2_results/QC/sample_distance_heatmap.pdf",
+         width = 11, height = 10,
+         main = "Sample distances: top 500 variable genes")
+
+top50 <- top500[seq_len(min(50, length(top500)))]
+heatmap_z <- t(scale(t(vst_matrix[top50, , drop = FALSE])))
+heatmap_z[!is.finite(heatmap_z)] <- 0
+labels <- mcols(dds)[top50, "gene_name"]
+labels <- ifelse(is.na(labels) | labels == "", top50,
+                 paste0(labels, " [", top50, "]"))
+rownames(heatmap_z) <- make.unique(labels)
+pheatmap(heatmap_z, annotation_col = annotation_col,
+         fontsize_row = 6, fontsize_col = 7,
+         color = colorRampPalette(c("navy", "white", "firebrick3"))(101),
+         breaks = seq(-3, 3, length.out = 102),
+         filename = "DESeq2_results/QC/top50_variable_gene_heatmap.pdf",
+         width = 12, height = 12,
+         main = "Top 50 variable genes (row z-scores)")
+```
+
+## Differential-expression functions
+
+The standard Wald result tests LFC = 0. A separate thresholded Wald result formally tests whether |LFC| > 1. Shrunken LFCs are used for ranking and visualization, not to create p-values.
+
+```{r}
+#| label: comparison-functions
+annotate_result <- function(res, dds_object) {
+  out <- as.data.frame(res)
+  out$gene_id <- rownames(out)
+  out$gene_name <- mcols(dds_object)[out$gene_id, "gene_name"]
+  out$product_description <- mcols(dds_object)[out$gene_id, "product_description"]
+  out
+}
+
+run_comparison <- function(dds, numerator, denominator, comparison_name,
+                           alpha = 0.05, lfc_threshold = 1) {
+  contrast_vector <- c("group", numerator, denominator)
+  res <- results(dds, contrast = contrast_vector, alpha = alpha)
+  res_threshold <- results(
+    dds, contrast = contrast_vector, alpha = alpha,
+    lfcThreshold = lfc_threshold, altHypothesis = "greaterAbs"
+  )
+  res_shrunk <- lfcShrink(
+    dds, contrast = contrast_vector, res = res, type = "ashr"
+  )
+
+  out <- annotate_result(res, dds)
+  out$shrunken_log2FoldChange <- res_shrunk$log2FoldChange
+  out$shrunken_lfcSE <- res_shrunk$lfcSE
+  out$threshold_stat <- res_threshold$stat
+  out$threshold_pvalue <- res_threshold$pvalue
+  out$threshold_padj <- res_threshold$padj
+  out$standard_FDR_significant <- !is.na(out$padj) & out$padj < alpha
+  out$LFC_threshold_FDR_significant <-
+    !is.na(out$threshold_padj) & out$threshold_padj < alpha
+  out$threshold_direction <- "Not threshold-significant"
+  out$threshold_direction[
+    out$LFC_threshold_FDR_significant & out$shrunken_log2FoldChange > 0
+  ] <- "Higher"
+  out$threshold_direction[
+    out$LFC_threshold_FDR_significant & out$shrunken_log2FoldChange < 0
+  ] <- "Lower"
+  out <- out[order(out$threshold_padj, out$padj, out$pvalue, na.last = TRUE), ]
+
+  write.csv(out, file.path("DESeq2_results/DGE",
+    paste0(comparison_name, "_DESeq2_results.csv")), row.names = FALSE)
+
+  result_summary <- data.frame(
+    comparison = comparison_name,
+    numerator = numerator,
+    denominator = denominator,
+    genes = nrow(out),
+    standard_FDR_below_0.05 = sum(out$standard_FDR_significant),
+    threshold_test_FDR_below_0.05 = sum(out$LFC_threshold_FDR_significant),
+    threshold_higher = sum(out$threshold_direction == "Higher"),
+    threshold_lower = sum(out$threshold_direction == "Lower"),
+    NA_pvalue = sum(is.na(out$pvalue)),
+    NA_padj = sum(is.na(out$padj)),
+    independent_filter_threshold = unname(metadata(res)$filterThreshold)
+  )
+
+  pdf(file.path("DESeq2_results/QC", paste0(comparison_name, "_MA.pdf")),
+      width = 8, height = 6)
+  plotMA(res_shrunk, alpha = alpha, ylim = c(-5, 5),
+         main = paste(comparison_name, "(ashr LFC)"))
+  dev.off()
+
+  plot_data <- out
+  plot_data$plot_padj <- ifelse(is.na(plot_data$threshold_padj), 1,
+                               pmax(plot_data$threshold_padj,
+                                    .Machine$double.xmin))
+  labels <- subset(plot_data,
+                   LFC_threshold_FDR_significant & !is.na(gene_name) & gene_name != "")
+  labels <- head(labels[order(labels$threshold_padj), ], 10)
+  volcano <- ggplot(plot_data,
+    aes(shrunken_log2FoldChange, -log10(plot_padj), color = threshold_direction)) +
+    geom_point(alpha = 0.65, size = 1.4) +
+    geom_vline(xintercept = c(-lfc_threshold, lfc_threshold),
+               linetype = "dashed", color = "grey40") +
+    geom_hline(yintercept = -log10(alpha), linetype = "dashed", color = "grey40") +
+    geom_text_repel(data = labels, aes(label = gene_name), size = 3,
+                    max.overlaps = Inf, show.legend = FALSE) +
+    scale_color_manual(values = c(
+      "Lower" = "#2C7BB6", "Not threshold-significant" = "grey75",
+      "Higher" = "#D7191C"
+    )) +
+    labs(title = comparison_name,
+         subtitle = paste(numerator, "vs", denominator),
+         x = "ashr-shrunken log2 fold change",
+         y = expression(-log[10]("threshold-test adjusted p-value")),
+         caption = paste0("Formal Wald test of |LFC| > ", lfc_threshold,
+                          "; FDR < ", alpha), color = NULL) +
+    theme_classic(base_size = 11) + theme(legend.position = "top")
+  ggsave(file.path("DESeq2_results/volcano",
+                   paste0(comparison_name, "_volcano.pdf")),
+         volcano, width = 8, height = 7)
+
+  list(res = res, res_threshold = res_threshold, res_shrunk = res_shrunk,
+       table = out, summary = result_summary)
+}
+```
+
+## Primary contrasts
+
+```{r}
+#| label: primary-contrasts
+leg_emergence <- run_comparison(
+  dds, "Old_Control_Body", "Young_Control_Body",
+  "leg_emergence_OldControlBody_vs_YoungControlBody"
+)
+nervous_system_development <- run_comparison(
+  dds, "Old_Control_Head", "Young_Control_Head",
+  "nervous_system_OldControlHead_vs_YoungControlHead"
+)
+ar_blockade_body <- run_comparison(
+  dds, "Old_Flutamide_Body", "Old_Control_Body",
+  "AR_blockade_OldBodyFlutamide_vs_OldBodyControl"
+)
+ar_blockade_head <- run_comparison(
+  dds, "Old_Flutamide_Head", "Old_Control_Head",
+  "AR_blockade_OldHeadFlutamide_vs_OldHeadControl"
+)
+
+contrast_summaries <- do.call(rbind, lapply(list(
+  leg_emergence, nervous_system_development,
+  ar_blockade_body, ar_blockade_head
+), `[[`, "summary"))
+write.csv(contrast_summaries, "DESeq2_results/DGE/contrast_summaries.csv",
+          row.names = FALSE)
+contrast_summaries
+```
+
+The stage contrasts are control-only, between-animal day/stage comparisons. The flutamide contrasts are day-103 flutamide-tank versus control-tank associations. The old-head contrasts have only two control libraries and are considered provisional.
+
+## Relevant-subset sensitivity fits
+
+DESeq2 usually recommends fitting all groups together, but very different groups can influence the shared gene-wise dispersion. Each main contrast is therefore refit using only its two relevant cells.
+
+```{r}
+#| label: subset-sensitivity
+run_subset_sensitivity <- function(dds_full, full_result, numerator,
+                                   denominator, comparison_name) {
+  use <- dds_full$group %in% c(numerator, denominator)
+  d <- dds_full[, use]
+  d$group <- droplevels(d$group)
+  design(d) <- ~ group
+  d <- DESeq(d)
+  sub_res <- results(d, contrast = c("group", numerator, denominator), alpha = 0.05)
+  ids <- rownames(full_result)
+  sub_lfc <- sub_res$log2FoldChange[match(ids, rownames(sub_res))]
+  sub_padj <- sub_res$padj[match(ids, rownames(sub_res))]
+  tab <- data.frame(
+    gene_id = ids,
+    full_log2FC = full_result$log2FoldChange,
+    full_padj = full_result$padj,
+    subset_log2FC = sub_lfc,
+    subset_padj = sub_padj,
+    direction_agrees = sign(full_result$log2FoldChange) == sign(sub_lfc)
+  )
+  finite <- is.finite(tab$full_log2FC) & is.finite(tab$subset_log2FC)
+  summary <- data.frame(
+    comparison = comparison_name,
+    full_samples = ncol(dds_full), subset_samples = ncol(d),
+    spearman_LFC = cor(tab$full_log2FC[finite], tab$subset_log2FC[finite],
+                       method = "spearman"),
+    direction_agreement = mean(tab$direction_agrees[finite], na.rm = TRUE),
+    full_FDR_hits = sum(tab$full_padj < 0.05, na.rm = TRUE),
+    subset_FDR_hits = sum(tab$subset_padj < 0.05, na.rm = TRUE),
+    shared_FDR_hits = sum(tab$full_padj < 0.05 & tab$subset_padj < 0.05,
+                          na.rm = TRUE)
+  )
+  write.csv(tab, file.path("DESeq2_results/sensitivity",
+    paste0(comparison_name, "_full_vs_subset.csv")), row.names = FALSE)
+  summary
+}
+
+subset_summaries <- rbind(
+  run_subset_sensitivity(dds, leg_emergence$res,
+    "Old_Control_Body", "Young_Control_Body", "stage_body"),
+  run_subset_sensitivity(dds, nervous_system_development$res,
+    "Old_Control_Head", "Young_Control_Head", "stage_head"),
+  run_subset_sensitivity(dds, ar_blockade_body$res,
+    "Old_Flutamide_Body", "Old_Control_Body", "flutamide_body"),
+  run_subset_sensitivity(dds, ar_blockade_head$res,
+    "Old_Flutamide_Head", "Old_Control_Head", "flutamide_head")
+)
+write.csv(subset_summaries,
+          "DESeq2_results/sensitivity/full_vs_subset_summaries.csv",
+          row.names = FALSE)
+subset_summaries
+```
+
+## Older-only paired tissue interaction
+
+The interaction is
+
+$$
+(\mathrm{flutamide\ tank\ head}-\mathrm{control\ tank\ head})-
+(\mathrm{flutamide\ tank\ body}-\mathrm{control\ tank\ body}).
+$$
+
+Tadpole fixed effects account for paired head/body libraries. Treatment main effect is absorbed by tadpole; the custom `flutamide_head` coefficient estimates the difference-in-differences.
+
+```{r}
+#| label: paired-interaction
+dds_old <- dds[, dds$stage == "Old"]
+# Use syntactically safe factor levels for stable coefficient names.
+dds_old$tadpole <- factor(make.names(as.character(dds_old$tadpole)))
+dds_old$tissue <- factor(dds_old$tissue, levels = c("Body", "Head"))
+dds_old$flutamide_head <- as.integer(
+  dds_old$treatment == "Flutamide" & dds_old$tissue == "Head"
+)
+design(dds_old) <- ~ tadpole + tissue + flutamide_head
+paired_mm <- model.matrix(design(dds_old), as.data.frame(colData(dds_old)))
+stopifnot(qr(paired_mm)$rank == ncol(paired_mm))
+
+pair_table <- with(as.data.frame(colData(dds_old)), table(tadpole, tissue))
+complete_pair_ids <- rownames(pair_table)[rowSums(pair_table > 0) == 2]
+paired_design_audit <- data.frame(
+  old_libraries = ncol(dds_old),
+  tadpoles = nlevels(dds_old$tadpole),
+  complete_pairs = length(complete_pair_ids),
+  control_complete_pairs = sum(grepl("^C", complete_pair_ids)),
+  flutamide_complete_pairs = sum(grepl("^F", complete_pair_ids)),
+  model_parameters = ncol(paired_mm),
+  residual_df = nrow(paired_mm) - qr(paired_mm)$rank
+)
+write.csv(paired_design_audit,
+          "DESeq2_results/DGE/paired_interaction_design_audit.csv",
+          row.names = FALSE)
+paired_design_audit
+
+dds_old <- DESeq(dds_old)
+interaction_name <- grep("flutamide_head", resultsNames(dds_old), value = TRUE)
+stopifnot(length(interaction_name) == 1L)
+res_interaction <- results(dds_old, name = interaction_name, alpha = 0.05)
+res_interaction_shrunk <- lfcShrink(
+  dds_old, coef = interaction_name, res = res_interaction, type = "ashr"
+)
+
+interaction_out <- annotate_result(res_interaction, dds_old)
+interaction_out$shrunken_interaction_log2FC <-
+  res_interaction_shrunk$log2FoldChange
+interaction_out$shrunken_interaction_lfcSE <- res_interaction_shrunk$lfcSE
+
+# Auxiliary component contrasts come from the separate global, unpaired model.
+interaction_out$auxiliary_unpaired_head_log2FC <-
+  ar_blockade_head$res$log2FoldChange[
+    match(interaction_out$gene_id, rownames(ar_blockade_head$res))
+  ]
+interaction_out$auxiliary_unpaired_body_log2FC <-
+  ar_blockade_body$res$log2FoldChange[
+    match(interaction_out$gene_id, rownames(ar_blockade_body$res))
+  ]
+interaction_out$paired_interaction_FDR_significant <-
+  !is.na(interaction_out$padj) & interaction_out$padj < 0.05
+interaction_out <- interaction_out[
+  order(interaction_out$padj, interaction_out$pvalue, na.last = TRUE),
+]
+write.csv(interaction_out,
+          "DESeq2_results/DGE/AR_blockade_head_vs_body_interaction_old_only.csv",
+          row.names = FALSE)
+saveRDS(dds_old, "DESeq2_results/dds_old_interaction_fitted.rds")
+```
+
+## Unpaired interaction sensitivity analysis
+
+```{r}
+#| label: unpaired-interaction
+dds_old_unpaired <- dds[, dds$stage == "Old"]
+dds_old_unpaired$treatment <- factor(dds_old_unpaired$treatment,
+                                     levels = c("Control", "Flutamide"))
+dds_old_unpaired$tissue <- factor(dds_old_unpaired$tissue,
+                                  levels = c("Body", "Head"))
+design(dds_old_unpaired) <- ~ treatment * tissue
+unpaired_mm <- model.matrix(design(dds_old_unpaired),
+                            as.data.frame(colData(dds_old_unpaired)))
+stopifnot(qr(unpaired_mm)$rank == ncol(unpaired_mm))
+dds_old_unpaired <- DESeq(dds_old_unpaired)
+unpaired_name <- grep("treatment.*tissue|tissue.*treatment",
+                      resultsNames(dds_old_unpaired), value = TRUE)
+stopifnot(length(unpaired_name) == 1L)
+res_unpaired <- results(dds_old_unpaired, name = unpaired_name, alpha = 0.05)
+res_unpaired_shrunk <- lfcShrink(
+  dds_old_unpaired, coef = unpaired_name, res = res_unpaired, type = "ashr"
+)
+
+sensitivity_comparison <- data.frame(
+  gene_id = rownames(res_interaction),
+  gene_name = mcols(dds_old)[rownames(res_interaction), "gene_name"],
+  paired_interaction_log2FC = res_interaction_shrunk$log2FoldChange,
+  paired_interaction_padj = res_interaction$padj,
+  unpaired_interaction_log2FC = res_unpaired_shrunk$log2FoldChange[
+    match(rownames(res_interaction), rownames(res_unpaired_shrunk))
+  ],
+  unpaired_interaction_padj = res_unpaired$padj[
+    match(rownames(res_interaction), rownames(res_unpaired))
+  ]
+)
+sensitivity_comparison$direction_agrees <- with(
+  sensitivity_comparison,
+  sign(paired_interaction_log2FC) == sign(unpaired_interaction_log2FC)
+)
+sensitivity_comparison$paired_significant <- with(
+  sensitivity_comparison, !is.na(paired_interaction_padj) &
+    paired_interaction_padj < 0.05
+)
+sensitivity_comparison$unpaired_significant <- with(
+  sensitivity_comparison, !is.na(unpaired_interaction_padj) &
+    unpaired_interaction_padj < 0.05
+)
+finite <- with(sensitivity_comparison,
+  is.finite(paired_interaction_log2FC) & is.finite(unpaired_interaction_log2FC))
+interaction_sensitivity_summary <- data.frame(
+  genes_compared = sum(finite),
+  spearman_LFC = with(sensitivity_comparison,
+    cor(paired_interaction_log2FC[finite], unpaired_interaction_log2FC[finite],
+        method = "spearman")),
+  direction_agreement = mean(sensitivity_comparison$direction_agrees[finite],
+                             na.rm = TRUE),
+  paired_FDR_hits = sum(sensitivity_comparison$paired_significant),
+  unpaired_FDR_hits = sum(sensitivity_comparison$unpaired_significant),
+  shared_FDR_hits = with(sensitivity_comparison,
+    sum(paired_significant & unpaired_significant))
+)
+write.csv(sensitivity_comparison,
+  "DESeq2_results/DGE/AR_blockade_interaction_paired_vs_unpaired_all_genes.csv",
+  row.names = FALSE)
+write.csv(interaction_sensitivity_summary,
+  "DESeq2_results/DGE/AR_blockade_interaction_paired_vs_unpaired_summary.csv",
+  row.names = FALSE)
+saveRDS(dds_old_unpaired,
+        "DESeq2_results/dds_old_unpaired_interaction_fitted.rds")
+interaction_sensitivity_summary
+```
+
+## Leave-one-complete-pair-out stability
+
+Each complete head/body pair is omitted in turn. This does not create new experimental replication; it tests whether leading paired-interaction estimates are dominated by one pair.
+
+```{r}
+#| label: leave-one-pair-out
+paired_hit_ids <- rownames(res_interaction)[
+  !is.na(res_interaction$padj) & res_interaction$padj < 0.05
+]
+full_hit_lfc <- res_interaction$log2FoldChange[
+  match(paired_hit_ids, rownames(res_interaction))
+]
+loo_list <- lapply(complete_pair_ids, function(id) {
+  d <- dds_old[, dds_old$tadpole != id]
+  d$tadpole <- droplevels(d$tadpole)
+  design(d) <- ~ tadpole + tissue + flutamide_head
+  mm <- model.matrix(design(d), as.data.frame(colData(d)))
+  stopifnot(qr(mm)$rank == ncol(mm))
+  d <- DESeq(d, quiet = TRUE)
+  nm <- grep("flutamide_head", resultsNames(d), value = TRUE)
+  r <- results(d, name = nm, alpha = 0.05)
+  data.frame(
+    omitted_pair = id,
+    gene_id = paired_hit_ids,
+    full_log2FC = full_hit_lfc,
+    leave_one_out_log2FC = r$log2FoldChange[
+      match(paired_hit_ids, rownames(r))
+    ],
+    leave_one_out_padj = r$padj[match(paired_hit_ids, rownames(r))]
+  )
+})
+loo_stability <- do.call(rbind, loo_list)
+loo_stability$direction_agrees <- with(
+  loo_stability, sign(full_log2FC) == sign(leave_one_out_log2FC)
+)
+write.csv(loo_stability,
+          "DESeq2_results/sensitivity/paired_interaction_leave_one_pair_out.csv",
+          row.names = FALSE)
+loo_summary <- aggregate(
+  cbind(direction_agrees, leave_one_out_log2FC) ~ gene_id,
+  data = loo_stability,
+  FUN = function(x) c(min = min(x, na.rm = TRUE),
+                      median = median(x, na.rm = TRUE),
+                      max = max(x, na.rm = TRUE))
+)
+loo_summary
+```
+
+## Targeted spinal cord motor-neuron and interneuron marker audit
+
+This section checks the candidate list supplied by the PI. Antibody/common
+names are resolved to the gene symbols used in the *S. parvus* annotation.
+Grouped markers are expanded to individual paralogs. "Gone4" is interpreted
+as **GON4L**; Hb9 as **MNX1**; Chx10 as **VSX2**; HuC/HuD as
+**ELAVL3/ELAVL4**; and Raldh2 as **ALDH1A2**.
+
+```{r}
+#| label: candidate-gene-map
+candidate_map <- data.frame(
+  PI_marker = c(
+    "Hb9", "Lhx3 (Lim3)", "Isl1/2", "Isl1/2", "foxp1", "En1",
+    "Evx1", "dmrt3", "nkx2.2", "Chx10", "Shox2", "Hu C/D", "Hu C/D",
+    "Sox2", "Gone4", "Lmx1-2", "Lmx1-2", "MafA", "Otp", "foxp2",
+    "Sox1/3", "Sox1/3", "Sp8", "Lhx2-9 (BamhII)",
+    "Lhx2-9 (BamhII)", "Raldh2", "ChAT"
+  ),
+  resolved_symbol = c(
+    "MNX1", "LHX3", "ISL1", "ISL2", "FOXP1", "EN1", "EVX1", "DMRT3",
+    "NKX2-2", "VSX2", "SHOX2", "ELAVL3", "ELAVL4", "SOX2", "GON4L",
+    "LMX1A", "LMX1B", "MAFA", "OTP", "FOXP2", "SOX1", "SOX3", "SP8",
+    "LHX2", "LHX9", "ALDH1A2", "CHAT"
+  ),
+  alias_note = c(
+    "Hb9 is MNX1", "Lim3 is LHX3", "Isl1", "Isl2", "", "", "", "",
+    "NKX2-2", "Chx10 is VSX2", "", "HuC is ELAVL3", "HuD is ELAVL4",
+    "", "Gone4 interpreted as GON4L", "Lmx1a", "Lmx1b", "", "", "",
+    "Sox1", "Sox3", "", "Lhx2", "Lhx9", "Raldh2 is ALDH1A2", ""
+  ),
+  stringsAsFactors = FALSE
+)
+
+annotation_lookup <- unique(tx2gene_raw[, c("gene_id", "gene")])
+candidate_map$gene_id <- annotation_lookup$gene_id[
+  match(candidate_map$resolved_symbol, annotation_lookup$gene)
+]
+candidate_map$present_in_annotation <- !is.na(candidate_map$gene_id)
+candidate_map$retained_after_filter <-
+  candidate_map$gene_id %in% rownames(dds)
+
+stopifnot(all(candidate_map$present_in_annotation))
+candidate_map
+```
+
+Presence in the annotation does not guarantee sufficient expression for
+differential testing. A gene absent after filtering had fewer than three
+libraries with counts of at least 10 and is reported as "not tested," not as
+evidence of no expression.
+
+```{r}
+#| label: candidate-gene-results
+candidate_comparisons <- list(
+  stage_body = leg_emergence,
+  stage_head = nervous_system_development,
+  flutamide_tank_body = ar_blockade_body,
+  flutamide_tank_head = ar_blockade_head
+)
+
+candidate_long <- do.call(rbind, lapply(names(candidate_comparisons), function(nm) {
+  obj <- candidate_comparisons[[nm]]
+  tab <- obj$table
+  idx <- match(candidate_map$gene_id, tab$gene_id)
+  data.frame(
+    PI_marker = candidate_map$PI_marker,
+    resolved_symbol = candidate_map$resolved_symbol,
+    gene_id = candidate_map$gene_id,
+    comparison = nm,
+    present_in_annotation = candidate_map$present_in_annotation,
+    retained_after_filter = candidate_map$retained_after_filter,
+    baseMean = tab$baseMean[idx],
+    shrunken_log2FoldChange = tab$shrunken_log2FoldChange[idx],
+    pvalue = tab$pvalue[idx],
+    padj = tab$padj[idx],
+    threshold_padj = tab$threshold_padj[idx],
+    standard_FDR_significant = tab$standard_FDR_significant[idx],
+    LFC_threshold_FDR_significant =
+      tab$LFC_threshold_FDR_significant[idx],
+    stringsAsFactors = FALSE
+  )
+}))
+
+# Add the paired tissue interaction as a fifth comparison. It tests whether
+# the day-103 between-tank association differs between head and body.
+interaction_idx <- match(candidate_map$gene_id, interaction_out$gene_id)
+candidate_interaction <- data.frame(
+  PI_marker = candidate_map$PI_marker,
+  resolved_symbol = candidate_map$resolved_symbol,
+  gene_id = candidate_map$gene_id,
+  comparison = "paired_tissue_interaction",
+  present_in_annotation = candidate_map$present_in_annotation,
+  retained_after_filter = candidate_map$retained_after_filter,
+  baseMean = interaction_out$baseMean[interaction_idx],
+  shrunken_log2FoldChange =
+    interaction_out$shrunken_interaction_log2FC[interaction_idx],
+  pvalue = interaction_out$pvalue[interaction_idx],
+  padj = interaction_out$padj[interaction_idx],
+  threshold_padj = NA_real_,
+  standard_FDR_significant =
+    interaction_out$paired_interaction_FDR_significant[interaction_idx],
+  LFC_threshold_FDR_significant = NA,
+  stringsAsFactors = FALSE
+)
+candidate_long <- rbind(candidate_long, candidate_interaction)
+
+candidate_long$direction <- ifelse(
+  is.na(candidate_long$shrunken_log2FoldChange), NA,
+  ifelse(candidate_long$shrunken_log2FoldChange > 0, "Higher", "Lower")
+)
+candidate_long$DE_call <- ifelse(
+  !candidate_long$retained_after_filter, "Not tested: low counts",
+  ifelse(is.na(candidate_long$padj), "Tested; adjusted p-value unavailable",
+    ifelse(candidate_long$standard_FDR_significant,
+           paste("FDR < 0.05", candidate_long$direction),
+           "Not significant at FDR 0.05"))
+)
+
+write.csv(
+  candidate_long,
+  "DESeq2_results/DGE/spinal_marker_candidates_all_comparisons.csv",
+  row.names = FALSE
+)
+
+candidate_overview <- do.call(rbind, lapply(seq_len(nrow(candidate_map)), function(i) {
+  z <- candidate_long[candidate_long$resolved_symbol ==
+                        candidate_map$resolved_symbol[i], ]
+  data.frame(
+    PI_marker = candidate_map$PI_marker[i],
+    resolved_symbol = candidate_map$resolved_symbol[i],
+    gene_id = candidate_map$gene_id[i],
+    present_in_annotation = candidate_map$present_in_annotation[i],
+    retained_after_filter = candidate_map$retained_after_filter[i],
+    any_standard_FDR_hit = any(z$standard_FDR_significant, na.rm = TRUE),
+    significant_comparisons = paste(
+      z$comparison[which(z$standard_FDR_significant %in% TRUE)],
+      collapse = "; "
+    ),
+    any_formal_abs_LFC_above_1_hit =
+      any(z$LFC_threshold_FDR_significant, na.rm = TRUE),
+    stringsAsFactors = FALSE
+  )
+}))
+write.csv(
+  candidate_overview,
+  "DESeq2_results/DGE/spinal_marker_candidates_presence_summary.csv",
+  row.names = FALSE
+)
+candidate_overview
+```
+
+The standard FDR column answers whether a candidate differs from zero under
+any comparison. The formal effect-threshold column is more stringent and asks
+whether an absolute LFC greater than 1 is statistically supported. The paired
+interaction is evaluated only against zero, because the interaction analysis
+was not specified as an effect-threshold test.
+
+```{r}
+#| label: candidate-gene-expression
+candidate_ids <- candidate_map$gene_id[candidate_map$retained_after_filter]
+candidate_symbols <- candidate_map$resolved_symbol[
+  candidate_map$retained_after_filter
+]
+normalized_candidate_counts <- counts(dds, normalized = TRUE)[
+  candidate_ids, , drop = FALSE
+]
+
+candidate_expression_long <- do.call(rbind, lapply(seq_along(candidate_ids), function(i) {
+  data.frame(
+    gene_id = candidate_ids[i],
+    resolved_symbol = candidate_symbols[i],
+    sample_id = colnames(dds),
+    group = dds$group,
+    normalized_count = normalized_candidate_counts[i, ],
+    stringsAsFactors = FALSE
+  )
+}))
+write.csv(
+  candidate_expression_long,
+  "DESeq2_results/DGE/spinal_marker_candidates_normalized_counts.csv",
+  row.names = FALSE
+)
+
+candidate_expression_plot <- ggplot(
+  candidate_expression_long,
+  aes(x = group, y = log2(normalized_count + 1), color = group)
+) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.15, color = "grey45") +
+  geom_point(position = position_jitter(width = 0.12), size = 0.9,
+             alpha = 0.75) +
+  facet_wrap(~ resolved_symbol, scales = "free_y", ncol = 4) +
+  labs(
+    title = "Targeted spinal cord marker expression across bulk tissue groups",
+    subtitle = "DESeq2-normalized gene counts; points are libraries",
+    x = NULL,
+    y = "log2(normalized count + 1)",
+    color = "Group"
+  ) +
+  theme_classic(base_size = 9) +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1, size = 6),
+    legend.position = "none"
+  )
+ggsave(
+  "DESeq2_results/QC/spinal_marker_candidates_normalized_counts.pdf",
+  candidate_expression_plot,
+  width = 15,
+  height = 17
+)
+candidate_expression_plot
+```
+
+These measurements come from bulk head and body dissections. A marker can be
+strongly localized by immunohistochemistry yet show no bulk-tissue DE if its
+cell population is rare, if opposing cell populations dilute the signal, or
+if expression changes spatially without changing the tissue-wide mean.
+
+## Interpretation
+
+A positive interaction means the flutamide-tank association is more positive in head than body; it may arise from stronger head induction, stronger body repression, or both. A negative interaction has the opposite meaning. Interaction sign is not ordinary gene up- or downregulation.
+
+The most defensible interaction candidates are genes with consistent effect directions, stability when individual complete pairs are omitted, and support in both paired and unpaired models. Statistical interaction does not establish direct androgen-receptor regulation and remains confounded with tank.
+
+Suggested reporting language:
+
+> At day 103, tadpoles housed in the flutamide tank differed in gene expression from tadpoles housed in the control tank. Because treatment was applied at the tank level with one tank per condition, treatment and tank effects are inseparable and these contrasts are exploratory. The tissue-dependent association was estimated from six complete head–body pairs (two control and four flutamide; paired-model residual df = 4). Candidate genes were evaluated using paired and unpaired interaction models and leave-one-pair-out stability analyses.
+
+## Reproducibility record
+
+```{r}
+#| label: reproducibility
+writeLines(capture.output(sessionInfo()), "DESeq2_results/sessionInfo.txt")
+sessionInfo()
+```

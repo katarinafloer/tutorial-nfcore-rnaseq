@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>egapx_instructions – Mangiamele Lab RNA-seq tutorial</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-2715aa1771326ae22ff541c438b860e9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Mangiamele Lab RNA-seq tutorial
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Mangiamele Lab RNA-seq tutorial</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mangiamele Lab RNA-seq Resource</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rna-seq-concepts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What is RNA-seq?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./file-types-storage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">File Types and File Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./frog-data-availability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Frog Data Availability</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Terminal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connecting-to-unity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Connecting to Unity</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using-unity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Unity</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Run a Demo Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./running.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Run the Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./results.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interpret Results</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DGE.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Differential Gene Expression Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Troubleshooting</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#egapx-instructions-for-staurois-parvus" id="toc-egapx-instructions-for-staurois-parvus" class="nav-link active" data-scroll-target="#egapx-instructions-for-staurois-parvus"><span class="header-section-number">1</span> EGAPx instructions for <em>Staurois parvus</em></a>
+  <ul class="collapse">
+  <li><a href="#project-directory" id="toc-project-directory" class="nav-link" data-scroll-target="#project-directory"><span class="header-section-number">1.1</span> 1. Project directory</a></li>
+  <li><a href="#clone-and-install-egapx" id="toc-clone-and-install-egapx" class="nav-link" data-scroll-target="#clone-and-install-egapx"><span class="header-section-number">1.2</span> 2. Clone and install EGAPx</a></li>
+  <li><a href="#softwaremodules-used-on-unity" id="toc-softwaremodules-used-on-unity" class="nav-link" data-scroll-target="#softwaremodules-used-on-unity"><span class="header-section-number">1.3</span> 3. Software/modules used on Unity</a></li>
+  <li><a href="#egapx-input-yaml" id="toc-egapx-input-yaml" class="nav-link" data-scroll-target="#egapx-input-yaml"><span class="header-section-number">1.4</span> 4. EGAPx input YAML</a></li>
+  <li><a href="#rna-seq-manifest" id="toc-rna-seq-manifest" class="nav-link" data-scroll-target="#rna-seq-manifest"><span class="header-section-number">1.5</span> 5. RNA-seq manifest</a></li>
+  <li><a href="#validate-input-files" id="toc-validate-input-files" class="nav-link" data-scroll-target="#validate-input-files"><span class="header-section-number">1.6</span> 6. Validate input files</a></li>
+  <li><a href="#generate-egapx-config-files" id="toc-generate-egapx-config-files" class="nav-link" data-scroll-target="#generate-egapx-config-files"><span class="header-section-number">1.7</span> 7. Generate EGAPx config files</a></li>
+  <li><a href="#edit-egapx-config-files" id="toc-edit-egapx-config-files" class="nav-link" data-scroll-target="#edit-egapx-config-files"><span class="header-section-number">1.8</span> 8. Edit EGAPx config files</a></li>
+  <li><a href="#initial-egapx-run-script" id="toc-initial-egapx-run-script" class="nav-link" data-scroll-target="#initial-egapx-run-script"><span class="header-section-number">1.9</span> 9. Initial EGAPx run script</a></li>
+  <li><a href="#oom-failure-and-fix" id="toc-oom-failure-and-fix" class="nav-link" data-scroll-target="#oom-failure-and-fix"><span class="header-section-number">1.10</span> 10. OOM failure and fix</a></li>
+  <li><a href="#resume-script" id="toc-resume-script" class="nav-link" data-scroll-target="#resume-script"><span class="header-section-number">1.11</span> 11. Resume script</a></li>
+  <li><a href="#main-egapx-outputs" id="toc-main-egapx-outputs" class="nav-link" data-scroll-target="#main-egapx-outputs"><span class="header-section-number">1.12</span> 12. Main EGAPx outputs</a></li>
+  <li><a href="#annotation-summary" id="toc-annotation-summary" class="nav-link" data-scroll-target="#annotation-summary"><span class="header-section-number">1.13</span> 13. Annotation summary</a></li>
+  <li><a href="#isoform-check" id="toc-isoform-check" class="nav-link" data-scroll-target="#isoform-check"><span class="header-section-number">1.14</span> 14. Isoform check</a></li>
+  <li><a href="#gene-naming-annotation-usefulness" id="toc-gene-naming-annotation-usefulness" class="nav-link" data-scroll-target="#gene-naming-annotation-usefulness"><span class="header-section-number">1.15</span> 15. Gene naming / annotation usefulness</a></li>
+  <li><a href="#androgen-receptor-sanity-check" id="toc-androgen-receptor-sanity-check" class="nav-link" data-scroll-target="#androgen-receptor-sanity-check"><span class="header-section-number">1.16</span> 16. Androgen receptor sanity check</a></li>
+  <li><a href="#things-to-adapt-on-another-hpc" id="toc-things-to-adapt-on-another-hpc" class="nav-link" data-scroll-target="#things-to-adapt-on-another-hpc"><span class="header-section-number">1.17</span> 17. Things to adapt on another HPC</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/egapx_instructions.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="egapx-instructions-for-staurois-parvus" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> EGAPx instructions for <em>Staurois parvus</em></h1>
+<p>These notes document the EGAPx annotation workflow used for the new <em>Staurois parvus</em> genome assembly. They are meant as a practical template for rerunning EGAPx on Unity or adapting the run to another HPC.</p>
+<p>Main run scripts:</p>
+<ul>
+<li><p>Initial EGAPx run:<br>
+https://github.com/katarinafloer/SparvusGenome/blob/main/run_sparvus_egapx.sbatch</p></li>
+<li><p>Resume script after the first run hit an out-of-memory error:<br>
+https://github.com/katarinafloer/SparvusGenome/blob/main/resume_sparvus_egapx.sbatch</p></li>
+<li><p>EGAPx config snapshot:<br>
+https://github.com/katarinafloer/SparvusGenome/tree/main/egapx_config</p></li>
+</ul>
+<p>Important note: the two SLURM scripts are not the entire setup. EGAPx also needs an input YAML, an RNA-seq manifest, the EGAPx repo/venv, Nextflow + Apptainer/Singularity, and cluster-specific config edits.</p>
+<section id="project-directory" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="project-directory"><span class="header-section-number">1.1</span> 1. Project directory</h2>
+<p>For this run, I used:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">PROJECT</span><span class="op">=</span>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create the project directory structure:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">"</span>/<span class="dt">{input</span><span class="op">,</span><span class="dt">work</span><span class="op">,</span><span class="dt">output</span><span class="op">,</span><span class="dt">container_cache</span><span class="op">,</span><span class="dt">tmp</span><span class="op">,</span><span class="dt">logs}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="clone-and-install-egapx" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="clone-and-install-egapx"><span class="header-section-number">1.2</span> 2. Clone and install EGAPx</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/ncbi/egapx.git</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/egapx"</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv venv</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">--upgrade</span> pip</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ui/egapx.py <span class="at">-V</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rev-parse HEAD <span class="kw">|</span> <span class="fu">tee</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/egapx_commit.txt"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For my run:</p>
+<pre class="text"><code>EGAPx 0.5.2
+commit: 40ec7362576e4b93fa9c5bf0a6c400d9502b8a63</code></pre>
+</section>
+<section id="softwaremodules-used-on-unity" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="softwaremodules-used-on-unity"><span class="header-section-number">1.3</span> 3. Software/modules used on Unity</h2>
+<p>On Unity, I used:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> purge</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer/latest</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/24.04.3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Python 3.12 was available on the system even though <code>module load python/3.12</code> did not work.</p>
+<p>Check versions:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">java</span> <span class="at">-version</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> <span class="at">-version</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> <span class="at">--version</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> singularity <span class="kw">||</span> <span class="bu">command</span> <span class="at">-v</span> apptainer</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="egapx-input-yaml" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="egapx-input-yaml"><span class="header-section-number">1.4</span> 4. EGAPx input YAML</h2>
+<p>The input YAML was:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">genome</span><span class="kw">:</span><span class="at"> /scratch3/workspace/kfloer_smith_edu-simple/sparvus_hifiasm/assembly_output/sparvus_primary_contigs.ncbi.fa</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">taxid</span><span class="kw">:</span><span class="at"> </span><span class="dv">386267</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">short_reads</span><span class="kw">:</span><span class="at"> /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/short_reads.txt</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">trnascan</span><span class="kw">:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cmsearch</span><span class="kw">:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Save as:</p>
+<pre class="text"><code>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/sparvus.yaml</code></pre>
+<p>Validate YAML syntax:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/egapx"</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-</span> <span class="op">&lt;&lt;'PY'</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="st">import yaml</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="st">path = "/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/sparvus.yaml"</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="st">with open(path) as handle:</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="st">    config = yaml.safe_load(handle)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="st">print(config)</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="st">print("YAML syntax passed")</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="op">PY</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="rna-seq-manifest" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="rna-seq-manifest"><span class="header-section-number">1.5</span> 5. RNA-seq manifest</h2>
+<p>EGAPx expects the short-read manifest as a two-column whitespace-delimited file:</p>
+<pre class="text"><code>sample_name /path/to/read1.fastq.gz
+sample_name /path/to/read2.fastq.gz</code></pre>
+<p>Example:</p>
+<pre class="text"><code>C103-2B_S10_L002 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C103-2B_S10_L002_R1_001.fastq.gz
+C103-2B_S10_L002 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C103-2B_S10_L002_R2_001.fastq.gz</code></pre>
+<p>For the initial run, I used 24 paired Illumina RNA-seq libraries from:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="va">READDIR</span><span class="op">=</span>/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create manifest:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="va">PROJECT</span><span class="op">=</span>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="va">READDIR</span><span class="op">=</span>/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="va">READLIST</span><span class="op">=</span><span class="va">$PROJECT</span>/input/short_reads.txt</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="va">TMP_READLIST</span><span class="op">=</span><span class="va">$PROJECT</span>/input/short_reads.txt.tmp</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">IFS</span><span class="op">=</span> <span class="bu">read</span> <span class="at">-r</span> <span class="at">-d</span> <span class="st">''</span> <span class="va">r1</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">r2</span><span class="op">=</span><span class="st">"</span><span class="va">${r1</span><span class="op">/</span><span class="ss">_R1_001.fastq.gz</span><span class="op">/</span>_R2_001.fastq.gz<span class="va">}</span><span class="st">"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">[[</span> <span class="ot">!</span> <span class="ot">-r</span> <span class="st">"</span><span class="va">$r2</span><span class="st">"</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">"ERROR: missing R2 for </span><span class="va">$r1</span><span class="st">"</span> <span class="op">&gt;&amp;</span><span class="dv">2</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">exit</span> 1</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">filename</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="st">"</span><span class="va">$r1</span><span class="st">"</span><span class="va">)</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">setname</span><span class="op">=</span><span class="va">${filename</span><span class="op">%</span>_R1_001.fastq.gz<span class="va">}</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">printf</span> <span class="st">'%s %s\n'</span> <span class="st">"</span><span class="va">$setname</span><span class="st">"</span> <span class="st">"</span><span class="va">$r1</span><span class="st">"</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">printf</span> <span class="st">'%s %s\n'</span> <span class="st">"</span><span class="va">$setname</span><span class="st">"</span> <span class="st">"</span><span class="va">$r2</span><span class="st">"</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> <span class="st">"</span><span class="va">$TMP_READLIST</span><span class="st">"</span> <span class="op">&lt;</span> <span class="op">&lt;(</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">find</span> <span class="st">"</span><span class="va">$READDIR</span><span class="st">"</span> <span class="at">-maxdepth</span> 1 <span class="at">-type</span> f <span class="dt">\</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">-name</span> <span class="st">'*_R1_001.fastq.gz'</span> <span class="at">-print0</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-z</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> <span class="st">"</span><span class="va">$TMP_READLIST</span><span class="st">"</span> <span class="st">"</span><span class="va">$READLIST</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Check manifest:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> <span class="st">"</span><span class="va">$READLIST</span><span class="st">"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 8 <span class="st">"</span><span class="va">$READLIST</span><span class="st">"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">'</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="st">{ count[$1]++ }</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="st">END {</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="st">    for (sample in count)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="st">        if (count[sample] != 2)</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="st">            print "ERROR:", sample, count[sample]</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="st">    print "Libraries:", length(count)</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="st">'</span> <span class="st">"</span><span class="va">$READLIST</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For my initial run:</p>
+<pre class="text"><code>48 lines
+24 libraries</code></pre>
+</section>
+<section id="validate-input-files" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="validate-input-files"><span class="header-section-number">1.6</span> 6. Validate input files</h2>
+<p>Optional but recommended: validate FASTQ gzip files and assembly basics before submitting EGAPx.</p>
+<p>The validation script I used is here:</p>
+<pre class="text"><code>/home/kfloer_smith_edu/assembly/scripts/validate_sparvus_egapx.sbatch</code></pre>
+<p>Validation output showed:</p>
+<pre class="text"><code>All FASTQ gzip files passed.
+Contigs: 4081
+Total bases: 4481589302
+Duplicate sequence IDs: 0
+All input validation checks passed.</code></pre>
+</section>
+<section id="generate-egapx-config-files" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="generate-egapx-config-files"><span class="header-section-number">1.7</span> 7. Generate EGAPx config files</h2>
+<p>The first EGAPx command generates config files and asks you to edit them.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="va">PROJECT</span><span class="op">=</span>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="va">INPUT_YAML</span><span class="op">=</span><span class="va">$PROJECT</span>/input/sparvus.yaml</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer/latest</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/24.04.3</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$PROJECT</span><span class="st">/container_cache"</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$PROJECT</span><span class="st">/tmp"</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">SINGULARITY_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$PROJECT</span><span class="st">/container_cache"</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">SINGULARITY_TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$PROJECT</span><span class="st">/tmp"</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_SINGULARITY_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$PROJECT</span><span class="st">/container_cache"</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$PROJECT</span><span class="st">/tmp"</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/egapx"</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ui/egapx.py <span class="dt">\</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="va">$INPUT_YAML</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">-e</span> slurm <span class="dt">\</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">-w</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/work"</span> <span class="dt">\</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/output"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>EGAPx printed:</p>
+<pre class="text"><code>For replicating this run use --data-version egapxsupportdata_20251017
+Edit config files in .../egapx_config to reflect your actual configuration, then repeat the command</code></pre>
+<p>For reproducibility, I pinned:</p>
+<pre class="text"><code>egapxsupportdata_20251017</code></pre>
+</section>
+<section id="edit-egapx-config-files" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="edit-egapx-config-files"><span class="header-section-number">1.8</span> 8. Edit EGAPx config files</h2>
+<p>The active runtime config directory was:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="va">CONFIG</span><span class="op">=</span>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/egapx/egapx_config</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Files edited:</p>
+<pre class="text"><code>slurm.config
+process_resources.config</code></pre>
+<p>Important Unity-specific edits included:</p>
+<ul>
+<li>SLURM queue/partition: <code>cpu</code></li>
+<li>Apptainer/Singularity cache directory in scratch</li>
+<li>Apptainer/Singularity tmp directory in scratch</li>
+<li>Process memory/CPU/time values</li>
+</ul>
+<p>Useful checks:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-nE</span> <span class="st">'cacheDir|CACHEDIR|TMPDIR|queue ='</span> <span class="st">"</span><span class="va">$CONFIG</span><span class="st">/slurm.config"</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-nE</span> <span class="st">'params\.|memory =|cpus =|time ='</span> <span class="st">"</span><span class="va">$CONFIG</span><span class="st">/process_resources.config"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>My config snapshot is committed here:</p>
+<pre class="text"><code>https://github.com/katarinafloer/SparvusGenome/tree/main/egapx_config</code></pre>
+<p>Important: these config files are cluster-specific. They will likely need to be edited for another HPC.</p>
+</section>
+<section id="initial-egapx-run-script" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="initial-egapx-run-script"><span class="header-section-number">1.9</span> 9. Initial EGAPx run script</h2>
+<p>The initial SLURM run script is:</p>
+<pre class="text"><code>/home/kfloer_smith_edu/assembly/scripts/run_sparvus_egapx.sbatch</code></pre>
+<p>GitHub:</p>
+<pre class="text"><code>https://github.com/katarinafloer/SparvusGenome/blob/main/run_sparvus_egapx.sbatch</code></pre>
+<p>The command used inside the script was essentially:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ui/egapx.py <span class="dt">\</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="va">$INPUT_YAML</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--data-version</span> egapxsupportdata_20251017 <span class="dt">\</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">-e</span> slurm <span class="dt">\</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">-w</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/work"</span> <span class="dt">\</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/output"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The driver SLURM job does not do most of the compute itself. Nextflow launches many child SLURM jobs.</p>
+</section>
+<section id="oom-failure-and-fix" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="oom-failure-and-fix"><span class="header-section-number">1.10</span> 10. OOM failure and fix</h2>
+<p>The first run failed at:</p>
+<pre class="text"><code>egapx:winmask_plane:mask_assm_stats:run_mask_assm_stats</code></pre>
+<p>Error:</p>
+<pre class="text"><code>exit status 137
+Killed</code></pre>
+<p>Interpretation: out of memory.</p>
+<p>Nextflow reported:</p>
+<pre class="text"><code>To resume execution, run:
+sh /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output/nextflow/resume.sh</code></pre>
+<p>I added this process-specific override to <code>process_resources.config</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode groovy code-with-copy"><code class="sourceCode groovy"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>process <span class="op">{</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    withName<span class="op">:</span> <span class="st">'run_mask_assm_stats'</span> <span class="op">{</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        memory <span class="op">=</span> <span class="fl">256.</span>GB</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>        time <span class="op">=</span> <span class="fl">12.</span>h</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then I resumed.</p>
+</section>
+<section id="resume-script" class="level2" data-number="1.11">
+<h2 data-number="1.11" class="anchored" data-anchor-id="resume-script"><span class="header-section-number">1.11</span> 11. Resume script</h2>
+<p>The resume SLURM script is:</p>
+<pre class="text"><code>/home/kfloer_smith_edu/assembly/scripts/resume_sparvus_egapx.sbatch</code></pre>
+<p>GitHub:</p>
+<pre class="text"><code>https://github.com/katarinafloer/SparvusGenome/blob/main/resume_sparvus_egapx.sbatch</code></pre>
+<p>It runs:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/output/nextflow/resume.sh"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>After resume, EGAPx completed successfully.</p>
+<p>Final runtime summary:</p>
+<pre class="text"><code>Completed at: 25-Jun-2026 04:27:48
+Duration: 10h 33m 22s
+CPU hours: 1,081.1
+Succeeded: 804
+Cached: 56</code></pre>
+</section>
+<section id="main-egapx-outputs" class="level2" data-number="1.12">
+<h2 data-number="1.12" class="anchored" data-anchor-id="main-egapx-outputs"><span class="header-section-number">1.12</span> 12. Main EGAPx outputs</h2>
+<p>Final outputs were in:</p>
+<pre class="text"><code>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output</code></pre>
+<p>Main files:</p>
+<pre class="text"><code>complete.genomic.gff
+complete.genomic.gtf
+complete.proteins.faa
+complete.transcripts.fna
+complete.cds.fna
+complete.genomic.fna</code></pre>
+<p>Stats:</p>
+<pre class="text"><code>output/stats/feature_counts.txt
+output/stats/feature_counts.xml
+output/stats/feature_stats.xml
+output/stats/mask_assm_stats.xml</code></pre>
+<p>Find output files:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="va">PROJECT</span><span class="op">=</span>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> <span class="st">"</span><span class="va">$PROJECT</span><span class="st">/output"</span> <span class="at">-type</span> f <span class="dt">\(</span> <span class="dt">\</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.gff'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.gff3'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.gtf'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.faa'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.fna'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.gbff'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.sqn'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.stats'</span> <span class="at">-o</span> <span class="dt">\</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">-name</span> <span class="st">'*.xml'</span> <span class="dt">\</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="dt">\)</span> <span class="kw">|</span> <span class="fu">sort</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="annotation-summary" class="level2" data-number="1.13">
+<h2 data-number="1.13" class="anchored" data-anchor-id="annotation-summary"><span class="header-section-number">1.13</span> 13. Annotation summary</h2>
+<p>From EGAPx:</p>
+<pre class="text"><code>Total genes: 41,598
+Protein-coding genes: 23,550
+mRNAs: 30,699
+CDSs: 30,699
+Non-coding RNAs: 14,814
+Pseudo transcripts: 3,691</code></pre>
+<p>In the GFF:</p>
+<pre class="text"><code>37,929 gene features
+3,669 pseudogene features
+41,598 total gene + pseudogene features</code></pre>
+<p>Feature types in GFF:</p>
+<pre class="text"><code>353957 exon
+315309 CDS
+37929 gene
+32415 mRNA
+8580 tRNA
+3669 pseudogene
+3493 snRNA
+1822 rRNA
+1739 lncRNA
+470 snoRNA
+384 pseudogenic_rRNA
+282 transcript
+19 scaRNA
+10 V_gene_segment
+8 C_gene_segment</code></pre>
+</section>
+<section id="isoform-check" class="level2" data-number="1.14">
+<h2 data-number="1.14" class="anchored" data-anchor-id="isoform-check"><span class="header-section-number">1.14</span> 14. Isoform check</h2>
+<p>EGAPx does not appear to classify isoforms as separate genes in the GFF.</p>
+<p>Isoforms are represented as <code>mRNA</code> child features under parent <code>gene</code> features.</p>
+<p>Command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="va">GFF</span><span class="op">=</span>/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output/complete.genomic.gff</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-F</span><span class="st">'\t'</span> <span class="st">'</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="st">$3=="mRNA" {</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="st">    parent="missing_parent"</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="st">    if (match($9, /Parent=[^;]+/)) {</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="st">        parent=substr($9, RSTART+7, RLENGTH-7)</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="st">    mrna_count[parent]++</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="st">END {</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="st">    isoform_genes=0</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="st">    total_mrna=0</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="st">    for (g in mrna_count) {</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a><span class="st">        total_mrna += mrna_count[g]</span></span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a><span class="st">        if (mrna_count[g] &gt; 1) isoform_genes++</span></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a><span class="st">    print "Genes with at least one mRNA:", length(mrna_count)</span></span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a><span class="st">    print "Total mRNAs:", total_mrna</span></span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a><span class="st">    print "Genes with &gt;1 mRNA isoform:", isoform_genes</span></span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a><span class="st">'</span> <span class="st">"</span><span class="va">$GFF</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Output:</p>
+<pre class="text"><code>Genes with at least one mRNA: 25246
+Total mRNAs: 32415
+Genes with &gt;1 mRNA isoform: 4231</code></pre>
+</section>
+<section id="gene-naming-annotation-usefulness" class="level2" data-number="1.15">
+<h2 data-number="1.15" class="anchored" data-anchor-id="gene-naming-annotation-usefulness"><span class="header-section-number">1.15</span> 15. Gene naming / annotation usefulness</h2>
+<p>Direct GFF counts:</p>
+<pre class="text"><code>All GFF gene features: 37,929
+With gene symbol: 20,939
+With NCBI ortholog cross-reference: 12,479
+With description: 32,972
+Without description: 4,957</code></pre>
+<p>Protein-coding genes:</p>
+<pre class="text"><code>Total protein-coding genes: 23,550
+With formal gene symbol: 12,359
+With NCBI ortholog cross-reference: 12,479
+With product/description text: 20,127
+Without product/description: 3,423</code></pre>
+</section>
+<section id="androgen-receptor-sanity-check" class="level2" data-number="1.16">
+<h2 data-number="1.16" class="anchored" data-anchor-id="androgen-receptor-sanity-check"><span class="header-section-number">1.16</span> 16. Androgen receptor sanity check</h2>
+<p>EGAPx recovered one androgen receptor locus.</p>
+<pre class="text"><code>Contig: ptg000154l
+Coordinates: 1,491,873-1,803,334
+Strand: +
+Gene ID: gene-egapxtmp_016766
+Locus tag: egapxtmp_016766
+Transcript ID: rna-egapxtmp_016766-R1
+Protein ID: egapxtmp_016766-P1
+Exons: 8
+Predicted protein length: 777 aa
+Ortholog cross-reference: NCBIOrtholog:367</code></pre>
+<p>BLASTP against anuran proteins:</p>
+<pre class="text"><code>Top hit: androgen receptor [Aquarana catesbeiana]
+Query cover: 100%
+E-value: 0.0
+Percent identity: 92.86%
+Hit length: 777 aa</code></pre>
+<p>This supports the EGAPx AR model as a likely near-complete/full-length AR ortholog.</p>
+</section>
+<section id="things-to-adapt-on-another-hpc" class="level2" data-number="1.17">
+<h2 data-number="1.17" class="anchored" data-anchor-id="things-to-adapt-on-another-hpc"><span class="header-section-number">1.17</span> 17. Things to adapt on another HPC</h2>
+<p>The most HPC-specific pieces are:</p>
+<ul>
+<li>module names for Python, Nextflow, Apptainer/Singularity</li>
+<li>SLURM partition/queue name</li>
+<li>Apptainer/Singularity cache and tmp paths</li>
+<li>process memory/CPU/time values in <code>process_resources.config</code></li>
+<li>whether the cluster uses Singularity or Apptainer</li>
+<li>whether Nextflow is installed as a module</li>
+<li>filesystem paths and bind paths</li>
+</ul>
+<p>The provided scripts should be treated as templates, not drop-in scripts for every HPC.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/katarinafloer\.github\.io\/tutorial-nfcore-rnaseq\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Maintained by Katarina Flöer</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/egapx_instructions.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p><span class="last-updated">Last updated: AUTO_LAST_UPDATED</span></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

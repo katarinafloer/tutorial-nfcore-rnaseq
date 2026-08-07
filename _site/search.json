@@ -1,338 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "",
-    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
-    "crumbs": [
-      "Mangiamele Lab RNA-seq Resource"
-    ]
-  },
-  {
-    "objectID": "index.html#what-you-will-learn",
-    "href": "index.html#what-you-will-learn",
-    "title": "nf-core RNA-seq tutorial",
-    "section": "",
-    "text": "This tutorial walks through running an nf-core RNA-seq workflow in a reproducible way. It is designed for learners who are comfortable with the command line but new to Nextflow or nf-core.\n\n\n\n\n\n\nTip\n\n\n\nThe examples use nf-core/rnaseq, but the same structure applies to many nf-core pipelines.",
-    "crumbs": [
-      "Home",
-      "nf-core RNA-seq tutorial"
-    ]
-  },
-  {
-    "objectID": "index.html#tutorial-path",
-    "href": "index.html#tutorial-path",
-    "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "2 Tutorial path",
-    "text": "2 Tutorial path\n\nSet up your environment\nRun the pipeline\nUnderstand the results\nFix common issues",
-    "crumbs": [
-      "Mangiamele Lab RNA-seq Resource"
-    ]
-  },
-  {
-    "objectID": "index.html#prerequisites",
-    "href": "index.html#prerequisites",
-    "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "3 Prerequisites",
-    "text": "3 Prerequisites\nYou will need:\n\nLisa to register your email with Unity\nA laptop with a terminal",
-    "crumbs": [
-      "Mangiamele Lab RNA-seq Resource"
-    ]
-  },
-  {
-    "objectID": "index.html#example-workflow",
-    "href": "index.html#example-workflow",
-    "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "4 Example workflow",
-    "text": "4 Example workflow\nflowchart LR\n  A[\"Samplesheet\"] --&gt; B[\"Nextflow\"]\n  C[\"Reference genome\"] --&gt; B\n  D[\"Container engine\"] --&gt; B\n  B --&gt; E[\"QC reports\"]\n  B --&gt; F[\"Quantification\"]\n  B --&gt; G[\"MultiQC summary\"]",
-    "crumbs": [
-      "Mangiamele Lab RNA-seq Resource"
-    ]
-  },
-  {
-    "objectID": "index.html#citation-and-credit",
-    "href": "index.html#citation-and-credit",
-    "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "4 Citation and credit",
-    "text": "4 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow.",
-    "crumbs": [
-      "Mangiamele Lab RNA-seq Resource"
-    ]
-  },
-  {
-    "objectID": "setup.html",
-    "href": "setup.html",
-    "title": "Run a Demo Pipeline",
-    "section": "",
-    "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
-    "crumbs": [
-      "Run a Demo Pipeline"
-    ]
-  },
-  {
-    "objectID": "setup.html#install-nextflow",
-    "href": "setup.html#install-nextflow",
-    "title": "Setup",
-    "section": "",
-    "text": "Check that Java is available:\njava -version\nInstall Nextflow:\ncurl -s https://get.nextflow.io | bash\nmkdir -p ~/bin\nmv nextflow ~/bin/\nThen check:\nnextflow -version",
-    "crumbs": [
-      "Home",
-      "Setup"
-    ]
-  },
-  {
-    "objectID": "setup.html#choose-a-container-engine",
-    "href": "setup.html#choose-a-container-engine",
-    "title": "Setup",
-    "section": "2 Choose a container engine",
-    "text": "2 Choose a container engine\nFor local tutorials, Docker is often the easiest option:\ndocker --version\nOn HPC systems, Apptainer or Singularity is usually preferred:\napptainer --version",
-    "crumbs": [
-      "Home",
-      "Setup"
-    ]
-  },
-  {
-    "objectID": "setup.html#install-nf-core-tools",
-    "href": "setup.html#install-nf-core-tools",
-    "title": "Setup",
-    "section": "3 Install nf-core tools",
-    "text": "3 Install nf-core tools\npip install nf-core\nnf-core --version",
-    "crumbs": [
-      "Home",
-      "Setup"
-    ]
-  },
-  {
-    "objectID": "setup.html#create-a-project-folder",
-    "href": "setup.html#create-a-project-folder",
-    "title": "Setup",
-    "section": "4 Create a project folder",
-    "text": "4 Create a project folder\nmkdir nfcore-rnaseq-tutorial\ncd nfcore-rnaseq-tutorial\nmkdir data results work",
-    "crumbs": [
-      "Home",
-      "Setup"
-    ]
-  },
-  {
-    "objectID": "setup.html#prepare-a-samplesheet",
-    "href": "setup.html#prepare-a-samplesheet",
-    "title": "Setup",
-    "section": "5 Prepare a samplesheet",
-    "text": "5 Prepare a samplesheet\nCreate samplesheet.csv:\nsample,fastq_1,fastq_2,strandedness\nsample1,data/sample1_R1.fastq.gz,data/sample1_R2.fastq.gz,auto\nsample2,data/sample2_R1.fastq.gz,data/sample2_R2.fastq.gz,auto\n\n\n\n\n\n\nNote\n\n\n\nFor a real tutorial, replace these paths with your actual FASTQ files or a small public test dataset.",
-    "crumbs": [
-      "Home",
-      "Setup"
-    ]
-  },
-  {
-    "objectID": "running.html",
-    "href": "running.html",
-    "title": "Run the Pipeline",
-    "section": "",
-    "text": "nextflow pull nf-core/rnaseq",
-    "crumbs": [
-      "Home",
-      "Run the Pipeline"
-    ]
-  },
-  {
-    "objectID": "running.html#pull-the-pipeline",
-    "href": "running.html#pull-the-pipeline",
-    "title": "Run the Pipeline",
-    "section": "",
-    "text": "nextflow pull nf-core/rnaseq",
-    "crumbs": [
-      "Home",
-      "Run the Pipeline"
-    ]
-  },
-  {
-    "objectID": "running.html#run-a-test-profile",
-    "href": "running.html#run-a-test-profile",
-    "title": "Run the Pipeline",
-    "section": "2 Run a test profile",
-    "text": "2 Run a test profile\nStart with the built-in test profile before using your own data:\nnextflow run nf-core/rnaseq \\\n  -profile test,docker \\\n  --outdir results/test\nIf you use Apptainer:\nnextflow run nf-core/rnaseq \\\n  -profile test,apptainer \\\n  --outdir results/test",
-    "crumbs": [
-      "Home",
-      "Run the Pipeline"
-    ]
-  },
-  {
-    "objectID": "running.html#run-your-own-samples",
-    "href": "running.html#run-your-own-samples",
-    "title": "Run the Pipeline",
-    "section": "3 Run your own samples",
-    "text": "3 Run your own samples\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38",
-    "crumbs": [
-      "Home",
-      "Run the Pipeline"
-    ]
-  },
-  {
-    "objectID": "running.html#resume-an-interrupted-run",
-    "href": "running.html#resume-an-interrupted-run",
-    "title": "Run the Pipeline",
-    "section": "4 Resume an interrupted run",
-    "text": "4 Resume an interrupted run\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38 \\\n  -resume\n\n\n\n\n\n\nWarning\n\n\n\nUse the same command with -resume. Changing key parameters can invalidate cached work.",
-    "crumbs": [
-      "Home",
-      "Run the Pipeline"
-    ]
-  },
-  {
-    "objectID": "running.html#record-the-exact-command",
-    "href": "running.html#record-the-exact-command",
-    "title": "Run the Pipeline",
-    "section": "5 Record the exact command",
-    "text": "5 Record the exact command\nKeep a copy of the final command in your notes or repository:\nmkdir -p logs\nnextflow run nf-core/rnaseq -profile docker --input samplesheet.csv --outdir results/rnaseq --genome GRCh38 2&gt;&1 | tee logs/rnaseq.log",
-    "crumbs": [
-      "Home",
-      "Run the Pipeline"
-    ]
-  },
-  {
-    "objectID": "results.html",
-    "href": "results.html",
-    "title": "Interpret Results",
-    "section": "",
-    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
-    "crumbs": [
-      "Home",
-      "Interpret Results"
-    ]
-  },
-  {
-    "objectID": "results.html#start-with-multiqc",
-    "href": "results.html#start-with-multiqc",
-    "title": "Interpret Results",
-    "section": "",
-    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
-    "crumbs": [
-      "Home",
-      "Interpret Results"
-    ]
-  },
-  {
-    "objectID": "results.html#what-to-check-first",
-    "href": "results.html#what-to-check-first",
-    "title": "Interpret Results",
-    "section": "2 What to check first",
-    "text": "2 What to check first\nFocus on:\n\nSequencing quality\nAdapter content\nAlignment rate\nDuplication levels\nGene body coverage\nSample outliers",
-    "crumbs": [
-      "Home",
-      "Interpret Results"
-    ]
-  },
-  {
-    "objectID": "results.html#common-output-folders",
-    "href": "results.html#common-output-folders",
-    "title": "Interpret Results",
-    "section": "3 Common output folders",
-    "text": "3 Common output folders\n\n\n\n\n\n\n\nFolder\nWhat it contains\n\n\n\n\nfastqc/\nPer-sample read quality reports\n\n\nmultiqc/\nAggregated quality-control report\n\n\nstar_salmon/\nAlignment and transcript quantification outputs\n\n\npipeline_info/\nCommands, software versions, reports, and provenance",
-    "crumbs": [
-      "Home",
-      "Interpret Results"
-    ]
-  },
-  {
-    "objectID": "results.html#save-provenance",
-    "href": "results.html#save-provenance",
-    "title": "Interpret Results",
-    "section": "4 Save provenance",
-    "text": "4 Save provenance\nArchive these files with your analysis:\n\npipeline_info/software_versions.yml\npipeline_info/execution_report.html\npipeline_info/execution_timeline.html\npipeline_info/params_*.json\n\n\n\n\n\n\n\nTip\n\n\n\nThe pipeline_info directory is one of the most useful places to look when you need to reproduce or debug a run later.",
-    "crumbs": [
-      "Home",
-      "Interpret Results"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html",
-    "href": "troubleshooting.html",
-    "title": "Troubleshooting",
-    "section": "",
-    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
-    "crumbs": [
-      "Home",
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html#nextflow-is-not-found",
-    "href": "troubleshooting.html#nextflow-is-not-found",
-    "title": "Troubleshooting",
-    "section": "",
-    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
-    "crumbs": [
-      "Home",
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html#docker-is-not-running",
-    "href": "troubleshooting.html#docker-is-not-running",
-    "title": "Troubleshooting",
-    "section": "2 Docker is not running",
-    "text": "2 Docker is not running\nCheck Docker:\ndocker info\nIf this fails, open Docker Desktop or restart the Docker service.",
-    "crumbs": [
-      "Home",
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html#a-run-failed-halfway-through",
-    "href": "troubleshooting.html#a-run-failed-halfway-through",
-    "title": "Troubleshooting",
-    "section": "3 A run failed halfway through",
-    "text": "3 A run failed halfway through\nUse -resume after fixing the problem:\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38 \\\n  -resume",
-    "crumbs": [
-      "Home",
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html#disk-space-errors",
-    "href": "troubleshooting.html#disk-space-errors",
-    "title": "Troubleshooting",
-    "section": "4 Disk space errors",
-    "text": "4 Disk space errors\nCheck the size of the work directory:\ndu -sh work results\nMove large outputs to persistent storage before deleting anything.",
-    "crumbs": [
-      "Home",
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html#where-to-look-for-help",
-    "href": "troubleshooting.html#where-to-look-for-help",
-    "title": "Troubleshooting",
-    "section": "5 Where to look for help",
-    "text": "5 Where to look for help\n\nThe terminal error message\n.nextflow.log\nresults/rnaseq/pipeline_info/\nThe nf-core pipeline documentation\nThe nf-core Slack community",
-    "crumbs": [
-      "Home",
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "setup.html#creating-a-demo-scratch-directory",
-    "href": "setup.html#creating-a-demo-scratch-directory",
-    "title": "Run a Demo Pipeline",
-    "section": "",
-    "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
-    "crumbs": [
-      "Run a Demo Pipeline"
-    ]
-  },
-  {
-    "objectID": "index.html#about-this-resource",
-    "href": "index.html#about-this-resource",
-    "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "",
-    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
-    "crumbs": [
-      "Mangiamele Lab RNA-seq Resource"
-    ]
-  },
-  {
     "objectID": "rna-seq-concepts.html",
     "href": "rna-seq-concepts.html",
     "title": "What is RNA-seq?",
@@ -353,11 +20,11 @@
     ]
   },
   {
-    "objectID": "rna-seq-concepts.html#from-tissue-to-data",
-    "href": "rna-seq-concepts.html#from-tissue-to-data",
+    "objectID": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
+    "href": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
     "title": "What is RNA-seq?",
-    "section": "2 From tissue to data",
-    "text": "2 From tissue to data\nConceptually, RNA-seq looks like this:\nflowchart LR\n  A[\"Tissue sample\"] --&gt; B[\"Extract RNA\"]\n  B --&gt; C[\"Prepare sequencing library\"]\n  C --&gt; D[\"Sequence reads\"]\n  D --&gt; E[\"Quality control\"]\n  E --&gt; F[\"Map or quantify reads\"]\n  F --&gt; G[\"Gene expression table\"]\n  G --&gt; H[\"Biological interpretation\"]\nThe wet lab steps produce sequencing files. The computational steps turn those files into quality-control reports and expression estimates.",
+    "section": "2 The nf-core/rnaseq workflow",
+    "text": "2 The nf-core/rnaseq workflow\nIn this tutorial, we use nf-core/rnaseq to process RNA-seq data in a standardized and reproducible way.\nThe nf-core/rnaseq pipeline can be visualized as a “metro map” of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.\n\n\n\nnf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.\n\n\nSource: nf-core/rnaseq version 3.26.0.\n\n\n\n\n\n\nTip\n\n\n\nFor this tutorial, we are following the default green path: STAR for alignment and Salmon for quantification. There are multiple valid ways to analyze RNA-seq data, but we will focus on this route.",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -400,6 +67,246 @@
     "text": "6 What RNA-seq does not tell us by itself\nRNA-seq measures RNA abundance, not every part of biology directly. Gene expression can suggest biological patterns, but interpretation depends on experimental design, replication, annotation quality, and downstream statistics.\n\n\n\n\n\n\nNote\n\n\n\nGood RNA-seq analysis starts before sequencing. Sample design, metadata, replication, and careful record keeping matter just as much as the computational pipeline.",
     "crumbs": [
       "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "DGE.html",
+    "href": "DGE.html",
+    "title": "Differential Gene Expression Analysis",
+    "section": "",
+    "text": "This analysis contains head and body RNA-seq libraries from one frog clutch. Day-45 tadpoles were collected before the tank treatment period. At day 103, tadpoles were sampled from one control tank and one flutamide tank.\nImportant limits are built into the analysis and must accompany interpretation:\n\nTreatment is confounded with tank because there is one tank per condition. The treatment-assignment unit is the tank, so tadpoles within a tank are subsamples rather than independent treatment replicates. Results are therefore described as flutamide-tank versus control-tank associations, not definitive causal effects of flutamide.\nThe experiment is not a complete tissue × treatment × stage factorial: no young flutamide samples exist. Overall treatment effects across stages, treatment-by-stage interactions, and three-way interactions are not estimable.\nAll tadpoles came from one clutch, so inference is clutch-specific.\nStage comparisons use different animals collected on different days. They combine age/development with any day- or cohort-specific differences.\nOnly two old-control head libraries exist. Head contrasts and the tissue-by-treatment interaction are consequently fragile.",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#scope-and-inferential-limits",
+    "href": "DGE.html#scope-and-inferential-limits",
+    "title": "Differential Gene Expression Analysis",
+    "section": "",
+    "text": "This analysis contains head and body RNA-seq libraries from one frog clutch. Day-45 tadpoles were collected before the tank treatment period. At day 103, tadpoles were sampled from one control tank and one flutamide tank.\nImportant limits are built into the analysis and must accompany interpretation:\n\nTreatment is confounded with tank because there is one tank per condition. The treatment-assignment unit is the tank, so tadpoles within a tank are subsamples rather than independent treatment replicates. Results are therefore described as flutamide-tank versus control-tank associations, not definitive causal effects of flutamide.\nThe experiment is not a complete tissue × treatment × stage factorial: no young flutamide samples exist. Overall treatment effects across stages, treatment-by-stage interactions, and three-way interactions are not estimable.\nAll tadpoles came from one clutch, so inference is clutch-specific.\nStage comparisons use different animals collected on different days. They combine age/development with any day- or cohort-specific differences.\nOnly two old-control head libraries exist. Head contrasts and the tissue-by-treatment interaction are consequently fragile.",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#setup",
+    "href": "DGE.html#setup",
+    "title": "Differential Gene Expression Analysis",
+    "section": "2 Setup",
+    "text": "2 Setup\n\n\nCode\nlibrary(DESeq2)\nlibrary(tximport)\nlibrary(ggplot2)\nlibrary(ggrepel)\nlibrary(pheatmap)\nlibrary(matrixStats)\n\nif (!requireNamespace(\"ashr\", quietly = TRUE)) {\n  stop(\"Install 'ashr' with BiocManager::install('ashr').\")\n}\nif (!requireNamespace(\"rtracklayer\", quietly = TRUE)) {\n  stop(\"Install 'rtracklayer' with BiocManager::install('rtracklayer').\")\n}\n\ndir.create(\"DESeq2_results\", showWarnings = FALSE)\ndir.create(\"DESeq2_results/QC\", showWarnings = FALSE)\ndir.create(\"DESeq2_results/DGE\", showWarnings = FALSE)\ndir.create(\"DESeq2_results/volcano\", showWarnings = FALSE)\ndir.create(\"DESeq2_results/sensitivity\", showWarnings = FALSE)",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#authoritative-sample-manifest",
+    "href": "DGE.html#authoritative-sample-manifest",
+    "title": "Differential Gene Expression Analysis",
+    "section": "3 Authoritative sample manifest",
+    "text": "3 Authoritative sample manifest\nThe manifest is explicit rather than inferred solely from filenames. tank is recorded for provenance but cannot be added beside treatment in a model because the two are perfectly confounded at day 103.\n\n\nCode\nsample_manifest &lt;- data.frame(\n  sample_id = c(\n    \"C103-2B_S10_L002\", \"C103-3B_S11_L002\", \"C103-4B_S13_L002\",\n    \"C103-4H_S12_L002\", \"C103-5B_S15_L002\", \"C103-5H_S14_L002\",\n    \"C45-1B_S2_L002\", \"C45-1H_S1_L002\", \"C45-2B_S4_L002\",\n    \"C45-2H_S3_L002\", \"C45-3B_S5_L002\", \"C45-4B_S7_L002\",\n    \"C45-4H_S6_L002\", \"C45-5B_S9_L002\", \"C45-5H_S8_L002\",\n    \"F103-1B_S17_L002\", \"F103-1H_S16_L002\", \"F103-2B_S19_L002\",\n    \"F103-2H_S18_L002\", \"F103-3B_S21_L002\", \"F103-3H_S20_L002\",\n    \"F103-4B_S22_L002\", \"F103-5B_S24_L002\", \"F103-5H_S23_L002\"\n  ),\n  tadpole = c(\n    \"C103-2\", \"C103-3\", \"C103-4\", \"C103-4\", \"C103-5\", \"C103-5\",\n    \"C45-1\", \"C45-1\", \"C45-2\", \"C45-2\", \"C45-3\", \"C45-4\",\n    \"C45-4\", \"C45-5\", \"C45-5\",\n    \"F103-1\", \"F103-1\", \"F103-2\", \"F103-2\", \"F103-3\", \"F103-3\",\n    \"F103-4\", \"F103-5\", \"F103-5\"\n  ),\n  day = c(rep(103L, 6), rep(45L, 9), rep(103L, 9)),\n  treatment = c(rep(\"Control\", 15), rep(\"Flutamide\", 9)),\n  tissue = c(\n    \"Body\", \"Body\", \"Body\", \"Head\", \"Body\", \"Head\",\n    \"Body\", \"Head\", \"Body\", \"Head\", \"Body\", \"Body\", \"Head\", \"Body\", \"Head\",\n    \"Body\", \"Head\", \"Body\", \"Head\", \"Body\", \"Head\", \"Body\", \"Body\", \"Head\"\n  ),\n  clutch = \"clutch_1\",\n  tank = c(rep(\"control_tank_1\", 6), rep(\"pre_treatment\", 9), rep(\"flutamide_tank_1\", 9)),\n  stringsAsFactors = FALSE\n)\n\nstopifnot(nrow(sample_manifest) == 24L)\nstopifnot(!anyDuplicated(sample_manifest$sample_id))\nstopifnot(!anyNA(sample_manifest))\n\nsample_manifest$stage &lt;- factor(\n  ifelse(sample_manifest$day == 45L, \"Young\", \"Old\"),\n  levels = c(\"Young\", \"Old\")\n)\nsample_manifest$treatment &lt;- factor(\n  sample_manifest$treatment,\n  levels = c(\"Control\", \"Flutamide\")\n)\nsample_manifest$tissue &lt;- factor(\n  sample_manifest$tissue,\n  levels = c(\"Body\", \"Head\")\n)\nsample_manifest$group &lt;- factor(\n  paste(sample_manifest$stage, sample_manifest$treatment,\n        sample_manifest$tissue, sep = \"_\"),\n  levels = c(\n    \"Young_Control_Body\", \"Young_Control_Head\",\n    \"Old_Control_Body\", \"Old_Control_Head\",\n    \"Old_Flutamide_Body\", \"Old_Flutamide_Head\"\n  )\n)\n\nexpected_group_counts &lt;- c(\n  Young_Control_Body = 5L, Young_Control_Head = 4L,\n  Old_Control_Body = 4L, Old_Control_Head = 2L,\n  Old_Flutamide_Body = 5L, Old_Flutamide_Head = 4L\n)\nobserved_group_counts &lt;- table(sample_manifest$group)\nstopifnot(identical(as.integer(observed_group_counts), unname(expected_group_counts)))\n\nsample_manifest\nobserved_group_counts",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#salmon-import-with-tximport",
+    "href": "DGE.html#salmon-import-with-tximport",
+    "title": "Differential Gene Expression Analysis",
+    "section": "4 Salmon import with tximport",
+    "text": "4 Salmon import with tximport\nDESeq2 recommends importing Salmon transcript quantifications with tximport, then constructing the dataset with DESeqDataSetFromTximport(). This retains gene-specific average transcript-length offsets. TPM values are not used for testing.\n\n\nCode\nquant_dir &lt;- \"salmon_quant\"\ntx2gene_file &lt;- \"salmon.merged.tx2gene.tsv\"\ngtf_file &lt;- \"complete.genomic.gtf\"\n\nfiles &lt;- file.path(quant_dir, sample_manifest$sample_id, \"quant.sf\")\nnames(files) &lt;- sample_manifest$sample_id\nstopifnot(all(file.exists(files)))\nstopifnot(length(files) == 24L)\n\ntx2gene_raw &lt;- read.delim(\n  tx2gene_file,\n  header = TRUE,\n  stringsAsFactors = FALSE,\n  check.names = FALSE\n)\nstopifnot(all(c(\"transcript_id\", \"gene_id\") %in% names(tx2gene_raw)))\ntx2gene &lt;- unique(tx2gene_raw[, c(\"transcript_id\", \"gene_id\")])\nstopifnot(!anyNA(tx2gene), !anyDuplicated(tx2gene$transcript_id))\n\ntxi &lt;- tximport(\n  files,\n  type = \"salmon\",\n  tx2gene = tx2gene,\n  countsFromAbundance = \"no\"\n)\nstopifnot(identical(colnames(txi$counts), sample_manifest$sample_id))\n\ninput_checksums &lt;- data.frame(\n  file = c(files, tx2gene_file, gtf_file),\n  md5 = unname(tools::md5sum(c(files, tx2gene_file, gtf_file))),\n  stringsAsFactors = FALSE\n)\nwrite.csv(\n  input_checksums,\n  \"DESeq2_results/input_file_md5_checksums.csv\",\n  row.names = FALSE\n)",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#gene-annotation",
+    "href": "DGE.html#gene-annotation",
+    "title": "Differential Gene Expression Analysis",
+    "section": "5 Gene annotation",
+    "text": "5 Gene annotation\n\n\nCode\ngene_annotation &lt;- unique(tx2gene_raw[, c(\"gene_id\", \"gene\")])\nnames(gene_annotation)[2] &lt;- \"gene_name\"\n\ngtf &lt;- rtracklayer::import(gtf_file)\ngtf_mcols &lt;- mcols(gtf)\nstopifnot(all(c(\"gene_id\", \"type\", \"product\") %in% names(gtf_mcols)))\n\ngtf_products &lt;- data.frame(\n  gene_id = as.character(gtf_mcols$gene_id),\n  feature_type = as.character(gtf_mcols$type),\n  product = as.character(gtf_mcols$product),\n  stringsAsFactors = FALSE\n)\ngtf_products &lt;- subset(\n  gtf_products,\n  !is.na(gene_id) & gene_id != \"\" & !is.na(product) & product != \"\"\n)\nproduct_annotation &lt;- do.call(rbind, lapply(\n  split(gtf_products, gtf_products$gene_id),\n  function(x) {\n    preferred &lt;- unique(x$product[x$feature_type %in% c(\"transcript\", \"mRNA\")])\n    products &lt;- if (length(preferred)) preferred else unique(x$product)\n    data.frame(\n      gene_id = x$gene_id[1],\n      product_description = paste(products, collapse = \" | \"),\n      stringsAsFactors = FALSE\n    )\n  }\n))\nrownames(product_annotation) &lt;- NULL\nrm(gtf, gtf_mcols, gtf_products)",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#deseq2-construction-and-fit",
+    "href": "DGE.html#deseq2-construction-and-fit",
+    "title": "Differential Gene Expression Analysis",
+    "section": "6 DESeq2 construction and fit",
+    "text": "6 DESeq2 construction and fit\nThe observed cell combinations are represented by one group factor. This is the DESeq2 manual’s recommended simple strategy for explicit cell contrasts and avoids a non-estimable full factorial model.\n\n\nCode\ncoldata &lt;- sample_manifest\nrownames(coldata) &lt;- coldata$sample_id\n\ndds &lt;- DESeqDataSetFromTximport(\n  txi,\n  colData = coldata,\n  design = ~ group\n)\nstopifnot(identical(rownames(colData(dds)), colnames(dds)))\nstopifnot(qr(model.matrix(design(dds), as.data.frame(colData(dds))))$rank ==\n            nlevels(dds$group))\n\nmcols(dds)$gene_name &lt;- gene_annotation$gene_name[\n  match(rownames(dds), gene_annotation$gene_id)\n]\nmcols(dds)$product_description &lt;- product_annotation$product_description[\n  match(rownames(dds), product_annotation$gene_id)\n]\n\n# Intentional information filter: count &gt;=10 in at least 3 libraries.\n# Three is stricter than the actual smallest cell (old-control head, n=2).\ngenes_before_filter &lt;- nrow(dds)\nkeep &lt;- rowSums(counts(dds) &gt;= 10) &gt;= 3\ndds &lt;- dds[keep, ]\nfilter_audit &lt;- data.frame(\n  genes_before_filter = genes_before_filter,\n  genes_after_filter = nrow(dds),\n  genes_removed = genes_before_filter - nrow(dds),\n  rule = \"count &gt;= 10 in at least 3 libraries\"\n)\nwrite.csv(filter_audit, \"DESeq2_results/prefilter_audit.csv\", row.names = FALSE)\nfilter_audit\n\ndds &lt;- DESeq(dds)\nresultsNames(dds)\n\nwrite.csv(as.data.frame(colData(dds)),\n          \"DESeq2_results/sample_metadata.csv\", row.names = FALSE)\nsaveRDS(dds, \"DESeq2_results/dds_fitted.rds\")",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#quality-control",
+    "href": "DGE.html#quality-control",
+    "title": "Differential Gene Expression Analysis",
+    "section": "7 Quality control",
+    "text": "7 Quality control\n\n7.1 Library sizes, effective scaling factors, and zero fractions\n\n\nCode\nlibrary_qc &lt;- data.frame(\n  sample_id = colnames(dds),\n  sample_core = sub(\"_S[0-9]+_L[0-9]+$\", \"\", colnames(dds)),\n  group = dds$group,\n  raw_gene_count_sum = colSums(counts(dds)),\n  # tximport supplies gene-by-sample normalization factors that combine\n  # average transcript-length offsets with library scaling. Their column\n  # geometric means provide a sample-level scaling summary for QC only.\n  effective_library_scaling = exp(\n    colMeans(log(normalizationFactors(dds)))\n  ),\n  zero_fraction = colMeans(counts(dds) == 0),\n  stringsAsFactors = FALSE\n)\nwrite.csv(library_qc, \"DESeq2_results/QC/library_size_factor_zero_fraction.csv\",\n          row.names = FALSE)\n\nlibrary_qc_plot &lt;- ggplot(\n  library_qc,\n  aes(x = reorder(sample_core, effective_library_scaling),\n      y = effective_library_scaling, fill = group)\n) +\n  geom_col() + coord_flip() +\n  labs(title = \"tximport/DESeq2 effective library scaling\", x = NULL,\n       y = \"Geometric mean of normalization factors\", fill = \"Group\") +\n  theme_classic(base_size = 11)\nggsave(\"DESeq2_results/QC/effective_library_scaling.pdf\", library_qc_plot,\n       width = 10, height = 7)\nlibrary_qc_plot\n\n\nSmall effective library-scaling values are flags for upstream MultiQC review, not automatic exclusion criteria. Because tximport supplies gene-specific length offsets, these summaries must not be described as ordinary DESeq2 size factors.\n\n\n7.2 Dispersion and Cook’s-distance diagnostics\n\n\nCode\npdf(\"DESeq2_results/QC/dispersion_estimates.pdf\", width = 8, height = 6)\nplotDispEsts(dds)\ndev.off()\n\ncooks &lt;- assays(dds)[[\"cooks\"]]\ncooks_summary &lt;- data.frame(\n  sample_id = colnames(dds),\n  median_cooks = apply(cooks, 2, median, na.rm = TRUE),\n  q99_cooks = apply(cooks, 2, quantile, probs = 0.99, na.rm = TRUE),\n  max_cooks = apply(cooks, 2, max, na.rm = TRUE)\n)\nwrite.csv(cooks_summary, \"DESeq2_results/QC/cooks_distance_by_sample.csv\",\n          row.names = FALSE)\n\npdf(\"DESeq2_results/QC/cooks_distance_boxplot.pdf\", width = 11, height = 7)\npar(mar = c(9, 5, 2, 2))\nboxplot(log10(cooks), range = 0, las = 2,\n        ylab = \"log10 Cook's distance\", main = \"Cook's distance by library\")\ndev.off()\n\n\n\n\n7.3 VST, PCA, sample distances, and heatmaps\nblind=FALSE uses the fitted dispersion trend for biological visualization and does not remove group effects. A second blind=TRUE PCA is included as design-blind sample QA.\n\n\nCode\nvsd &lt;- vst(dds, blind = FALSE)\nvsd_blind &lt;- vst(dds, blind = TRUE)\nsaveRDS(vsd, \"DESeq2_results/vsd.rds\")\n\nmake_pca &lt;- function(vsd_object, label, filename) {\n  mat &lt;- assay(vsd_object)\n  vars &lt;- rowVars(mat)\n  top &lt;- names(sort(setNames(vars, rownames(mat)), decreasing = TRUE))[\n    seq_len(min(500, nrow(mat)))\n  ]\n  pca &lt;- prcomp(t(mat[top, , drop = FALSE]), scale. = FALSE)\n  percent &lt;- 100 * pca$sdev^2 / sum(pca$sdev^2)\n  pd &lt;- cbind(as.data.frame(pca$x[, 1:2, drop = FALSE]),\n              as.data.frame(colData(vsd_object)))\n  p &lt;- ggplot(pd, aes(PC1, PC2, color = group, shape = tissue,\n                     label = sub(\"_S[0-9]+_L[0-9]+$\", \"\", sample_id))) +\n    geom_point(size = 3.5) +\n    geom_text_repel(size = 2.8, max.overlaps = Inf, show.legend = FALSE) +\n    labs(title = paste(\"PCA:\", label),\n         subtitle = \"500 most variable genes\",\n         x = sprintf(\"PC1 (%.1f%%)\", percent[1]),\n         y = sprintf(\"PC2 (%.1f%%)\", percent[2]), color = \"Group\") +\n    coord_fixed() + theme_classic(base_size = 11)\n  ggsave(filename, p, width = 10, height = 7)\n  list(plot = p, data = pd, top = top, variance = vars)\n}\n\npca_bio &lt;- make_pca(vsd, \"VST, blind=FALSE\",\n                    \"DESeq2_results/QC/PCA_top500_variable_genes.pdf\")\npca_blind &lt;- make_pca(vsd_blind, \"VST, blind=TRUE\",\n                      \"DESeq2_results/QC/PCA_top500_variable_genes_blind.pdf\")\nwrite.csv(pca_bio$data, \"DESeq2_results/QC/PCA_sample_coordinates.csv\",\n          row.names = FALSE)\nwrite.csv(data.frame(\n  gene_id = pca_bio$top,\n  gene_name = mcols(dds)[pca_bio$top, \"gene_name\"],\n  VST_variance = pca_bio$variance[pca_bio$top]\n), \"DESeq2_results/QC/top500_variable_genes.csv\", row.names = FALSE)\npca_bio$plot\npca_blind$plot\n\n\n\n\nCode\nvst_matrix &lt;- assay(vsd)\ntop500 &lt;- pca_bio$top\nsample_dist &lt;- dist(t(vst_matrix[top500, , drop = FALSE]))\nsample_dist_matrix &lt;- as.matrix(sample_dist)\nannotation_col &lt;- as.data.frame(colData(vsd)[, c(\"stage\", \"treatment\", \"tissue\", \"group\")])\n\npheatmap(sample_dist_matrix, annotation_col = annotation_col,\n         annotation_row = annotation_col,\n         clustering_distance_rows = sample_dist,\n         clustering_distance_cols = sample_dist,\n         filename = \"DESeq2_results/QC/sample_distance_heatmap.pdf\",\n         width = 11, height = 10,\n         main = \"Sample distances: top 500 variable genes\")\n\ntop50 &lt;- top500[seq_len(min(50, length(top500)))]\nheatmap_z &lt;- t(scale(t(vst_matrix[top50, , drop = FALSE])))\nheatmap_z[!is.finite(heatmap_z)] &lt;- 0\nlabels &lt;- mcols(dds)[top50, \"gene_name\"]\nlabels &lt;- ifelse(is.na(labels) | labels == \"\", top50,\n                 paste0(labels, \" [\", top50, \"]\"))\nrownames(heatmap_z) &lt;- make.unique(labels)\npheatmap(heatmap_z, annotation_col = annotation_col,\n         fontsize_row = 6, fontsize_col = 7,\n         color = colorRampPalette(c(\"navy\", \"white\", \"firebrick3\"))(101),\n         breaks = seq(-3, 3, length.out = 102),\n         filename = \"DESeq2_results/QC/top50_variable_gene_heatmap.pdf\",\n         width = 12, height = 12,\n         main = \"Top 50 variable genes (row z-scores)\")",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#differential-expression-functions",
+    "href": "DGE.html#differential-expression-functions",
+    "title": "Differential Gene Expression Analysis",
+    "section": "8 Differential-expression functions",
+    "text": "8 Differential-expression functions\nThe standard Wald result tests LFC = 0. A separate thresholded Wald result formally tests whether |LFC| &gt; 1. Shrunken LFCs are used for ranking and visualization, not to create p-values.\n\n\nCode\nannotate_result &lt;- function(res, dds_object) {\n  out &lt;- as.data.frame(res)\n  out$gene_id &lt;- rownames(out)\n  out$gene_name &lt;- mcols(dds_object)[out$gene_id, \"gene_name\"]\n  out$product_description &lt;- mcols(dds_object)[out$gene_id, \"product_description\"]\n  out\n}\n\nrun_comparison &lt;- function(dds, numerator, denominator, comparison_name,\n                           alpha = 0.05, lfc_threshold = 1) {\n  contrast_vector &lt;- c(\"group\", numerator, denominator)\n  res &lt;- results(dds, contrast = contrast_vector, alpha = alpha)\n  res_threshold &lt;- results(\n    dds, contrast = contrast_vector, alpha = alpha,\n    lfcThreshold = lfc_threshold, altHypothesis = \"greaterAbs\"\n  )\n  res_shrunk &lt;- lfcShrink(\n    dds, contrast = contrast_vector, res = res, type = \"ashr\"\n  )\n\n  out &lt;- annotate_result(res, dds)\n  out$shrunken_log2FoldChange &lt;- res_shrunk$log2FoldChange\n  out$shrunken_lfcSE &lt;- res_shrunk$lfcSE\n  out$threshold_stat &lt;- res_threshold$stat\n  out$threshold_pvalue &lt;- res_threshold$pvalue\n  out$threshold_padj &lt;- res_threshold$padj\n  out$standard_FDR_significant &lt;- !is.na(out$padj) & out$padj &lt; alpha\n  out$LFC_threshold_FDR_significant &lt;-\n    !is.na(out$threshold_padj) & out$threshold_padj &lt; alpha\n  out$threshold_direction &lt;- \"Not threshold-significant\"\n  out$threshold_direction[\n    out$LFC_threshold_FDR_significant & out$shrunken_log2FoldChange &gt; 0\n  ] &lt;- \"Higher\"\n  out$threshold_direction[\n    out$LFC_threshold_FDR_significant & out$shrunken_log2FoldChange &lt; 0\n  ] &lt;- \"Lower\"\n  out &lt;- out[order(out$threshold_padj, out$padj, out$pvalue, na.last = TRUE), ]\n\n  write.csv(out, file.path(\"DESeq2_results/DGE\",\n    paste0(comparison_name, \"_DESeq2_results.csv\")), row.names = FALSE)\n\n  result_summary &lt;- data.frame(\n    comparison = comparison_name,\n    numerator = numerator,\n    denominator = denominator,\n    genes = nrow(out),\n    standard_FDR_below_0.05 = sum(out$standard_FDR_significant),\n    threshold_test_FDR_below_0.05 = sum(out$LFC_threshold_FDR_significant),\n    threshold_higher = sum(out$threshold_direction == \"Higher\"),\n    threshold_lower = sum(out$threshold_direction == \"Lower\"),\n    NA_pvalue = sum(is.na(out$pvalue)),\n    NA_padj = sum(is.na(out$padj)),\n    independent_filter_threshold = unname(metadata(res)$filterThreshold)\n  )\n\n  pdf(file.path(\"DESeq2_results/QC\", paste0(comparison_name, \"_MA.pdf\")),\n      width = 8, height = 6)\n  plotMA(res_shrunk, alpha = alpha, ylim = c(-5, 5),\n         main = paste(comparison_name, \"(ashr LFC)\"))\n  dev.off()\n\n  plot_data &lt;- out\n  plot_data$plot_padj &lt;- ifelse(is.na(plot_data$threshold_padj), 1,\n                               pmax(plot_data$threshold_padj,\n                                    .Machine$double.xmin))\n  labels &lt;- subset(plot_data,\n                   LFC_threshold_FDR_significant & !is.na(gene_name) & gene_name != \"\")\n  labels &lt;- head(labels[order(labels$threshold_padj), ], 10)\n  volcano &lt;- ggplot(plot_data,\n    aes(shrunken_log2FoldChange, -log10(plot_padj), color = threshold_direction)) +\n    geom_point(alpha = 0.65, size = 1.4) +\n    geom_vline(xintercept = c(-lfc_threshold, lfc_threshold),\n               linetype = \"dashed\", color = \"grey40\") +\n    geom_hline(yintercept = -log10(alpha), linetype = \"dashed\", color = \"grey40\") +\n    geom_text_repel(data = labels, aes(label = gene_name), size = 3,\n                    max.overlaps = Inf, show.legend = FALSE) +\n    scale_color_manual(values = c(\n      \"Lower\" = \"#2C7BB6\", \"Not threshold-significant\" = \"grey75\",\n      \"Higher\" = \"#D7191C\"\n    )) +\n    labs(title = comparison_name,\n         subtitle = paste(numerator, \"vs\", denominator),\n         x = \"ashr-shrunken log2 fold change\",\n         y = expression(-log[10](\"threshold-test adjusted p-value\")),\n         caption = paste0(\"Formal Wald test of |LFC| &gt; \", lfc_threshold,\n                          \"; FDR &lt; \", alpha), color = NULL) +\n    theme_classic(base_size = 11) + theme(legend.position = \"top\")\n  ggsave(file.path(\"DESeq2_results/volcano\",\n                   paste0(comparison_name, \"_volcano.pdf\")),\n         volcano, width = 8, height = 7)\n\n  list(res = res, res_threshold = res_threshold, res_shrunk = res_shrunk,\n       table = out, summary = result_summary)\n}",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#primary-contrasts",
+    "href": "DGE.html#primary-contrasts",
+    "title": "Differential Gene Expression Analysis",
+    "section": "9 Primary contrasts",
+    "text": "9 Primary contrasts\n\n\nCode\nleg_emergence &lt;- run_comparison(\n  dds, \"Old_Control_Body\", \"Young_Control_Body\",\n  \"leg_emergence_OldControlBody_vs_YoungControlBody\"\n)\nnervous_system_development &lt;- run_comparison(\n  dds, \"Old_Control_Head\", \"Young_Control_Head\",\n  \"nervous_system_OldControlHead_vs_YoungControlHead\"\n)\nar_blockade_body &lt;- run_comparison(\n  dds, \"Old_Flutamide_Body\", \"Old_Control_Body\",\n  \"AR_blockade_OldBodyFlutamide_vs_OldBodyControl\"\n)\nar_blockade_head &lt;- run_comparison(\n  dds, \"Old_Flutamide_Head\", \"Old_Control_Head\",\n  \"AR_blockade_OldHeadFlutamide_vs_OldHeadControl\"\n)\n\ncontrast_summaries &lt;- do.call(rbind, lapply(list(\n  leg_emergence, nervous_system_development,\n  ar_blockade_body, ar_blockade_head\n), `[[`, \"summary\"))\nwrite.csv(contrast_summaries, \"DESeq2_results/DGE/contrast_summaries.csv\",\n          row.names = FALSE)\ncontrast_summaries\n\n\nThe stage contrasts are control-only, between-animal day/stage comparisons. The flutamide contrasts are day-103 flutamide-tank versus control-tank associations. The old-head contrasts have only two control libraries and are considered provisional.",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#relevant-subset-sensitivity-fits",
+    "href": "DGE.html#relevant-subset-sensitivity-fits",
+    "title": "Differential Gene Expression Analysis",
+    "section": "10 Relevant-subset sensitivity fits",
+    "text": "10 Relevant-subset sensitivity fits\nDESeq2 usually recommends fitting all groups together, but very different groups can influence the shared gene-wise dispersion. Each main contrast is therefore refit using only its two relevant cells.\n\n\nCode\nrun_subset_sensitivity &lt;- function(dds_full, full_result, numerator,\n                                   denominator, comparison_name) {\n  use &lt;- dds_full$group %in% c(numerator, denominator)\n  d &lt;- dds_full[, use]\n  d$group &lt;- droplevels(d$group)\n  design(d) &lt;- ~ group\n  d &lt;- DESeq(d)\n  sub_res &lt;- results(d, contrast = c(\"group\", numerator, denominator), alpha = 0.05)\n  ids &lt;- rownames(full_result)\n  sub_lfc &lt;- sub_res$log2FoldChange[match(ids, rownames(sub_res))]\n  sub_padj &lt;- sub_res$padj[match(ids, rownames(sub_res))]\n  tab &lt;- data.frame(\n    gene_id = ids,\n    full_log2FC = full_result$log2FoldChange,\n    full_padj = full_result$padj,\n    subset_log2FC = sub_lfc,\n    subset_padj = sub_padj,\n    direction_agrees = sign(full_result$log2FoldChange) == sign(sub_lfc)\n  )\n  finite &lt;- is.finite(tab$full_log2FC) & is.finite(tab$subset_log2FC)\n  summary &lt;- data.frame(\n    comparison = comparison_name,\n    full_samples = ncol(dds_full), subset_samples = ncol(d),\n    spearman_LFC = cor(tab$full_log2FC[finite], tab$subset_log2FC[finite],\n                       method = \"spearman\"),\n    direction_agreement = mean(tab$direction_agrees[finite], na.rm = TRUE),\n    full_FDR_hits = sum(tab$full_padj &lt; 0.05, na.rm = TRUE),\n    subset_FDR_hits = sum(tab$subset_padj &lt; 0.05, na.rm = TRUE),\n    shared_FDR_hits = sum(tab$full_padj &lt; 0.05 & tab$subset_padj &lt; 0.05,\n                          na.rm = TRUE)\n  )\n  write.csv(tab, file.path(\"DESeq2_results/sensitivity\",\n    paste0(comparison_name, \"_full_vs_subset.csv\")), row.names = FALSE)\n  summary\n}\n\nsubset_summaries &lt;- rbind(\n  run_subset_sensitivity(dds, leg_emergence$res,\n    \"Old_Control_Body\", \"Young_Control_Body\", \"stage_body\"),\n  run_subset_sensitivity(dds, nervous_system_development$res,\n    \"Old_Control_Head\", \"Young_Control_Head\", \"stage_head\"),\n  run_subset_sensitivity(dds, ar_blockade_body$res,\n    \"Old_Flutamide_Body\", \"Old_Control_Body\", \"flutamide_body\"),\n  run_subset_sensitivity(dds, ar_blockade_head$res,\n    \"Old_Flutamide_Head\", \"Old_Control_Head\", \"flutamide_head\")\n)\nwrite.csv(subset_summaries,\n          \"DESeq2_results/sensitivity/full_vs_subset_summaries.csv\",\n          row.names = FALSE)\nsubset_summaries",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#older-only-paired-tissue-interaction",
+    "href": "DGE.html#older-only-paired-tissue-interaction",
+    "title": "Differential Gene Expression Analysis",
+    "section": "11 Older-only paired tissue interaction",
+    "text": "11 Older-only paired tissue interaction\nThe interaction is\n\\[\n(\\mathrm{flutamide\\ tank\\ head}-\\mathrm{control\\ tank\\ head})-\n(\\mathrm{flutamide\\ tank\\ body}-\\mathrm{control\\ tank\\ body}).\n\\]\nTadpole fixed effects account for paired head/body libraries. Treatment main effect is absorbed by tadpole; the custom flutamide_head coefficient estimates the difference-in-differences.\n\n\nCode\ndds_old &lt;- dds[, dds$stage == \"Old\"]\n# Use syntactically safe factor levels for stable coefficient names.\ndds_old$tadpole &lt;- factor(make.names(as.character(dds_old$tadpole)))\ndds_old$tissue &lt;- factor(dds_old$tissue, levels = c(\"Body\", \"Head\"))\ndds_old$flutamide_head &lt;- as.integer(\n  dds_old$treatment == \"Flutamide\" & dds_old$tissue == \"Head\"\n)\ndesign(dds_old) &lt;- ~ tadpole + tissue + flutamide_head\npaired_mm &lt;- model.matrix(design(dds_old), as.data.frame(colData(dds_old)))\nstopifnot(qr(paired_mm)$rank == ncol(paired_mm))\n\npair_table &lt;- with(as.data.frame(colData(dds_old)), table(tadpole, tissue))\ncomplete_pair_ids &lt;- rownames(pair_table)[rowSums(pair_table &gt; 0) == 2]\npaired_design_audit &lt;- data.frame(\n  old_libraries = ncol(dds_old),\n  tadpoles = nlevels(dds_old$tadpole),\n  complete_pairs = length(complete_pair_ids),\n  control_complete_pairs = sum(grepl(\"^C\", complete_pair_ids)),\n  flutamide_complete_pairs = sum(grepl(\"^F\", complete_pair_ids)),\n  model_parameters = ncol(paired_mm),\n  residual_df = nrow(paired_mm) - qr(paired_mm)$rank\n)\nwrite.csv(paired_design_audit,\n          \"DESeq2_results/DGE/paired_interaction_design_audit.csv\",\n          row.names = FALSE)\npaired_design_audit\n\ndds_old &lt;- DESeq(dds_old)\ninteraction_name &lt;- grep(\"flutamide_head\", resultsNames(dds_old), value = TRUE)\nstopifnot(length(interaction_name) == 1L)\nres_interaction &lt;- results(dds_old, name = interaction_name, alpha = 0.05)\nres_interaction_shrunk &lt;- lfcShrink(\n  dds_old, coef = interaction_name, res = res_interaction, type = \"ashr\"\n)\n\ninteraction_out &lt;- annotate_result(res_interaction, dds_old)\ninteraction_out$shrunken_interaction_log2FC &lt;-\n  res_interaction_shrunk$log2FoldChange\ninteraction_out$shrunken_interaction_lfcSE &lt;- res_interaction_shrunk$lfcSE\n\n# Auxiliary component contrasts come from the separate global, unpaired model.\ninteraction_out$auxiliary_unpaired_head_log2FC &lt;-\n  ar_blockade_head$res$log2FoldChange[\n    match(interaction_out$gene_id, rownames(ar_blockade_head$res))\n  ]\ninteraction_out$auxiliary_unpaired_body_log2FC &lt;-\n  ar_blockade_body$res$log2FoldChange[\n    match(interaction_out$gene_id, rownames(ar_blockade_body$res))\n  ]\ninteraction_out$paired_interaction_FDR_significant &lt;-\n  !is.na(interaction_out$padj) & interaction_out$padj &lt; 0.05\ninteraction_out &lt;- interaction_out[\n  order(interaction_out$padj, interaction_out$pvalue, na.last = TRUE),\n]\nwrite.csv(interaction_out,\n          \"DESeq2_results/DGE/AR_blockade_head_vs_body_interaction_old_only.csv\",\n          row.names = FALSE)\nsaveRDS(dds_old, \"DESeq2_results/dds_old_interaction_fitted.rds\")",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#unpaired-interaction-sensitivity-analysis",
+    "href": "DGE.html#unpaired-interaction-sensitivity-analysis",
+    "title": "Differential Gene Expression Analysis",
+    "section": "12 Unpaired interaction sensitivity analysis",
+    "text": "12 Unpaired interaction sensitivity analysis\n\n\nCode\ndds_old_unpaired &lt;- dds[, dds$stage == \"Old\"]\ndds_old_unpaired$treatment &lt;- factor(dds_old_unpaired$treatment,\n                                     levels = c(\"Control\", \"Flutamide\"))\ndds_old_unpaired$tissue &lt;- factor(dds_old_unpaired$tissue,\n                                  levels = c(\"Body\", \"Head\"))\ndesign(dds_old_unpaired) &lt;- ~ treatment * tissue\nunpaired_mm &lt;- model.matrix(design(dds_old_unpaired),\n                            as.data.frame(colData(dds_old_unpaired)))\nstopifnot(qr(unpaired_mm)$rank == ncol(unpaired_mm))\ndds_old_unpaired &lt;- DESeq(dds_old_unpaired)\nunpaired_name &lt;- grep(\"treatment.*tissue|tissue.*treatment\",\n                      resultsNames(dds_old_unpaired), value = TRUE)\nstopifnot(length(unpaired_name) == 1L)\nres_unpaired &lt;- results(dds_old_unpaired, name = unpaired_name, alpha = 0.05)\nres_unpaired_shrunk &lt;- lfcShrink(\n  dds_old_unpaired, coef = unpaired_name, res = res_unpaired, type = \"ashr\"\n)\n\nsensitivity_comparison &lt;- data.frame(\n  gene_id = rownames(res_interaction),\n  gene_name = mcols(dds_old)[rownames(res_interaction), \"gene_name\"],\n  paired_interaction_log2FC = res_interaction_shrunk$log2FoldChange,\n  paired_interaction_padj = res_interaction$padj,\n  unpaired_interaction_log2FC = res_unpaired_shrunk$log2FoldChange[\n    match(rownames(res_interaction), rownames(res_unpaired_shrunk))\n  ],\n  unpaired_interaction_padj = res_unpaired$padj[\n    match(rownames(res_interaction), rownames(res_unpaired))\n  ]\n)\nsensitivity_comparison$direction_agrees &lt;- with(\n  sensitivity_comparison,\n  sign(paired_interaction_log2FC) == sign(unpaired_interaction_log2FC)\n)\nsensitivity_comparison$paired_significant &lt;- with(\n  sensitivity_comparison, !is.na(paired_interaction_padj) &\n    paired_interaction_padj &lt; 0.05\n)\nsensitivity_comparison$unpaired_significant &lt;- with(\n  sensitivity_comparison, !is.na(unpaired_interaction_padj) &\n    unpaired_interaction_padj &lt; 0.05\n)\nfinite &lt;- with(sensitivity_comparison,\n  is.finite(paired_interaction_log2FC) & is.finite(unpaired_interaction_log2FC))\ninteraction_sensitivity_summary &lt;- data.frame(\n  genes_compared = sum(finite),\n  spearman_LFC = with(sensitivity_comparison,\n    cor(paired_interaction_log2FC[finite], unpaired_interaction_log2FC[finite],\n        method = \"spearman\")),\n  direction_agreement = mean(sensitivity_comparison$direction_agrees[finite],\n                             na.rm = TRUE),\n  paired_FDR_hits = sum(sensitivity_comparison$paired_significant),\n  unpaired_FDR_hits = sum(sensitivity_comparison$unpaired_significant),\n  shared_FDR_hits = with(sensitivity_comparison,\n    sum(paired_significant & unpaired_significant))\n)\nwrite.csv(sensitivity_comparison,\n  \"DESeq2_results/DGE/AR_blockade_interaction_paired_vs_unpaired_all_genes.csv\",\n  row.names = FALSE)\nwrite.csv(interaction_sensitivity_summary,\n  \"DESeq2_results/DGE/AR_blockade_interaction_paired_vs_unpaired_summary.csv\",\n  row.names = FALSE)\nsaveRDS(dds_old_unpaired,\n        \"DESeq2_results/dds_old_unpaired_interaction_fitted.rds\")\ninteraction_sensitivity_summary",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#leave-one-complete-pair-out-stability",
+    "href": "DGE.html#leave-one-complete-pair-out-stability",
+    "title": "Differential Gene Expression Analysis",
+    "section": "13 Leave-one-complete-pair-out stability",
+    "text": "13 Leave-one-complete-pair-out stability\nEach complete head/body pair is omitted in turn. This does not create new experimental replication; it tests whether leading paired-interaction estimates are dominated by one pair.\n\n\nCode\npaired_hit_ids &lt;- rownames(res_interaction)[\n  !is.na(res_interaction$padj) & res_interaction$padj &lt; 0.05\n]\nfull_hit_lfc &lt;- res_interaction$log2FoldChange[\n  match(paired_hit_ids, rownames(res_interaction))\n]\nloo_list &lt;- lapply(complete_pair_ids, function(id) {\n  d &lt;- dds_old[, dds_old$tadpole != id]\n  d$tadpole &lt;- droplevels(d$tadpole)\n  design(d) &lt;- ~ tadpole + tissue + flutamide_head\n  mm &lt;- model.matrix(design(d), as.data.frame(colData(d)))\n  stopifnot(qr(mm)$rank == ncol(mm))\n  d &lt;- DESeq(d, quiet = TRUE)\n  nm &lt;- grep(\"flutamide_head\", resultsNames(d), value = TRUE)\n  r &lt;- results(d, name = nm, alpha = 0.05)\n  data.frame(\n    omitted_pair = id,\n    gene_id = paired_hit_ids,\n    full_log2FC = full_hit_lfc,\n    leave_one_out_log2FC = r$log2FoldChange[\n      match(paired_hit_ids, rownames(r))\n    ],\n    leave_one_out_padj = r$padj[match(paired_hit_ids, rownames(r))]\n  )\n})\nloo_stability &lt;- do.call(rbind, loo_list)\nloo_stability$direction_agrees &lt;- with(\n  loo_stability, sign(full_log2FC) == sign(leave_one_out_log2FC)\n)\nwrite.csv(loo_stability,\n          \"DESeq2_results/sensitivity/paired_interaction_leave_one_pair_out.csv\",\n          row.names = FALSE)\nloo_summary &lt;- aggregate(\n  cbind(direction_agrees, leave_one_out_log2FC) ~ gene_id,\n  data = loo_stability,\n  FUN = function(x) c(min = min(x, na.rm = TRUE),\n                      median = median(x, na.rm = TRUE),\n                      max = max(x, na.rm = TRUE))\n)\nloo_summary",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#targeted-spinal-cord-motor-neuron-and-interneuron-marker-audit",
+    "href": "DGE.html#targeted-spinal-cord-motor-neuron-and-interneuron-marker-audit",
+    "title": "Differential Gene Expression Analysis",
+    "section": "14 Targeted spinal cord motor-neuron and interneuron marker audit",
+    "text": "14 Targeted spinal cord motor-neuron and interneuron marker audit\nThis section checks the candidate list supplied by the PI. Antibody/common names are resolved to the gene symbols used in the S. parvus annotation. Grouped markers are expanded to individual paralogs. “Gone4” is interpreted as GON4L; Hb9 as MNX1; Chx10 as VSX2; HuC/HuD as ELAVL3/ELAVL4; and Raldh2 as ALDH1A2.\n\n\nCode\ncandidate_map &lt;- data.frame(\n  PI_marker = c(\n    \"Hb9\", \"Lhx3 (Lim3)\", \"Isl1/2\", \"Isl1/2\", \"foxp1\", \"En1\",\n    \"Evx1\", \"dmrt3\", \"nkx2.2\", \"Chx10\", \"Shox2\", \"Hu C/D\", \"Hu C/D\",\n    \"Sox2\", \"Gone4\", \"Lmx1-2\", \"Lmx1-2\", \"MafA\", \"Otp\", \"foxp2\",\n    \"Sox1/3\", \"Sox1/3\", \"Sp8\", \"Lhx2-9 (BamhII)\",\n    \"Lhx2-9 (BamhII)\", \"Raldh2\", \"ChAT\"\n  ),\n  resolved_symbol = c(\n    \"MNX1\", \"LHX3\", \"ISL1\", \"ISL2\", \"FOXP1\", \"EN1\", \"EVX1\", \"DMRT3\",\n    \"NKX2-2\", \"VSX2\", \"SHOX2\", \"ELAVL3\", \"ELAVL4\", \"SOX2\", \"GON4L\",\n    \"LMX1A\", \"LMX1B\", \"MAFA\", \"OTP\", \"FOXP2\", \"SOX1\", \"SOX3\", \"SP8\",\n    \"LHX2\", \"LHX9\", \"ALDH1A2\", \"CHAT\"\n  ),\n  alias_note = c(\n    \"Hb9 is MNX1\", \"Lim3 is LHX3\", \"Isl1\", \"Isl2\", \"\", \"\", \"\", \"\",\n    \"NKX2-2\", \"Chx10 is VSX2\", \"\", \"HuC is ELAVL3\", \"HuD is ELAVL4\",\n    \"\", \"Gone4 interpreted as GON4L\", \"Lmx1a\", \"Lmx1b\", \"\", \"\", \"\",\n    \"Sox1\", \"Sox3\", \"\", \"Lhx2\", \"Lhx9\", \"Raldh2 is ALDH1A2\", \"\"\n  ),\n  stringsAsFactors = FALSE\n)\n\nannotation_lookup &lt;- unique(tx2gene_raw[, c(\"gene_id\", \"gene\")])\ncandidate_map$gene_id &lt;- annotation_lookup$gene_id[\n  match(candidate_map$resolved_symbol, annotation_lookup$gene)\n]\ncandidate_map$present_in_annotation &lt;- !is.na(candidate_map$gene_id)\ncandidate_map$retained_after_filter &lt;-\n  candidate_map$gene_id %in% rownames(dds)\n\nstopifnot(all(candidate_map$present_in_annotation))\ncandidate_map\n\n\nPresence in the annotation does not guarantee sufficient expression for differential testing. A gene absent after filtering had fewer than three libraries with counts of at least 10 and is reported as “not tested,” not as evidence of no expression.\n\n\nCode\ncandidate_comparisons &lt;- list(\n  stage_body = leg_emergence,\n  stage_head = nervous_system_development,\n  flutamide_tank_body = ar_blockade_body,\n  flutamide_tank_head = ar_blockade_head\n)\n\ncandidate_long &lt;- do.call(rbind, lapply(names(candidate_comparisons), function(nm) {\n  obj &lt;- candidate_comparisons[[nm]]\n  tab &lt;- obj$table\n  idx &lt;- match(candidate_map$gene_id, tab$gene_id)\n  data.frame(\n    PI_marker = candidate_map$PI_marker,\n    resolved_symbol = candidate_map$resolved_symbol,\n    gene_id = candidate_map$gene_id,\n    comparison = nm,\n    present_in_annotation = candidate_map$present_in_annotation,\n    retained_after_filter = candidate_map$retained_after_filter,\n    baseMean = tab$baseMean[idx],\n    shrunken_log2FoldChange = tab$shrunken_log2FoldChange[idx],\n    pvalue = tab$pvalue[idx],\n    padj = tab$padj[idx],\n    threshold_padj = tab$threshold_padj[idx],\n    standard_FDR_significant = tab$standard_FDR_significant[idx],\n    LFC_threshold_FDR_significant =\n      tab$LFC_threshold_FDR_significant[idx],\n    stringsAsFactors = FALSE\n  )\n}))\n\n# Add the paired tissue interaction as a fifth comparison. It tests whether\n# the day-103 between-tank association differs between head and body.\ninteraction_idx &lt;- match(candidate_map$gene_id, interaction_out$gene_id)\ncandidate_interaction &lt;- data.frame(\n  PI_marker = candidate_map$PI_marker,\n  resolved_symbol = candidate_map$resolved_symbol,\n  gene_id = candidate_map$gene_id,\n  comparison = \"paired_tissue_interaction\",\n  present_in_annotation = candidate_map$present_in_annotation,\n  retained_after_filter = candidate_map$retained_after_filter,\n  baseMean = interaction_out$baseMean[interaction_idx],\n  shrunken_log2FoldChange =\n    interaction_out$shrunken_interaction_log2FC[interaction_idx],\n  pvalue = interaction_out$pvalue[interaction_idx],\n  padj = interaction_out$padj[interaction_idx],\n  threshold_padj = NA_real_,\n  standard_FDR_significant =\n    interaction_out$paired_interaction_FDR_significant[interaction_idx],\n  LFC_threshold_FDR_significant = NA,\n  stringsAsFactors = FALSE\n)\ncandidate_long &lt;- rbind(candidate_long, candidate_interaction)\n\ncandidate_long$direction &lt;- ifelse(\n  is.na(candidate_long$shrunken_log2FoldChange), NA,\n  ifelse(candidate_long$shrunken_log2FoldChange &gt; 0, \"Higher\", \"Lower\")\n)\ncandidate_long$DE_call &lt;- ifelse(\n  !candidate_long$retained_after_filter, \"Not tested: low counts\",\n  ifelse(is.na(candidate_long$padj), \"Tested; adjusted p-value unavailable\",\n    ifelse(candidate_long$standard_FDR_significant,\n           paste(\"FDR &lt; 0.05\", candidate_long$direction),\n           \"Not significant at FDR 0.05\"))\n)\n\nwrite.csv(\n  candidate_long,\n  \"DESeq2_results/DGE/spinal_marker_candidates_all_comparisons.csv\",\n  row.names = FALSE\n)\n\ncandidate_overview &lt;- do.call(rbind, lapply(seq_len(nrow(candidate_map)), function(i) {\n  z &lt;- candidate_long[candidate_long$resolved_symbol ==\n                        candidate_map$resolved_symbol[i], ]\n  data.frame(\n    PI_marker = candidate_map$PI_marker[i],\n    resolved_symbol = candidate_map$resolved_symbol[i],\n    gene_id = candidate_map$gene_id[i],\n    present_in_annotation = candidate_map$present_in_annotation[i],\n    retained_after_filter = candidate_map$retained_after_filter[i],\n    any_standard_FDR_hit = any(z$standard_FDR_significant, na.rm = TRUE),\n    significant_comparisons = paste(\n      z$comparison[which(z$standard_FDR_significant %in% TRUE)],\n      collapse = \"; \"\n    ),\n    any_formal_abs_LFC_above_1_hit =\n      any(z$LFC_threshold_FDR_significant, na.rm = TRUE),\n    stringsAsFactors = FALSE\n  )\n}))\nwrite.csv(\n  candidate_overview,\n  \"DESeq2_results/DGE/spinal_marker_candidates_presence_summary.csv\",\n  row.names = FALSE\n)\ncandidate_overview\n\n\nThe standard FDR column answers whether a candidate differs from zero under any comparison. The formal effect-threshold column is more stringent and asks whether an absolute LFC greater than 1 is statistically supported. The paired interaction is evaluated only against zero, because the interaction analysis was not specified as an effect-threshold test.\n\n\nCode\ncandidate_ids &lt;- candidate_map$gene_id[candidate_map$retained_after_filter]\ncandidate_symbols &lt;- candidate_map$resolved_symbol[\n  candidate_map$retained_after_filter\n]\nnormalized_candidate_counts &lt;- counts(dds, normalized = TRUE)[\n  candidate_ids, , drop = FALSE\n]\n\ncandidate_expression_long &lt;- do.call(rbind, lapply(seq_along(candidate_ids), function(i) {\n  data.frame(\n    gene_id = candidate_ids[i],\n    resolved_symbol = candidate_symbols[i],\n    sample_id = colnames(dds),\n    group = dds$group,\n    normalized_count = normalized_candidate_counts[i, ],\n    stringsAsFactors = FALSE\n  )\n}))\nwrite.csv(\n  candidate_expression_long,\n  \"DESeq2_results/DGE/spinal_marker_candidates_normalized_counts.csv\",\n  row.names = FALSE\n)\n\ncandidate_expression_plot &lt;- ggplot(\n  candidate_expression_long,\n  aes(x = group, y = log2(normalized_count + 1), color = group)\n) +\n  geom_boxplot(outlier.shape = NA, alpha = 0.15, color = \"grey45\") +\n  geom_point(position = position_jitter(width = 0.12), size = 0.9,\n             alpha = 0.75) +\n  facet_wrap(~ resolved_symbol, scales = \"free_y\", ncol = 4) +\n  labs(\n    title = \"Targeted spinal cord marker expression across bulk tissue groups\",\n    subtitle = \"DESeq2-normalized gene counts; points are libraries\",\n    x = NULL,\n    y = \"log2(normalized count + 1)\",\n    color = \"Group\"\n  ) +\n  theme_classic(base_size = 9) +\n  theme(\n    axis.text.x = element_text(angle = 60, hjust = 1, size = 6),\n    legend.position = \"none\"\n  )\nggsave(\n  \"DESeq2_results/QC/spinal_marker_candidates_normalized_counts.pdf\",\n  candidate_expression_plot,\n  width = 15,\n  height = 17\n)\ncandidate_expression_plot\n\n\nThese measurements come from bulk head and body dissections. A marker can be strongly localized by immunohistochemistry yet show no bulk-tissue DE if its cell population is rare, if opposing cell populations dilute the signal, or if expression changes spatially without changing the tissue-wide mean.",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#interpretation",
+    "href": "DGE.html#interpretation",
+    "title": "Differential Gene Expression Analysis",
+    "section": "15 Interpretation",
+    "text": "15 Interpretation\nA positive interaction means the flutamide-tank association is more positive in head than body; it may arise from stronger head induction, stronger body repression, or both. A negative interaction has the opposite meaning. Interaction sign is not ordinary gene up- or downregulation.\nThe most defensible interaction candidates are genes with consistent effect directions, stability when individual complete pairs are omitted, and support in both paired and unpaired models. Statistical interaction does not establish direct androgen-receptor regulation and remains confounded with tank.\nSuggested reporting language:\n\nAt day 103, tadpoles housed in the flutamide tank differed in gene expression from tadpoles housed in the control tank. Because treatment was applied at the tank level with one tank per condition, treatment and tank effects are inseparable and these contrasts are exploratory. The tissue-dependent association was estimated from six complete head–body pairs (two control and four flutamide; paired-model residual df = 4). Candidate genes were evaluated using paired and unpaired interaction models and leave-one-pair-out stability analyses.",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "DGE.html#reproducibility-record",
+    "href": "DGE.html#reproducibility-record",
+    "title": "Differential Gene Expression Analysis",
+    "section": "16 Reproducibility record",
+    "text": "16 Reproducibility record\n\n\nCode\nwriteLines(capture.output(sessionInfo()), \"DESeq2_results/sessionInfo.txt\")\nsessionInfo()",
+    "crumbs": [
+      "Differential Gene Expression Analysis"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html",
+    "href": "frog-data-availability.html",
+    "title": "Frog Data Availability",
+    "section": "",
+    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#purpose",
+    "href": "frog-data-availability.html#purpose",
+    "title": "Frog Data Availability",
+    "section": "",
+    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#genome-resources",
+    "href": "frog-data-availability.html#genome-resources",
+    "title": "Frog Data Availability",
+    "section": "2 Genome Resources",
+    "text": "2 Genome Resources\n\n\n\nResource\nLink\nNotes\nYear\n\n\n\n\nOld genome assembly\nNCBI link\nPaper\n2023\n\n\nNew Genome assembly\nAdd link\nAdd assembly version, accession, or source\n2026\n\n\nGenome FASTA\nAdd link\nAdd file name and date downloaded\n\n\n\nGene annotation\nAdd link\nAdd GTF/GFF source and version\n\n\n\nTranscriptome\nAdd link\nOptional",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#rna-seq-reads",
+    "href": "frog-data-availability.html#rna-seq-reads",
+    "title": "Frog Data Availability",
+    "section": "3 RNA-seq Reads",
+    "text": "3 RNA-seq Reads\n\n\n\n\n\n\n\n\n\nDataset\nRepository\nAccession or link\nNotes\n\n\n\n\nRNA-seq reads\nNCBI SRA\nAdd link\nAdd tissue, treatment, or project notes\n\n\nRNA-seq reads\nGEO\nAdd link\nOptional\n\n\nRNA-seq reads\nENA\nAdd link\nOptional",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#sample-metadata",
+    "href": "frog-data-availability.html#sample-metadata",
+    "title": "Frog Data Availability",
+    "section": "4 Sample Metadata",
+    "text": "4 Sample Metadata\n\n\n\n\n\n\n\n\nFile or record\nLink\nNotes\n\n\n\n\nSample metadata\nAdd link\nSample IDs, tissue, sex, treatment, collection details\n\n\nExperimental design\nAdd link\nGroup comparisons or design notes",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#other-useful-data",
+    "href": "frog-data-availability.html#other-useful-data",
+    "title": "Frog Data Availability",
+    "section": "5 Other Useful Data",
+    "text": "5 Other Useful Data\n\n\n\n\n\n\n\n\nResource\nLink\nNotes\n\n\n\n\nRelated publication\nAdd link\nPaper, preprint, or thesis\n\n\nSupplementary files\nAdd link\nTables, scripts, or additional references\n\n\nLab notes\nAdd link\nInternal notes if appropriate",
+    "crumbs": [
+      "Frog Data Availability"
+    ]
+  },
+  {
+    "objectID": "frog-data-availability.html#download-notes",
+    "href": "frog-data-availability.html#download-notes",
+    "title": "Frog Data Availability",
+    "section": "6 Download Notes",
+    "text": "6 Download Notes\nWhen adding data links, record:\n\nRepository name\nAccession number\nDate accessed\nFile names downloaded\nGenome or annotation version\nAny filtering or processing already performed\n\nThis information makes the analysis easier to reproduce later.",
+    "crumbs": [
+      "Frog Data Availability"
     ]
   },
   {
@@ -473,194 +380,336 @@
     ]
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "",
+    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "index.html#about-this-resource",
+    "href": "index.html#about-this-resource",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "",
+    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "index.html#tutorial-path-needs-updating",
+    "href": "index.html#tutorial-path-needs-updating",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "2 Tutorial path (needs updating)",
+    "text": "2 Tutorial path (needs updating)\n\nSet up your environment\nRun the pipeline\nUnderstand the results\nFix common issues",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "index.html#prerequisites",
+    "href": "index.html#prerequisites",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "3 Prerequisites",
+    "text": "3 Prerequisites\nYou will need:\n\nLisa to register your email with Unity\nA laptop with a terminal",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "index.html#citation-and-credit",
+    "href": "index.html#citation-and-credit",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "4 Citation and credit",
+    "text": "4 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow.",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html",
+    "href": "sparvusgenome_readme_draft.html",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "Scripts and notes for assembling, QC-ing, submitting, and annotating the Staurois parvus genome.\nThis repository documents the workflow used to generate a new PacBio HiFi genome assembly for the Bornean rock frog / foot-flagging frog, Staurois parvus, screen it for NCBI submission, and annotate it with NCBI EGAPx.\n\n\nThe main goals of this workflow are:\n\nGenerate a new S. parvus genome assembly from PacBio HiFi reads.\nAssess assembly quality using summary statistics, BUSCO, GC/coverage checks, and contamination screening.\nClean the assembly for NCBI submission.\nAnnotate the cleaned genome using NCBI EGAPx with S. parvus RNA-seq evidence.\nPrepare outputs for downstream RNA-seq mapping and differential gene expression analyses.\n\n\n\n\nThe cleaned primary-contig assembly used for NCBI submission and EGAPx annotation has:\n\n\n\nMetric\nValue\n\n\n\n\nTotal assembly length\n4,481,589,302 bp / 4.48 Gb\n\n\nNumber of contigs\n4,081\n\n\nLargest contig\n36.84 Mb\n\n\nContig N50\n6.88 Mb\n\n\nN50 number\n182\n\n\nN90\n629 kb\n\n\nGaps / Ns\n0\n\n\nGC content\n43.07%\n\n\n\nBUSCO, using vertebrata_odb10:\n\n\n\nBUSCO category\nCount\nPercent\n\n\n\n\nComplete BUSCOs\n3,060\n91.2%\n\n\nComplete single-copy\n2,952\n88.0%\n\n\nComplete duplicated\n108\n3.2%\n\n\nFragmented\n134\n4.0%\n\n\nMissing\n160\n4.8%\n\n\nTotal searched\n3,354\n100%\n\n\n\nBUSCO notation:\nC:91.2%[S:88.0%,D:3.2%],F:4.0%,M:4.8%,n:3354\n\n\n\nThis repository currently contains scripts for several stages of the project.\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\nsparvus_hifiasm.sh\nRun hifiasm assembly workflow.\n\n\nsparvus_config.sh\nShared project paths/configuration variables for assembly scripts.\n\n\nfinal_stats.sh\nGenerate final assembly statistics.\n\n\nGenomeAssemblyInteractiveDump.ipynb\nInteractive notebook used during assembly exploration/QC.\n\n\n\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\n2_sparvus_busco.sh\nRun BUSCO on the assembly.\n\n\nrun_gc_coverage_check.sh\nRun GC/coverage screening to identify potential contaminants or outliers.\n\n\nrun_gc_coverage_subset.sh\nRun GC/coverage checks on a subset.\n\n\n\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\ndownload_fcs_gx_db.sh\nDownload the NCBI FCS-GX database.\n\n\nrun_fcs_adaptor.sh\nRun NCBI FCS adaptor screening.\n\n\nrun_fcs_gx.sh\nRun NCBI FCS-GX contamination screening.\n\n\nremove_contaminant.sh\nRemove the contaminant contig identified by FCS-GX.\n\n\n\nThe final cleaned assembly removed one contaminant contig:\nContig: ptg003819l\nLength: 19,494 bp\nAssignment: nematode / Oscheius tipulae\nAction: EXCLUDE\nThis represented approximately 0.0004% of the assembly.\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\nvalidate_inputs_annot.sh\nValidate EGAPx input files before annotation.\n\n\nrun_sparvus_egapx.sbatch\nInitial EGAPx SLURM run script.\n\n\nresume_sparvus_egapx.sbatch\nResume EGAPx after a failed/interrupted run.\n\n\negapx_config/\nSnapshot of EGAPx config files edited for Unity/SLURM.\n\n\negapx_instructions.md\nDetailed step-by-step EGAPx setup and run notes.\n\n\n\nThe initial EGAPx run failed because run_mask_assm_stats ran out of memory. The run was successfully resumed after increasing memory for that process.\nEGAPx version used:\nEGAPx 0.5.2\nEGAPx commit: 40ec7362576e4b93fa9c5bf0a6c400d9502b8a63\nSupport data version: egapxsupportdata_20251017\nEGAPx annotation summary:\n\n\n\nFeature category\nCount\n\n\n\n\nTotal genes\n41,598\n\n\nProtein-coding genes\n23,550\n\n\nmRNAs\n30,699\n\n\nCDSs\n30,699\n\n\nNon-coding RNAs\n14,814\n\n\nPseudo transcripts\n3,691\n\n\n\nIn the GFF, the EGAPx total gene count corresponds to:\n37,929 gene features\n+ 3,669 pseudogene features\n= 41,598 total gene/pseudogene features\nIsoforms are not counted as separate genes in the GFF. They are represented as mRNA child features under parent gene features:\n32,415 mRNA records\n25,246 parent genes with at least one mRNA\n4,231 genes with more than one mRNA isoform\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\ndownload_GSE232203_adult_rnaseq.sbatch\nDownload adult male S. parvus RNA-seq data from SRA/GEO.\n\n\ncompress_GSE232203_existing_fastq.sbatch\nCompress partially converted FASTQ files after fasterq-dump.\n\n\n\nAdult RNA-seq source:\nGEO: GSE232203\nBioProject: PRJNA971214\nSpecies: Staurois parvus\nSamples: adult male brain, spinal cord, and leg muscle\nThese data may be added to the RNA-seq evidence for a future EGAPx rerun.\n\n\n\n\n\n\nFile\nPurpose\n\n\n\n\nassembly_env.yml\nAssembly-related tools.\n\n\nbusco_env.yml\nBUSCO environment.\n\n\nannot_env.yml\nAnnotation-related tools.\n\n\ndetonate_env.yml\nDETONATE/transcriptome QC environment.\n\n\nsp_ont_polish.yml\nONT polishing environment.\n\n\n\n\n\n\n\nEGAPx was run using:\n\ncleaned genome assembly\nNCBI taxid for Staurois parvus: 386267\npaired Illumina RNA-seq reads\ntRNAscan enabled\ncmsearch enabled\n\nExample EGAPx YAML:\ngenome: /scratch3/workspace/kfloer_smith_edu-simple/sparvus_hifiasm/assembly_output/sparvus_primary_contigs.ncbi.fa\ntaxid: 386267\nshort_reads: /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/short_reads.txt\n\ntrnascan:\n  enabled: true\n\ncmsearch:\n  enabled: true\nThe short-read manifest is a two-column file:\nsample_name /path/to/R1.fastq.gz\nsample_name /path/to/R2.fastq.gz\nSee egapx_instructions.md for the full setup and run details.\n\n\n\nBecause androgen receptor is a gene of particular interest for this project, the EGAPx annotation was checked for AR.\nEGAPx recovered one androgen receptor locus:\n\n\n\nAR feature\nEGAPx result\n\n\n\n\nContig\nptg000154l\n\n\nCoordinates\n1,491,873-1,803,334\n\n\nStrand\n+\n\n\nGene ID\ngene-egapxtmp_016766\n\n\nLocus tag\negapxtmp_016766\n\n\nTranscript ID\nrna-egapxtmp_016766-R1\n\n\nProtein ID\negapxtmp_016766-P1\n\n\nExons\n8\n\n\nPredicted protein length\n777 aa\n\n\nOrtholog cross-reference\nNCBIOrtholog:367\n\n\n\nBLASTP of the predicted protein against anuran proteins returned top hits to androgen receptor proteins. The top hit was:\nandrogen receptor [Aquarana catesbeiana]\nQuery cover: 100%\nE-value: 0.0\nPercent identity: 92.86%\nHit length: 777 aa\nThis supports the EGAPx AR model as a likely near-complete/full-length androgen receptor ortholog.\n\n\n\nMost scripts are specific to the Unity HPC environment and will need editing before use elsewhere.\nLikely things to modify:\n\nSLURM partition/account/qos settings\nmodule names\nfile paths\nApptainer/Singularity cache and tmp directories\nmemory/CPU/time values\nNextflow configuration\nEGAPx config files\n\nThe scripts should be treated as reproducible project documentation and templates, not universal drop-in workflows.\n\n\n\nA rough order for using this repository is:\n\nConfigure project paths in sparvus_config.sh.\nRun assembly with sparvus_hifiasm.sh.\nGenerate assembly statistics with final_stats.sh.\nRun BUSCO with 2_sparvus_busco.sh.\nRun GC/coverage checks.\nRun NCBI FCS adaptor and FCS-GX contamination screening.\nRemove contaminant contig if needed.\nValidate cleaned assembly.\nPrepare EGAPx input YAML and RNA-seq manifest.\nValidate EGAPx inputs with validate_inputs_annot.sh.\nRun EGAPx with run_sparvus_egapx.sbatch.\nIf needed, adjust EGAPx process resources and resume with resume_sparvus_egapx.sbatch.\nUse EGAPx GFF/GTF/protein/transcript outputs for downstream RNA-seq mapping and DGE."
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html#project-overview",
+    "href": "sparvusgenome_readme_draft.html#project-overview",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "The main goals of this workflow are:\n\nGenerate a new S. parvus genome assembly from PacBio HiFi reads.\nAssess assembly quality using summary statistics, BUSCO, GC/coverage checks, and contamination screening.\nClean the assembly for NCBI submission.\nAnnotate the cleaned genome using NCBI EGAPx with S. parvus RNA-seq evidence.\nPrepare outputs for downstream RNA-seq mapping and differential gene expression analyses."
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html#current-assembly-summary",
+    "href": "sparvusgenome_readme_draft.html#current-assembly-summary",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "The cleaned primary-contig assembly used for NCBI submission and EGAPx annotation has:\n\n\n\nMetric\nValue\n\n\n\n\nTotal assembly length\n4,481,589,302 bp / 4.48 Gb\n\n\nNumber of contigs\n4,081\n\n\nLargest contig\n36.84 Mb\n\n\nContig N50\n6.88 Mb\n\n\nN50 number\n182\n\n\nN90\n629 kb\n\n\nGaps / Ns\n0\n\n\nGC content\n43.07%\n\n\n\nBUSCO, using vertebrata_odb10:\n\n\n\nBUSCO category\nCount\nPercent\n\n\n\n\nComplete BUSCOs\n3,060\n91.2%\n\n\nComplete single-copy\n2,952\n88.0%\n\n\nComplete duplicated\n108\n3.2%\n\n\nFragmented\n134\n4.0%\n\n\nMissing\n160\n4.8%\n\n\nTotal searched\n3,354\n100%\n\n\n\nBUSCO notation:\nC:91.2%[S:88.0%,D:3.2%],F:4.0%,M:4.8%,n:3354"
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html#repository-structure",
+    "href": "sparvusgenome_readme_draft.html#repository-structure",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "This repository currently contains scripts for several stages of the project.\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\nsparvus_hifiasm.sh\nRun hifiasm assembly workflow.\n\n\nsparvus_config.sh\nShared project paths/configuration variables for assembly scripts.\n\n\nfinal_stats.sh\nGenerate final assembly statistics.\n\n\nGenomeAssemblyInteractiveDump.ipynb\nInteractive notebook used during assembly exploration/QC.\n\n\n\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\n2_sparvus_busco.sh\nRun BUSCO on the assembly.\n\n\nrun_gc_coverage_check.sh\nRun GC/coverage screening to identify potential contaminants or outliers.\n\n\nrun_gc_coverage_subset.sh\nRun GC/coverage checks on a subset.\n\n\n\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\ndownload_fcs_gx_db.sh\nDownload the NCBI FCS-GX database.\n\n\nrun_fcs_adaptor.sh\nRun NCBI FCS adaptor screening.\n\n\nrun_fcs_gx.sh\nRun NCBI FCS-GX contamination screening.\n\n\nremove_contaminant.sh\nRemove the contaminant contig identified by FCS-GX.\n\n\n\nThe final cleaned assembly removed one contaminant contig:\nContig: ptg003819l\nLength: 19,494 bp\nAssignment: nematode / Oscheius tipulae\nAction: EXCLUDE\nThis represented approximately 0.0004% of the assembly.\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\nvalidate_inputs_annot.sh\nValidate EGAPx input files before annotation.\n\n\nrun_sparvus_egapx.sbatch\nInitial EGAPx SLURM run script.\n\n\nresume_sparvus_egapx.sbatch\nResume EGAPx after a failed/interrupted run.\n\n\negapx_config/\nSnapshot of EGAPx config files edited for Unity/SLURM.\n\n\negapx_instructions.md\nDetailed step-by-step EGAPx setup and run notes.\n\n\n\nThe initial EGAPx run failed because run_mask_assm_stats ran out of memory. The run was successfully resumed after increasing memory for that process.\nEGAPx version used:\nEGAPx 0.5.2\nEGAPx commit: 40ec7362576e4b93fa9c5bf0a6c400d9502b8a63\nSupport data version: egapxsupportdata_20251017\nEGAPx annotation summary:\n\n\n\nFeature category\nCount\n\n\n\n\nTotal genes\n41,598\n\n\nProtein-coding genes\n23,550\n\n\nmRNAs\n30,699\n\n\nCDSs\n30,699\n\n\nNon-coding RNAs\n14,814\n\n\nPseudo transcripts\n3,691\n\n\n\nIn the GFF, the EGAPx total gene count corresponds to:\n37,929 gene features\n+ 3,669 pseudogene features\n= 41,598 total gene/pseudogene features\nIsoforms are not counted as separate genes in the GFF. They are represented as mRNA child features under parent gene features:\n32,415 mRNA records\n25,246 parent genes with at least one mRNA\n4,231 genes with more than one mRNA isoform\n\n\n\n\n\n\n\n\n\n\nScript/file\nPurpose\n\n\n\n\ndownload_GSE232203_adult_rnaseq.sbatch\nDownload adult male S. parvus RNA-seq data from SRA/GEO.\n\n\ncompress_GSE232203_existing_fastq.sbatch\nCompress partially converted FASTQ files after fasterq-dump.\n\n\n\nAdult RNA-seq source:\nGEO: GSE232203\nBioProject: PRJNA971214\nSpecies: Staurois parvus\nSamples: adult male brain, spinal cord, and leg muscle\nThese data may be added to the RNA-seq evidence for a future EGAPx rerun.\n\n\n\n\n\n\nFile\nPurpose\n\n\n\n\nassembly_env.yml\nAssembly-related tools.\n\n\nbusco_env.yml\nBUSCO environment.\n\n\nannot_env.yml\nAnnotation-related tools.\n\n\ndetonate_env.yml\nDETONATE/transcriptome QC environment.\n\n\nsp_ont_polish.yml\nONT polishing environment."
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html#egapx-input-structure",
+    "href": "sparvusgenome_readme_draft.html#egapx-input-structure",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "EGAPx was run using:\n\ncleaned genome assembly\nNCBI taxid for Staurois parvus: 386267\npaired Illumina RNA-seq reads\ntRNAscan enabled\ncmsearch enabled\n\nExample EGAPx YAML:\ngenome: /scratch3/workspace/kfloer_smith_edu-simple/sparvus_hifiasm/assembly_output/sparvus_primary_contigs.ncbi.fa\ntaxid: 386267\nshort_reads: /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/short_reads.txt\n\ntrnascan:\n  enabled: true\n\ncmsearch:\n  enabled: true\nThe short-read manifest is a two-column file:\nsample_name /path/to/R1.fastq.gz\nsample_name /path/to/R2.fastq.gz\nSee egapx_instructions.md for the full setup and run details."
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html#androgen-receptor-sanity-check",
+    "href": "sparvusgenome_readme_draft.html#androgen-receptor-sanity-check",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "Because androgen receptor is a gene of particular interest for this project, the EGAPx annotation was checked for AR.\nEGAPx recovered one androgen receptor locus:\n\n\n\nAR feature\nEGAPx result\n\n\n\n\nContig\nptg000154l\n\n\nCoordinates\n1,491,873-1,803,334\n\n\nStrand\n+\n\n\nGene ID\ngene-egapxtmp_016766\n\n\nLocus tag\negapxtmp_016766\n\n\nTranscript ID\nrna-egapxtmp_016766-R1\n\n\nProtein ID\negapxtmp_016766-P1\n\n\nExons\n8\n\n\nPredicted protein length\n777 aa\n\n\nOrtholog cross-reference\nNCBIOrtholog:367\n\n\n\nBLASTP of the predicted protein against anuran proteins returned top hits to androgen receptor proteins. The top hit was:\nandrogen receptor [Aquarana catesbeiana]\nQuery cover: 100%\nE-value: 0.0\nPercent identity: 92.86%\nHit length: 777 aa\nThis supports the EGAPx AR model as a likely near-complete/full-length androgen receptor ortholog."
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html#notes-for-reuse",
+    "href": "sparvusgenome_readme_draft.html#notes-for-reuse",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "Most scripts are specific to the Unity HPC environment and will need editing before use elsewhere.\nLikely things to modify:\n\nSLURM partition/account/qos settings\nmodule names\nfile paths\nApptainer/Singularity cache and tmp directories\nmemory/CPU/time values\nNextflow configuration\nEGAPx config files\n\nThe scripts should be treated as reproducible project documentation and templates, not universal drop-in workflows."
+  },
+  {
+    "objectID": "sparvusgenome_readme_draft.html#suggested-workflow-order",
+    "href": "sparvusgenome_readme_draft.html#suggested-workflow-order",
+    "title": "1 SparvusGenome",
+    "section": "",
+    "text": "A rough order for using this repository is:\n\nConfigure project paths in sparvus_config.sh.\nRun assembly with sparvus_hifiasm.sh.\nGenerate assembly statistics with final_stats.sh.\nRun BUSCO with 2_sparvus_busco.sh.\nRun GC/coverage checks.\nRun NCBI FCS adaptor and FCS-GX contamination screening.\nRemove contaminant contig if needed.\nValidate cleaned assembly.\nPrepare EGAPx input YAML and RNA-seq manifest.\nValidate EGAPx inputs with validate_inputs_annot.sh.\nRun EGAPx with run_sparvus_egapx.sbatch.\nIf needed, adjust EGAPx process resources and resume with resume_sparvus_egapx.sbatch.\nUse EGAPx GFF/GTF/protein/transcript outputs for downstream RNA-seq mapping and DGE."
+  },
+  {
     "objectID": "file-types-storage.html",
     "href": "file-types-storage.html",
-    "title": "File Types, File Sizes, and Storage",
+    "title": "File Types and File Sizes",
     "section": "",
-    "text": "RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing, alignment, or intermediate files that can quickly use hundreds of gigabytes.\nBefore running a pipeline, it helps to know:\n\nWhich files are inputs\nWhich files are outputs\nWhich files are temporary\nWhich files need to be saved\nWhich files can be deleted later",
+    "text": "RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing or alignment files that can use a lot of space.\nThis page is a gentle introduction to the file types you may see during RNA-seq analysis. You do not need to understand every detail yet. The goal is to become familiar with the names and what they are generally used for.\nBefore running a pipeline, it helps to recognize which files are raw data, which files describe the reference genome, and which files are results.",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
     "objectID": "file-types-storage.html#why-this-matters",
     "href": "file-types-storage.html#why-this-matters",
-    "title": "File Types, File Sizes, and Storage",
+    "title": "File Types and File Sizes",
     "section": "",
-    "text": "RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing, alignment, or intermediate files that can quickly use hundreds of gigabytes.\nBefore running a pipeline, it helps to know:\n\nWhich files are inputs\nWhich files are outputs\nWhich files are temporary\nWhich files need to be saved\nWhich files can be deleted later",
+    "text": "RNA-seq analysis creates many files. Some are small text files that describe your samples. Others are large sequencing or alignment files that can use a lot of space.\nThis page is a gentle introduction to the file types you may see during RNA-seq analysis. You do not need to understand every detail yet. The goal is to become familiar with the names and what they are generally used for.\nBefore running a pipeline, it helps to recognize which files are raw data, which files describe the reference genome, and which files are results.",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
     "objectID": "file-types-storage.html#common-file-types",
     "href": "file-types-storage.html#common-file-types",
-    "title": "File Types, File Sizes, and Storage",
+    "title": "File Types and File Sizes",
     "section": "2 Common file types",
     "text": "2 Common file types\n\n\n\n\n\n\n\n\nFile type\nExample\nWhat it is\n\n\n\n\nFASTQ\nsample_R1.fastq.gz\nRaw sequencing reads\n\n\nCSV\nsamplesheet.csv\nTable describing samples and input files\n\n\nFASTA\ngenome.fa\nReference genome or transcript sequences\n\n\nGTF/GFF\nannotation.gtf\nGene annotation file\n\n\nBAM\nsample.bam\nAligned reads\n\n\nBAI\nsample.bam.bai\nIndex for a BAM file\n\n\nTSV/CSV\nsalmon.merged.gene_counts.tsv\nCount or expression table\n\n\nHTML\nmultiqc_report.html\nInteractive report opened in a browser\n\n\nLOG/TXT\n.nextflow.log\nLogs and command output",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
     "objectID": "file-types-storage.html#fastq-files",
     "href": "file-types-storage.html#fastq-files",
-    "title": "File Types, File Sizes, and Storage",
+    "title": "File Types and File Sizes",
     "section": "3 FASTQ files",
     "text": "3 FASTQ files\nFASTQ files are usually the main input for RNA-seq pipelines.\nPaired-end data often has two files per sample:\nsample1_R1.fastq.gz\nsample1_R2.fastq.gz\nThe file names usually tell you:\n\nThe sample name\nWhether the file is read 1 (R1) or read 2 (R2)\nWhether the file is compressed (.gz)\n\nFASTQ files can be large. A single compressed FASTQ file may be several gigabytes.",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
     "objectID": "file-types-storage.html#reference-files",
     "href": "file-types-storage.html#reference-files",
-    "title": "File Types, File Sizes, and Storage",
+    "title": "File Types and File Sizes",
     "section": "4 Reference files",
     "text": "4 Reference files\nReference files describe the genome or transcriptome you want to compare your reads against.\nCommon reference files include:\ngenome.fa\nannotation.gtf\nFor non-model organisms like Staurois parvus, reference files may come from a lab assembly or a closely related species, depending on the project.\n\n\n\n\n\n\nNote\n\n\n\nThe choice of reference affects the interpretation of RNA-seq results. Always record which genome and annotation files were used.",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
     "objectID": "file-types-storage.html#pipeline-outputs",
     "href": "file-types-storage.html#pipeline-outputs",
-    "title": "File Types, File Sizes, and Storage",
+    "title": "File Types and File Sizes",
     "section": "5 Pipeline outputs",
     "text": "5 Pipeline outputs\nnf-core pipelines create organized output folders. The exact files depend on the options you choose, but common outputs include:\n\nQuality-control reports\nQuantification tables\nAlignment files\nPipeline logs\nSoftware version files\nMultiQC summary reports\n\nThe most useful output to open first is usually:\nmultiqc_report.html",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
-    "objectID": "file-types-storage.html#temporary-files",
-    "href": "file-types-storage.html#temporary-files",
-    "title": "File Types, File Sizes, and Storage",
-    "section": "6 Temporary files",
-    "text": "6 Temporary files\nNextflow creates a work directory that stores intermediate files:\nwork/\nThis folder can become very large. It is useful while the pipeline is running and if you need to resume a failed run.\nAfter the analysis is complete and you are sure you do not need to resume, the work/ directory can often be deleted to save space.\n\n\n\n\n\n\nWarning\n\n\n\nDo not delete work/ while a pipeline is running. Do not delete it before confirming that your final outputs were created successfully.",
+    "objectID": "file-types-storage.html#intermediate-files",
+    "href": "file-types-storage.html#intermediate-files",
+    "title": "File Types and File Sizes",
+    "section": "6 Intermediate files",
+    "text": "6 Intermediate files\nRNA-seq pipelines also create intermediate files while they are running.\nIntermediate files are files created between the raw input files and the final results. They are useful for the pipeline, but they are not always files you need to inspect directly.\nOne common example is the Nextflow work/ directory. This directory can become large because it stores temporary files for many pipeline steps.\n\n\n\n\n\n\nNote\n\n\n\nFor now, just know that intermediate files can take up space. Later pages will show how to check file sizes and decide what can be cleaned up.",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
     "objectID": "file-types-storage.html#typical-storage-needs",
     "href": "file-types-storage.html#typical-storage-needs",
-    "title": "File Types, File Sizes, and Storage",
+    "title": "File Types and File Sizes",
     "section": "7 Typical storage needs",
     "text": "7 Typical storage needs\nExact storage needs depend on the number of samples, read depth, reference files, and pipeline options.\nAs a rough guide:\n\n\n\nProject size\nInput FASTQs\nSuggested scratch space\n\n\n\n\nSmall test run\nLess than 5 GB\n30 GB\n\n\nSmall project\n10-50 GB\n100-300 GB\n\n\nMedium project\n50-200 GB\n300 GB-1 TB\n\n\nLarge project\nMore than 200 GB\n1 TB or more\n\n\n\nFor this tutorial, we create a workspace with 30 GB because it is meant for a small demo.",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
-    "objectID": "file-types-storage.html#check-file-sizes",
-    "href": "file-types-storage.html#check-file-sizes",
-    "title": "File Types, File Sizes, and Storage",
-    "section": "8 Check file sizes",
-    "text": "8 Check file sizes\nTo see the size of files and folders in your current directory, run:\ndu -sh *\nExample output:\n4.2G    data\n18G     work\n2.1G    results\n8.0K    samplesheet.csv\nTo check free space in a filesystem, run:\ndf -h .\nExample output:\nFilesystem      Size  Used Avail Use% Mounted on\nworkspace        30G   24G  6.0G  80% /scratch4/workspace",
+    "objectID": "file-types-storage.html#what-files-are-most-important",
+    "href": "file-types-storage.html#what-files-are-most-important",
+    "title": "File Types and File Sizes",
+    "section": "8 What files are most important?",
+    "text": "8 What files are most important?\nUsually keep:\n\nsamplesheet.csv\nFinal results folder\nMultiQC report\nCount or expression tables\nPipeline information files\nExact commands and parameters used\n\nUsually do not keep forever:\n\nLarge temporary work/ files\nFailed test outputs\nDuplicate downloaded references\nOld intermediate files that can be regenerated",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
-    "objectID": "file-types-storage.html#what-should-you-keep",
-    "href": "file-types-storage.html#what-should-you-keep",
-    "title": "File Types, File Sizes, and Storage",
-    "section": "9 What should you keep?",
-    "text": "9 What should you keep?\nUsually keep:\n\nsamplesheet.csv\nFinal results folder\nMultiQC report\nCount or expression tables\nPipeline information files\nExact commands and parameters used\n\nUsually do not keep forever:\n\nLarge temporary work/ files\nFailed test outputs\nDuplicate downloaded references\nOld intermediate files that can be regenerated",
+    "objectID": "file-types-storage.html#big-picture",
+    "href": "file-types-storage.html#big-picture",
+    "title": "File Types and File Sizes",
+    "section": "9 Big picture",
+    "text": "9 Big picture\n\nRaw FASTQ files are the original sequencing data.\nReference files tell the pipeline what genome or annotation to use.\nOutput files are the results and reports from the pipeline.\nIntermediate files help the pipeline run but may be large.\nMetadata and notes make the analysis reproducible.\n\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, do not delete raw data, metadata, or final results. Temporary and intermediate files are easier to regenerate than original data.",
     "crumbs": [
-      "File Types, File Sizes, and Storage"
+      "File Types and File Sizes"
     ]
   },
   {
-    "objectID": "file-types-storage.html#good-habits",
-    "href": "file-types-storage.html#good-habits",
-    "title": "File Types, File Sizes, and Storage",
-    "section": "10 Good habits",
-    "text": "10 Good habits\n\nUse clear folder names\nKeep raw data separate from results\nRecord where files came from\nDo not edit raw FASTQ files\nCheck available space before starting a large run\nClean up temporary files after confirming final results\n\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, ask before deleting large files. It is much easier to delete temporary files later than to recover important data after it is gone.",
-    "crumbs": [
-      "File Types, File Sizes, and Storage"
-    ]
-  },
-  {
-    "objectID": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
-    "href": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
-    "title": "What is RNA-seq?",
-    "section": "2 The nf-core/rnaseq workflow",
-    "text": "2 The nf-core/rnaseq workflow\nIn this tutorial, we use nf-core/rnaseq to process RNA-seq data in a standardized and reproducible way.\nThe nf-core/rnaseq pipeline can be visualized as a “metro map” of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.\n\n\n\nnf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.\n\n\nSource: nf-core/rnaseq version 3.26.0.\n\n\n\n\n\n\nTip\n\n\n\nFor this tutorial, we are following the default green path: STAR for alignment and Salmon for quantification. There are multiple valid ways to analyze RNA-seq data, but we will focus on this route.",
-    "crumbs": [
-      "What is RNA-seq?"
-    ]
-  },
-  {
-    "objectID": "frog-data-availability.html",
-    "href": "frog-data-availability.html",
-    "title": "Frog Data Availability",
+    "objectID": "egapx_instructions.html",
+    "href": "egapx_instructions.html",
+    "title": "1 EGAPx instructions for Staurois parvus",
     "section": "",
-    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
+    "text": "These notes document the EGAPx annotation workflow used for the new Staurois parvus genome assembly. They are meant as a practical template for rerunning EGAPx on Unity or adapting the run to another HPC.\nMain run scripts:\n\nInitial EGAPx run:\nhttps://github.com/katarinafloer/SparvusGenome/blob/main/run_sparvus_egapx.sbatch\nResume script after the first run hit an out-of-memory error:\nhttps://github.com/katarinafloer/SparvusGenome/blob/main/resume_sparvus_egapx.sbatch\nEGAPx config snapshot:\nhttps://github.com/katarinafloer/SparvusGenome/tree/main/egapx_config\n\nImportant note: the two SLURM scripts are not the entire setup. EGAPx also needs an input YAML, an RNA-seq manifest, the EGAPx repo/venv, Nextflow + Apptainer/Singularity, and cluster-specific config edits.\n\n\nFor this run, I used:\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\nCreate the project directory structure:\nmkdir -p \"$PROJECT\"/{input,work,output,container_cache,tmp,logs}\n\n\n\ncd \"$PROJECT\"\n\ngit clone https://github.com/ncbi/egapx.git\ncd \"$PROJECT/egapx\"\n\npython3 -m venv venv\nsource venv/bin/activate\n\npython -m pip install --upgrade pip\npython -m pip install -r requirements.txt\n\npython ui/egapx.py -V\ngit rev-parse HEAD | tee \"$PROJECT/egapx_commit.txt\"\nFor my run:\nEGAPx 0.5.2\ncommit: 40ec7362576e4b93fa9c5bf0a6c400d9502b8a63\n\n\n\nOn Unity, I used:\nmodule purge\nmodule load apptainer/latest\nmodule load nextflow/24.04.3\nPython 3.12 was available on the system even though module load python/3.12 did not work.\nCheck versions:\npython3 --version\njava -version\nnextflow -version\napptainer --version\ncommand -v singularity || command -v apptainer\n\n\n\nThe input YAML was:\ngenome: /scratch3/workspace/kfloer_smith_edu-simple/sparvus_hifiasm/assembly_output/sparvus_primary_contigs.ncbi.fa\ntaxid: 386267\nshort_reads: /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/short_reads.txt\n\ntrnascan:\n  enabled: true\n\ncmsearch:\n  enabled: true\nSave as:\n/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/sparvus.yaml\nValidate YAML syntax:\ncd \"$PROJECT/egapx\"\nsource venv/bin/activate\n\npython - &lt;&lt;'PY'\nimport yaml\n\npath = \"/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/sparvus.yaml\"\n\nwith open(path) as handle:\n    config = yaml.safe_load(handle)\n\nprint(config)\nprint(\"YAML syntax passed\")\nPY\n\n\n\nEGAPx expects the short-read manifest as a two-column whitespace-delimited file:\nsample_name /path/to/read1.fastq.gz\nsample_name /path/to/read2.fastq.gz\nExample:\nC103-2B_S10_L002 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C103-2B_S10_L002_R1_001.fastq.gz\nC103-2B_S10_L002 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C103-2B_S10_L002_R2_001.fastq.gz\nFor the initial run, I used 24 paired Illumina RNA-seq libraries from:\nREADDIR=/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nCreate manifest:\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\nREADDIR=/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nREADLIST=$PROJECT/input/short_reads.txt\nTMP_READLIST=$PROJECT/input/short_reads.txt.tmp\n\nwhile IFS= read -r -d '' r1; do\n    r2=\"${r1/_R1_001.fastq.gz/_R2_001.fastq.gz}\"\n\n    if [[ ! -r \"$r2\" ]]; then\n        echo \"ERROR: missing R2 for $r1\" &gt;&2\n        exit 1\n    fi\n\n    filename=$(basename \"$r1\")\n    setname=${filename%_R1_001.fastq.gz}\n\n    printf '%s %s\\n' \"$setname\" \"$r1\"\n    printf '%s %s\\n' \"$setname\" \"$r2\"\ndone &gt; \"$TMP_READLIST\" &lt; &lt;(\n    find \"$READDIR\" -maxdepth 1 -type f \\\n        -name '*_R1_001.fastq.gz' -print0 | sort -z\n)\n\nmv \"$TMP_READLIST\" \"$READLIST\"\nCheck manifest:\nwc -l \"$READLIST\"\nhead -n 8 \"$READLIST\"\n\nawk '\n{ count[$1]++ }\nEND {\n    for (sample in count)\n        if (count[sample] != 2)\n            print \"ERROR:\", sample, count[sample]\n    print \"Libraries:\", length(count)\n}\n' \"$READLIST\"\nFor my initial run:\n48 lines\n24 libraries\n\n\n\nOptional but recommended: validate FASTQ gzip files and assembly basics before submitting EGAPx.\nThe validation script I used is here:\n/home/kfloer_smith_edu/assembly/scripts/validate_sparvus_egapx.sbatch\nValidation output showed:\nAll FASTQ gzip files passed.\nContigs: 4081\nTotal bases: 4481589302\nDuplicate sequence IDs: 0\nAll input validation checks passed.\n\n\n\nThe first EGAPx command generates config files and asks you to edit them.\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\nINPUT_YAML=$PROJECT/input/sparvus.yaml\n\nmodule load apptainer/latest\nmodule load nextflow/24.04.3\n\nexport APPTAINER_CACHEDIR=\"$PROJECT/container_cache\"\nexport APPTAINER_TMPDIR=\"$PROJECT/tmp\"\nexport SINGULARITY_CACHEDIR=\"$PROJECT/container_cache\"\nexport SINGULARITY_TMPDIR=\"$PROJECT/tmp\"\nexport NXF_SINGULARITY_CACHEDIR=\"$PROJECT/container_cache\"\nexport TMPDIR=\"$PROJECT/tmp\"\n\ncd \"$PROJECT/egapx\"\n\npython ui/egapx.py \\\n    \"$INPUT_YAML\" \\\n    -e slurm \\\n    -w \"$PROJECT/work\" \\\n    -o \"$PROJECT/output\"\nEGAPx printed:\nFor replicating this run use --data-version egapxsupportdata_20251017\nEdit config files in .../egapx_config to reflect your actual configuration, then repeat the command\nFor reproducibility, I pinned:\negapxsupportdata_20251017\n\n\n\nThe active runtime config directory was:\nCONFIG=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/egapx/egapx_config\nFiles edited:\nslurm.config\nprocess_resources.config\nImportant Unity-specific edits included:\n\nSLURM queue/partition: cpu\nApptainer/Singularity cache directory in scratch\nApptainer/Singularity tmp directory in scratch\nProcess memory/CPU/time values\n\nUseful checks:\ngrep -nE 'cacheDir|CACHEDIR|TMPDIR|queue =' \"$CONFIG/slurm.config\"\ngrep -nE 'params\\.|memory =|cpus =|time =' \"$CONFIG/process_resources.config\"\nMy config snapshot is committed here:\nhttps://github.com/katarinafloer/SparvusGenome/tree/main/egapx_config\nImportant: these config files are cluster-specific. They will likely need to be edited for another HPC.\n\n\n\nThe initial SLURM run script is:\n/home/kfloer_smith_edu/assembly/scripts/run_sparvus_egapx.sbatch\nGitHub:\nhttps://github.com/katarinafloer/SparvusGenome/blob/main/run_sparvus_egapx.sbatch\nThe command used inside the script was essentially:\npython ui/egapx.py \\\n    \"$INPUT_YAML\" \\\n    --data-version egapxsupportdata_20251017 \\\n    -e slurm \\\n    -w \"$PROJECT/work\" \\\n    -o \"$PROJECT/output\"\nThe driver SLURM job does not do most of the compute itself. Nextflow launches many child SLURM jobs.\n\n\n\nThe first run failed at:\negapx:winmask_plane:mask_assm_stats:run_mask_assm_stats\nError:\nexit status 137\nKilled\nInterpretation: out of memory.\nNextflow reported:\nTo resume execution, run:\nsh /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output/nextflow/resume.sh\nI added this process-specific override to process_resources.config:\nprocess {\n    withName: 'run_mask_assm_stats' {\n        memory = 256.GB\n        time = 12.h\n    }\n}\nThen I resumed.\n\n\n\nThe resume SLURM script is:\n/home/kfloer_smith_edu/assembly/scripts/resume_sparvus_egapx.sbatch\nGitHub:\nhttps://github.com/katarinafloer/SparvusGenome/blob/main/resume_sparvus_egapx.sbatch\nIt runs:\nbash \"$PROJECT/output/nextflow/resume.sh\"\nAfter resume, EGAPx completed successfully.\nFinal runtime summary:\nCompleted at: 25-Jun-2026 04:27:48\nDuration: 10h 33m 22s\nCPU hours: 1,081.1\nSucceeded: 804\nCached: 56\n\n\n\nFinal outputs were in:\n/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output\nMain files:\ncomplete.genomic.gff\ncomplete.genomic.gtf\ncomplete.proteins.faa\ncomplete.transcripts.fna\ncomplete.cds.fna\ncomplete.genomic.fna\nStats:\noutput/stats/feature_counts.txt\noutput/stats/feature_counts.xml\noutput/stats/feature_stats.xml\noutput/stats/mask_assm_stats.xml\nFind output files:\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\n\nfind \"$PROJECT/output\" -type f \\( \\\n    -name '*.gff' -o \\\n    -name '*.gff3' -o \\\n    -name '*.gtf' -o \\\n    -name '*.faa' -o \\\n    -name '*.fna' -o \\\n    -name '*.gbff' -o \\\n    -name '*.sqn' -o \\\n    -name '*.stats' -o \\\n    -name '*.xml' \\\n\\) | sort\n\n\n\nFrom EGAPx:\nTotal genes: 41,598\nProtein-coding genes: 23,550\nmRNAs: 30,699\nCDSs: 30,699\nNon-coding RNAs: 14,814\nPseudo transcripts: 3,691\nIn the GFF:\n37,929 gene features\n3,669 pseudogene features\n41,598 total gene + pseudogene features\nFeature types in GFF:\n353957 exon\n315309 CDS\n37929 gene\n32415 mRNA\n8580 tRNA\n3669 pseudogene\n3493 snRNA\n1822 rRNA\n1739 lncRNA\n470 snoRNA\n384 pseudogenic_rRNA\n282 transcript\n19 scaRNA\n10 V_gene_segment\n8 C_gene_segment\n\n\n\nEGAPx does not appear to classify isoforms as separate genes in the GFF.\nIsoforms are represented as mRNA child features under parent gene features.\nCommand:\nGFF=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output/complete.genomic.gff\n\nawk -F'\\t' '\n$3==\"mRNA\" {\n    parent=\"missing_parent\"\n    if (match($9, /Parent=[^;]+/)) {\n        parent=substr($9, RSTART+7, RLENGTH-7)\n    }\n    mrna_count[parent]++\n}\nEND {\n    isoform_genes=0\n    total_mrna=0\n    for (g in mrna_count) {\n        total_mrna += mrna_count[g]\n        if (mrna_count[g] &gt; 1) isoform_genes++\n    }\n    print \"Genes with at least one mRNA:\", length(mrna_count)\n    print \"Total mRNAs:\", total_mrna\n    print \"Genes with &gt;1 mRNA isoform:\", isoform_genes\n}\n' \"$GFF\"\nOutput:\nGenes with at least one mRNA: 25246\nTotal mRNAs: 32415\nGenes with &gt;1 mRNA isoform: 4231\n\n\n\nDirect GFF counts:\nAll GFF gene features: 37,929\nWith gene symbol: 20,939\nWith NCBI ortholog cross-reference: 12,479\nWith description: 32,972\nWithout description: 4,957\nProtein-coding genes:\nTotal protein-coding genes: 23,550\nWith formal gene symbol: 12,359\nWith NCBI ortholog cross-reference: 12,479\nWith product/description text: 20,127\nWithout product/description: 3,423\n\n\n\nEGAPx recovered one androgen receptor locus.\nContig: ptg000154l\nCoordinates: 1,491,873-1,803,334\nStrand: +\nGene ID: gene-egapxtmp_016766\nLocus tag: egapxtmp_016766\nTranscript ID: rna-egapxtmp_016766-R1\nProtein ID: egapxtmp_016766-P1\nExons: 8\nPredicted protein length: 777 aa\nOrtholog cross-reference: NCBIOrtholog:367\nBLASTP against anuran proteins:\nTop hit: androgen receptor [Aquarana catesbeiana]\nQuery cover: 100%\nE-value: 0.0\nPercent identity: 92.86%\nHit length: 777 aa\nThis supports the EGAPx AR model as a likely near-complete/full-length AR ortholog.\n\n\n\nThe most HPC-specific pieces are:\n\nmodule names for Python, Nextflow, Apptainer/Singularity\nSLURM partition/queue name\nApptainer/Singularity cache and tmp paths\nprocess memory/CPU/time values in process_resources.config\nwhether the cluster uses Singularity or Apptainer\nwhether Nextflow is installed as a module\nfilesystem paths and bind paths\n\nThe provided scripts should be treated as templates, not drop-in scripts for every HPC."
   },
   {
-    "objectID": "frog-data-availability.html#purpose",
-    "href": "frog-data-availability.html#purpose",
-    "title": "Frog Data Availability",
+    "objectID": "egapx_instructions.html#project-directory",
+    "href": "egapx_instructions.html#project-directory",
+    "title": "1 EGAPx instructions for Staurois parvus",
     "section": "",
-    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
+    "text": "For this run, I used:\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\nCreate the project directory structure:\nmkdir -p \"$PROJECT\"/{input,work,output,container_cache,tmp,logs}"
   },
   {
-    "objectID": "frog-data-availability.html#genome-resources",
-    "href": "frog-data-availability.html#genome-resources",
-    "title": "Frog Data Availability",
-    "section": "2 Genome Resources",
-    "text": "2 Genome Resources\n\n\n\n\n\n\n\n\nResource\nLink\nNotes\n\n\n\n\nOld genome assembly\nAdd link\nAdd assembly version, accession, or source\n\n\nNew Genome assembly\nAdd link\nAdd assembly version, accession, or source\n\n\nGenome FASTA\nAdd link\nAdd file name and date downloaded\n\n\nGene annotation\nAdd link\nAdd GTF/GFF source and version\n\n\nTranscriptome\nAdd link\nOptional",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
+    "objectID": "egapx_instructions.html#clone-and-install-egapx",
+    "href": "egapx_instructions.html#clone-and-install-egapx",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "cd \"$PROJECT\"\n\ngit clone https://github.com/ncbi/egapx.git\ncd \"$PROJECT/egapx\"\n\npython3 -m venv venv\nsource venv/bin/activate\n\npython -m pip install --upgrade pip\npython -m pip install -r requirements.txt\n\npython ui/egapx.py -V\ngit rev-parse HEAD | tee \"$PROJECT/egapx_commit.txt\"\nFor my run:\nEGAPx 0.5.2\ncommit: 40ec7362576e4b93fa9c5bf0a6c400d9502b8a63"
   },
   {
-    "objectID": "frog-data-availability.html#rna-seq-reads",
-    "href": "frog-data-availability.html#rna-seq-reads",
-    "title": "Frog Data Availability",
-    "section": "3 RNA-seq Reads",
-    "text": "3 RNA-seq Reads\n\n\n\n\n\n\n\n\n\nDataset\nRepository\nAccession or link\nNotes\n\n\n\n\nRNA-seq reads\nNCBI SRA\nAdd link\nAdd tissue, treatment, or project notes\n\n\nRNA-seq reads\nGEO\nAdd link\nOptional\n\n\nRNA-seq reads\nENA\nAdd link\nOptional",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
+    "objectID": "egapx_instructions.html#softwaremodules-used-on-unity",
+    "href": "egapx_instructions.html#softwaremodules-used-on-unity",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "On Unity, I used:\nmodule purge\nmodule load apptainer/latest\nmodule load nextflow/24.04.3\nPython 3.12 was available on the system even though module load python/3.12 did not work.\nCheck versions:\npython3 --version\njava -version\nnextflow -version\napptainer --version\ncommand -v singularity || command -v apptainer"
   },
   {
-    "objectID": "frog-data-availability.html#sample-metadata",
-    "href": "frog-data-availability.html#sample-metadata",
-    "title": "Frog Data Availability",
-    "section": "4 Sample Metadata",
-    "text": "4 Sample Metadata\n\n\n\n\n\n\n\n\nFile or record\nLink\nNotes\n\n\n\n\nSample metadata\nAdd link\nSample IDs, tissue, sex, treatment, collection details\n\n\nExperimental design\nAdd link\nGroup comparisons or design notes",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
+    "objectID": "egapx_instructions.html#egapx-input-yaml",
+    "href": "egapx_instructions.html#egapx-input-yaml",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "The input YAML was:\ngenome: /scratch3/workspace/kfloer_smith_edu-simple/sparvus_hifiasm/assembly_output/sparvus_primary_contigs.ncbi.fa\ntaxid: 386267\nshort_reads: /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/short_reads.txt\n\ntrnascan:\n  enabled: true\n\ncmsearch:\n  enabled: true\nSave as:\n/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/sparvus.yaml\nValidate YAML syntax:\ncd \"$PROJECT/egapx\"\nsource venv/bin/activate\n\npython - &lt;&lt;'PY'\nimport yaml\n\npath = \"/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/sparvus.yaml\"\n\nwith open(path) as handle:\n    config = yaml.safe_load(handle)\n\nprint(config)\nprint(\"YAML syntax passed\")\nPY"
   },
   {
-    "objectID": "frog-data-availability.html#other-useful-data",
-    "href": "frog-data-availability.html#other-useful-data",
-    "title": "Frog Data Availability",
-    "section": "5 Other Useful Data",
-    "text": "5 Other Useful Data\n\n\n\n\n\n\n\n\nResource\nLink\nNotes\n\n\n\n\nRelated publication\nAdd link\nPaper, preprint, or thesis\n\n\nSupplementary files\nAdd link\nTables, scripts, or additional references\n\n\nLab notes\nAdd link\nInternal notes if appropriate",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
+    "objectID": "egapx_instructions.html#rna-seq-manifest",
+    "href": "egapx_instructions.html#rna-seq-manifest",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "EGAPx expects the short-read manifest as a two-column whitespace-delimited file:\nsample_name /path/to/read1.fastq.gz\nsample_name /path/to/read2.fastq.gz\nExample:\nC103-2B_S10_L002 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C103-2B_S10_L002_R1_001.fastq.gz\nC103-2B_S10_L002 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C103-2B_S10_L002_R2_001.fastq.gz\nFor the initial run, I used 24 paired Illumina RNA-seq libraries from:\nREADDIR=/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nCreate manifest:\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\nREADDIR=/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nREADLIST=$PROJECT/input/short_reads.txt\nTMP_READLIST=$PROJECT/input/short_reads.txt.tmp\n\nwhile IFS= read -r -d '' r1; do\n    r2=\"${r1/_R1_001.fastq.gz/_R2_001.fastq.gz}\"\n\n    if [[ ! -r \"$r2\" ]]; then\n        echo \"ERROR: missing R2 for $r1\" &gt;&2\n        exit 1\n    fi\n\n    filename=$(basename \"$r1\")\n    setname=${filename%_R1_001.fastq.gz}\n\n    printf '%s %s\\n' \"$setname\" \"$r1\"\n    printf '%s %s\\n' \"$setname\" \"$r2\"\ndone &gt; \"$TMP_READLIST\" &lt; &lt;(\n    find \"$READDIR\" -maxdepth 1 -type f \\\n        -name '*_R1_001.fastq.gz' -print0 | sort -z\n)\n\nmv \"$TMP_READLIST\" \"$READLIST\"\nCheck manifest:\nwc -l \"$READLIST\"\nhead -n 8 \"$READLIST\"\n\nawk '\n{ count[$1]++ }\nEND {\n    for (sample in count)\n        if (count[sample] != 2)\n            print \"ERROR:\", sample, count[sample]\n    print \"Libraries:\", length(count)\n}\n' \"$READLIST\"\nFor my initial run:\n48 lines\n24 libraries"
   },
   {
-    "objectID": "frog-data-availability.html#download-notes",
-    "href": "frog-data-availability.html#download-notes",
-    "title": "Frog Data Availability",
-    "section": "6 Download Notes",
-    "text": "6 Download Notes\nWhen adding data links, record:\n\nRepository name\nAccession number\nDate accessed\nFile names downloaded\nGenome or annotation version\nAny filtering or processing already performed\n\nThis information makes the analysis easier to reproduce later.",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
+    "objectID": "egapx_instructions.html#validate-input-files",
+    "href": "egapx_instructions.html#validate-input-files",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "Optional but recommended: validate FASTQ gzip files and assembly basics before submitting EGAPx.\nThe validation script I used is here:\n/home/kfloer_smith_edu/assembly/scripts/validate_sparvus_egapx.sbatch\nValidation output showed:\nAll FASTQ gzip files passed.\nContigs: 4081\nTotal bases: 4481589302\nDuplicate sequence IDs: 0\nAll input validation checks passed."
+  },
+  {
+    "objectID": "egapx_instructions.html#generate-egapx-config-files",
+    "href": "egapx_instructions.html#generate-egapx-config-files",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "The first EGAPx command generates config files and asks you to edit them.\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\nINPUT_YAML=$PROJECT/input/sparvus.yaml\n\nmodule load apptainer/latest\nmodule load nextflow/24.04.3\n\nexport APPTAINER_CACHEDIR=\"$PROJECT/container_cache\"\nexport APPTAINER_TMPDIR=\"$PROJECT/tmp\"\nexport SINGULARITY_CACHEDIR=\"$PROJECT/container_cache\"\nexport SINGULARITY_TMPDIR=\"$PROJECT/tmp\"\nexport NXF_SINGULARITY_CACHEDIR=\"$PROJECT/container_cache\"\nexport TMPDIR=\"$PROJECT/tmp\"\n\ncd \"$PROJECT/egapx\"\n\npython ui/egapx.py \\\n    \"$INPUT_YAML\" \\\n    -e slurm \\\n    -w \"$PROJECT/work\" \\\n    -o \"$PROJECT/output\"\nEGAPx printed:\nFor replicating this run use --data-version egapxsupportdata_20251017\nEdit config files in .../egapx_config to reflect your actual configuration, then repeat the command\nFor reproducibility, I pinned:\negapxsupportdata_20251017"
+  },
+  {
+    "objectID": "egapx_instructions.html#edit-egapx-config-files",
+    "href": "egapx_instructions.html#edit-egapx-config-files",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "The active runtime config directory was:\nCONFIG=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/egapx/egapx_config\nFiles edited:\nslurm.config\nprocess_resources.config\nImportant Unity-specific edits included:\n\nSLURM queue/partition: cpu\nApptainer/Singularity cache directory in scratch\nApptainer/Singularity tmp directory in scratch\nProcess memory/CPU/time values\n\nUseful checks:\ngrep -nE 'cacheDir|CACHEDIR|TMPDIR|queue =' \"$CONFIG/slurm.config\"\ngrep -nE 'params\\.|memory =|cpus =|time =' \"$CONFIG/process_resources.config\"\nMy config snapshot is committed here:\nhttps://github.com/katarinafloer/SparvusGenome/tree/main/egapx_config\nImportant: these config files are cluster-specific. They will likely need to be edited for another HPC."
+  },
+  {
+    "objectID": "egapx_instructions.html#initial-egapx-run-script",
+    "href": "egapx_instructions.html#initial-egapx-run-script",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "The initial SLURM run script is:\n/home/kfloer_smith_edu/assembly/scripts/run_sparvus_egapx.sbatch\nGitHub:\nhttps://github.com/katarinafloer/SparvusGenome/blob/main/run_sparvus_egapx.sbatch\nThe command used inside the script was essentially:\npython ui/egapx.py \\\n    \"$INPUT_YAML\" \\\n    --data-version egapxsupportdata_20251017 \\\n    -e slurm \\\n    -w \"$PROJECT/work\" \\\n    -o \"$PROJECT/output\"\nThe driver SLURM job does not do most of the compute itself. Nextflow launches many child SLURM jobs."
+  },
+  {
+    "objectID": "egapx_instructions.html#oom-failure-and-fix",
+    "href": "egapx_instructions.html#oom-failure-and-fix",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "The first run failed at:\negapx:winmask_plane:mask_assm_stats:run_mask_assm_stats\nError:\nexit status 137\nKilled\nInterpretation: out of memory.\nNextflow reported:\nTo resume execution, run:\nsh /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output/nextflow/resume.sh\nI added this process-specific override to process_resources.config:\nprocess {\n    withName: 'run_mask_assm_stats' {\n        memory = 256.GB\n        time = 12.h\n    }\n}\nThen I resumed."
+  },
+  {
+    "objectID": "egapx_instructions.html#resume-script",
+    "href": "egapx_instructions.html#resume-script",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "The resume SLURM script is:\n/home/kfloer_smith_edu/assembly/scripts/resume_sparvus_egapx.sbatch\nGitHub:\nhttps://github.com/katarinafloer/SparvusGenome/blob/main/resume_sparvus_egapx.sbatch\nIt runs:\nbash \"$PROJECT/output/nextflow/resume.sh\"\nAfter resume, EGAPx completed successfully.\nFinal runtime summary:\nCompleted at: 25-Jun-2026 04:27:48\nDuration: 10h 33m 22s\nCPU hours: 1,081.1\nSucceeded: 804\nCached: 56"
+  },
+  {
+    "objectID": "egapx_instructions.html#main-egapx-outputs",
+    "href": "egapx_instructions.html#main-egapx-outputs",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "Final outputs were in:\n/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output\nMain files:\ncomplete.genomic.gff\ncomplete.genomic.gtf\ncomplete.proteins.faa\ncomplete.transcripts.fna\ncomplete.cds.fna\ncomplete.genomic.fna\nStats:\noutput/stats/feature_counts.txt\noutput/stats/feature_counts.xml\noutput/stats/feature_stats.xml\noutput/stats/mask_assm_stats.xml\nFind output files:\nPROJECT=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus\n\nfind \"$PROJECT/output\" -type f \\( \\\n    -name '*.gff' -o \\\n    -name '*.gff3' -o \\\n    -name '*.gtf' -o \\\n    -name '*.faa' -o \\\n    -name '*.fna' -o \\\n    -name '*.gbff' -o \\\n    -name '*.sqn' -o \\\n    -name '*.stats' -o \\\n    -name '*.xml' \\\n\\) | sort"
+  },
+  {
+    "objectID": "egapx_instructions.html#annotation-summary",
+    "href": "egapx_instructions.html#annotation-summary",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "From EGAPx:\nTotal genes: 41,598\nProtein-coding genes: 23,550\nmRNAs: 30,699\nCDSs: 30,699\nNon-coding RNAs: 14,814\nPseudo transcripts: 3,691\nIn the GFF:\n37,929 gene features\n3,669 pseudogene features\n41,598 total gene + pseudogene features\nFeature types in GFF:\n353957 exon\n315309 CDS\n37929 gene\n32415 mRNA\n8580 tRNA\n3669 pseudogene\n3493 snRNA\n1822 rRNA\n1739 lncRNA\n470 snoRNA\n384 pseudogenic_rRNA\n282 transcript\n19 scaRNA\n10 V_gene_segment\n8 C_gene_segment"
+  },
+  {
+    "objectID": "egapx_instructions.html#isoform-check",
+    "href": "egapx_instructions.html#isoform-check",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "EGAPx does not appear to classify isoforms as separate genes in the GFF.\nIsoforms are represented as mRNA child features under parent gene features.\nCommand:\nGFF=/scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/output/complete.genomic.gff\n\nawk -F'\\t' '\n$3==\"mRNA\" {\n    parent=\"missing_parent\"\n    if (match($9, /Parent=[^;]+/)) {\n        parent=substr($9, RSTART+7, RLENGTH-7)\n    }\n    mrna_count[parent]++\n}\nEND {\n    isoform_genes=0\n    total_mrna=0\n    for (g in mrna_count) {\n        total_mrna += mrna_count[g]\n        if (mrna_count[g] &gt; 1) isoform_genes++\n    }\n    print \"Genes with at least one mRNA:\", length(mrna_count)\n    print \"Total mRNAs:\", total_mrna\n    print \"Genes with &gt;1 mRNA isoform:\", isoform_genes\n}\n' \"$GFF\"\nOutput:\nGenes with at least one mRNA: 25246\nTotal mRNAs: 32415\nGenes with &gt;1 mRNA isoform: 4231"
+  },
+  {
+    "objectID": "egapx_instructions.html#gene-naming-annotation-usefulness",
+    "href": "egapx_instructions.html#gene-naming-annotation-usefulness",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "Direct GFF counts:\nAll GFF gene features: 37,929\nWith gene symbol: 20,939\nWith NCBI ortholog cross-reference: 12,479\nWith description: 32,972\nWithout description: 4,957\nProtein-coding genes:\nTotal protein-coding genes: 23,550\nWith formal gene symbol: 12,359\nWith NCBI ortholog cross-reference: 12,479\nWith product/description text: 20,127\nWithout product/description: 3,423"
+  },
+  {
+    "objectID": "egapx_instructions.html#androgen-receptor-sanity-check",
+    "href": "egapx_instructions.html#androgen-receptor-sanity-check",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "EGAPx recovered one androgen receptor locus.\nContig: ptg000154l\nCoordinates: 1,491,873-1,803,334\nStrand: +\nGene ID: gene-egapxtmp_016766\nLocus tag: egapxtmp_016766\nTranscript ID: rna-egapxtmp_016766-R1\nProtein ID: egapxtmp_016766-P1\nExons: 8\nPredicted protein length: 777 aa\nOrtholog cross-reference: NCBIOrtholog:367\nBLASTP against anuran proteins:\nTop hit: androgen receptor [Aquarana catesbeiana]\nQuery cover: 100%\nE-value: 0.0\nPercent identity: 92.86%\nHit length: 777 aa\nThis supports the EGAPx AR model as a likely near-complete/full-length AR ortholog."
+  },
+  {
+    "objectID": "egapx_instructions.html#things-to-adapt-on-another-hpc",
+    "href": "egapx_instructions.html#things-to-adapt-on-another-hpc",
+    "title": "1 EGAPx instructions for Staurois parvus",
+    "section": "",
+    "text": "The most HPC-specific pieces are:\n\nmodule names for Python, Nextflow, Apptainer/Singularity\nSLURM partition/queue name\nApptainer/Singularity cache and tmp paths\nprocess memory/CPU/time values in process_resources.config\nwhether the cluster uses Singularity or Apptainer\nwhether Nextflow is installed as a module\nfilesystem paths and bind paths\n\nThe provided scripts should be treated as templates, not drop-in scripts for every HPC."
   },
   {
     "objectID": "using-terminal.html",
@@ -783,13 +832,53 @@
     ]
   },
   {
-    "objectID": "index.html#tutorial-path-needs-updating",
-    "href": "index.html#tutorial-path-needs-updating",
-    "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "2 Tutorial path (needs updating)",
-    "text": "2 Tutorial path (needs updating)\n\nSet up your environment\nRun the pipeline\nUnderstand the results\nFix common issues",
+    "objectID": "results.html",
+    "href": "results.html",
+    "title": "Interpret Results",
+    "section": "",
+    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
     "crumbs": [
-      "Mangiamele Lab RNA-seq Resource"
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#start-with-multiqc",
+    "href": "results.html#start-with-multiqc",
+    "title": "Interpret Results",
+    "section": "",
+    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
+    "crumbs": [
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#what-to-check-first",
+    "href": "results.html#what-to-check-first",
+    "title": "Interpret Results",
+    "section": "2 What to check first",
+    "text": "2 What to check first\nFocus on:\n\nSequencing quality\nAdapter content\nAlignment rate\nDuplication levels\nGene body coverage\nSample outliers",
+    "crumbs": [
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#common-output-folders",
+    "href": "results.html#common-output-folders",
+    "title": "Interpret Results",
+    "section": "3 Common output folders",
+    "text": "3 Common output folders\n\n\n\n\n\n\n\nFolder\nWhat it contains\n\n\n\n\nfastqc/\nPer-sample read quality reports\n\n\nmultiqc/\nAggregated quality-control report\n\n\nstar_salmon/\nAlignment and transcript quantification outputs\n\n\npipeline_info/\nCommands, software versions, reports, and provenance",
+    "crumbs": [
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#save-provenance",
+    "href": "results.html#save-provenance",
+    "title": "Interpret Results",
+    "section": "4 Save provenance",
+    "text": "4 Save provenance\nArchive these files with your analysis:\n\npipeline_info/software_versions.yml\npipeline_info/execution_report.html\npipeline_info/execution_timeline.html\npipeline_info/params_*.json\n\n\n\n\n\n\n\nTip\n\n\n\nThe pipeline_info directory is one of the most useful places to look when you need to reproduce or debug a run later.",
+    "crumbs": [
+      "Interpret Results"
     ]
   },
   {
@@ -860,6 +949,136 @@
     "text": "6 A useful mental model\nThink of the login node as the front desk. It helps you get organized and submit work.\nThink of interactive jobs as a temporary workbench. They are useful when you need to test something hands-on.\nThink of compute jobs as the production workspace. They are where long or heavy analyses should run.",
     "crumbs": [
       "Using Unity"
+    ]
+  },
+  {
+    "objectID": "running.html",
+    "href": "running.html",
+    "title": "Run the Pipeline",
+    "section": "",
+    "text": "On Unity, the pipeline runs as a SLURM batch job — not interactively in the terminal. You write a shell script with #SBATCH settings at the top, then submit it with sbatch.",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#run-a-test-first",
+    "href": "running.html#run-a-test-first",
+    "title": "Run the Pipeline",
+    "section": "1 Run a test first",
+    "text": "1 Run a test first\nBefore running with your own data, submit a test job to confirm Nextflow, Apptainer, and your workspace are all working.\nSave the following as nfcore-rnaseq-test.sh in your home directory. Update the --output, --error, --mail-user, and SCRATCH_RNASEQ lines to match your username and workspace path.\n#!/bin/bash\n#SBATCH --job-name=nfcore-rnaseq-test\n#SBATCH --partition=cpu\n#SBATCH --cpus-per-task=8\n#SBATCH --mem=48G\n#SBATCH --time=24:00:00\n#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.out\n#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.err\n#SBATCH --mail-type=BEGIN,END,FAIL\n#SBATCH --mail-user=you@email.edu\n\nset -euo pipefail\n\nSCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE\n\ncd \"$SCRATCH_RNASEQ\"\n\nmodule purge\nmodule load nextflow/26.04.1\nmodule load apptainer/latest\n\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/tmp\"\nmkdir -p \"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\n\nexport APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nexport APPTAINER_TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport NXF_APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\nexport NXF_OPTS='-Xms1g -Xmx4g'\nexport PROOT_NO_SECCOMP=1\n\n# Clean up any partial container pulls from a previous attempt\nfind \"$NXF_APPTAINER_CACHEDIR\" -type f -name \"*.pulling.*\" -delete || true\n\nnextflow run nf-core/rnaseq \\\n  -r 3.26.0 \\\n  -profile test,unity \\\n  --outdir test_results \\\n  -resume\nCreate the log directory and submit:\nmkdir -p ~/rnaseq_nf_core/job-logs\nsbatch nfcore-rnaseq-test.sh\nWatch progress with:\nsqueue --me\nAnd check the output log once it starts:\ntail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.*.out\n\n\n\n\n\n\nTip\n\n\n\nThe test profile uses a small built-in dataset and finishes in a few hours. If it completes without errors, your environment is ready.",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#run-with-your-own-samples",
+    "href": "running.html#run-with-your-own-samples",
+    "title": "Run the Pipeline",
+    "section": "2 Run with your own samples",
+    "text": "2 Run with your own samples\nFor a real run you need:\n\nA samplesheet CSV listing your samples\nA genome FASTA and GTF annotation file\nA params JSON file pointing to all of the above\n\n\n2.1 The samplesheet\nThe samplesheet must have these four columns:\nsample,fastq_1,fastq_2,strandedness\nC45-1B,/path/to/C45-1B_R1_001.fastq.gz,/path/to/C45-1B_R2_001.fastq.gz,reverse\nC45-1H,/path/to/C45-1H_R1_001.fastq.gz,/path/to/C45-1H_R2_001.fastq.gz,reverse\nSet strandedness to reverse, forward, or unstranded to match your library prep kit. If you are unsure, check the kit documentation or use the nf-core/rnaseq --salmon_quant_libtype A option to detect it automatically.\n\n\n2.2 The params file\nRather than putting all options on the command line, save them in a JSON file. Example params.json:\n{\n  \"input\": \"/path/to/samplesheet.csv\",\n  \"outdir\": \"/path/to/results\",\n  \"fasta\": \"/path/to/genome.fna\",\n  \"gtf\": \"/path/to/annotation.gtf\",\n  \"igenomes_ignore\": true,\n  \"aligner\": \"star_salmon\",\n  \"pseudo_aligner\": \"salmon\",\n  \"gtf_extra_attributes\": \"gene\",\n  \"featurecounts_group_type\": \"transcript_biotype\",\n  \"max_cpus\": 48,\n  \"max_memory\": \"256.GB\",\n  \"max_time\": \"72.h\"\n}\n\n\n2.3 The SLURM script\nSave the following as run-rnaseq.sh, filling in your paths:\n#!/bin/bash\n#SBATCH --job-name=nfcore-rnaseq\n#SBATCH --partition=cpu\n#SBATCH --cpus-per-task=8\n#SBATCH --mem=48G\n#SBATCH --time=3-00:00:00\n#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.out\n#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.err\n#SBATCH --mail-type=BEGIN,END,FAIL\n#SBATCH --mail-user=you@email.edu\n\nset -euo pipefail\n\nSCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE\nPARAMS=\"$SCRATCH_RNASEQ/params.json\"\n\ncd \"$SCRATCH_RNASEQ\"\n\nmodule purge\nmodule load nextflow/26.04.1\nmodule load apptainer/latest\n\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/tmp\"\n\nexport APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nexport APPTAINER_TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport PROOT_TMP_DIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport NXF_APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\nexport NXF_OPTS='-Xms1g -Xmx4g'\nexport PROOT_NO_SECCOMP=1\n\nnextflow run nf-core/rnaseq \\\n  -r 3.26.0 \\\n  -profile unity \\\n  -params-file \"$PARAMS\" \\\n  -resume\nSubmit:\nsbatch run-rnaseq.sh",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#resume-an-interrupted-run",
+    "href": "running.html#resume-an-interrupted-run",
+    "title": "Run the Pipeline",
+    "section": "3 Resume an interrupted run",
+    "text": "3 Resume an interrupted run\nAdd -resume to your nextflow run command (it is already included in the scripts above). Nextflow caches completed tasks, so resuming picks up from where it stopped without re-running finished steps.\n\n\n\n\n\n\nWarning\n\n\n\nOnly resume with the same params file and the same scratch directory. Changing the output path or key parameters will invalidate the cache.",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#record-the-exact-command",
+    "href": "running.html#record-the-exact-command",
+    "title": "Run the Pipeline",
+    "section": "4 Record the exact command",
+    "text": "4 Record the exact command\nKeep a copy of your params file and SLURM script alongside your results. The pipeline_info/ folder in your output directory also records the exact parameters, software versions, and execution timeline automatically.",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html",
+    "href": "troubleshooting.html",
+    "title": "Troubleshooting",
+    "section": "",
+    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
+    "crumbs": [
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#nextflow-is-not-found",
+    "href": "troubleshooting.html#nextflow-is-not-found",
+    "title": "Troubleshooting",
+    "section": "",
+    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
+    "crumbs": [
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#docker-is-not-running",
+    "href": "troubleshooting.html#docker-is-not-running",
+    "title": "Troubleshooting",
+    "section": "2 Docker is not running",
+    "text": "2 Docker is not running\nCheck Docker:\ndocker info\nIf this fails, open Docker Desktop or restart the Docker service.",
+    "crumbs": [
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#a-run-failed-halfway-through",
+    "href": "troubleshooting.html#a-run-failed-halfway-through",
+    "title": "Troubleshooting",
+    "section": "3 A run failed halfway through",
+    "text": "3 A run failed halfway through\nUse -resume after fixing the problem:\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38 \\\n  -resume",
+    "crumbs": [
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#disk-space-errors",
+    "href": "troubleshooting.html#disk-space-errors",
+    "title": "Troubleshooting",
+    "section": "4 Disk space errors",
+    "text": "4 Disk space errors\nCheck the size of the work directory:\ndu -sh work results\nMove large outputs to persistent storage before deleting anything.",
+    "crumbs": [
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "troubleshooting.html#where-to-look-for-help",
+    "href": "troubleshooting.html#where-to-look-for-help",
+    "title": "Troubleshooting",
+    "section": "5 Where to look for help",
+    "text": "5 Where to look for help\n\nThe terminal error message\n.nextflow.log\nresults/rnaseq/pipeline_info/\nThe nf-core pipeline documentation\nThe nf-core Slack community",
+    "crumbs": [
+      "Troubleshooting"
+    ]
+  },
+  {
+    "objectID": "setup.html",
+    "href": "setup.html",
+    "title": "Run a Demo Pipeline",
+    "section": "",
+    "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
+    "crumbs": [
+      "Run a Demo Pipeline"
+    ]
+  },
+  {
+    "objectID": "setup.html#creating-a-demo-scratch-directory",
+    "href": "setup.html#creating-a-demo-scratch-directory",
+    "title": "Run a Demo Pipeline",
+    "section": "",
+    "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
+    "crumbs": [
+      "Run a Demo Pipeline"
     ]
   }
 ]

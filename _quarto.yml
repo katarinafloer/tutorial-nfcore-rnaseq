@@ -24,6 +24,7 @@ website:
       - setup.qmd
       - running.qmd
       - results.qmd
+      - DGE.qmd
       - troubleshooting.qmd
   page-footer:
     left: "Maintained by Katarina Flöer"

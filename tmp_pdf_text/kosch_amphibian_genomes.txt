@@ -1,0 +1,1910 @@
+Received: 17 July 2023 | Revised: 26 August 2024 | Accepted: 12 September 2024
+DOI: 10.1111/1755-0998.14025
+R E S O U R C E A R T I C L E
+Comparative analysis of amphibian genomes: An emerging
+resource for basic and applied research
+Tiffany A. Kosch1 | Andrew J. Crawford2 | Rachel Lockridge Mueller3 |
+Katharina C. Wollenberg Valero4 | Megan L. Power4 | Ariel Rodríguez5 |
+Lauren A. O'Connell6 | Neil D. Young1 | Lee F. Skerratt1
+1Faculty of Science, University of
+Melbourne, Melbourne, Victoria, Australia Abstract
+2Departamento de Ciencias Biológicas, Amphibians are the most threatened group of vertebrates and are in dire need of
+Universidad de los Andes, Bogotá,
+conservation intervention to ensure their continued survival. They exhibit unique
+Colombia
+3Department of Biology, Colorado State features including a high diversity of reproductive strategies, permeable and special-
+University, Fort Collins, Colorado, USA ized skin capable of producing toxins and antimicrobial compounds, multiple genetic
+4School of Biology and Environmental
+mechanisms of sex determination and in some lineages, the ability to regenerate limbs
+Science, University College Dublin, Dublin,
+Ireland and organs. Although genomic approaches would shed light on these unique traits and
+5Institute of Zoology, University of aid conservation, sequencing and assembly of amphibian genomes has lagged behind
+Veterinary Medicine of Hannover,
+other taxa due to their comparatively large genome sizes. Fortunately, the develop-
+Hannover, Germany
+6Department of Biology, Stanford ment of long- read sequencing technologies and initiatives has led to a recent burst of
+University, Stanford, California, USA new amphibian genome assemblies. Although growing, the field of amphibian genom-
+Correspondence ics suffers from the lack of annotation resources, tools for working with challenging
+Tiffany A. Kosch, Faculty of Science, genomes and lack of high- quality assemblies in multiple clades of amphibians. Here,
+University of Melbourne, Melbourne, Vic.,
+Australia. we analyse 51 publicly available amphibian genomes to evaluate their usefulness for
+Email: tiffany.kosch@gmail.com functional genomics research. We report considerable variation in genome assembly
+Funding information quality and completeness and report some of the highest transposable element and
+European Research Council, Grant/ repeat contents of any vertebrate. Additionally, we detected an association between
+Award Number: 101044202; Australian
+Research Council, Grant/Award Number: transposable element content and climatic variables. Our analysis provides evidence
+FT190100462 and LP200301370 of conserved genome synteny despite the long divergence times of this group, but we
+Handling Editor: Joanna Kelley also highlight inconsistencies in chromosome naming and orientation across genome
+assemblies. We discuss sequencing gaps in the phylogeny and suggest key targets for
+future sequencing endeavours. Finally, we propose increased investment in amphib-
+ian genomics research to promote their conservation.
+K E Y W O R D S
+amphibian genomes, comparative genomics, genome synteny, repeat expansion, transposable
+elements
+This is an open access article under the terms of the Creative Commons Attribution License, which permits use, distribution and reproduction in any medium,
+provided the original work is properly cited.
+© 2024 The Author(s). Molecular Ecology Resources published by John Wiley & Sons Ltd.
+|
+Mol Ecol Resour. 2025;25:e14025. wileyonlinelibrary.com/journal/men 1 of 14
+https://doi.org/10.1111/1755-0998.14025
+2 of 14 | KOSCH et al.
+1 | I NTRO D U C TI O N the number growing every day. We evaluate assembly quality, se-
+quencing technology, gene completeness, transposable element and
+Amphibians are an ancient lineage of vertebrates that predate am- repeat content and its ecological correlates, taxonomic representa-
+niotes by more than 100 million years. Despite the considerable tion and synteny.
+age of this lineage, amphibians are now the most threatened group
+of vertebrates with more than 40% of species and are threatened
+by factors such as habitat change, disease and over- exploitation 2 | M ATE R I A L S A N D M E TH O DS
+(IUCN, 2022; Scheele et al., 2019). Notably, many of these threats
+are hard to reverse, suggesting that novel approaches that utilize 2.1 | Genomes
+genomic resources may lead to improved management decisions
+for some of the most endangered taxa (Kosch et al., 2022; Scheele A search of the NCBI genome website using the search term ‘amphib-
+et al., 2014). ians’ conducted on August 25, 2023, revealed there were 90 amphib-
+We are only just beginning to understand the genetic basis of ian genomes from 68 species. All genome files in fasta format were
+many of the unique features of amphibians. Amphibians exhibit a high downloaded for assessment. Sixteen salamander genomes (Pyron
+diversity of reproductive strategies including biphasic and direct devel- et al., 2024) were excluded from our analyses due to their high de-
+opment, uniparental and biparental care, mouth and gastric brooding gree of incompleteness (i.e., <10% of the genome assembled). Of the
+and foam nesting (Brown et al., 2010; Nunes- de- Almeida et al., 2021; remaining genomes, one genome was selected for each species for
+Schulte et al., 2020). They also have specialized skin capable of pro- subsequent analysis. If there was more than one draft of a genome, the
+ducing complex compounds of interest for drug discovery for the de- most recent draft and/or the primary haplotype was selected. In cases
+velopment of antimicrobial drugs and analgesics (Daly et al., 2000; De where there were multiple versions sequenced by different groups,
+Angelis et al., 2021; Liu et al., 2020). Amphibians occur across habitat the best genome was selected by lowest scaffold number. Entire ge-
+types from rainforests to deserts, freshwater streams to salt marshes nomes (including uncharacterized contigs but excluding mitochondrial
+and tropical to arctic climates (Duellman, 1999), but it is unclear how genomes) were used for assessment unless indicated otherwise.
+this ecological diversity is reflected in genome composition. One po- Genome databases NCBI Genomes, NCBI RefSeq (O'Leary
+tential way is the number of transposable elements (TEs) present in et al., 2016), Ensembl (Cunningham et al., 2022), UCSC Genome
+the genome. TEs have a huge impact on the structure and function Browser (Lee et al., 2022) and Genomes on a Tree (GoaT) (Sotero-
+of eukaryotic genomes, with amphibians having among the largest TE Caio et al., 2021) were searched for information on the 51 amphibian
+content among vertebrates. There is increasing evidence that TE ac- species with reference genomes including chromosome number, an-
+tivity and thus their relative proportion in genomes, is influenced by notation data, proteome availability, C- value and sequencing tech-
+abiotic factors (Pimpinelli & Piacentini, 2020). This in turn highlights nology. The sequencing strategy was classified as ‘short- single’ for
+their potential role in the regulation of genetic mechanisms respon- Illumina- only sequencing, ‘long- single’ for sequencing using long
+sible for environmental adaptation (Casacuberta & González, 2013; read technologies (e.g. PacBio and Oxford Nanopore) and ‘hybrid’
+Pappalardo et al., 2021). Salamanders are an important resource for for sequencing approaches using more than one approach (e.g.
+transplant and regeneration research due to their ability to regenerate PacBio and Hi- C).
+limbs and internal organs (Elewa et al., 2017; Nowoshilow et al., 2018). A search for amphibian proteome datasets on NCBI RefSeq
+Amphibians also have many of the same immune components as (O'Leary et al., 2016), Ensembl (Cunningham et al., 2022) and UCSC
+mammals making them an important model resource for immunology Genome Browser (Lee et al., 2022) databases on June 24, 2022, re-
+(Paiola et al., 2023; Robert, 2020). vealed 11 proteomics datasets.
+Despite the obvious value of amphibian genomes for research A search of the NCBI Organelle database on 15, February 2023
+on ecology, evolution, medicine and improving their conservation, using the search term ‘amphibian’ resulted in 353 mitochondrial ge-
+until recently, the generation of amphibian reference genomes has nomes belonging to 345 species (Table S11). Seventeen mitochon-
+been markedly slower than other vertebrates (Hotaling, Kelley, drial genomes overlapped with the amphibian nuclear genomes
+et al., 2021; Womack et al., 2022). This lag can be attributed to high analysed in this study.
+costs and the computational challenges of assembling their often
+large and complex genomes (Sun et al., 2020). Recent advances in
+sequencing technologies such as long read sequencing and assem- 2.2 | Reference genome availability summary
+bly algorithms that incorporate hybrid approaches have circum-
+vented many of these challenges leading to a surge of high quality, The GoaT online database (Sotero- Caio et al., 2021) was searched
+chromosome- level reference genomes. The next challenge will be on August 28, 2023, to summarize genomes in progress or pub-
+developing the tools for annotation and comparative analyses of licly available using the search terms ‘tax_tree(Amphibia) AND
+these large genomes. tax_rank(species) AND sequencing_status=in_progress’ or
+In this study, we provide a synthesis of all available amphibian ‘tax_tree(Amphibia) AND tax_rank(species) AND sequencing_
+reference genome assemblies, 51 at the time of our analysis, with status=insdc_open’. The same search terms were used to summarize
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+KOSCH et al. | 3 of 14
+publicly available genomes for mammals, birds and non- avian reptiles 2.6 | Ecological correlates of transposable element
+with the ‘tax_tree’ search term replaced by the appropriate Class. content
+Occurrence data for the 51 species were downloaded from the
+2.3 | Genome quality analyses Global Biodiversity Information Facility (GBIF) (https://w ww.g bif/
+org/; last accessed February 2024) (full DOI's for each occurrence
+Genome quality assessment was performed with BBMap (v.39.01) data set in Table S5). In addition, due to the putative involvement
+‘statswrapper.sh’ bash script (https://g ithub.c om/B ioInf oTool s/ of temperature in TE activity, BioClim variables associated with
+BBMap ). This tool generates metrics such as genome size, con- temperature (Bio1- Bio11) were obtained for the 51 amphibian
+tig N50 and scaffold count. Benchmarking Universal Single- species (Table S6). As previous studies have explored the relation-
+Copy Orthologs (BUSCO) were summarized with the BUSCO ship between amphibian genome size and environmental variables
+tool (v.5.1.2) (Manni et al., 2021) using the OrthoDB Tetrapoda (Liedtke et al., 2022), we here focused on the relationship between
+ortholog library (v.odb10) (Kriventseva et al., 2018) (N = 5310 or- temperature variables, elevation and amphibian transposable el-
+thologs) with the prompt ‘- m genome’. The percentage of the ge- ements. Influence of these bioclimatic variables (after removing
+nome assembled to chromosomes was calculated with a custom highly collinear variables, see Methods S1) on transposable ele-
+bash script that computes the genome length assigned to chro- ment content (summarized into three groups: proportion of total
+mosomes and divides it by the ‘assembly length’ value computed transposable elements (TEs), proportion of retroelements and
+by BBMap. proportion of DNA transposons) was modelled using Bayesian
+mixed effect models (Hadfield, 2010). We also accounted for body
+size in our model, as it is positively correlated with genome size
+2.4 | Phylogenetic tree in amphibians (Decena- Segarra et al., 2020; Douglas et al., 2023).
+To adjust for body size, we included log- transformed body size
+A species- to- family correspondence table was obtained from Jetz in the model structure alongside log- transformed Bio2 (Mean
+and Pyron (2018) (https:// vertl ife .org/ files_ 20170 703/ ) and was diurnal range), Bio4 (temperature seasonality), Bio8 (mean tem-
+filtered to include only the species with the longest nucleotide perature of wettest quarter), Bio10 (mean temperature of the
+sequence per family. This taxa subset was used to obtain a sub- warmest quarter) and elevation. Models were also corrected for
+set of 100 phylogenetic trees from the posterior distribution of phylogenetic non- independence (Figure S5, see Methods S1 for
+the Jetz and Pyron (2018) dataset, as available from http:// vertl further information) with phylogenetically independent contrasts
+ife.o rg/p hylos ubsets. A consensus tree from these 100 trees (Felsenstein, 1985; Garland Jr et al., 1992) and plotted with phy-
+was then obtained using treeannotator (v2.7.5) (settings – target tools (Revell, 2024).
+tree type: maximum clade credibility, node heights: median burn-
+in percentage: 0, posterior probability limit: 0.0) (Drummond &
+Rambaut, 2007). The species names from the tree tips were then 2.7 | Synteny analysis
+substituted with the corresponding family names using the ‘sub.
+taxa.label’ function in the phylotools package (https://g ithub. Synteny of BUSCO genes for chromosome level assemblies was ana-
+com/h elixc n/p hylot ools) in R with the aid of the species to family lysed with R Package GENESPACE (v.1.1.4) (Lovell et al., 2022), which
+correspondence table, which was updated with the most recent uses OrthoFinder (v.2.5.4) (Emms & Kelly, 2019) to infer orthology.
+classification available in AmphibiaWeb (https://a mphib iaweb.o rg) Synteny was analysed using BUSCO ‘full_table.tsv’ results files that
+and the Amphibian Species of the World database (https://a mphi were reformatted for GENESPACE input using a custom bash script.
+bianso fthew orld.a mnh.o rg/) . In cases where these two references Synteny plots were generated for all chromosome level assemblies,
+disagreed, the AmphibiaWeb taxonomy was used. all anuran chromosome level assemblies, for the two salamander ge-
+nomes and for the three caecilian genomes using the GENESPACE
+plotting tool ‘plot_riparian’. Chromosomes with reversed orienta-
+2.5 | Repeat modelling and annotation tion compared to the reference genome were inverted to improve
+visualization.
+Repeats were de novo modelled with RepeatModeler (Apptainer
+v.1.2.3) (Flynn et al., 2020). Genomes were then annotated using
+RepeatMasker (v.4.1.2- p1) (Smit et al., 2013) with a concatenated 2.8 | Quantification and statistical analysis
+library of genome- specific repeats generated from RepeatModeler
+and the Dfam amphibian repeat library (v.Dfam.h5) (Storer Regression analyses, ANOVAs and Student's t- tests for compar-
+et al., 2021). Before annotation, any previous soft masking of the ing genome quality measurements were conducted with the R
+genomes was reversed. The results were summarized using custom statistics package (v.4.1.2) (Team, 2013) in R Studio (v.2022.02.3)
+bash and R scripts. (Team, 2022). Genome quality measures, contigN50 and scaffold
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+4 of 14 | KOSCH et al.
+count, were log transformed prior to analysis. R- scripts for statistical additionally mitochondrial genome assemblies for 345 species of
+analysis and plotting are available on GitHub at https://d oi.o rg/1 0. which 17 had nuclear reference genomes. Eleven of the species with
+5281/ zenodo .7679280. genomes had proteomics data (Table S1).
+The quality of the amphibian genomes varied considerably
+(Table 1). Genomes generated with short- read technologies were of
+3 | R E S U LT S lower quality than long- read or hybrid genome assemblies as indi-
+cated by significantly lower contig N50s (F 2,48 = 26.91, p < 10−6), per-
+3.1 | Genome quality centage of complete Benchmarking Universal Single- Copy Ortholog
+(BUSCO) genes (Figure S3; F 2,48 = 10.52, p < .001) and higher scaffold
+A total of 51 nuclear amphibian genome assemblies were avail- numbers (F 2,48 = 15.8, p < 10−5).
+able for our study and were generated with a variety of sequenc- Contig N50 ranged from 362 bp in S. couchii to 45.59 Mb in
+ing technologies, including Illumina (NextSeq, HiSeq), PacBio (RS11, Pleurodeles waltl with a median of 611.23 Kb. Scaffold count varied
+Sequel) and Oxford Nanopore. Sequenced genomes represented 25 considerably from 17 in Spea bombifrons to more than four million in
+of 73 amphibian families with reference genomes distributed un- Bombina variegata with a median of 6.66 Kb (Table 1). BUSCO scores
+evenly across the phylogeny (Figure 1). For example, there are only ranged from 0.7 to 99.5% completeness (Tables 1, S1; Figure 2) and
+two salamander genomes representing the 798 extant species, no were positively associated with contig N50 (F 49 = 82.6, p < 10‒10;
+genomes representing anuran families such as Leiopelmatidae or Figure S2) and scaffold count (F 49 = 66.04, p < 10−8). Most genomes
+Hyperoliidae, yet there are seven Ranidae and six Pipidae genomes had low percentages of duplicate BUSCO genes (<6%), suggesting
+(Figure 1). they may be diploid except for Ranitomeya imitator and the known
+Genome assembly length ranged from 0.48 Gb in Scaphiopus tetraploid species, X. laevis and X. borealis (Figure 2) (Tymowska &
+couchii to 28.21 Gb in Ambystoma mexicanum and was strongly posi- Fischberg, 1973).
+tively associated with c- value estimates of genome size (F 49 = 330.5,
+p < 1 × 10−15) (Table 1, Figure S1). Twenty- eight of these genomes
+were assembled to the chromosome level of which the percentage 3.2 | Repeat content
+of the genome assigned to chromosomes ranged from 63.88% to
+99.99% (Table 1). Percentage of the genome assigned to chromo- Overall identified repeat percentage of the genomes ranged from
+somes was positively associated with contig N50 (F 26 = 8.6, p = .007) 23% in Platyplectrum ornatum to 82% in Oophaga sylvatica and
+and read length (t 29.2 = 3.07, p = .005) and negatively associated was positively associated with genome size (F 49 = 13.24, p = .0006)
+with the number of scaffolds (F 26 = 25.2, p < .00001). There are (Table 1; Figure S3). Repeat content varied across genomes with the
+F I G U R E 1 Phylogenetic tree of
+amphibian families. Amphibian families
+with representative genomes are
+highlighted and numbers indicate genome
+counts per family. (Green) anurans, (blue)
+caecilians and (orange) salamanders.
+Engystomops pustulosus (Family) image was
+taken by B. Gratwicke, other amphibian
+images were licensed to T. Kosch by
+Adobe Stock and Shutterstock.
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on [25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of
+use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+KOSCH et al. | 5 of 14
+reffid
+yam
+dna
+)/gro
+.sbuhe
+moneg
+.taog
+//:sptth(
+esabatad
+)TaoG(
+eerT
+a
+no
+semoneG
+eht
+ni
+detroper
+seulav
+eht
+era
+)srhc
+N(
+semosomorhc
+fo
+rebmuN
+.serusaem
+ytilauq
+emoneG
+1 ELBAT
+.3190
+zdttf.
+dayrd/
+1605
+.01/
+gro
+.iod
+//:sptth
+:dayrD
+no
+elbaliava
+emoneg
+*
+.)stnuoc
+emosomorhc
+ylbmessa
+rof
+1S
+elbaT
+ees(
+seulav
+ylbmessa
+eht
+morf
+%
+OCSUB
+%
+05N
+tnoC
+05N
+facS
+emoneG
+etelpmoc
+staeper
+%
+delbmessa
+srhc
+%
+)bk(
+)bk(
+)bG(
+ezis
+facs
+N
+DI
+ylbmessA
+srhc
+N
+ylimaF
+redrO
+seicepS
+73.18
+25.37
+06.67
+00.0
+978
+215,526
+23.5
+8566
+1.535675330_ACG
+21
+eaditabomorA
+arunA
+silaromef
+setabollA
+26.38
+65.96
+00.09
+37.79
+0673
+143,142,1
+20.01
+8642
+1.537975720_ACG
+21
+eadirotanibmoB
+arunA
+anibmob
+anibmoB
+30.31
+37.75
+02.25
+00.0
+2
+2
+86.4
+933,560,4
+1.579633509_ACG
+21
+eadirotanibmoB
+arunA
+atageirav
+anibmoB
+11.09
+29.67
+02.87
+29.89
+0693
+317,536
+40.5
+7031
+1.567171509_ACG
+11
+eadinofuB
+arunA
+ofub
+ofuB
+47.68
+29.37
+00.38
+12.69
+8371
+228,935
+55.4
+747
+1.558858410_ACG
+11
+eadinofuB
+arunA
+snaziragrag
+ofuB
+73.19
+01.95
+06.59
+41.49
+8088
+934,351
+12.2
+0022
+1.567987720_ACG
+51
+eadilyH
+arunA
+sutaccarbe
+suhpospordneD
+50.29
+01.46
+04.57
+27.59
+4403
+817,354
+78.3
+8131
+1.544014720_ACG
+41
+eaditylA
+arunA
+sutcip sussolgocsiD
+11.97
+69.25
+05.37
+88.36
+11
+764,901
+97.2
+332,501
+1.566758910_ACG
+31
+eadilytcadorehtuelE
+arunA
+iuqoc
+sulytcadorehtuelE
+84.57
+65.15
+00.801
+72.57
+503
+901,271
+65.2
+403,801
+1.541215910_ACG
+11
+eadilytcadotpeL
+arunA
+susolutsup
+spomotsygnE
+60.09
+71.17
+00.19
+20.89
+3694
+382,984
+43.4
+2001
+1.524719720_ACG
+11
+eadilyhorciM
+arunA
+sisnenilorac
+enyrhportsaG
+26.97
+45.26
+07.59
+00.0
+11
+847
+36.7
+627,165
+1.509204810_ACG
+31
+eadinaR
+arunA
+asogur
+anaridnalG
+72.66
+21.16
+02.621
+00.0
+01
+404,592
+40.4
+058,722
+*
+01
+eadinelortneC
+arunA
+innamhcsielf
+muihcartabonilayH
+69.88
+68.07
+00.69
+84.09
+9083
+769,483
+41.4
+4743
+1.506994920_ACG
+21
+eadilyH
+arunA
+adras
+alyH
+83.78
+67.15
+01.531
+35.28
+487
+123,392
+12.3
+538,52
+1.510744910_ACG
+21
+eadipiP
+arunA
+iregtteob
+surihconemyH
+97.18
+25.76
+06.921
+22.89
+128
+524,214
+45.3
+0735
+1.541499810_ACG
+31
+eadiyrhpogeM
+arunA
+mucinoalia
+muihcarbotpeL
+55.98
+01.07
+01.031
+43.39
+6491
+396,493
+55.3
+2035
+1.508766900_ACG
+31
+eadiyrhpogeM
+arunA
+esnenahsiel
+muihcarbotpeL
+54.09
+55.36
+09.97
+00.0
+0364
+0364
+15.2
+9053
+1.504440749_ACG
+11
+eadilytcadotpeL
+arunA
+xallaf sulytcadotpeL
+01.97
+71.64
+08.47
+00.0
+11
+682
+83.2
+698,025
+1.516830110_ACG
+11
+eaditsanydonmiL
+arunA
+iiliremud
+setsanydonmiL
+50.44
+14.26
+02.58
+00.0
+6
+93
+52.6
+536,445,1
+2.538482200_ACG
+31
+eadinaR
+arunA
+sunaiebsetac
+setabohtiL
+44.58
+91.07
+03.09
+08.89
+9942
+011,116
+51.5
+1684
+1.529465820_ACG
+31
+eadinaR
+arunA
+sucitavlys
+setabohtiL
+75.85
+82.25
+06.27
+00.0
+41
+958,423
+14.3
+412,531
+874479ANJRP
+31
+eadilletnaM
+arunA
+acaitnarua
+alletnaM
+04.09
+54.05
+06.05
+00.0
+33
+9601
+50.2
+781,52
+1.526539000_ACG
+31
+eadissolgorciD
+arunA
+irekrap
+anaronaN
+75.76
+55.04
+09.93
+00.0
+6
+87
+94.3
+383,521
+1.530108900_ACG
+01
+eaditabordneD
+arunA
+oilimup
+agahpoO
+74.35
+36.18
+03.95
+00.0
+89
+307,175
+91.5
+782,51
+1.555675330_ACG
+01
+eaditabordneD
+arunA
+acitavlys
+agahpoO
+47.78
+93.75
+01.57
+56.89
+031
+421,033
+90.3
+4753
+1.589702339_ACG
+31
+eaditaboleP
+arunA
+sepirtluc
+setaboleP
+69.8
+56.74
+01.54
+00.0
+1
+1
+38.1
+466,644,1
+1.556756220_ACG
+31
+eadissolgorciD
+arunA
+iessehnaym
+sussolgonyrhP
+49.35
+20.96
+07.27
+00.0
+87
+87
+47.4
+273,901
+1.589973520_ACG
+62
+eadilyH
+arunA
+anaihab
+asudemollyhP
+18.11
+72.54
+02.05
+00.0
+2
+2
+91.1
+811,038
+1.569109120_ACG
+01
+eadipiP
+arunA
+iohlavrac
+apiP
+27.62
+29.24
+07.75
+00.0
+6
+7
+73.1
+295,382
+1.514056910_ACG
+51
+eadipiP
+arunA
+avrap
+apiP
+54.34
+24.32
+09.64
+00.0
+5
+72
+70.1
+530,841
+1.528716610_ACG
+11
+eaditsanydonmiL
+arunA
+mutanro
+murtcelpytalP
+58.78
+68.57
+07.301
+13.29
+9186
+598,648
+78.8
+7213
+1.520093820_ACG
+21
+eadihcartaboyM
+arunA
+eeroborroc
+enyrhpoduesP
+)seunitnoC(
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on Wiley
+Online
+Library
+for
+rules
+of
+use;
+OA
+articles
+are
+governed
+by the applicable
+Creative
+Commons
+License
+6 of 14 | KOSCH et al.
+)deunitnoC(
+1
+ELBAT
+%
+OCSUB
+%
+05N
+tnoC
+05N
+facS
+emoneG
+etelpmoc
+staeper
+%
+delbmessa
+srhc
+%
+)bk(
+)bk(
+)bG(
+ezis
+facs
+N
+DI
+ylbmessA
+srhc
+N
+ylimaF
+redrO
+seicepS
+39.78
+46.13
+02.411
+45.89
+03
+225,751
+65.1
+1145
+1.552687400_ACG
+31
+eadilahpecixyP
+arunA
+susrepsda
+sulahpecixyP
+51.98
+13.17
+05.29
+67.29
+4071
+918,745
+38.4
+3892
+1.533475920_ACG
+21
+eadinaR
+arunA
+sironukuk
+anaR
+91.98
+82.77
+05.491
+36.58
+4464
+794,839
+61.01
+8265
+1.538602920_ACG
+31
+eadinaR
+arunA
+asocsum
+anaR
+27.09
+25.86
+06.39
+62.89
+5626
+367,184
+11.4
+555
+1.577171509_ACG
+31
+eadinaR
+arunA
+airaropmet
+anaR
+05.79
+49.67
+08.86
+00.0
+903
+093
+20.6
+008,97
+1.516103859_ACG
+9
+eaditabordneD
+arunA
+rotatimi
+ayemotinaR
+98.58
+20.76
+08.45
+00.0
+761
+761
+55.2
+193,13
+1.582303009_ACG
+11
+eadinofuB
+arunA
+aniram
+allenihR
+07.0
+43.72
+03.64
+00.0
+0
+0
+84.0
+509,873,1
+1.534463900_ACG
+31
+eadidopoihpacS
+arunA
+iihcuoc supoihpacS
+06.2
+56.13
+09.15
+00.0
+1
+1
+17.0
+662,905,1
+1.554463900_ACG
+31
+eadidopoihpacS
+arunA
+iikoorbloh
+supoihpacS
+69.19
+55.93
+08.18
+99.99
+071,12
+051,411
+99.0
+71
+2.596853720_ACG
+31
+eaditaboleP
+arunA
+snorfibmob
+aepS
+15.19
+29.64
+08.18
+00.0
+633,41
+348,021
+61.1
+153
+1.557512920_ACG
+31
+eaditaboleP
+arunA
+iidnommah
+aepS
+95.67
+51.33
+01.28
+00.0
+13
+27
+80.1
+637,94
+1.514463900_ACG
+31
+eaditaboleP
+arunA
+atacilpitlum
+aepS
+93.48
+58.56
+08.36
+00.0
+116
+826
+89.3
+860,22
+1.583032159_ACG
+31
+eadinaR
+arunA
+suvrap
+sioruatS
+16.68
+76.53
+09.87
+31.69
+12
+989,341
+57.2
+534,32
+1.595363420_ACG
+81
+eadipiP
+arunA
+silaerob
+suponeX
+59.59
+32.84
+00.98
+79.99
+254,22
+152,551
+47.2
+45
+1.576456710_ACG
+81
+eadipiP
+arunA
+siveal
+suponeX
+44.49
+12.44
+03.58
+68.99
+436,41
+169,351
+54.1
+661
+4.591400000_ACG
+01
+eadipiP
+arunA
+silaciport
+suponeX
+60.66
+19.56
+02.18
+77.49
+812
+707,502,1
+12.82
+751,72
+3.536519200_ACG
+41
+eaditamotsybmA
+ataduaC
+munacixem
+amotsybmA
+28.48
+10.17
+00.79
+16.99
+095,54
+557,732,1
+03.02
+762
+1.523256620_ACG
+21
+eadirdnamalaS
+ataduaC
+ltlaw seledoruelP
+93.19
+22.17
+04.28
+58.99
+756,02
+216,272
+87.3
+461
+2.505954209_ACG
+91
+eadiihpomreD
+anoihponmyG
+inihpares
+setepyrtoeG
+98.09
+53.86
+03.43
+60.79
+2663
+741,673
+96.4
+1801
+2.590567109_ACG
+21
+eadiponohpiS
+anoihponmyG
+rolocinu
+ailiceacorciM
+85.19
+99.66
+09.95
+63.79
+6123
+578,684
+23.5
+0331
+2.531100109_ACG
+41
+eaditamertanihR
+anoihponmyG
+mutattivib
+amertanihR
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on Wiley
+Online
+Library
+for
+rules
+of
+use;
+OA
+articles
+are
+governed
+by the applicable
+Creative
+Commons
+License
+KOSCH et al. | 7 of 14
+F I G U R E 2 BUSCO (Benchmarking
+Universal Single- Copy Orthologs)
+assessment results for amphibian
+genomes.
+anurans Pseudophryne corroboree, Bombina bombina and O. sylvatica indicated that the relationship with Bio8 was not specific to a par-
+dominated by Long Terminal Repeats (LTRs), the three caecilians ticular class of transposable elements, such as retroelements or
+dominated by Long Interspersed Nuclear Elements (LINEs) and many DNA transposons (Tables S9 and S10). Phylogenetic signal (Pagel's
+of the ranid and bufonid anurans dominated by DNA transposons lambda, λ) was moderate when considering total transposable ele-
+(Figure 3; Tables S2–S4). Salamander genomes Ambystoma mexica- ments and retroelements (0.555; Table S7) and increased when we
+num and Pleurodeles waltl had fewer repeats than might be predicted considered retroelements and DNA transposons alone (0.616 and
+given their large sizes (Figure S3). 0.649; Table S9).
+The proportion of repeats that could be classified by
+RepeatMasker ranged from 7.4% in P. ornatum to 47.8% in P. cor-
+roboree (Table S1) and was positively associated with genome 3.4 | Genome synteny
+quality measures contigN50 (F 49 = 23.49, p = .001), scaffold count
+(F 49 = 8.71, p = .005) and percent BUSCO complete (F 49 = 10.27, Genome synteny of BUSCO genes was highly conserved within
+p = .002). The ability to classify repeats was also positively associ- amphibian orders (caecilians (Figure S7), caudates (Figure S8) and
+ated with read length, with longer reads resulting in better classifi- anurans (Figure S9)); but was less conserved across the amphib-
+cation (t 35.622 = 4.73, p < .001). ian orders (Figure 5; Figure S6). However, chromosome naming
+was inconsistent across all taxa (Figure 5; Figures S6–S9). For ex-
+ample, X. tropicalis chr1 is chr12 in Leptobrachium ailaonicum (but
+3.3 | Ecological correlates of transposable element not L. leishanense), chr2 in Bufo bufo (but not Bufo gargarizans)
+content (Figure S9) and most of the chromosomes for the two salaman-
+der genomes (Figure S8). Orientation of chromosomes was also
+A Bayesian mixed effect modelling approach was employed to ex- inconsistent, including between species of the same genus (e.g.
+amine the relationships between proportion of transposable ele- Bufo, Leptobrachium) (Figure S5) and among the three caecilians
+ments and environmental variables. Controlling for phylogenetic (Figure S7). Multiple inversions were evident including between
+relationships (by estimating Pagel's lambda, λ; de Villemereuil & chr3 of pipids (Xenopus tropicalis and Hymenochirus boettgeri) and
+Nakagawa, 2014), including body size as a covariate (Spearman cor- other anurans (chromosomes 1, 2, 3, 4, or 10), caecilians (chr3 and
+relation with transposable element content p = −0.772, p < 0.001) chr4/5/6) and even within species of the same genus (chr7 Bufo
+and excluding the three globally invasive species (Rhinella marina, gargarizans, chr 9 B. bufo; Figure 5; Figures S7, S9). There was also
+X. laevis and Lithobates catesbeianus) our analysis revealed a signifi- evidence of several chromosomal fissions including the separa-
+cant influence (pMCMC = 0.014) of Bio8 (mean temperature of the tion of chr1 of Leptobrachium leishanense into chr3 and chr6 in
+wettest quarter) on the proportion of total transposable elements Pyxicephalus adspersus and into chr3 and chr7 in Engystomops pus-
+(Figure 4; Figure S5, Table S8). Inclusion of these three invasive tulosus; however, this chromosome remained mostly intact in the
+species did not change this relationship (Table S7). Further analysis other anuran genomes (Figure S9).
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of use;
+OA
+articles
+are governed
+by
+the
+applicable
+Creative
+Commons
+License
+8 of 14 | KOSCH et al.
+F I G U R E 3 Repeat content across the amphibian genomes. long interspersed nuclear elements (LINEs), long terminal repeats (LTRs) and
+short interspersed nuclear elements (SINEs).
+F I G U R E 4 Phylogenetic independent
+contrasts (PICs) between the proportion
+of transposable element content relative
+to genome size and Bio8 (representing
+mean temperature of wettest quarter).
+4 | D I S C U S S I O N reference genomes results in many gaps in genome representation
+across the amphibian tree of life including many entirely unrepre-
+In this study, we analysed 51 amphibian reference genomes from the sented groups and with only two genomes representing the entire
+public domain to evaluate their content and usefulness for functional order Caudata (but see Myers & Pyron, 2024). The unrepresented
+genetics research (Figure 1, Table 1). There are considerably fewer families include many of interest from a conservation perspective
+reference genomes for amphibians than exist for birds (N = 754), due to their high number of IUCN RedList Critically Endangered spe-
+mammals (N = 406) and non- avian reptiles (N = 108). This scarcity of cies (e.g. Cryptobranchidae, Plethodontidae, Strabomantidae and
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of
+use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+KOSCH et al. | 9 of 14
+F I G U R E 5 Synteny plot of BUSCOs (Benchmarking Universal Single- Copy Orthologs) for representative amphibian chromosome-
+level genomes. The phylogenetic tree was created with Timetr ee.o rg. The reference genome is Ambystoma mexicanum. *Indicate inverted
+chromosomes. Values in parentheses represent the number of chromosomes in each of the assemblies. Chromosomes without BUSCOs
+were excluded from the plot.
+Craugastoridae) (IUCN, 2022). However, our search of the Genomes association or genetic prediction). Quality also enhances the useful-
+on a Tree (GoaT) database (Sotero- Caio et al., 2021) indicated that ness of genomes. For example, highly contiguous chromosome- level
+there are a further 20 amphibian genome assemblies in progress (15 assemblies decrease computational requirements for downstream
+anurans, 5 caudates; Table S10) indicating that this resource will be analyses such as mapping, variant calling and alignment (Aganezov
+increasing by more than 40% in the next few years. et al., 2022).
+The quality and completeness of the genomes in our dataset One of the most intriguing features of amphibian genomes is
+varied considerably (e.g. Figure 2). Much of this variation can be at- the huge range they exhibit in size (Biscotti et al., 2019). This was
+tributed to the sequencing technology used to generate them, with exemplified in our dataset where assembly length ranged from
+short- read sequencing approaches resulting in lower completeness 0.48 Gb in Scaphiopus couchii to 28 Gb in Ambystoma mexicanum.
+and continuity (Figure S2). These impacts are a recognized limitation Why gigantic genomes exist in some species, but not others, re-
+of short- read sequencing and have been reported to impact genome mains a key evolutionary question (Kapusta et al., 2017; Wang
+quality in taxa from insects (Hotaling, Sproul, et al., 2021) to other et al., 2021). Explanations include differences in genome- level
+vertebrates (Rhie et al., 2021), but have likely had a disproportionate processes (e.g. insertion and deletion rates) (Frahry et al., 2015;
+impact on amphibian genomes due to the difficulty of assembling ge- Sun, Shepard, et al., 2012), development (e.g. developmental rate
+nomes with high repeat content (Sun et al., 2020). Fortunately, most and complexity) (Gregory, 2002; Liedtke et al., 2018), physiology
+ongoing sequencing efforts now use long- read or hybrid sequenc- (e.g. water loss) (Johnson et al., 2021), body size (e.g. miniaturiza-
+ing approaches (i.e. that incorporate scaffolding technologies such tion) (Decena- Segarra et al., 2020) and demography (e.g. effective
+as Hi- C sequencing), which along with improved sequencing algo- population size) (Liedtke et al., 2018; Lynch & Walsh, 2007) (but
+rithms, should result in higher- quality amphibian genomes (Hotaling, see Mohlhenrich & Mueller, 2016). As more amphibian genomes
+Kelley, et al., 2021; Lawniczak et al., 2022; Rhie et al., 2021). become available, these hypotheses can be more rigorously
+The variation we report here in genome quality, contiguity and evaluated.
+completeness may impact the value of the genomes for functional We report some of the largest estimates of repeat content of
+genomics research. However, the improvements in all these mea- any vertebrate (82% in Oophaga sylvatica and 77% in Rana mus-
+sures seen with the utilization of long read technologies or hybrid cosa), exceeded only by the Australian lungfish at 90% (Meyer
+assemblies suggest that genome quality will continue to improve et al., 2021). As expected, genome size was correlated with repeat
+as these approaches are used more frequently. Genome qual- content affirming that much of the variation in amphibian genome
+ity (i.e. high continuity, contiguity, accuracy, completeness (Rhie size is due to an excess of repeats and transposable elements rather
+et al., 2021) is critical for applications such as quantitative genetics than coding regions (Biscotti et al., 2019; Lamichhaney et al., 2021;
+where assembly errors can lead to incorrect inferences in genetic Zuo et al., 2023).
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+10 of 14 | KOSCH et al.
+In contrast to mammals, whose repeat landscape is mainly (Li et al., 2018; Schrader & Schmitz, 2019; Stapley et al., 2015). The
+dominated by LTR retrotransposons (Platt 2nd et al., 2018), am- pattern observed here likewise suggests the potential for height-
+phibian repeat content varied considerably with some species ened transposable element activity and may help explain transpos-
+dominated by DNA transposons (as previously reported by Suda able element accumulation and potentially the higher evolutionary
+et al., 2022; Zuo et al., 2023) and others by non- LTR retrotrans- rates observed in the genomes of tropical amphibians (Pyron &
+posons including the three caecilian genomes which were domi- Wiens, 2013).
+nated by LINEs. This agrees with genomic data and transcriptomic Our study is the first to examine chromosomal synteny across all
+data from the caecilian Ichthyophis bannanicus, where LINEs were amphibian orders. We show that overall synteny of amphibian ge-
+the second most abundant type of repeat (26% of the genome) nomes is relatively conserved, particularly within orders (Figures 5
+behind Dictyostelium intermediate repeat sequences (DIRS) (30%) and S7). This aligns with previous results from anurans that reported
+(Wang et al., 2021); this is a similar percentage of LINES to what conserved genome organization in this group (Bredeson et al., 2021;
+we report in the three caecilian genomes in this study (19% to Wu et al., 2022). However, chromosome content and number var-
+26%) (Table S4). ied across species, which seems to have been driven by multiple
+These disparities in repeat percentage and content likely reflect occurrences of chromosomal fusions and fissions (e.g. Figure 5).
+differing evolutionary histories among species, as indicated by three Chromosomal rearrangements have occurred throughout vertebrate
+of the four congeneric species pairs in our dataset having similar val- evolution, including the hypothesized fusion of microchromosomes
+ues (i.e. Bufo, Leptobrachium and Xenopus; but not Oophaga). The dif- in the ancestor of tetrapods to create the larger macrochromosomes
+ferences we observed in O. pumilio and O. sylvatica are likely due to seen in amphibians and mammals and their subsequent fission to
+assembly quality rather than genome content given that these two create the microchromosomes of modern birds and non- avian rep-
+genomes were sequenced with different technologies and have dra- tiles (Waters et al., 2021).
+matically different genome qualities (e.g. contig N50s of 5.8 vs. 97.8 Some of the structural rearrangements we detected may be
+Kbp, respectively). due to assembly errors and should be evaluated in future assem-
+A considerable proportion of the repeats could not be classified. blies using long- read scaffolding approaches (e.g. Oxford nanopore
+This was likely due to incorrect classification (e.g. genes categorized sequencing), chromosome conformation capture technologies (e.g.
+as repeats) and the lack of good amphibian- specific repeat resources Hi- C), or chromosome mapping approaches (e.g. FISH). We also
+(Ou et al., 2019) for classification via nucleotide sequence homology. identified incongruities with chromosome naming and orientation
+The majority of amphibian curated repeat libraries are generated in caused by differences in assembly methods. These were apparent
+reference to Xenopus species (e.g. Dfam); the large divergence times even within species of the same genus (e.g. Bufo). We suggest poten-
+of this genus from the other amphibian species suggests that it may tial revisions of existing genome annotations to improve congruity
+be a contributing factor to the lack of classification. However, we and that future assemblies are curated consistently against high-
+also report many unclassified repeats in the two Xenopus genomes. quality reference genomes (e.g. Xenopus laevis).
+The largest genomes in our dataset from caudates, A. mexica-
+num and P. waltl, had fewer repeats than predicted given their size
+(Figure S4) (Nowoshilow et al., 2018). This may be due, in part, to the 5 | CO N C LU S I O N S
+Dfam (Storer et al., 2021) library used for repeat annotation being
+anuran- based; however, we did not observe this trend in the three New sequencing technologies and assembly algorithms have resulted
+caecilian genomes in our dataset. Also, we performed de novo an- in a good number of genomes for comparative analyses spanning the
+notation of these genomes, which should have captured repetitive amphibian phylogeny. This has already begun to yield important in-
+elements missing from Dfam. More likely, this low number of repeats sights into the evolution (Lamichhaney et al., 2021; Wu et al., 2022),
+reflects low deletion rates and, thus, the persistence of repeats in development (Schloissnig et al., 2021; Stuckert et al., 2021), sex deter-
+the genome for extremely long periods of time, leading to their mu- mination (Hime et al., 2019; Ma & Veltsos, 2021) and unique features
+tational decay into unique sequences whose repetitive origin is ob- (Fischer et al., 2019; Nowoshilow et al., 2018; Seidl et al., 2019) of this
+scured (Frahry et al., 2015; Keinath et al., 2015; Novák et al., 2020; interesting group of animals.
+Sun, López Arriaza, et al., 2012). The increased availability of amphibian genomes can also aid
+We also provide evidence that amphibian species that inhabit conservation efforts in this highly threatened group by facilitating
+warm climates, particularly during months with high precipita- research on genome- wide functional diversity, which can be used
+tion have a greater proportion of transposable elements. This ob- to inform management decisions such as genetic rescue or targeted
+served trend does not appear to be driven by a specific group of genetic intervention for species threatened by habitat loss or chyt-
+transposons suggesting it may be caused by climatic factors. Recent ridiomycosis (Chestnut et al., 2014; Kosch et al., 2022). Additionally,
+studies indicate that transposable elements exhibit greater activity well- annotated genomes can be used to create eDNA assays for
+in hotter climates (Baduel et al., 2021) with an increasing number of population monitoring (Breton et al., 2022; Saeed et al., 2022).
+studies suggesting that increased transposable element activity con- Future research efforts should focus on generating more refer-
+tributes to genetic diversification and facilitates species adaptation ence genomes to fill the gaps in the amphibian phylogeny and the
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+KOSCH et al. | 11 of 14
+identification of advantageous genetic traits against threats. Efforts Katharina C. Wollenberg Valero https://orcid.
+should also be made to increase the quality of genomes and expand org/0000-0001-8858-1804
+transcriptome and annotation databases. We suggest that these Megan L. Power https://orcid.org/0000-0001-7402-3254
+efforts strive to follow the recommendations of initiatives such as Lauren A. O’Connell https://orcid.org/0000-0002-2706-4077
+the Earth BioGenome Project (Lawniczak et al., 2022), the Darwin Neil D. Young https://orcid.org/0000-0001-8756-229X
+Tree of Life Project (Blaxter et al., 2022) and the Threatened Species Lee F. Skerratt https://orcid.org/0000-0003-3471-7512
+Initiative (Hogg et al., 2022) to sequence at least one representative
+from each family to ensure taxonomic coverage. Species selection R EFER EN CE S
+should prioritize species of interest for understanding valuable func- Aganezov, S., Yan, S. M., Soto, D. C., Kirsche, M., Zarate, S., Avdeyev,
+tional genetic traits; for example, for the purpose of immunological P., Taylor, D. J., Shafin, K., Shumate, A., Xiao, C., Wagner, J.,
+McDaniel, J., Olson, N. D., Sauria, M. E. G., Vollger, M. R., Rhie,
+research to understand disease resistance, or for conservation pur-
+A., Meredith, M., Martin, S., Lee, J., … Schatz, M. C. (2022). A
+poses to enhance fitness.
+complete reference genome improves analysis of human genetic
+variation. Science, 376(6588), eabl3533. https:// doi. org/ 10 .1126/
+AUTHOR CONTRIBUTIONS scienc e.a bl3533
+Baduel, P., Leduque, B., Ignace, A., Gy, I., Gil, J., Jr., Loudet, O., Colot, V.,
+Conceptualization, T.A.K., A.J.C., L.A.O., A.R. and K.C.W.V; method-
+& Quadrana, L. (2021). Genetic and environmental modulation of
+ology, T.A.K, N.D.Y, R.L.M and A.R.; formal analyses, T.A.K., M.L.P.;
+transposition shapes the evolutionary potential of Arabidopsis thali-
+investigation, T.A.K., N.D.Y, R.L.M., K.C.W.V, M.L.P.; resources, ana. Genome Biology, 22(1), 138.
+L.A.0. and A.R.; writing – original draft, T.A.K.; writing – review & Biscotti, M. A., Carducci, F., Olmo, E., & Canapa, A. (2019). Vertebrate
+genome size and the impact of transposable elements in genome
+editing, all authors; project administration, T.A.K; funding acquisi-
+evolution. In P. Pontarotti (Ed.), Evolution, origin of life, concepts and
+tion, T.A.K. and L.F.S.
+methods (pp. 233–251). Springer International Publishing.
+Blaxter, M., Archibald, J. M., Childers, A. K., Coddington, J. A., Crandall, K.
+ACKNOWLEDGEMENTS A., Di Palma, F., Durbin, R., Edwards, S. V., Graves, J. A. M., Hackett,
+K. J., Hall, N., Jarvis, E. D., Johnson, R. N., Karlsson, E. K., Kress, W.
+T.A.K., N.D.Y. and L.F.S. research were supported by The University
+J., Kuraku, S., Lawniczak, M. K. N., Lindblad- Toh, K., Lopez, J. V., …
+of Melbourne's Research Computing Services and the Petascale
+Lewin, H. A. (2022). Why sequence all eukaryotes? Proceedings of
+Campus Initiative. T.A.K. and L.F.S. were supported by Australian the National Academy of Sciences, 119(4), e2115636118. https:// doi.
+Research Council Grants (FT190100462, LP200301370). K.W.V. and org/ 10 .1073/ pnas. 21156 36118
+M.L.P. were funded by the European Research Council (101044202). Bredeson, J. V., Mudd, A. B., Medina- Ruiz, S., Mitros, T., Smith, O. K.,
+Miller, K. E., Lyons, J. B., Batra, S. S., Park, J., Berkoff, K. C., Plott, C.,
+Views and opinions expressed are however those of the author(s)
+Grimwood, J., Schmutz, J., Aguirre- Figueroa, G., Khokha, M. K., Lane,
+only and do not necessarily reflect those of the European Union M., Philipp, I., Laslo, M., Hanken, J., … Rokhsar, D. S. (2021). Conserved
+or the European Research Council Executive Agency. Neither the chromatin and repetitive patterns reveal slow genome evolution in
+European Union nor the granting authority can be held responsi- frogs. bioRxiv. https:// doi. org/1 0. 1101/ 2021. 10. 18. 464293
+Breton, B.- A. A., Beaty, L., Bennett, A. M., Kyle, C. J., Lesbarrères, D.,
+ble for them. We are grateful to A. Stuckert, N. Brajuka, J. Sproul
+Vilaça, S. T., Wikston, M. J. H., Wilson, C. C., & Murray, D. L. (2022).
+and E. Tescari for their advice on repeat modelling and J.T. Li for
+Testing the effectiveness of environmental DNA (eDNA) to quan-
+providing suggestions on synteny analyses. We thank M. Moore for tify larval amphibian abundance. Environmental DNA, 4(6), 1229–
+exploratory repeat analyses. Open access publishing facilitated by 1240. https:// doi. org/ 10. 1002/ edn3. 332
+Brown, J. L., Morales, V., & Summers, K. (2010). A key ecological trait
+The University of Melbourne, as part of the Wiley - The University
+drove the evolution of biparental care and monogamy in an am-
+of Melbourne agreement via the Council of Australian University
+phibian. The American Naturalist, 175(4), 436–446.
+Librarians. Casacuberta, E., & González, J. (2013). The impact of transposable ele-
+ments in environmental adaptation. Molecular Ecology, 22(6), 1503–
+1517. https:// doi. org/ 10. 1111/ mec. 12170
+CONFLIC TS OF INTEREST
+Chestnut, T., Anderson, C., Popa, R., Blaustein, A. R., Voytek, M., Olson,
+The authors declare no conflicts of interest. D. H., & Kirshtein, J. (2014). Heterogeneous occupancy and density
+estimates of the pathogenic fungus Batrachochytrium dendrobatidis
+DATA AVAIL ABILIT Y STATEMENT in Waters of North America. PLoS One, 9(9), e106790. https:// doi.
+org/ 10 .1371/ journ al. pone .0106790 Genetic data: All the genomes used in this study are available on the
+Cunningham, F., Allen, J. E., Allen, J., Alvarez- Jarreta, J., Amode, M.
+NCBI Genomes database (https://w ww.n cbi.n lm.n ih.g ov/g enome/)
+R., Armean, I. M., Austine- Orimoloye, O., Azov, A. G., Barnes,
+or Dryad (https:// doi .org/ 10. 5061/ dryad .fttdz 0913). I., Bennett, R., Berry, A., Bhai, J., Bignell, A., Billis, K., Boddu, S.,
+Code: All original code has been deposited on GitHub and is pub- Brooks, L., Charkhchi, M., Cummins, C., Da Rin Fioretto, L., …
+licly available at https:// doi .org/ 10. 5281/ zenodo .7679280. Flicek, P. (2022). Ensembl 2022. Nucleic Acids Research, 50(D1),
+D988–D995. https:// doi. org/ 10. 1093/ nar/ gkab1049
+Daly, J. W., Garraffo, H. M., Spande, T. F., Decker, M. W., Sullivan, J. P.,
+ORCID & Williams, M. (2000). Alkaloids from frog skin: The discovery of
+Tiffany A. Kosch https://orcid.org/0000-0001-5158-5748 epibatidine and the potential for developing novel non- opioid anal-
+Andrew J. Crawford https://orcid.org/0000-0003-3153-6898 gesics. Natural Product Reports, 17(2), 131–135.
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+12 of 14 | KOSCH et al.
+De Angelis, M., Casciaro, B., Genovese, A., Brancaccio, D., Marcocci, are revolutionizing 20 years of insect genome sequencing. Genome
+M., Novellino, E., Carotenuto, A., Palamara, A., Mangoni, M., Biology and Evolution, 13(8), evab138. https://d oi.o rg/1 0.1 093/g be/
+& Nencioni, L. (2021). Temporin G, an amphibian antimicrobial evab138
+peptide against influenza and parainfluenza respiratory viruses: IUCN. (2022). The IUCN Red List of Threatened Species. Version 2022- 2.
+Insights into biological activity and mechanism of action. The FASEB https://w ww.i ucnre dlist.o rg
+Journal, 35(2), e21358. Jetz, W., & Pyron, R. A. (2018). The interplay of past diversification and
+Decena- Segarra, L. P., Bizjak- Mali, L., Kladnik, A., Sessions, S. K., & evolutionary isolation with present imperilment across the amphib-
+Rovito, S. M. (2020). Miniaturization, genome size, and biological ian tree of life. Nature Ecology & Evolution, 2(5), 850–858. https://
+size in a diverse clade of salamanders. The American Naturalist, doi. org/ 10. 1038/ s4155 9- 018- 0515- 5
+196(5), 634–648. https:// doi .org/ 10. 5061/ dryad. ht76h drcg Johnson, B. B., Searle, J. B., & Sparks, J. P. (2021). Genome size influences
+Douglas, T. E., Márquez, R., Holmes, V. R., Johnston, J. S., & Tarvin, R. adaptive plasticity of water loss, but not metabolic rates, in lungless
+D. (2023). Genome size evolution and phenotypic correlates in salamanders. Journal of Experimental Biology, 224(8), jeb242196.
+the poison frog family Dendrobatidae. bioRxiv. https://d oi.o rg/1 0. https:// doi .org/ 10 .1242/ jeb. 242196
+1101/ 2023 .06. 30. 547273 Kapusta, A., Suh, A., & Feschotte, C. (2017). Dynamics of genome
+Drummond, A. J., & Rambaut, A. (2007). BEAST: Bayesian evolutionary size evolution in birds and mammals. Proceedings of the National
+analysis by sampling trees. BMC Evolutionary Biology, 7, 214. https:// Academy of Sciences, 114(8), E1460–E1469. https://d oi.o rg/1 0.
+doi. org/ 10 .1186/ 1471- 2148- 7- 214 1073/ pnas .16167 02114
+Duellman, W. E. (1999). Patterns of distribution of amphibians: A global per- Keinath, M. C., Timoshevskiy, V. A., Timoshevskaya, N. Y., Tsonis, P. A.,
+spective. JHU Press. Voss, S. R., & Smith, J. J. (2015). Initial characterization of the large
+Elewa, A., Wang, H., Talavera- López, C., Joven, A., Brito, G., Kumar, A., genome of the salamander Ambystoma mexicanum using shotgun
+Hameed, L. S., Penrad- Mobayed, M., Yao, Z., & Zamani, N. (2017). and laser capture chromosome sequencing. Scientific Reports, 5(1),
+Reading and editing the Pleurodeles waltl genome reveals novel fea- 16413. https:// doi .org/ 10 .1038/ srep1 6413
+tures of tetrapod regeneration. Nature Communications, 8(1), 1–9. Kosch, T. A., Waddle, A. W., Cooper, C. A., Zenger, K. R., Garrick, D. J.,
+https:// doi .org/ 10 .1038/ s4146 7- 017- 01964 - 9 Berger, L., & Skerratt, L. F. (2022). Genetic approaches for increas-
+Emms, D. M., & Kelly, S. (2019). OrthoFinder: Phylogenetic orthology ing fitness in endangered species. Trends in Ecology & Evolution,
+inference for comparative genomics. Genome Biology, 20(1), 1–14. 37(4), 332–345. https:// doi .org/ 10 .1016/j .tree. 2021 .12 .003
+Felsenstein, J. (1985). Confidence limits on phylogenies: An approach Kriventseva, E. V., Kuznetsov, D., Tegenfeldt, F., Manni, M., Dias, R.,
+using the bootstrap. Evolution, 39(4), 783–791. Simão, F. A., & Zdobnov, E. M. (2018). OrthoDB v10: Sampling the
+Fischer, E. K., Roland, A. B., Moskowitz, N. A., Tapia, E. E., Summers, K., diversity of animal, plant, fungal, protist, bacterial and viral ge-
+Coloma, L. A., & O'Connell, L. A. (2019). The neural basis of tad- nomes for evolutionary and functional annotations of orthologs.
+pole transport in poison frogs. Proceedings of the Royal Society B: Nucleic Acids Research, 47(D1), D807–D811. https://d oi.o rg/1 0.
+Biological Sciences, 286(1907), 20191084. https:// doi. org/ 10. 1098/ 1093/ nar/ gky1053
+rspb. 2019. 1084 Lamichhaney, S., Catullo, R., Keogh, J. S., Clulow, S., Edwards, S. V., &
+Flynn, J. M., Hubley, R., Goubert, C., Rosen, J., Clark, A. G., Feschotte, C., Ezaz, T. (2021). A bird- like genome from a frog: Mechanisms of ge-
+& Smit, A. F. (2020). RepeatModeler2 for automated genomic dis- nome size reduction in the ornate burrowing frog, Platyplectrum
+covery of transposable element families. Proceedings of the National ornatum. Proceedings of the National Academy of Sciences, 118(11),
+Academy of Sciences, 117(17), 9451–9457. https:// doi. org/ 10. 1073/ e2011649118. https:// doi .org/ 10 .1073/ pnas. 20116 49118
+pnas. 19210 46117 Lawniczak, M. K. N., Durbin, R., Flicek, P., Lindblad- Toh, K., Wei, X.,
+Frahry, M. B., Sun, C., Chong, R. A., & Mueller, R. L. (2015). Low levels Archibald, J. M., Baker, W. J., Belov, K., Blaxter, M. L., Marques
+of LTR retrotransposon deletion by ectopic recombination in the Bonet, T., Childers, A. K., Coddington, J. A., Crandall, K. A.,
+gigantic genomes of salamanders. Journal of Molecular Evolution, 80, Crawford, A. J., Davey, R. P., Di Palma, F., Fang, Q., Haerty, W., Hall,
+120–129. https:// doi .org/ 10 .1007/ s0023 9- 014- 9663- 7 N., … Richards, S. (2022). Standards recommendations for the earth
+Garland, T., Jr., Harvey, P. H., & Ives, A. R. (1992). Procedures for the BioGenome project. Proceedings of the National Academy of Sciences,
+analysis of comparative data using phylogenetically independent 119(4), e2115639118. https:// doi .org/ 10 .1073/ pnas. 21156 39118
+contrasts. Systematic Biology, 41(1), 18–32. Lee, B. T., Barber, G. P., Benet- Pagès, A., Casper, J., Clawson, H.,
+Gregory, T. R. (2002). Genome size and developmental complexity. Diekhans, M., Fischer, C., Gonzalez, J. N., Hinrichs, A. S., Lee, C.
+Genetica, 115(1), 131–146. https:// doi .org/ 10 .1023/A :10160 M., Muthuraman, P., Nassar, L. R., Nguy, B., Pereira, T., Perez, G.,
+32400147 Raney, B. J., Rosenbloom, K. R., Schmelter, D., Speir, M. L., … Kent,
+Hadfield, J. D. (2010). MCMC methods for multi- response general- W. J. (2022). The UCSC genome browser database: 2022 update.
+ized linear mixed models: The MCMCglmm R package. Journal of Nucleic Acids Research, 50(D1), D1115–D1122. https://d oi.o rg/1 0.
+Statistical Software, 33, 1–22. 1093/ nar/ gkab959
+Hime, P. M., Briggler, J. T., Reece, J. S., & Weisrock, D. W. (2019). Genomic Li, Z.- W., Hou, X.- H., Chen, J.- F., Xu, Y.- C., Wu, Q., González, J., & Guo,
+data reveal conserved female Heterogamety in Giant salamanders Y.- L. (2018). Transposable elements contribute to the adaptation
+with gigantic nuclear genomes. G3:Genes|Genomes|Genetics, 9, of Arabidopsis thaliana. Genome Biology and Evolution, 10(8), 2140–
+3476. https:// doi .org/ 10 .1534/ g3 .119 .400556 2150. https://d oi.o rg/1 0.1 093/g be/e vy171
+Hogg, C. J., Ottewell, K., Latch, P., Rossetto, M., Biggs, J., Gilbert, Liedtke, H. C., Cruz, F., Gómez- Garrido, J., Fuentes Palacios, D., Marcet-
+A., Richmond, S., & Belov, K. (2022). Threatened species ini- Houben, M., Gut, M., Alioto, T., Gabaldón, T., & Gomez- Mestre,
+tiative: Empowering conservation action using genomic re- I. (2022). Chromosome- level assembly, annotation and phylome
+sources. Proceedings of the National Academy of Sciences, 119(4), of Pelobates cultripes, the western spadefoot toad. DNA Research,
+e2115643118. https:// doi .org/ 10 .1073/ pnas. 21156 43118 29(3), dsac013.
+Hotaling, S., Kelley, J. L., & Frandsen, P. B. (2021). Toward a genome se- Liedtke, H. C., Gower, D. J., Wilkinson, M., & Gomez- Mestre, I. (2018).
+quence for every animal: Where are we now? Proceedings of the Macroevolutionary shift in the size of amphibian genomes and the
+National Academy of Sciences, 118(52), e2109019118. https:// doi. role of life history and climate. Nature Ecology & Evolution, 2(11),
+org/ 10. 1073/ pnas. 21090 19118 1792–1799. https:// doi .org/ 10 .1038/ s4155 9- 018- 0674- 4
+Hotaling, S., Sproul, J. S., Heckenhauer, J., Powell, A., Larracuente, A. Liu, Y., Shi, D., Wang, J., Chen, X., Zhou, M., Xi, X., Cheng, J., Ma, C., Chen,
+M., Pauls, S. U., Kelley, J. L., & Frandsen, P. B. (2021). Long- reads T., & Shaw, C. (2020). A novel amphibian antimicrobial peptide,
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of
+use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+KOSCH et al. | 13 of 14
+phylloseptin- PV1, exhibits effective anti- staphylococcal activity Comparative Immunology, 139, 104594. https:// doi .org/ 10 .1016/j .
+without inducing either hepatic or renal toxicity in mice. Frontiers dci. 2022. 104594
+in Microbiology, 11, 565158. Pappalardo, A. M., Ferrito, V., Biscotti, M. A., Canapa, A., & Capriglione,
+Lovell, J. T., Sreedasyam, A., Schranz, M. E., Wilson, M., Carlson, J. W., T. (2021). Transposable elements and stress in vertebrates: An
+Harkess, A., Emms, D., Goodstein, D. M., & Schmutz, J. (2022). overview. International Journal of Molecular Sciences, 22(4), 1970.
+GENESPACE tracks regions of interest and gene copy number vari- https://d oi.o rg/1 0.3 390/i jms22 041970
+ation across multiple genomes. eLife, 11, e78526. https://d oi.o rg/ Pimpinelli, S., & Piacentini, L. (2020). Environmental change and the evo-
+10. 7554/ eLife .78526 lution of genomes: Transposable elements as translators of pheno-
+Lynch, M., & Walsh, B. (2007). The origins of genome architecture. Sinauer typic plasticity into genotypic variability. Functional Ecology, 34(2),
+Associates. 428–441.
+Ma, W.- J., & Veltsos, P. (2021). The diversity and evolution of sex chro- Platt, R. N., 2nd, Vandewege, M. W., & Ray, D. A. (2018). Mammalian
+mosomes in frogs. Genes, 12(4), 483. https://d oi.o rg/1 0.3 390/ transposable elements and their impacts on genome evolution.
+genes1 2040483 Chromosome Research, 26(1–2), 25–43. https:// doi. org/ 10. 1007/
+Manni, M., Berkeley, M. R., Seppey, M., Simão, F. A., & Zdobnov, E. M. s1057 7- 017- 9570- z
+(2021). BUSCO update: Novel and streamlined workflows along Pyron, R. A., Pirro, S., Hains, T., Colston, T. J., Myers, E. A., O'Connell, K.
+with broader and deeper phylogenetic coverage for scoring of A., & Beamer, D. A. (2024). The draft genome sequences of 50 sal-
+eukaryotic, prokaryotic, and viral genomes. Molecular Biology and amander species (Caudata, Amphibia). Biodiversity Genomes, 2024.
+Evolution, 38(10), 4647–4654. https:// doi. org/ 10. 1093/ molbev/ https:// doi .org/ 10. 56179/ 001c .116891
+msab199 Pyron, R. A., & Wiens, J. J. (2013). Large- scale phylogenetic analyses re-
+Meyer, A., Schloissnig, S., Franchini, P., Du, K., Woltering, J. M., Irisarri, I., veal the causes of high tropical amphibian diversity. Proceedings of
+Wong, W. Y., Nowoshilow, S., Kneitz, S., Kawaguchi, A., Fabrizius, the Royal Society B: Biological Sciences, 280(1770), 20131622.
+A., Xiong, P., Dechaud, C., Spaink, H. P., Volff, J.- N., Simakov, O., R Core Team. (2013). R: A language and environment for statistical comput-
+Burmester, T., Tanaka, E. M., & Schartl, M. (2021). Giant lungfish ing. R Foundation for Statistical Computing. http://w ww.R -p rojec t.
+genome elucidates the conquest of land by vertebrates. Nature, org/
+590(7845), 284–289. https:// doi .org/ 10 .1038/ s4158 6- 021- 03198 Revell, L. J. (2024). Phytools 2.0: An updated R ecosystem for phyloge-
+-8 netic comparative methods (and other things). PeerJ, 12, e16505.
+Mohlhenrich, E. R., & Mueller, R. L. (2016). Genetic drift and mutational https:// doi .org/ 10 .7717/ peerj .16505
+hazard in the evolution of salamander genomic gigantism. Evolution, Rhie, A., McCarthy, S. A., Fedrigo, O., Damas, J., Formenti, G., Koren, S.,
+70(12), 2865–2878. Uliano- Silva, M., Chow, W., Fungtammasan, A., Kim, J., Lee, C., Ko,
+Myers, E. A., & Pyron, R. A. (2024). The first complete assembly for a B. J., Chaisson, M., Gedman, G. L., Cantin, L. J., Thibaud- Nissen,
+lungless urodelan with a ‘miniaturized’ genome, the northern dusky F., Haggerty, L., Bista, I., Smith, M., … Jarvis, E. D. (2021). Towards
+salamander (Plethodontidae: Desmognathus fuscus). bioRxiv. https:// complete and error- free genome assemblies of all vertebrate spe-
+doi.o rg/1 0.1 101/2 024.0 4.3 0.5 91895 cies. Nature, 592(7856), 737–746. https:// doi. org/ 10. 1038/ s4158
+Novák, P., Guignard, M. S., Neumann, P., Kelly, L. J., Mlinarec, J., 6- 021- 03451 - 0
+Koblížková, A., Dodsworth, S., Kovařík, A., Pellicer, J., Wang, W., Robert, J. (2020). Experimental platform using the amphibian Xenopus
+Macas, J., Leitch, I. J., & Leitch, A. R. (2020). Repeat- sequence turn- laevis for research in fundamental and medical immunology. Cold
+over shifts fundamentally in species with large genomes. Nature Spring Harbor Protocols, 2020(7), pdb.top106625.
+Plants, 6(11), 1325–1329. https://d oi.o rg/1 0.1 038/s 41477 -0 20- Saeed, M., Rais, M., Akram, A., Williams, M. R., Kellner, K. F., Hashsham,
+00785 - x S. A., & Davis, D. R. (2022). Development and validation of an eDNA
+Nowoshilow, S., Schloissnig, S., Fei, J.- F., Dahl, A., Pang, A. W. C., Pippel, protocol for monitoring endemic Asian spiny frogs in the Himalayan
+M., Winkler, S., Hastie, A. R., Young, G., Roscito, J. G., Falcon, F., region of Pakistan. Scientific Reports, 12(1), 5624. https://d oi.o rg/
+Knapp, D., Powell, S., Cruz, A., Cao, H., Habermann, B., Hiller, M., 10. 1038/ s4159 8- 022- 09084 - 1
+Tanaka, E. M., & Myers, E. W. (2018). The axolotl genome and the Scheele, B. C., Hunter, D. A., Grogan, L. F., Berger, L., Kolby, J. E.,
+evolution of key tissue formation regulators. Nature, 554, 50–55. McFadden, M. S., Marantelli, G., Skerratt, L. F., & Driscoll,
+https:// doi. org/ 10. 1038/ natur e25458 D. A. (2014). Interventions for reducing extinction risk in
+Nunes- de- Almeida, C. H. L., Haddad, C. F. B., & Toledo, L. F. (2021). chytridiomycosis-t hreatened amphibians. Conservation Biology,
+A revised classification of the amphibian reproductive modes. 28(5), 1195–1205. https:// doi. org/ 10. 1111/ cobi. 12322
+Salamandra, 57(3), 413–427. Scheele, B. C., Pasmans, F., Skerratt, L. F., Berger, L., Martel, A., Beukema,
+O'Leary, N. A., Wright, M. W., Brister, J. R., Ciufo, S., Haddad, D., W., Acevedo, A. A., Burrowes, P. A., Carvalho, T., Catenazzi, A., De
+McVeigh, R., Rajput, B., Robbertse, B., Smith- White, B., Ako- la Riva, I., Fisher, M. C., Flechas, S. V., Foster, C. N., Frías- Álvarez,
+Adjei, D., Astashyn, A., Badretdin, A., Bao, Y., Blinkova, O., Brover, P., Garner, T. W. J., Gratwicke, B., Guayasamin, J. M., Hirschfeld,
+V., Chetvernin, V., Choi, J., Cox, E., Ermolaeva, O., … Pruitt, K. D. M., … Canessa, S. (2019). Amphibian fungal panzootic causes cata-
+(2016). Reference sequence (RefSeq) database at NCBI: Current strophic and ongoing loss of biodiversity. Science, 363(6434), 1459–
+status, taxonomic expansion, and functional annotation. Nucleic 1463. https:// doi .org/ 10 .1126/ scien ce. aav0379
+Acids Research, 44(D1), D733–D745. https:// doi. org/ 10. 1093/ nar/ Schloissnig, S., Kawaguchi, A., Nowoshilow, S., Falcon, F., Otsuki, L.,
+gkv1189 Tardivo, P., Timoshevskaya, N., Keinath, M. C., Smith, J. J., & Voss, S.
+Ou, S., Su, W., Liao, Y., Chougule, K., Agda, J. R. A., Hellinga, A. J., Lugo, R. (2021). The giant axolotl genome uncovers the evolution, scaling,
+C. S. B., Elliott, T. A., Ware, D., Peterson, T., Jiang, N., Hirsch, C. and transcriptional control of complex gene loci. Proceedings of the
+N., & Hufford, M. B. (2019). Benchmarking transposable element National Academy of Sciences, 118(15), e2017176118.
+annotation methods for creation of a streamlined, comprehen- Schrader, L., & Schmitz, J. (2019). The impact of transposable elements in
+sive pipeline. Genome Biology, 20(1), 275. https:// doi .org/ 10 .1186/ adaptive evolution. Molecular Ecology, 28(6), 1537–1549.
+s1305 9- 019- 1905- y Schulte, L. M., Ringler, E., Rojas, B., & Stynoski, J. L. (2020). Developments
+Paiola, M., Dimitrakopoulou, D., Pavelka, M. S., & Robert, J. (2023). in amphibian parental care research: History, present advances,
+Amphibians as a model to study the role of immune cell hetero- and future perspectives. Herpetological Monographs, 34(1), 71–97.
+geneity in host and mycobacterial interactions. Developmental & https:// doi .org/ 10 .1655/ HERPM ONOGR APHS- D- 19- 00002 .1
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of
+use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License
+14 of 14 | KOSCH et al.
+Seidl, F., Levis, N. A., Schell, R., Pfennig, D. W., Pfennig, K. S., & Ehrenreich, I. Proteomics & Bioinformatics, 19, 123–139. https:// doi .org/ 10 .1016/j .
+M. (2019). Genome of Spea multiplicata, a rapidly developing, phenotyp- gpb.2 020.1 1.0 05
+ically plastic, and desert-a dapted spadefoot toad. G3: Genes, Genomes, Waters, P. D., Patel, H. R., Ruiz- Herrera, A., Álvarez- González, L., Lister,
+Genetics, 9(12), 3909–3919. https:// doi. org/ 10. 1534/ g3. 119. 400705 N. C., Simakov, O., Ezaz, T., Kaur, P., Frere, C., Grützner, F., Georges,
+Smit, A., Hubley, R., & Green, P. (2013). RepeatMasker Open- 4.0. 2013– A., & Graves, J. A. M. (2021). Microchromosomes are building
+2015. http://w ww.r epeat maske r.o rg blocks of bird, reptile, and mammal chromosomes. Proceedings of
+Sotero- Caio, C., Challis, R., Kumar, S., & Blaxter, M. (2021). Genomes on the National Academy of Sciences, 118(45), e2112494118. https://
+a tree (GoaT): A centralized resource for eukaryotic genome se- doi. org/ 10. 1073/ pnas. 21124 94118
+quencing initiatives. Biodiversity Information Science and Standards. Womack, M. C., Steigerwald, E., Blackburn, D. C., Cannatella, D. C.,
+Stapley, J., Santure, A. W., & Dennis, S. R. (2015). Transposable elements Catenazzi, A., Che, J., Koo, M. S., McGuire, J. A., Ron, S. R., Spencer,
+as agents of rapid adaptation may explain the genetic paradox of C. L., Vredenburg, V. T., & Tarvin, R. D. (2022). State of the amphibia
+invasive species. Molecular Ecology, 24(9), 2241–2252. 2020: A review of five years of amphibian research and existing
+Storer, J., Hubley, R., Rosen, J., Wheeler, T. J., & Smit, A. F. (2021). The resources. Ichthyology & Herpetology, 110(4), 638–661.
+Dfam community resource of transposable element families, se- Wu, W., Gao, Y. D., Jiang, D. C., Lei, J., Ren, J. L., Liao, W. B., Deng, C.,
+quence models, and genome annotations. Mobile DNA, 12(1), 1–14. Wang, Z., Hillis, D. M., Zhang, Y. P., & Li, J. T. (2022). Genomic
+Stuckert, A. M., Chouteau, M., McClure, M., LaPolice, T. M., Linderoth, T., adaptations for arboreal locomotion in Asian flying treefrogs.
+Nielsen, R., Summers, K., & MacManes, M. D. (2021). The genom- Proceedings of the National Academy of Sciences of the United States
+ics of mimicry: Gene expression throughout development provides of America, 119(13), e2116342119. https:// doi. org/ 10. 1073/ pnas.
+insights into convergent and divergent phenotypes in a Müllerian 21163 42119
+mimicry system. Molecular Ecology, 30(16), 4039–4061. Zuo, B., Nneji, L. M., & Sun, Y.- B. (2023). Comparative genomics reveals
+Suda, K., Hayashi, S. R., Tamura, K., Takamatsu, N., & Ito, M. (2022). insights into anuran genome size evolution. BMC Genomics, 24(1),
+Activation of DNA transposons and evolution of piRNA genes 379. https:// doi .org/ 10 .1186/ s1286 4- 023- 09499 - 8
+through interspecific hybridization in xenopus frogs. Frontiers in
+Genetics, 13, 766424. https:// doi .org/ 10. 3389/ fgene. 2022 .766424
+Sun, C., López Arriaza, J. R., & Mueller, R. L. (2012). Slow DNA loss in the SUPPORTING INFORMATION
+gigantic genomes of salamanders. Genome Biology and Evolution,
+Additional supporting information can be found online in the
+4(12), 1340–1348.
+Supporting Information section at the end of this article.
+Sun, C., Shepard, D. B., Chong, R. A., López Arriaza, J., Hall, K., Castoe, T.
+A., Feschotte, C., Pollock, D. D., & Mueller, R. L. (2012). LTR retro-
+transposons contribute to genomic gigantism in plethodontid sala-
+manders. Genome Biology and Evolution, 4(2), 168–183.
+Sun, Y.- B., Zhang, Y., & Wang, K. (2020). Perspectives on studying mo- How to cite this article: Kosch, T. A., Crawford, A. J., Lockridge
+lecular adaptations of amphibians in the genomic era. Zoological Mueller, R., Wollenberg Valero, K. C., Power, M. L., Rodríguez ,
+Research, 41(4), 351–364.
+A., O’Connell, L. A., Young, N. D., & Skerratt, L. F. (2025) .
+Team, R. (2022). RStudio: Integrated development for R. RStudio Inc.
+Tymowska, J., & Fischberg, M. (1973). Chromosome complements of the Comparative analysis of amphibian genomes: An emerging
+genus xenopus. Chromosoma, 44(3), 335–342. https://d oi.o rg/1 0. resource for basic and applied research. Molecular Ecology
+1007/ BF002 91027
+Resources, 25, e14025. https://doi.org/10.1111/1755-
+Wang, J., Itgen, M. W., Wang, H., Gong, Y., Jiang, J., Li, J., Sun, C., Sessions,
+0998.14025
+S. K., & Mueller, R. L. (2021). Gigantic genomes provide empir-
+ical tests of transposable element dynamics models. Genomics,
+17550998,
+2025,
+1,
+Downloaded
+from
+https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14025
+by
+Schweizerische
+Akademie
+Der,
+Wiley
+Online
+Library
+on
+[25/06/2026].
+See
+the
+Terms
+and
+Conditions
+(https://onlinelibrary.wiley.com/terms-and-conditions)
+on
+Wiley
+Online
+Library
+for
+rules
+of
+use;
+OA
+articles
+are
+governed
+by
+the
+applicable
+Creative
+Commons
+License

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Frog Data Availability – Mangiamele Lab RNA-seq tutorial</title>
+<title>sparvusgenome_readme_draft – Mangiamele Lab RNA-seq tutorial</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -82,7 +117,9 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./frog-data-availability.html">Frog Data Availability</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Mangiamele Lab RNA-seq tutorial
+      </li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -127,7 +164,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./frog-data-availability.html" class="sidebar-item-text sidebar-link active">
+  <a href="./frog-data-availability.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Frog Data Availability</span></a>
   </div>
 </li>
@@ -189,202 +226,515 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose"><span class="header-section-number">1</span> Purpose</a></li>
-  <li><a href="#genome-resources" id="toc-genome-resources" class="nav-link" data-scroll-target="#genome-resources"><span class="header-section-number">2</span> Genome Resources</a></li>
-  <li><a href="#rna-seq-reads" id="toc-rna-seq-reads" class="nav-link" data-scroll-target="#rna-seq-reads"><span class="header-section-number">3</span> RNA-seq Reads</a></li>
-  <li><a href="#sample-metadata" id="toc-sample-metadata" class="nav-link" data-scroll-target="#sample-metadata"><span class="header-section-number">4</span> Sample Metadata</a></li>
-  <li><a href="#other-useful-data" id="toc-other-useful-data" class="nav-link" data-scroll-target="#other-useful-data"><span class="header-section-number">5</span> Other Useful Data</a></li>
-  <li><a href="#download-notes" id="toc-download-notes" class="nav-link" data-scroll-target="#download-notes"><span class="header-section-number">6</span> Download Notes</a></li>
+  <li><a href="#sparvusgenome" id="toc-sparvusgenome" class="nav-link active" data-scroll-target="#sparvusgenome"><span class="header-section-number">1</span> SparvusGenome</a>
+  <ul class="collapse">
+  <li><a href="#project-overview" id="toc-project-overview" class="nav-link" data-scroll-target="#project-overview"><span class="header-section-number">1.1</span> Project overview</a></li>
+  <li><a href="#current-assembly-summary" id="toc-current-assembly-summary" class="nav-link" data-scroll-target="#current-assembly-summary"><span class="header-section-number">1.2</span> Current assembly summary</a></li>
+  <li><a href="#repository-structure" id="toc-repository-structure" class="nav-link" data-scroll-target="#repository-structure"><span class="header-section-number">1.3</span> Repository structure</a>
+  <ul class="collapse">
+  <li><a href="#assembly" id="toc-assembly" class="nav-link" data-scroll-target="#assembly"><span class="header-section-number">1.3.1</span> Assembly</a></li>
+  <li><a href="#assembly-qc" id="toc-assembly-qc" class="nav-link" data-scroll-target="#assembly-qc"><span class="header-section-number">1.3.2</span> Assembly QC</a></li>
+  <li><a href="#ncbi-contaminationadaptor-screening" id="toc-ncbi-contaminationadaptor-screening" class="nav-link" data-scroll-target="#ncbi-contaminationadaptor-screening"><span class="header-section-number">1.3.3</span> NCBI contamination/adaptor screening</a></li>
+  <li><a href="#egapx-annotation" id="toc-egapx-annotation" class="nav-link" data-scroll-target="#egapx-annotation"><span class="header-section-number">1.3.4</span> EGAPx annotation</a></li>
+  <li><a href="#adult-rna-seq-download-for-annotation-rerun" id="toc-adult-rna-seq-download-for-annotation-rerun" class="nav-link" data-scroll-target="#adult-rna-seq-download-for-annotation-rerun"><span class="header-section-number">1.3.5</span> Adult RNA-seq download for annotation rerun</a></li>
+  <li><a href="#conda-environments" id="toc-conda-environments" class="nav-link" data-scroll-target="#conda-environments"><span class="header-section-number">1.3.6</span> Conda environments</a></li>
+  </ul></li>
+  <li><a href="#egapx-input-structure" id="toc-egapx-input-structure" class="nav-link" data-scroll-target="#egapx-input-structure"><span class="header-section-number">1.4</span> EGAPx input structure</a></li>
+  <li><a href="#androgen-receptor-sanity-check" id="toc-androgen-receptor-sanity-check" class="nav-link" data-scroll-target="#androgen-receptor-sanity-check"><span class="header-section-number">1.5</span> Androgen receptor sanity check</a></li>
+  <li><a href="#notes-for-reuse" id="toc-notes-for-reuse" class="nav-link" data-scroll-target="#notes-for-reuse"><span class="header-section-number">1.6</span> Notes for reuse</a></li>
+  <li><a href="#suggested-workflow-order" id="toc-suggested-workflow-order" class="nav-link" data-scroll-target="#suggested-workflow-order"><span class="header-section-number">1.7</span> Suggested workflow order</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/frog-data-availability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/sparvusgenome_readme_draft.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Frog Data Availability</h1>
-</div>
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta column-body">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<section id="purpose" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="purpose"><span class="header-section-number">1</span> Purpose</h2>
-<p>This page collects links to public data resources used for <em>Staurois parvus</em> RNA-seq analysis in the Mangiamele Lab.</p>
+<section id="sparvusgenome" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> SparvusGenome</h1>
+<p>Scripts and notes for assembling, QC-ing, submitting, and annotating the <em>Staurois parvus</em> genome.</p>
+<p>This repository documents the workflow used to generate a new PacBio HiFi genome assembly for the Bornean rock frog / foot-flagging frog, <em>Staurois parvus</em>, screen it for NCBI submission, and annotate it with NCBI EGAPx.</p>
+<section id="project-overview" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="project-overview"><span class="header-section-number">1.1</span> Project overview</h2>
+<p>The main goals of this workflow are:</p>
+<ol type="1">
+<li>Generate a new <em>S. parvus</em> genome assembly from PacBio HiFi reads.</li>
+<li>Assess assembly quality using summary statistics, BUSCO, GC/coverage checks, and contamination screening.</li>
+<li>Clean the assembly for NCBI submission.</li>
+<li>Annotate the cleaned genome using NCBI EGAPx with <em>S. parvus</em> RNA-seq evidence.</li>
+<li>Prepare outputs for downstream RNA-seq mapping and differential gene expression analyses.</li>
+</ol>
 </section>
-<section id="genome-resources" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="genome-resources"><span class="header-section-number">2</span> Genome Resources</h2>
+<section id="current-assembly-summary" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="current-assembly-summary"><span class="header-section-number">1.2</span> Current assembly summary</h2>
+<p>The cleaned primary-contig assembly used for NCBI submission and EGAPx annotation has:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>Resource</th>
-<th>Link</th>
-<th>Notes</th>
-<th>Year</th>
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Old genome assembly</td>
-<td><a href="https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_951230385.1/">NCBI link</a></td>
-<td><a href="https://academic.oup.com/g3journal/article/13/10/jkad193/7251439">Paper</a></td>
-<td>2023</td>
+<td>Total assembly length</td>
+<td style="text-align: right;">4,481,589,302 bp / 4.48 Gb</td>
 </tr>
 <tr class="even">
-<td>New Genome assembly</td>
-<td>Add link</td>
-<td>Add assembly version, accession, or source</td>
-<td>2026</td>
+<td>Number of contigs</td>
+<td style="text-align: right;">4,081</td>
 </tr>
 <tr class="odd">
-<td>Genome FASTA</td>
-<td>Add link</td>
-<td>Add file name and date downloaded</td>
-<td></td>
+<td>Largest contig</td>
+<td style="text-align: right;">36.84 Mb</td>
 </tr>
 <tr class="even">
-<td>Gene annotation</td>
-<td>Add link</td>
-<td>Add GTF/GFF source and version</td>
-<td></td>
+<td>Contig N50</td>
+<td style="text-align: right;">6.88 Mb</td>
 </tr>
 <tr class="odd">
-<td>Transcriptome</td>
-<td>Add link</td>
-<td>Optional</td>
-<td></td>
+<td>N50 number</td>
+<td style="text-align: right;">182</td>
+</tr>
+<tr class="even">
+<td>N90</td>
+<td style="text-align: right;">629 kb</td>
+</tr>
+<tr class="odd">
+<td>Gaps / Ns</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>GC content</td>
+<td style="text-align: right;">43.07%</td>
 </tr>
 </tbody>
 </table>
+<p>BUSCO, using <code>vertebrata_odb10</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>BUSCO category</th>
+<th style="text-align: right;">Count</th>
+<th style="text-align: right;">Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Complete BUSCOs</td>
+<td style="text-align: right;">3,060</td>
+<td style="text-align: right;">91.2%</td>
+</tr>
+<tr class="even">
+<td>Complete single-copy</td>
+<td style="text-align: right;">2,952</td>
+<td style="text-align: right;">88.0%</td>
+</tr>
+<tr class="odd">
+<td>Complete duplicated</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">3.2%</td>
+</tr>
+<tr class="even">
+<td>Fragmented</td>
+<td style="text-align: right;">134</td>
+<td style="text-align: right;">4.0%</td>
+</tr>
+<tr class="odd">
+<td>Missing</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">4.8%</td>
+</tr>
+<tr class="even">
+<td>Total searched</td>
+<td style="text-align: right;">3,354</td>
+<td style="text-align: right;">100%</td>
+</tr>
+</tbody>
+</table>
+<p>BUSCO notation:</p>
+<pre class="text"><code>C:91.2%[S:88.0%,D:3.2%],F:4.0%,M:4.8%,n:3354</code></pre>
 </section>
-<section id="rna-seq-reads" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="rna-seq-reads"><span class="header-section-number">3</span> RNA-seq Reads</h2>
+<section id="repository-structure" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="repository-structure"><span class="header-section-number">1.3</span> Repository structure</h2>
+<p>This repository currently contains scripts for several stages of the project.</p>
+<section id="assembly" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="assembly"><span class="header-section-number">1.3.1</span> Assembly</h3>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Dataset</th>
-<th>Repository</th>
-<th>Accession or link</th>
-<th>Notes</th>
+<th>Script/file</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>RNA-seq reads</td>
-<td>NCBI SRA</td>
-<td>Add link</td>
-<td>Add tissue, treatment, or project notes</td>
+<td><code>sparvus_hifiasm.sh</code></td>
+<td>Run hifiasm assembly workflow.</td>
 </tr>
 <tr class="even">
-<td>RNA-seq reads</td>
-<td>GEO</td>
-<td>Add link</td>
-<td>Optional</td>
+<td><code>sparvus_config.sh</code></td>
+<td>Shared project paths/configuration variables for assembly scripts.</td>
 </tr>
 <tr class="odd">
-<td>RNA-seq reads</td>
-<td>ENA</td>
-<td>Add link</td>
-<td>Optional</td>
+<td><code>final_stats.sh</code></td>
+<td>Generate final assembly statistics.</td>
+</tr>
+<tr class="even">
+<td><code>GenomeAssemblyInteractiveDump.ipynb</code></td>
+<td>Interactive notebook used during assembly exploration/QC.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="sample-metadata" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="sample-metadata"><span class="header-section-number">4</span> Sample Metadata</h2>
+<section id="assembly-qc" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="assembly-qc"><span class="header-section-number">1.3.2</span> Assembly QC</h3>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>File or record</th>
-<th>Link</th>
-<th>Notes</th>
+<th>Script/file</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Sample metadata</td>
-<td>Add link</td>
-<td>Sample IDs, tissue, sex, treatment, collection details</td>
+<td><code>2_sparvus_busco.sh</code></td>
+<td>Run BUSCO on the assembly.</td>
 </tr>
 <tr class="even">
-<td>Experimental design</td>
-<td>Add link</td>
-<td>Group comparisons or design notes</td>
+<td><code>run_gc_coverage_check.sh</code></td>
+<td>Run GC/coverage screening to identify potential contaminants or outliers.</td>
+</tr>
+<tr class="odd">
+<td><code>run_gc_coverage_subset.sh</code></td>
+<td>Run GC/coverage checks on a subset.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="other-useful-data" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="other-useful-data"><span class="header-section-number">5</span> Other Useful Data</h2>
+<section id="ncbi-contaminationadaptor-screening" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="ncbi-contaminationadaptor-screening"><span class="header-section-number">1.3.3</span> NCBI contamination/adaptor screening</h3>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Resource</th>
-<th>Link</th>
-<th>Notes</th>
+<th>Script/file</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Related publication</td>
-<td>Add link</td>
-<td>Paper, preprint, or thesis</td>
+<td><code>download_fcs_gx_db.sh</code></td>
+<td>Download the NCBI FCS-GX database.</td>
 </tr>
 <tr class="even">
-<td>Supplementary files</td>
-<td>Add link</td>
-<td>Tables, scripts, or additional references</td>
+<td><code>run_fcs_adaptor.sh</code></td>
+<td>Run NCBI FCS adaptor screening.</td>
 </tr>
 <tr class="odd">
-<td>Lab notes</td>
-<td>Add link</td>
-<td>Internal notes if appropriate</td>
+<td><code>run_fcs_gx.sh</code></td>
+<td>Run NCBI FCS-GX contamination screening.</td>
+</tr>
+<tr class="even">
+<td><code>remove_contaminant.sh</code></td>
+<td>Remove the contaminant contig identified by FCS-GX.</td>
+</tr>
+</tbody>
+</table>
+<p>The final cleaned assembly removed one contaminant contig:</p>
+<pre class="text"><code>Contig: ptg003819l
+Length: 19,494 bp
+Assignment: nematode / Oscheius tipulae
+Action: EXCLUDE</code></pre>
+<p>This represented approximately 0.0004% of the assembly.</p>
+</section>
+<section id="egapx-annotation" class="level3" data-number="1.3.4">
+<h3 data-number="1.3.4" class="anchored" data-anchor-id="egapx-annotation"><span class="header-section-number">1.3.4</span> EGAPx annotation</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Script/file</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>validate_inputs_annot.sh</code></td>
+<td>Validate EGAPx input files before annotation.</td>
+</tr>
+<tr class="even">
+<td><code>run_sparvus_egapx.sbatch</code></td>
+<td>Initial EGAPx SLURM run script.</td>
+</tr>
+<tr class="odd">
+<td><code>resume_sparvus_egapx.sbatch</code></td>
+<td>Resume EGAPx after a failed/interrupted run.</td>
+</tr>
+<tr class="even">
+<td><code>egapx_config/</code></td>
+<td>Snapshot of EGAPx config files edited for Unity/SLURM.</td>
+</tr>
+<tr class="odd">
+<td><code>egapx_instructions.md</code></td>
+<td>Detailed step-by-step EGAPx setup and run notes.</td>
+</tr>
+</tbody>
+</table>
+<p>The initial EGAPx run failed because <code>run_mask_assm_stats</code> ran out of memory. The run was successfully resumed after increasing memory for that process.</p>
+<p>EGAPx version used:</p>
+<pre class="text"><code>EGAPx 0.5.2
+EGAPx commit: 40ec7362576e4b93fa9c5bf0a6c400d9502b8a63
+Support data version: egapxsupportdata_20251017</code></pre>
+<p>EGAPx annotation summary:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Feature category</th>
+<th style="text-align: right;">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Total genes</td>
+<td style="text-align: right;">41,598</td>
+</tr>
+<tr class="even">
+<td>Protein-coding genes</td>
+<td style="text-align: right;">23,550</td>
+</tr>
+<tr class="odd">
+<td>mRNAs</td>
+<td style="text-align: right;">30,699</td>
+</tr>
+<tr class="even">
+<td>CDSs</td>
+<td style="text-align: right;">30,699</td>
+</tr>
+<tr class="odd">
+<td>Non-coding RNAs</td>
+<td style="text-align: right;">14,814</td>
+</tr>
+<tr class="even">
+<td>Pseudo transcripts</td>
+<td style="text-align: right;">3,691</td>
+</tr>
+</tbody>
+</table>
+<p>In the GFF, the EGAPx total gene count corresponds to:</p>
+<pre class="text"><code>37,929 gene features
++ 3,669 pseudogene features
+= 41,598 total gene/pseudogene features</code></pre>
+<p>Isoforms are not counted as separate genes in the GFF. They are represented as <code>mRNA</code> child features under parent <code>gene</code> features:</p>
+<pre class="text"><code>32,415 mRNA records
+25,246 parent genes with at least one mRNA
+4,231 genes with more than one mRNA isoform</code></pre>
+</section>
+<section id="adult-rna-seq-download-for-annotation-rerun" class="level3" data-number="1.3.5">
+<h3 data-number="1.3.5" class="anchored" data-anchor-id="adult-rna-seq-download-for-annotation-rerun"><span class="header-section-number">1.3.5</span> Adult RNA-seq download for annotation rerun</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Script/file</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>download_GSE232203_adult_rnaseq.sbatch</code></td>
+<td>Download adult male <em>S. parvus</em> RNA-seq data from SRA/GEO.</td>
+</tr>
+<tr class="even">
+<td><code>compress_GSE232203_existing_fastq.sbatch</code></td>
+<td>Compress partially converted FASTQ files after <code>fasterq-dump</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Adult RNA-seq source:</p>
+<pre class="text"><code>GEO: GSE232203
+BioProject: PRJNA971214
+Species: Staurois parvus
+Samples: adult male brain, spinal cord, and leg muscle</code></pre>
+<p>These data may be added to the RNA-seq evidence for a future EGAPx rerun.</p>
+</section>
+<section id="conda-environments" class="level3" data-number="1.3.6">
+<h3 data-number="1.3.6" class="anchored" data-anchor-id="conda-environments"><span class="header-section-number">1.3.6</span> Conda environments</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>assembly_env.yml</code></td>
+<td>Assembly-related tools.</td>
+</tr>
+<tr class="even">
+<td><code>busco_env.yml</code></td>
+<td>BUSCO environment.</td>
+</tr>
+<tr class="odd">
+<td><code>annot_env.yml</code></td>
+<td>Annotation-related tools.</td>
+</tr>
+<tr class="even">
+<td><code>detonate_env.yml</code></td>
+<td>DETONATE/transcriptome QC environment.</td>
+</tr>
+<tr class="odd">
+<td><code>sp_ont_polish.yml</code></td>
+<td>ONT polishing environment.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="download-notes" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="download-notes"><span class="header-section-number">6</span> Download Notes</h2>
-<p>When adding data links, record:</p>
+</section>
+<section id="egapx-input-structure" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="egapx-input-structure"><span class="header-section-number">1.4</span> EGAPx input structure</h2>
+<p>EGAPx was run using:</p>
 <ul>
-<li>Repository name</li>
-<li>Accession number</li>
-<li>Date accessed</li>
-<li>File names downloaded</li>
-<li>Genome or annotation version</li>
-<li>Any filtering or processing already performed</li>
+<li>cleaned genome assembly</li>
+<li>NCBI taxid for <em>Staurois parvus</em>: <code>386267</code></li>
+<li>paired Illumina RNA-seq reads</li>
+<li>tRNAscan enabled</li>
+<li>cmsearch enabled</li>
 </ul>
-<p>This information makes the analysis easier to reproduce later.</p>
+<p>Example EGAPx YAML:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">genome</span><span class="kw">:</span><span class="at"> /scratch3/workspace/kfloer_smith_edu-simple/sparvus_hifiasm/assembly_output/sparvus_primary_contigs.ncbi.fa</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">taxid</span><span class="kw">:</span><span class="at"> </span><span class="dv">386267</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">short_reads</span><span class="kw">:</span><span class="at"> /scratch3/workspace/kfloer_smith_edu-simple/egapx_sparvus/input/short_reads.txt</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">trnascan</span><span class="kw">:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cmsearch</span><span class="kw">:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The short-read manifest is a two-column file:</p>
+<pre class="text"><code>sample_name /path/to/R1.fastq.gz
+sample_name /path/to/R2.fastq.gz</code></pre>
+<p>See <code>egapx_instructions.md</code> for the full setup and run details.</p>
+</section>
+<section id="androgen-receptor-sanity-check" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="androgen-receptor-sanity-check"><span class="header-section-number">1.5</span> Androgen receptor sanity check</h2>
+<p>Because androgen receptor is a gene of particular interest for this project, the EGAPx annotation was checked for <code>AR</code>.</p>
+<p>EGAPx recovered one androgen receptor locus:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>AR feature</th>
+<th>EGAPx result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Contig</td>
+<td><code>ptg000154l</code></td>
+</tr>
+<tr class="even">
+<td>Coordinates</td>
+<td>1,491,873-1,803,334</td>
+</tr>
+<tr class="odd">
+<td>Strand</td>
+<td><code>+</code></td>
+</tr>
+<tr class="even">
+<td>Gene ID</td>
+<td><code>gene-egapxtmp_016766</code></td>
+</tr>
+<tr class="odd">
+<td>Locus tag</td>
+<td><code>egapxtmp_016766</code></td>
+</tr>
+<tr class="even">
+<td>Transcript ID</td>
+<td><code>rna-egapxtmp_016766-R1</code></td>
+</tr>
+<tr class="odd">
+<td>Protein ID</td>
+<td><code>egapxtmp_016766-P1</code></td>
+</tr>
+<tr class="even">
+<td>Exons</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>Predicted protein length</td>
+<td>777 aa</td>
+</tr>
+<tr class="even">
+<td>Ortholog cross-reference</td>
+<td><code>NCBIOrtholog:367</code></td>
+</tr>
+</tbody>
+</table>
+<p>BLASTP of the predicted protein against anuran proteins returned top hits to androgen receptor proteins. The top hit was:</p>
+<pre class="text"><code>androgen receptor [Aquarana catesbeiana]
+Query cover: 100%
+E-value: 0.0
+Percent identity: 92.86%
+Hit length: 777 aa</code></pre>
+<p>This supports the EGAPx AR model as a likely near-complete/full-length androgen receptor ortholog.</p>
+</section>
+<section id="notes-for-reuse" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="notes-for-reuse"><span class="header-section-number">1.6</span> Notes for reuse</h2>
+<p>Most scripts are specific to the Unity HPC environment and will need editing before use elsewhere.</p>
+<p>Likely things to modify:</p>
+<ul>
+<li>SLURM partition/account/qos settings</li>
+<li>module names</li>
+<li>file paths</li>
+<li>Apptainer/Singularity cache and tmp directories</li>
+<li>memory/CPU/time values</li>
+<li>Nextflow configuration</li>
+<li>EGAPx config files</li>
+</ul>
+<p>The scripts should be treated as reproducible project documentation and templates, not universal drop-in workflows.</p>
+</section>
+<section id="suggested-workflow-order" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="suggested-workflow-order"><span class="header-section-number">1.7</span> Suggested workflow order</h2>
+<p>A rough order for using this repository is:</p>
+<ol type="1">
+<li>Configure project paths in <code>sparvus_config.sh</code>.</li>
+<li>Run assembly with <code>sparvus_hifiasm.sh</code>.</li>
+<li>Generate assembly statistics with <code>final_stats.sh</code>.</li>
+<li>Run BUSCO with <code>2_sparvus_busco.sh</code>.</li>
+<li>Run GC/coverage checks.</li>
+<li>Run NCBI FCS adaptor and FCS-GX contamination screening.</li>
+<li>Remove contaminant contig if needed.</li>
+<li>Validate cleaned assembly.</li>
+<li>Prepare EGAPx input YAML and RNA-seq manifest.</li>
+<li>Validate EGAPx inputs with <code>validate_inputs_annot.sh</code>.</li>
+<li>Run EGAPx with <code>run_sparvus_egapx.sbatch</code>.</li>
+<li>If needed, adjust EGAPx process resources and resume with <code>resume_sparvus_egapx.sbatch</code>.</li>
+<li>Use EGAPx GFF/GTF/protein/transcript outputs for downstream RNA-seq mapping and DGE.</li>
+</ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -796,7 +1146,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/frog-data-availability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/sparvusgenome_readme_draft.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><span class="last-updated">Last updated: AUTO_LAST_UPDATED</span></p>
 </div>
