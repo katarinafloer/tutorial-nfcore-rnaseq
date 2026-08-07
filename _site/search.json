@@ -4,7 +4,7 @@
     "href": "rna-seq-concepts.html",
     "title": "What is RNA-seq?",
     "section": "",
-    "text": "RNA-seq is a way to measure which genes are being expressed in a biological sample.\nCells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.\nIn this tutorial, we are interested in RNA-seq analysis for the frog Staurois parvus.",
+    "text": "RNA-seq is a way to measure which genes are being expressed in a biological sample.\nCells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene — called messenger RNA (mRNA). RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.\nIn this tutorial, we are interested in RNA-seq analysis for the frog Staurois parvus.",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -14,7 +14,27 @@
     "href": "rna-seq-concepts.html#the-big-idea",
     "title": "What is RNA-seq?",
     "section": "",
-    "text": "RNA-seq is a way to measure which genes are being expressed in a biological sample.\nCells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.\nIn this tutorial, we are interested in RNA-seq analysis for the frog Staurois parvus.",
+    "text": "RNA-seq is a way to measure which genes are being expressed in a biological sample.\nCells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene — called messenger RNA (mRNA). RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.\nIn this tutorial, we are interested in RNA-seq analysis for the frog Staurois parvus.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#from-sample-to-counts-the-basic-steps",
+    "href": "rna-seq-concepts.html#from-sample-to-counts-the-basic-steps",
+    "title": "What is RNA-seq?",
+    "section": "2 From sample to counts: the basic steps",
+    "text": "2 From sample to counts: the basic steps\nHere is the overall journey from a biological sample to a number you can analyze statistically.\n\nExtract RNA from the tissue — this happens in the wet lab before any computing begins\nSequence the RNA — the sequencing machine converts RNA fragments into short text strings called reads, stored in FASTQ files\nAlign the reads to a reference genome — figure out which gene each read came from\nCount the reads per gene — for each gene, count how many reads mapped to it across each sample\nCompare counts across conditions — use statistics to find genes where the count is higher or lower in one group vs another (differential expression)\n\nSteps 3–5 are what this tutorial covers computationally.",
+    "crumbs": [
+      "What is RNA-seq?"
+    ]
+  },
+  {
+    "objectID": "rna-seq-concepts.html#key-terms",
+    "href": "rna-seq-concepts.html#key-terms",
+    "title": "What is RNA-seq?",
+    "section": "3 Key terms",
+    "text": "3 Key terms\nRead — A short DNA/RNA sequence, typically 100–150 base pairs long, produced by the sequencer. Each read comes from one RNA molecule in the original sample.\nAlignment — Matching each read back to the reference genome to figure out which gene it came from. A read that maps to a known gene region contributes to that gene’s count.\nCount — The number of reads that mapped to a given gene in a given sample. More counts = higher expression (assuming similar total read depth across samples).\nQuantification — The step that assigns counts to genes (or transcripts). Tools like Salmon do this by comparing reads to known gene sequences.\nDifferential expression — Comparing counts between groups (e.g., control vs. flutamide-treated) to find genes that are expressed at different levels. This is done with a statistical tool like DESeq2.",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -23,8 +43,8 @@
     "objectID": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
     "href": "rna-seq-concepts.html#the-nf-corernaseq-workflow",
     "title": "What is RNA-seq?",
-    "section": "2 The nf-core/rnaseq workflow",
-    "text": "2 The nf-core/rnaseq workflow\nIn this tutorial, we use nf-core/rnaseq to process RNA-seq data in a standardized and reproducible way.\nThe nf-core/rnaseq pipeline can be visualized as a “metro map” of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.\n\n\n\nnf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.\n\n\nSource: nf-core/rnaseq version 3.26.0.\n\n\n\n\n\n\nTip\n\n\n\nFor this tutorial, we are following the default green path: STAR for alignment and Salmon for quantification. There are multiple valid ways to analyze RNA-seq data, but we will focus on this route.",
+    "section": "4 The nf-core/rnaseq workflow",
+    "text": "4 The nf-core/rnaseq workflow\nIn this tutorial, we use nf-core/rnaseq to process RNA-seq data in a standardized and reproducible way.\nThe nf-core/rnaseq pipeline can be visualized as a “metro map” of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.\n\n\n\nnf-core/rnaseq metro map showing preprocessing, alignment, quantification, post-processing, and final quality-control steps.\n\n\nSource: nf-core/rnaseq version 3.26.0.\n\n\n\n\n\n\nTip\n\n\n\nFor this tutorial, we are following the default green path: STAR for alignment and Salmon for quantification. There are multiple valid ways to analyze RNA-seq data, but we will focus on this route.",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -33,8 +53,8 @@
     "objectID": "rna-seq-concepts.html#what-are-fastq-files",
     "href": "rna-seq-concepts.html#what-are-fastq-files",
     "title": "What is RNA-seq?",
-    "section": "3 What are FASTQ files?",
-    "text": "3 What are FASTQ files?\nSequencing machines produce reads. A read is a short sequence from an RNA molecule. These reads are usually stored in FASTQ files.\nFASTQ files often come in pairs:\nsample1_R1.fastq.gz\nsample1_R2.fastq.gz\nFor paired-end sequencing:\n\nR1 contains the first read from each fragment\nR2 contains the second read from each fragment\n.gz means the file is compressed",
+    "section": "5 What are FASTQ files?",
+    "text": "5 What are FASTQ files?\nSequencing machines produce reads. A read is a short sequence from an RNA molecule. These reads are usually stored in FASTQ files.\nFASTQ files often come in pairs:\nsample1_R1.fastq.gz\nsample1_R2.fastq.gz\nFor paired-end sequencing:\n\nR1 contains the first read from each fragment\nR2 contains the second read from each fragment\n.gz means the file is compressed",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -43,8 +63,8 @@
     "objectID": "rna-seq-concepts.html#what-does-the-pipeline-do",
     "href": "rna-seq-concepts.html#what-does-the-pipeline-do",
     "title": "What is RNA-seq?",
-    "section": "4 What does the pipeline do?",
-    "text": "4 What does the pipeline do?\nThe pipeline takes raw sequencing reads and turns them into quality-control reports, alignments, and expression estimates. These are the major steps shown in the nf-core/rnaseq workflow.\n\n4.1 Pre-processing\nThese steps clean up and check the raw sequencing reads before alignment or quantification.\n\nMerge re-sequenced FASTQ files with cat\nAuto-infer strandedness by subsampling reads and pseudoaligning them with fq and Salmon\nCheck raw read quality with FastQC\nExtract unique molecular identifiers, if present, with UMI-tools\nTrim adapters and low-quality sequence with Trim Galore!\nRemove genome contaminants with BBSplit\nRemove ribosomal RNA with SortMeRNA\n\n\n\n4.2 Alignment and quantification\nAfter pre-processing, the pipeline can follow different routes. The route depends on whether you want genome alignment, transcript quantification, or pseudoalignment.\nThe default route used in this tutorial is:\nSTAR -&gt; Salmon\nOther available routes include:\n\nSTAR -&gt; RSEM\nHISAT2 -&gt; no quantification\nPseudoalignment and quantification with Salmon or Kallisto\n\nFor STAR, the Sentieon implementation can also be chosen if it is available and configured.\n\n\n4.3 Post-processing\nAfter alignment and quantification, the pipeline organizes and summarizes the mapped reads.\n\nSort and index alignments with SAMtools\nDeduplicate reads using UMIs with UMI-tools, if UMIs are present\nMark duplicate reads with picard MarkDuplicates\nAssemble and quantify transcripts with StringTie\nCreate bigWig coverage files with BEDTools and bedGraphToBigWig\n\n\n\n4.4 Contamination screening\nThe pipeline can optionally screen selected reads for contamination. By default, this is done on unaligned reads.\nOptional tools include:\n\nKraken2 -&gt; Bracken\nSylph\n\n\n\n4.5 Quality control and reporting\nQuality control helps us decide whether the sequencing and analysis worked well enough to trust the results.\nThe pipeline performs extensive QC with tools such as:\n\nRSeQC\nQualimap\ndupRadar\nPreseq\nDESeq2\nMultiQC\nR\n\nThe final report summarizes raw read quality, alignment metrics, gene biotypes, sample similarity, and strand-specificity checks.",
+    "section": "6 What does the pipeline do?",
+    "text": "6 What does the pipeline do?\nThe pipeline takes raw sequencing reads and turns them into quality-control reports, alignments, and expression estimates. These are the major steps shown in the nf-core/rnaseq workflow.\n\n6.1 Pre-processing\nThese steps clean up and check the raw sequencing reads before alignment or quantification.\n\nMerge re-sequenced FASTQ files with cat\nAuto-infer strandedness by subsampling reads and pseudoaligning them with fq and Salmon\nCheck raw read quality with FastQC\nExtract unique molecular identifiers, if present, with UMI-tools\nTrim adapters and low-quality sequence with Trim Galore!\nRemove genome contaminants with BBSplit\nRemove ribosomal RNA with SortMeRNA\n\n\n\n6.2 Alignment and quantification\nAfter pre-processing, the pipeline can follow different routes. The route depends on whether you want genome alignment, transcript quantification, or pseudoalignment.\nThe default route used in this tutorial is:\nSTAR -&gt; Salmon\nOther available routes include:\n\nSTAR -&gt; RSEM\nHISAT2 -&gt; no quantification\nPseudoalignment and quantification with Salmon or Kallisto\n\nFor STAR, the Sentieon implementation can also be chosen if it is available and configured.\n\n\n6.3 Post-processing\nAfter alignment and quantification, the pipeline organizes and summarizes the mapped reads.\n\nSort and index alignments with SAMtools\nDeduplicate reads using UMIs with UMI-tools, if UMIs are present\nMark duplicate reads with picard MarkDuplicates\nAssemble and quantify transcripts with StringTie\nCreate bigWig coverage files with BEDTools and bedGraphToBigWig\n\n\n\n6.4 Contamination screening\nThe pipeline can optionally screen selected reads for contamination. By default, this is done on unaligned reads.\nOptional tools include:\n\nKraken2 -&gt; Bracken\nSylph\n\n\n\n6.5 Quality control and reporting\nQuality control helps us decide whether the sequencing and analysis worked well enough to trust the results.\nThe pipeline performs extensive QC with tools such as:\n\nRSeQC\nQualimap\ndupRadar\nPreseq\nDESeq2\nMultiQC\nR\n\nThe final report summarizes raw read quality, alignment metrics, gene biotypes, sample similarity, and strand-specificity checks.",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -53,8 +73,8 @@
     "objectID": "rna-seq-concepts.html#what-do-we-get-at-the-end",
     "href": "rna-seq-concepts.html#what-do-we-get-at-the-end",
     "title": "What is RNA-seq?",
-    "section": "5 What do we get at the end?",
-    "text": "5 What do we get at the end?\nThe main outputs are:\n\nQuality-control reports\nAlignment or mapping summaries\nGene or transcript expression estimates\nPipeline logs and software version information\n\nThese outputs help answer questions such as:\n\nDid the sequencing work well?\nAre any samples low quality or unusual?\nWhich genes are expressed in each sample?\nWhich samples are ready for downstream analysis?",
+    "section": "7 What do we get at the end?",
+    "text": "7 What do we get at the end?\nThe main outputs are:\n\nQuality-control reports\nAlignment or mapping summaries\nGene or transcript expression estimates\nPipeline logs and software version information\n\nThese outputs help answer questions such as:\n\nDid the sequencing work well?\nAre any samples low quality or unusual?\nWhich genes are expressed in each sample?\nWhich samples are ready for downstream analysis?",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -63,8 +83,8 @@
     "objectID": "rna-seq-concepts.html#what-rna-seq-does-not-tell-us-by-itself",
     "href": "rna-seq-concepts.html#what-rna-seq-does-not-tell-us-by-itself",
     "title": "What is RNA-seq?",
-    "section": "6 What RNA-seq does not tell us by itself",
-    "text": "6 What RNA-seq does not tell us by itself\nRNA-seq measures RNA abundance, not every part of biology directly. Gene expression can suggest biological patterns, but interpretation depends on experimental design, replication, annotation quality, and downstream statistics.\n\n\n\n\n\n\nNote\n\n\n\nGood RNA-seq analysis starts before sequencing. Sample design, metadata, replication, and careful record keeping matter just as much as the computational pipeline.",
+    "section": "8 What RNA-seq does not tell us by itself",
+    "text": "8 What RNA-seq does not tell us by itself\nRNA-seq measures RNA abundance, not every part of biology directly. Gene expression can suggest biological patterns, but interpretation depends on experimental design, replication, annotation quality, and downstream statistics.\n\n\n\n\n\n\nNote\n\n\n\nGood RNA-seq analysis starts before sequencing. Sample design, metadata, replication, and careful record keeping matter just as much as the computational pipeline.",
     "crumbs": [
       "What is RNA-seq?"
     ]
@@ -264,7 +284,7 @@
     "href": "frog-data-availability.html",
     "title": "Frog Data Availability",
     "section": "",
-    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
+    "text": "This page collects the data files and repositories used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
     "crumbs": [
       "Frog Data Availability"
     ]
@@ -274,47 +294,37 @@
     "href": "frog-data-availability.html#purpose",
     "title": "Frog Data Availability",
     "section": "",
-    "text": "This page collects links to public data resources used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
+    "text": "This page collects the data files and repositories used for Staurois parvus RNA-seq analysis in the Mangiamele Lab.",
     "crumbs": [
       "Frog Data Availability"
     ]
   },
   {
-    "objectID": "frog-data-availability.html#genome-resources",
-    "href": "frog-data-availability.html#genome-resources",
+    "objectID": "frog-data-availability.html#what-is-sra-and-how-does-it-relate-to-ncbi",
+    "href": "frog-data-availability.html#what-is-sra-and-how-does-it-relate-to-ncbi",
     "title": "Frog Data Availability",
-    "section": "2 Genome Resources",
-    "text": "2 Genome Resources\n\n\n\nResource\nLink\nNotes\nYear\n\n\n\n\nOld genome assembly\nNCBI link\nPaper\n2023\n\n\nNew Genome assembly\nAdd link\nAdd assembly version, accession, or source\n2026\n\n\nGenome FASTA\nAdd link\nAdd file name and date downloaded\n\n\n\nGene annotation\nAdd link\nAdd GTF/GFF source and version\n\n\n\nTranscriptome\nAdd link\nOptional",
+    "section": "2 What is SRA, and how does it relate to NCBI?",
+    "text": "2 What is SRA, and how does it relate to NCBI?\nNCBI (National Center for Biotechnology Information) is a US government database that stores biological data — genome sequences, gene records, publications, and more. It is the main public archive for genomics data.\nSRA (Sequence Read Archive) is the part of NCBI that specifically stores raw sequencing reads — the FASTQ files that come off a sequencer. When a paper publishes RNA-seq data, the raw reads are usually deposited in SRA, and each dataset is given a unique accession number that starts with SRA, SRP, SRR, or PRJNA.\nTo download data from SRA you use a tool called sra-tools (specifically the fasterq-dump command), which converts SRA format back into FASTQ files.\nGEO (Gene Expression Omnibus) is a related NCBI database that stores processed expression data — count tables, normalized values, and metadata. GEO records often link back to the raw SRA reads.\nIn practice: if you see a paper say “data available at GEO accession GSE######”, the raw reads for that study are usually also in SRA under a linked accession.",
     "crumbs": [
       "Frog Data Availability"
     ]
   },
   {
-    "objectID": "frog-data-availability.html#rna-seq-reads",
-    "href": "frog-data-availability.html#rna-seq-reads",
+    "objectID": "frog-data-availability.html#what-youll-most-likely-need",
+    "href": "frog-data-availability.html#what-youll-most-likely-need",
     "title": "Frog Data Availability",
-    "section": "3 RNA-seq Reads",
-    "text": "3 RNA-seq Reads\n\n\n\n\n\n\n\n\n\nDataset\nRepository\nAccession or link\nNotes\n\n\n\n\nRNA-seq reads\nNCBI SRA\nAdd link\nAdd tissue, treatment, or project notes\n\n\nRNA-seq reads\nGEO\nAdd link\nOptional\n\n\nRNA-seq reads\nENA\nAdd link\nOptional",
+    "section": "3 What you’ll most likely need",
+    "text": "3 What you’ll most likely need\nThese are the files you need to run the nf-core/rnaseq pipeline and the downstream DESeq2 analysis.\n\n3.1 RNA-seq reads (flutamide experiment)\nRaw paired-end FASTQ files from the flutamide treatment experiment (Kate’s thesis).\nOn Unity:\n/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nYale server (external):\nhttp://fcb.ycga.yale.edu:3010/fTvjY60iTRcfef5EWgR3HlRd5pz98l0/sample_dir_000020575/\n\n\n3.2 Genome assembly (EGAPx)\nThe S. parvus genome assembly annotated with EGAPx. Contains FASTA, GTF, and GFF files.\nOn Unity:\n/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult\nKey files in that directory:\n\n\n\nFile\nWhat it is\n\n\n\n\ncomplete.genomic.fna\nGenome FASTA (reference sequence)\n\n\ncomplete.genomic.gtf\nGene annotation in GTF format\n\n\ncomplete.genomic.gff\nGene annotation in GFF format",
     "crumbs": [
       "Frog Data Availability"
     ]
   },
   {
-    "objectID": "frog-data-availability.html#sample-metadata",
-    "href": "frog-data-availability.html#sample-metadata",
+    "objectID": "frog-data-availability.html#some-other-useful-data",
+    "href": "frog-data-availability.html#some-other-useful-data",
     "title": "Frog Data Availability",
-    "section": "4 Sample Metadata",
-    "text": "4 Sample Metadata\n\n\n\n\n\n\n\n\nFile or record\nLink\nNotes\n\n\n\n\nSample metadata\nAdd link\nSample IDs, tissue, sex, treatment, collection details\n\n\nExperimental design\nAdd link\nGroup comparisons or design notes",
-    "crumbs": [
-      "Frog Data Availability"
-    ]
-  },
-  {
-    "objectID": "frog-data-availability.html#other-useful-data",
-    "href": "frog-data-availability.html#other-useful-data",
-    "title": "Frog Data Availability",
-    "section": "5 Other Useful Data",
-    "text": "5 Other Useful Data\n\n\n\n\n\n\n\n\nResource\nLink\nNotes\n\n\n\n\nRelated publication\nAdd link\nPaper, preprint, or thesis\n\n\nSupplementary files\nAdd link\nTables, scripts, or additional references\n\n\nLab notes\nAdd link\nInternal notes if appropriate",
+    "section": "4 Some other useful data",
+    "text": "4 Some other useful data\nThese files are not needed for the main RNA-seq pipeline but are useful context for the project.\n\n4.1 HiFi PacBio reads (used to build the EGAPx assembly)\nOn Unity:\n/work/pi_lmangiamele_smith_edu/yale_hifi_03_26\nYale server (external):\nhttp://fcb.ycga.yale.edu:3010/Bcs7fnShP4sYdsw2ZmkH4Fxpcn83c60/20260313_lmangiamele_r84189_20260310_214511/\n\n\n4.2 Old CLR PacBio reads\nOn Unity:\n/work/pi_lmangiamele_smith_edu/pacbio_parvus\n\n\n4.3 Public genome resources\n\n\n\nResource\nLink\nNotes\nYear\n\n\n\n\nOld genome assembly\nGCA_951230385.1\nPaper\n2023\n\n\nNew genome assembly\nAdd link\nAdd accession once deposited\n2026",
     "crumbs": [
       "Frog Data Availability"
     ]
@@ -323,8 +333,8 @@
     "objectID": "frog-data-availability.html#download-notes",
     "href": "frog-data-availability.html#download-notes",
     "title": "Frog Data Availability",
-    "section": "6 Download Notes",
-    "text": "6 Download Notes\nWhen adding data links, record:\n\nRepository name\nAccession number\nDate accessed\nFile names downloaded\nGenome or annotation version\nAny filtering or processing already performed\n\nThis information makes the analysis easier to reproduce later.",
+    "section": "5 Download notes",
+    "text": "5 Download notes\nWhenever you use a dataset, record:\n\nWhere you got it (Unity path or external URL)\nDate accessed\nFile names downloaded\nGenome or annotation version\n\nThis information makes the analysis reproducible and saves time if you need to re-run anything later.",
     "crumbs": [
       "Frog Data Availability"
     ]
@@ -404,7 +414,7 @@
     "href": "index.html",
     "title": "Mangiamele Lab RNA-seq Resource",
     "section": "",
-    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
+    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to run RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible bioinformatics pipelines. The examples focus on nf-core/rnaseq, but the same approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is written for people using Unity (the UMass/Five Colleges computing cluster). It assumes you are on a Mac or Linux machine. Windows users can follow along but some terminal steps may look slightly different.",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
@@ -414,27 +424,47 @@
     "href": "index.html#about-this-resource",
     "title": "Mangiamele Lab RNA-seq Resource",
     "section": "",
-    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on nf-core/rnaseq, but the same general approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more information about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.",
+    "text": "Illustration of the frog Staurois parvus.\n\n\nThis website is a bioinformatics resource for Mangiamele Lab members learning to run RNA-seq analysis for the frog Staurois parvus.\nThe workflow uses nf-core, a community collection of standardized, reproducible bioinformatics pipelines. The examples focus on nf-core/rnaseq, but the same approach applies to other nf-core workflows.\nVisit the Mangiamele Lab website for more about the lab and its research.\nMaintained by Katarina Flöer.\n\n\n\n\n\n\nNote\n\n\n\nThis tutorial is written for people using Unity (the UMass/Five Colleges computing cluster). It assumes you are on a Mac or Linux machine. Windows users can follow along but some terminal steps may look slightly different.",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
   },
   {
-    "objectID": "index.html#tutorial-path-needs-updating",
-    "href": "index.html#tutorial-path-needs-updating",
+    "objectID": "index.html#what-you-will-learn",
+    "href": "index.html#what-you-will-learn",
     "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "2 Tutorial path (needs updating)",
-    "text": "2 Tutorial path (needs updating)\n\nSet up your environment\nRun the pipeline\nUnderstand the results\nFix common issues",
+    "section": "2 What you will learn",
+    "text": "2 What you will learn\nBy the end of this tutorial you will be able to:\n\nConnect to the Unity computing cluster and navigate it from a terminal\nSet up a scratch workspace for running large analyses\nSubmit an RNA-seq pipeline job with nf-core and SLURM\nInterpret the quality-control reports that come out of the pipeline\nUnderstand what the output files contain and what to do with them next",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
   },
   {
-    "objectID": "index.html#prerequisites",
-    "href": "index.html#prerequisites",
+    "objectID": "index.html#how-to-use-this-site",
+    "href": "index.html#how-to-use-this-site",
     "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "3 Prerequisites",
-    "text": "3 Prerequisites\nYou will need:\n\nLisa to register your email with Unity\nA laptop with a terminal",
+    "section": "3 How to use this site",
+    "text": "3 How to use this site\nFollow the pages in order using the sidebar on the left. Each page builds on the one before it.\nIf you already know a topic, you can skip ahead. But if something in a later section does not make sense, it is worth going back to an earlier page — most concepts build on each other.\n\n\n\n\n\n\nTip\n\n\n\nThroughout the tutorial you will see the username kfloer_smith_edu in example code. Replace it with your own Unity username everywhere you see it. If you are not sure what your username is, run whoami after logging in to Unity.",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "index.html#tutorial-path",
+    "href": "index.html#tutorial-path",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "4 Tutorial path",
+    "text": "4 Tutorial path\n\n\n\nStep\nPage\nWhat you will do\n\n\n\n\n1\nWhat is RNA-seq?\nLearn what the pipeline does and why\n\n\n2\nFile types and storage\nUnderstand the files you will work with\n\n\n3\nFrog data availability\nFind the lab’s data on Unity\n\n\n4\nUsing the terminal\nLearn the commands you will use most\n\n\n5\nConnecting to Unity\nLog in to the cluster\n\n\n6\nUsing Unity\nLearn how Unity is organized\n\n\n7\nSet up your workspace\nCreate a scratch directory for the pipeline\n\n\n8\nRun the pipeline\nSubmit the nf-core/rnaseq job\n\n\n9\nInterpret results\nRead the quality reports and count tables\n\n\n10\nDifferential expression\nRun the DESeq2 analysis in R\n\n\n11\nTroubleshooting\nFix common problems",
+    "crumbs": [
+      "Mangiamele Lab RNA-seq Resource"
+    ]
+  },
+  {
+    "objectID": "index.html#what-you-need-before-you-start",
+    "href": "index.html#what-you-need-before-you-start",
+    "title": "Mangiamele Lab RNA-seq Resource",
+    "section": "5 What you need before you start",
+    "text": "5 What you need before you start\n\nA Unity account (ask Lisa to register your email)\nA laptop with a terminal app (Terminal on Mac, Windows Terminal on Windows)\nBasic comfort reading and typing in a terminal — the Using the terminal page covers everything you need\n\nYou do not need programming experience to follow this tutorial. All commands are written out step by step.",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
@@ -443,8 +473,8 @@
     "objectID": "index.html#citation-and-credit",
     "href": "index.html#citation-and-credit",
     "title": "Mangiamele Lab RNA-seq Resource",
-    "section": "4 Citation and credit",
-    "text": "4 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow.",
+    "section": "6 Citation and credit",
+    "text": "6 Citation and credit\nThis tutorial uses community tools from nf-core and Nextflow.",
     "crumbs": [
       "Mangiamele Lab RNA-seq Resource"
     ]
@@ -734,121 +764,151 @@
   {
     "objectID": "using-terminal.html",
     "href": "using-terminal.html",
-    "title": "Using Terminal",
+    "title": "Using the Terminal",
     "section": "",
-    "text": "RNA-seq analysis often happens on remote computers and high-performance computing clusters. The terminal lets you move around folders, create files, transfer data, and run analysis commands.\nYou do not need to memorize every command. The goal is to understand the basic pattern:\ncommand options input",
+    "text": "RNA-seq analysis happens on a remote computing cluster (Unity). The cluster does not have a graphical desktop — you interact with it entirely by typing commands into a terminal window.\nThis page covers the commands you will use most often. You do not need to memorize them. Refer back here whenever you need a reminder.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
     "objectID": "using-terminal.html#why-use-the-terminal",
     "href": "using-terminal.html#why-use-the-terminal",
-    "title": "Using Terminal",
+    "title": "Using the Terminal",
     "section": "",
-    "text": "RNA-seq analysis often happens on remote computers and high-performance computing clusters. The terminal lets you move around folders, create files, transfer data, and run analysis commands.\nYou do not need to memorize every command. The goal is to understand the basic pattern:\ncommand options input",
+    "text": "RNA-seq analysis happens on a remote computing cluster (Unity). The cluster does not have a graphical desktop — you interact with it entirely by typing commands into a terminal window.\nThis page covers the commands you will use most often. You do not need to memorize them. Refer back here whenever you need a reminder.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
     "objectID": "using-terminal.html#open-a-terminal",
     "href": "using-terminal.html#open-a-terminal",
-    "title": "Using Terminal",
+    "title": "Using the Terminal",
     "section": "2 Open a terminal",
-    "text": "2 Open a terminal\nOn macOS, open Terminal.\nOn Windows, open Windows Terminal, PowerShell, or another SSH-compatible terminal.\nOn Linux, open your terminal application.",
+    "text": "2 Open a terminal\nOn macOS: Open the Terminal app. You can find it in Applications → Utilities, or search for it with Spotlight (⌘ + Space, type “Terminal”).\nOn Windows: Open Windows Terminal, PowerShell, or install Git Bash.\nOn Linux: Open your terminal application.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#understanding-file-paths",
+    "href": "using-terminal.html#understanding-file-paths",
+    "title": "Using the Terminal",
+    "section": "3 Understanding file paths",
+    "text": "3 Understanding file paths\nA path describes where a file or folder is located. There are two types:\nAbsolute path — starts from the very top of the filesystem with /. It works the same no matter where you currently are.\n/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nRelative path — starts from wherever you currently are. A . means “here” and .. means “one folder up”.\n../results/multiqc_report.html\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, use absolute paths. They are harder to get wrong because they always point to the same place.",
+    "crumbs": [
+      "Using the Terminal"
     ]
   },
   {
     "objectID": "using-terminal.html#where-am-i",
     "href": "using-terminal.html#where-am-i",
-    "title": "Using Terminal",
-    "section": "3 Where am I?",
-    "text": "3 Where am I?\nPrint your current working directory:\npwd\nExample output:\n/Users/katefloer/Documents/RNAseq",
+    "title": "Using the Terminal",
+    "section": "4 Where am I?",
+    "text": "4 Where am I?\nPrint your current working directory:\npwd\nExample output:\n/home/kfloer_smith_edu",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
     "objectID": "using-terminal.html#list-files",
     "href": "using-terminal.html#list-files",
-    "title": "Using Terminal",
-    "section": "4 List files",
-    "text": "4 List files\nList files in the current directory:\nls\nShow more information, including file sizes:\nls -lh\nExample output:\n-rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv\ndrwxr-xr-x  4 user  group   128B Jun  8 results\n\n\n\n\n\n\nNote\n\n\n\nThe columns in ls -lh output have specific meanings. In -rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv, the first column shows file permissions. -rw-r--r-- means this is a regular file. The owner can read and write it (rw-), the group can read it (r--), and everyone else can read it (r--). A directory usually starts with d, such as drwxr-xr-x. The 1 is the number of links to the file, user is the owner, group is the group, 2.1K is the file size, Jun 8 is the last modified date, and samplesheet.csv is the file name.",
+    "title": "Using the Terminal",
+    "section": "5 List files",
+    "text": "5 List files\nList files in the current directory:\nls\nShow more information, including file sizes:\nls -lh\nExample output:\ndrwxr-xr-x  2 kfloer_smith_edu users  4.0K Jun  8 results/\n-rw-r--r--  1 kfloer_smith_edu users  1.2K Jun  8 samplesheet.csv\nThe columns show: permissions, number of links, owner, group, size, date modified, name. Entries starting with d are directories; entries starting with - are files.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
     "objectID": "using-terminal.html#change-directories",
     "href": "using-terminal.html#change-directories",
-    "title": "Using Terminal",
-    "section": "5 Change directories",
-    "text": "5 Change directories\nMove into a folder:\ncd results\nMove up one folder:\ncd ..\nMove to your home directory:\ncd",
+    "title": "Using the Terminal",
+    "section": "6 Change directories",
+    "text": "6 Change directories\nMove into a folder:\ncd results\nMove up one folder:\ncd ..\nMove to your home directory (the shortcut ~ always means your home):\ncd ~\nMove to an absolute path:\ncd /work/pi_lmangiamele_smith_edu",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
     "objectID": "using-terminal.html#make-a-new-directory",
     "href": "using-terminal.html#make-a-new-directory",
-    "title": "Using Terminal",
-    "section": "6 Make a new directory",
-    "text": "6 Make a new directory\nCreate a folder:\nmkdir nf-core-demo\nCreate a nested folder path:\nmkdir -p projects/nf-core-demo/results",
+    "title": "Using the Terminal",
+    "section": "7 Make a new directory",
+    "text": "7 Make a new directory\nCreate a folder:\nmkdir job-logs\nCreate a nested folder path all at once (the -p flag creates any missing parent folders):\nmkdir -p ~/rnaseq_nf_core/job-logs",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
-    "objectID": "using-terminal.html#move-or-rename-files",
-    "href": "using-terminal.html#move-or-rename-files",
-    "title": "Using Terminal",
-    "section": "7 Move or rename files",
-    "text": "7 Move or rename files\nMove a file into a folder:\nmv samplesheet.csv nf-core-demo/\nRename a file:\nmv old_name.csv new_name.csv",
+    "objectID": "using-terminal.html#create-and-edit-a-text-file-with-nano",
+    "href": "using-terminal.html#create-and-edit-a-text-file-with-nano",
+    "title": "Using the Terminal",
+    "section": "8 Create and edit a text file with nano",
+    "text": "8 Create and edit a text file with nano\nnano is a simple terminal text editor. You will use it to write job scripts on Unity.\nOpen a new file (or open an existing one):\nnano my-script.sh\nThis opens the file inside the terminal. You can type normally. At the bottom of the screen you will see shortcuts:\n^O  Write Out (save)       ^X  Exit\n^K  Cut line               ^U  Paste\nThe ^ symbol means Ctrl. So ^O means Ctrl + O.\nTo save: press Ctrl + O, then press Enter to confirm the filename.\nTo exit: press Ctrl + X.\n\n\n\n\n\n\nTip\n\n\n\nIf you accidentally start nano and want to leave without saving, press Ctrl + X and then type N when asked if you want to save.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
-    "objectID": "using-terminal.html#look-at-text-files",
-    "href": "using-terminal.html#look-at-text-files",
-    "title": "Using Terminal",
-    "section": "8 Look at text files",
-    "text": "8 Look at text files\nPrint a whole file to the terminal:\ncat samplesheet.csv\nShow the first lines of a file:\nhead samplesheet.csv\nShow the last lines of a file:\ntail samplesheet.csv\nFor large log files, tail is often more useful than cat.",
+    "objectID": "using-terminal.html#look-at-text-files-without-editing",
+    "href": "using-terminal.html#look-at-text-files-without-editing",
+    "title": "Using the Terminal",
+    "section": "9 Look at text files without editing",
+    "text": "9 Look at text files without editing\nPrint a whole file to the terminal:\ncat samplesheet.csv\nShow just the first 10 lines of a file:\nhead samplesheet.csv\nShow just the last 10 lines:\ntail samplesheet.csv\nWatch a file update in real time (useful for watching log files as a job runs):\ntail -f job-logs/nfcore-rnaseq-test.12345.out\nPress Ctrl + C to stop watching.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
-    "objectID": "using-terminal.html#copy-files-with-scp",
-    "href": "using-terminal.html#copy-files-with-scp",
-    "title": "Using Terminal",
-    "section": "9 Copy files with scp",
-    "text": "9 Copy files with scp\nscp copies files between your personal computer and a remote server.\nCopy a file from your computer to Unity:\nscp samplesheet.csv your_username@unity.rc.umass.edu:/path/to/destination/\nCopy a file from Unity to your computer:\nscp your_username@unity.rc.umass.edu:/path/to/file.txt .\nThe final . means “copy the file here, into my current directory.”\n\n\n\n\n\n\nNote\n\n\n\nReplace your_username and the file paths with your own username and locations.",
+    "objectID": "using-terminal.html#move-rename-and-copy-files",
+    "href": "using-terminal.html#move-rename-and-copy-files",
+    "title": "Using the Terminal",
+    "section": "10 Move, rename, and copy files",
+    "text": "10 Move, rename, and copy files\nMove a file into a folder:\nmv samplesheet.csv nf-core-demo/\nRename a file:\nmv old_name.csv new_name.csv\nCopy a file:\ncp samplesheet.csv samplesheet_backup.csv\nCopy an entire folder and everything inside it:\ncp -r results/ results_backup/",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
-    "objectID": "using-terminal.html#common-patterns",
-    "href": "using-terminal.html#common-patterns",
-    "title": "Using Terminal",
-    "section": "10 Common patterns",
-    "text": "10 Common patterns\n\n\n\nGoal\nCommand\n\n\n\n\nSee where you are\npwd\n\n\nList files\nls\n\n\nList files with sizes\nls -lh\n\n\nMove into a folder\ncd folder_name\n\n\nMove up one folder\ncd ..\n\n\nCreate a folder\nmkdir folder_name\n\n\nMove or rename files\nmv old new\n\n\nPrint a file\ncat file.txt\n\n\nPreview the start of a file\nhead file.txt\n\n\nPreview the end of a file\ntail file.txt\n\n\nCopy files to/from a server\nscp source destination",
+    "objectID": "using-terminal.html#check-disk-usage",
+    "href": "using-terminal.html#check-disk-usage",
+    "title": "Using the Terminal",
+    "section": "11 Check disk usage",
+    "text": "11 Check disk usage\nSee how much space a file or folder is using:\ndu -sh results/\nSee how much space is left on the filesystem you are currently on:\ndf -h .\nOn Unity, you will use this to make sure you have not filled your scratch workspace.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#copy-files-between-unity-and-your-laptop",
+    "href": "using-terminal.html#copy-files-between-unity-and-your-laptop",
+    "title": "Using the Terminal",
+    "section": "12 Copy files between Unity and your laptop",
+    "text": "12 Copy files between Unity and your laptop\nscp copies files between your laptop and Unity. Run these commands from a terminal on your laptop (not from Unity).\nCopy a file from Unity to your current folder on your laptop:\nscp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .\nCopy a whole folder from Unity to your laptop:\nscp -r kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .\nCopy a file from your laptop to Unity:\nscp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/\nThe . at the end means “copy it here, into my current directory.”\n\n\n\n\n\n\nNote\n\n\n\nReplace kfloer_smith_edu with your own Unity username, and replace the paths with your actual paths.",
+    "crumbs": [
+      "Using the Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#common-commands-at-a-glance",
+    "href": "using-terminal.html#common-commands-at-a-glance",
+    "title": "Using the Terminal",
+    "section": "13 Common commands at a glance",
+    "text": "13 Common commands at a glance\n\n\n\nGoal\nCommand\n\n\n\n\nSee where you are\npwd\n\n\nList files\nls\n\n\nList files with sizes\nls -lh\n\n\nMove into a folder\ncd folder_name\n\n\nMove up one folder\ncd ..\n\n\nGo to home directory\ncd ~\n\n\nCreate a folder\nmkdir folder_name\n\n\nCreate nested folders\nmkdir -p parent/child/grandchild\n\n\nCreate/edit a file\nnano file.txt\n\n\nPrint a file\ncat file.txt\n\n\nPreview the start\nhead file.txt\n\n\nPreview the end\ntail file.txt\n\n\nWatch a file live\ntail -f file.txt\n\n\nMove or rename\nmv old new\n\n\nCopy a file\ncp source destination\n\n\nCopy a folder\ncp -r source/ destination/\n\n\nFolder size\ndu -sh folder/\n\n\nDisk space left\ndf -h .\n\n\nCopy to/from server\nscp source destination",
+    "crumbs": [
+      "Using the Terminal"
     ]
   },
   {
     "objectID": "using-terminal.html#tips-for-beginners",
     "href": "using-terminal.html#tips-for-beginners",
-    "title": "Using Terminal",
-    "section": "11 Tips for beginners",
-    "text": "11 Tips for beginners\n\nFile and folder names are case-sensitive on many systems.\nSpaces in file names can make terminal work harder.\nPress the Tab key to autocomplete file and folder names.\nUse the up arrow to repeat a previous command.\nRead error messages slowly. They often tell you what went wrong.",
+    "title": "Using the Terminal",
+    "section": "14 Tips for beginners",
+    "text": "14 Tips for beginners\n\nFile and folder names are case-sensitive. Results and results are different.\nAvoid spaces in file names — use underscores _ or hyphens - instead.\nPress Tab to autocomplete a file or folder name. Press it twice to see all options.\nUse the ↑ arrow key to scroll through previous commands.\nRead error messages carefully — they usually tell you exactly what went wrong.\nIf a command seems to hang, press Ctrl + C to cancel it.",
     "crumbs": [
-      "Using Terminal"
+      "Using the Terminal"
     ]
   },
   {
@@ -856,47 +916,77 @@
     "href": "results.html",
     "title": "Interpret Results",
     "section": "",
-    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
+    "text": "The first thing to check is whether the pipeline actually finished without errors.\nIn your output log file, a successful run ends with:\n-[nf-core/rnaseq] Pipeline completed successfully -\nIf you see Pipeline completed with errors or the log cuts off mid-run, something went wrong. See the Troubleshooting page.",
     "crumbs": [
       "Interpret Results"
     ]
   },
   {
-    "objectID": "results.html#start-with-multiqc",
-    "href": "results.html#start-with-multiqc",
+    "objectID": "results.html#did-the-pipeline-succeed",
+    "href": "results.html#did-the-pipeline-succeed",
     "title": "Interpret Results",
     "section": "",
-    "text": "Open the MultiQC report:\nopen results/rnaseq/multiqc/star_salmon/multiqc_report.html\nOn Linux:\nxdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html",
+    "text": "The first thing to check is whether the pipeline actually finished without errors.\nIn your output log file, a successful run ends with:\n-[nf-core/rnaseq] Pipeline completed successfully -\nIf you see Pipeline completed with errors or the log cuts off mid-run, something went wrong. See the Troubleshooting page.",
     "crumbs": [
       "Interpret Results"
     ]
   },
   {
-    "objectID": "results.html#what-to-check-first",
-    "href": "results.html#what-to-check-first",
+    "objectID": "results.html#what-output-folders-were-created",
+    "href": "results.html#what-output-folders-were-created",
     "title": "Interpret Results",
-    "section": "2 What to check first",
-    "text": "2 What to check first\nFocus on:\n\nSequencing quality\nAdapter content\nAlignment rate\nDuplication levels\nGene body coverage\nSample outliers",
+    "section": "2 What output folders were created?",
+    "text": "2 What output folders were created?\nAfter a successful run, your results directory will contain:\n\n\n\n\n\n\n\nFolder\nWhat it contains\n\n\n\n\nfastqc/\nPer-sample read quality reports (before and after trimming)\n\n\ntrimgalore/\nTrimming statistics and reports\n\n\nstar_salmon/\nAlignment files (BAM), transcript quantification (Salmon), and count tables\n\n\nmultiqc/\nA single HTML report summarizing quality across all samples\n\n\npipeline_info/\nSoftware versions, parameters used, execution report\n\n\n\nThe most important files for you are:\n\nmultiqc/star_salmon/multiqc_report.html — your first stop for QC\nstar_salmon/salmon.merged.gene_counts.tsv — the count table you will use for DESeq2",
     "crumbs": [
       "Interpret Results"
     ]
   },
   {
-    "objectID": "results.html#common-output-folders",
-    "href": "results.html#common-output-folders",
+    "objectID": "results.html#get-the-files-to-your-laptop",
+    "href": "results.html#get-the-files-to-your-laptop",
     "title": "Interpret Results",
-    "section": "3 Common output folders",
-    "text": "3 Common output folders\n\n\n\n\n\n\n\nFolder\nWhat it contains\n\n\n\n\nfastqc/\nPer-sample read quality reports\n\n\nmultiqc/\nAggregated quality-control report\n\n\nstar_salmon/\nAlignment and transcript quantification outputs\n\n\npipeline_info/\nCommands, software versions, reports, and provenance",
+    "section": "3 Get the files to your laptop",
+    "text": "3 Get the files to your laptop\nThe MultiQC report is an HTML file that you open in a browser. Copy it from Unity to your laptop using scp. Run this command from a terminal on your laptop (not from Unity):\nscp kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/multiqc/star_salmon/multiqc_report.html ~/Desktop/\nThen open it by double-clicking it, or from the terminal:\nopen ~/Desktop/multiqc_report.html\nTo copy the entire results folder (for archiving):\nscp -r kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/ ~/Desktop/rnaseq_results/",
     "crumbs": [
       "Interpret Results"
     ]
   },
   {
-    "objectID": "results.html#save-provenance",
-    "href": "results.html#save-provenance",
+    "objectID": "results.html#reading-the-multiqc-report",
+    "href": "results.html#reading-the-multiqc-report",
     "title": "Interpret Results",
-    "section": "4 Save provenance",
-    "text": "4 Save provenance\nArchive these files with your analysis:\n\npipeline_info/software_versions.yml\npipeline_info/execution_report.html\npipeline_info/execution_timeline.html\npipeline_info/params_*.json\n\n\n\n\n\n\n\nTip\n\n\n\nThe pipeline_info directory is one of the most useful places to look when you need to reproduce or debug a run later.",
+    "section": "4 Reading the MultiQC report",
+    "text": "4 Reading the MultiQC report\nMultiQC combines results from many tools into one scrollable HTML page. Here is what to look at and what to look for.\n\n4.1 General statistics table\nThis is at the top of the report. It gives a quick overview of every sample. Columns to check:\n\n\n\n\n\n\n\n\nColumn\nWhat it means\nWhat to look for\n\n\n\n\n% Dups\nPercentage of duplicate reads\nUnder 50% is typical; very high duplication can indicate over-amplification\n\n\n% GC\nGC content of reads\nShould be similar across samples; big differences can indicate contamination\n\n\nM Reads\nMillions of reads per sample\nCheck that all samples have comparable read counts; a very low count is a flag\n\n\n\n\n\n4.2 FastQC — sequence quality\nLook at the Per Base Sequence Quality plot. This shows quality scores along the length of each read.\n\nQuality above 30 (the green zone) across most of the read is good\nA drop at the ends is normal — Illumina reads often drop in quality toward the 3’ end\nIf quality drops early (before position 50), check whether trimming helped\n\n\n\n4.3 FastQC — adapter content\nAdapter contamination means sequencing read through the end of a fragment and into the Illumina adapter sequence. nf-core/rnaseq trims adapters automatically with Trim Galore, so you should see minimal adapters in the post-trimming FastQC plot.\n\nThe post-trimming plot should show adapter content close to 0%\nIf it is still high after trimming, the adapter detection may have failed — check the library prep documentation\n\n\n\n4.4 STAR — alignment rate\nThe STAR section shows what percentage of reads mapped to the genome.\n\n\n\n\n\n\n\nAlignment rate\nInterpretation\n\n\n\n\n85–95%\nGood\n\n\n70–85%\nAcceptable — check for rRNA contamination or genome completeness\n\n\nBelow 70%\nInvestigate — possible wrong reference, contamination, or library prep issue\n\n\n\nFor S. parvus, alignment rates may be lower than for model organisms because the genome assembly is less complete. A rate in the 70–85% range is not unusual.\nAlso look at:\n\nUniquely mapped — reads that map to exactly one place in the genome (best for quantification)\nMulti-mapped — reads that map to more than one place (less useful; often from repetitive regions)\n\n\n\n4.5 Salmon — quantification\nSalmon uses the aligned reads to estimate transcript abundances. The Salmon section shows the percentage of reads assigned to genes (mapping rate).\n\nA Salmon mapping rate similar to the STAR alignment rate is expected\nIf Salmon’s rate is much lower than STAR’s, check whether the GTF matches the genome FASTA\n\n\n\n4.6 Gene body coverage (RSeQC)\nThis plot shows read coverage across the length of genes, from 5’ (left) to 3’ (right).\n\nA flat or slightly 5’-biased curve is ideal\nA strong 3’ bias suggests RNA degradation in the sample — poor RNA quality at time of extraction\nA strong 5’ bias is rarer and may indicate specific library prep issues\n\n\n\n4.7 Sample clustering and correlation\nMultiQC often shows a sample-to-sample correlation heatmap or PCA from DESeq2. Use this to check:\n\nDo biological replicates cluster together?\nDo samples from the same tissue or treatment group cluster together?\nIs there an obvious outlier sample?\n\nIf a sample looks very different from everything else, check its alignment rate, read count, and gene body coverage before including it in downstream analysis.",
+    "crumbs": [
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#understanding-the-count-table",
+    "href": "results.html#understanding-the-count-table",
+    "title": "Interpret Results",
+    "section": "5 Understanding the count table",
+    "text": "5 Understanding the count table\nThe key output for downstream analysis is:\nstar_salmon/salmon.merged.gene_counts.tsv\nThis is a tab-separated table where:\n\nEach row is a gene\nEach column is a sample\nEach cell contains the estimated count of reads for that gene in that sample\n\nThese counts are what you pass to DESeq2 (or another differential expression tool) to find genes that differ between conditions.\n\n\n\n\n\n\nNote\n\n\n\nThe counts are raw estimated counts, not normalized values. DESeq2 handles normalization internally. Do not normalize the counts yourself before running DESeq2.\n\n\nYou can preview the file on Unity:\nhead star_salmon/salmon.merged.gene_counts.tsv\nCopy it to your laptop for use in R:\n# Run on your laptop\nscp kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/star_salmon/salmon.merged.gene_counts.tsv ~/Desktop/",
+    "crumbs": [
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#save-provenance-files",
+    "href": "results.html#save-provenance-files",
+    "title": "Interpret Results",
+    "section": "6 Save provenance files",
+    "text": "6 Save provenance files\nBefore you clean up the workspace or move on, archive these files — they document exactly what was run and make the analysis reproducible:\n\npipeline_info/software_versions.yml — every tool version used\npipeline_info/execution_report.html — a visual timeline of all pipeline steps\npipeline_info/execution_timeline.html — timing information\npipeline_info/params_*.json — the exact parameters used\n\n# Copy the pipeline_info folder to lab storage\ncp -r results/pipeline_info/ /work/pi_lmangiamele_smith_edu/YOUR_PROJECT_NAME/pipeline_info/",
+    "crumbs": [
+      "Interpret Results"
+    ]
+  },
+  {
+    "objectID": "results.html#what-to-do-next",
+    "href": "results.html#what-to-do-next",
+    "title": "Interpret Results",
+    "section": "7 What to do next",
+    "text": "7 What to do next\nOnce you are satisfied with the quality of the run:\n\nCopy the count table (salmon.merged.gene_counts.tsv) and the tx2gene file to a safe location\nCopy the MultiQC report and pipeline_info folder for your records\nProceed to Differential Gene Expression Analysis to run the DESeq2 analysis in R",
     "crumbs": [
       "Interpret Results"
     ]
@@ -906,17 +996,27 @@
     "href": "using-unity.html",
     "title": "Using Unity",
     "section": "",
-    "text": "Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.\nFor RNA-seq, it is important to know the difference between:\n\nLogin nodes\nInteractive jobs\nCompute jobs\n\nUsing the right place keeps the cluster responsive for everyone and helps your own work run more reliably.",
+    "text": "Bookmark these links — you will use them regularly.\n\n\n\nResource\nLink\n\n\n\n\nScratch workspaces\nhttps://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nModule explorer (search available software)\nhttps://ood.unity.rc.umass.edu/pun/sys/module-explorer\n\n\nNode specifications\nhttps://docs.unityhpc.org/documentation/cluster_specs/nodes/",
     "crumbs": [
       "Using Unity"
     ]
   },
   {
-    "objectID": "using-unity.html#why-this-page-matters",
-    "href": "using-unity.html#why-this-page-matters",
+    "objectID": "using-unity.html#unity-resources",
+    "href": "using-unity.html#unity-resources",
     "title": "Using Unity",
     "section": "",
-    "text": "Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.\nFor RNA-seq, it is important to know the difference between:\n\nLogin nodes\nInteractive jobs\nCompute jobs\n\nUsing the right place keeps the cluster responsive for everyone and helps your own work run more reliably.",
+    "text": "Bookmark these links — you will use them regularly.\n\n\n\nResource\nLink\n\n\n\n\nScratch workspaces\nhttps://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nModule explorer (search available software)\nhttps://ood.unity.rc.umass.edu/pun/sys/module-explorer\n\n\nNode specifications\nhttps://docs.unityhpc.org/documentation/cluster_specs/nodes/",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#your-username",
+    "href": "using-unity.html#your-username",
+    "title": "Using Unity",
+    "section": "2 Your username",
+    "text": "2 Your username\nThroughout this tutorial you will see prompts and paths that contain kfloer_smith_edu. That is Kate’s Unity username. Replace it with your own Unity username everywhere you see it.\nFor example, if your Unity username is jsmith_smith_edu, then:\n/home/kfloer_smith_edu/          →   /home/jsmith_smith_edu/\n/scratch4/workspace/kfloer_smith_edu-demo/   →   /scratch4/workspace/jsmith_smith_edu-demo/\nIf you are not sure what your username is, run:\nwhoami",
     "crumbs": [
       "Using Unity"
     ]
@@ -925,8 +1025,8 @@
     "objectID": "using-unity.html#login-nodes",
     "href": "using-unity.html#login-nodes",
     "title": "Using Unity",
-    "section": "2 Login nodes",
-    "text": "2 Login nodes\nWhen you first connect to Unity with SSH, you land on a login node.\nYour prompt may look like this:\n(base) kfloer_smith_edu@login1:~$\nLogin nodes are for light work, such as:\n\nNavigating directories\nEditing small text files\nChecking file names\nSubmitting jobs\nLooking at small log files\n\nDo not run large RNA-seq pipelines directly on a login node.\n\n\n\n\n\n\nWarning\n\n\n\nIf a command will use lots of CPU, memory, or disk for more than a few seconds, it probably should not run on the login node.",
+    "section": "3 Login nodes",
+    "text": "3 Login nodes\nWhen you first connect to Unity with SSH, you land on a login node.\nYour prompt may look like this:\n(base) kfloer_smith_edu@login1:~$\nLogin nodes are for light work, such as:\n\nNavigating directories\nEditing small text files\nChecking file names\nSubmitting jobs\nLooking at small log files\n\nDo not run large RNA-seq pipelines directly on a login node.\n\n\n\n\n\n\nWarning\n\n\n\nIf a command will use lots of CPU, memory, or disk for more than a few seconds, it probably should not run on the login node.",
     "crumbs": [
       "Using Unity"
     ]
@@ -935,8 +1035,8 @@
     "objectID": "using-unity.html#interactive-jobs",
     "href": "using-unity.html#interactive-jobs",
     "title": "Using Unity",
-    "section": "3 Interactive jobs",
-    "text": "3 Interactive jobs\nAn interactive job gives you a temporary compute session where you can run commands directly.\nInteractive jobs are useful for:\n\nTesting commands\nRunning small demos\nDebugging a pipeline\nChecking that software loads correctly\nTrying a short nf-core test run\n\nIn an interactive job, you still type commands yourself, but the commands run on a compute node instead of the login node.\nAdd the exact Unity command for starting an interactive job here:\n# Add Unity interactive job command here\nExample prompt after starting an interactive job:\n(base) kfloer_smith_edu@compute-node:~$\n\n\n\n\n\n\nNote\n\n\n\nInteractive jobs are good for learning and testing. They are not always the best choice for long production runs.",
+    "section": "4 Interactive jobs",
+    "text": "4 Interactive jobs\nAn interactive job gives you a temporary compute session where you can run commands directly.\nInteractive jobs are useful for:\n\nTesting commands\nRunning small demos\nDebugging a pipeline\nChecking that software loads correctly\nTrying a short nf-core test run\n\nIn an interactive job, you still type commands yourself, but the commands run on a compute node instead of the login node.\nsrun --partition=cpu --cpus-per-task=4 --mem=16G --time=2:00:00 --pty bash\nExample prompt after starting an interactive job:\n(base) kfloer_smith_edu@gpu-node:~$\n\n\n\n\n\n\nNote\n\n\n\nInteractive jobs are good for learning and testing. They are not always the best choice for long production runs.",
     "crumbs": [
       "Using Unity"
     ]
@@ -945,8 +1045,8 @@
     "objectID": "using-unity.html#compute-jobs",
     "href": "using-unity.html#compute-jobs",
     "title": "Using Unity",
-    "section": "4 Compute jobs",
-    "text": "4 Compute jobs\nA compute job is a job submitted to the cluster scheduler. Instead of typing commands one by one, you write a job script and submit it.\nCompute jobs are useful for:\n\nFull RNA-seq pipeline runs\nLong analyses\nAnalyses that need many CPUs\nAnalyses that need lots of memory\nWork that should keep running after you log out\n\nA compute job usually includes:\n\nRequested time\nRequested CPUs\nRequested memory\nOutput log file names\nCommands to run\n\nAdd the exact Unity scheduler example here:\n# Add Unity batch job submission command here",
+    "section": "5 Compute jobs",
+    "text": "5 Compute jobs\nA compute job is a job submitted to the cluster scheduler. Instead of typing commands one by one, you write a job script and submit it.\nCompute jobs are useful for:\n\nFull RNA-seq pipeline runs\nLong analyses\nAnalyses that need many CPUs\nAnalyses that need lots of memory\nWork that should keep running after you log out\n\nSubmit a job script with sbatch:\nsbatch my-script.sh\nCheck on your jobs:\nsqueue --me",
     "crumbs": [
       "Using Unity"
     ]
@@ -955,8 +1055,28 @@
     "objectID": "using-unity.html#which-one-should-i-use",
     "href": "using-unity.html#which-one-should-i-use",
     "title": "Using Unity",
-    "section": "5 Which one should I use?",
-    "text": "5 Which one should I use?\n\n\n\nTask\nWhere to run it\n\n\n\n\nLog in to Unity\nLogin node\n\n\nLook at files with ls\nLogin node\n\n\nEdit samplesheet.csv\nLogin node\n\n\nCheck available workspaces with ws_list\nLogin node\n\n\nTest a small command\nInteractive job\n\n\nRun an nf-core test profile\nInteractive job or compute job\n\n\nRun a full RNA-seq pipeline\nCompute job\n\n\nRun a long analysis overnight\nCompute job",
+    "section": "6 Which one should I use?",
+    "text": "6 Which one should I use?\n\n\n\nTask\nWhere to run it\n\n\n\n\nLog in to Unity\nLogin node\n\n\nLook at files with ls\nLogin node\n\n\nEdit samplesheet.csv\nLogin node\n\n\nCheck available workspaces with ws_list\nLogin node\n\n\nTest a small command\nInteractive job\n\n\nRun an nf-core test profile\nInteractive job or compute job\n\n\nRun a full RNA-seq pipeline\nCompute job\n\n\nRun a long analysis overnight\nCompute job",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#project-architecture",
+    "href": "using-unity.html#project-architecture",
+    "title": "Using Unity",
+    "section": "7 Project architecture",
+    "text": "7 Project architecture\nBefore you start running analyses, think about where your files will live. Unity has three main storage areas with different purposes.\n\n\n\n\n\n\n\n\n\n\nLocation\nPath pattern\nPurpose\nSpace\nTemporary?\n\n\n\n\nHome directory\n/home/kfloer_smith_edu/\nScripts, config files, small notes\nLimited (~50 GB)\nNo\n\n\nLab shared storage\n/work/pi_lmangiamele_smith_edu/\nShared data, reference genomes, final results\nLarge\nNo\n\n\nScratch workspace\n/scratch4/workspace/kfloer_smith_edu-WORKSPACE/\nPipeline runs, intermediate files\nVery large\nYes — 30 days\n\n\n\nA typical project setup looks like this:\n/home/kfloer_smith_edu/\n  rnaseq_nf_core/\n    job-logs/          ← SLURM output and error files\n    scripts/           ← Your .sh job scripts\n\n/work/pi_lmangiamele_smith_edu/\n  03_26_flut_yale_rnaseq/     ← Raw FASTQ files (input data)\n  output_tadpole_plus_adult/  ← Reference genome and annotation\n  results_final/              ← Final results you want to keep\n\n/scratch4/workspace/kfloer_smith_edu-rnaseq/\n  samplesheets/        ← Input samplesheet CSV\n  results/             ← nf-core pipeline output (large, temporary)\n  .nextflow-apptainer-cache/  ← Container image cache\n\n\n\n\n\n\nWarning\n\n\n\nScratch workspaces expire after 30 days. Copy anything you want to keep (final results, count tables, MultiQC reports) to /work/pi_lmangiamele_smith_edu/ before the workspace expires.\n\n\nThe scratch workspace is where pipelines run because it is fast and has large capacity. Your home directory and the lab’s /work/ directory are for permanent storage.",
+    "crumbs": [
+      "Using Unity"
+    ]
+  },
+  {
+    "objectID": "using-unity.html#conda-and-mamba-environments",
+    "href": "using-unity.html#conda-and-mamba-environments",
+    "title": "Using Unity",
+    "section": "8 Conda and mamba environments",
+    "text": "8 Conda and mamba environments\nConda is a package manager that lets you install software and keep different versions of tools isolated from each other. Mamba is a faster drop-in replacement for conda — they use the same commands, mamba just solves environments more quickly.\nAn environment is a self-contained collection of software. You create one environment per project (or per tool) so that different tools with conflicting dependencies do not interfere with each other.\n\n8.1 Check what conda/mamba is available\nmodule load miniconda/latest\nconda --version\nOr if mamba is available:\nmamba --version\n\n\n8.2 Create a new environment\nmamba create -n rnaseq-env python=3.11\n\n\n8.3 Activate an environment\nconda activate rnaseq-env\nYour prompt will change to show the environment name:\n(rnaseq-env) kfloer_smith_edu@login1:~$\n\n\n8.4 Install packages into the active environment\nmamba install -c bioconda -c conda-forge fastqc multiqc\n\n\n8.5 Deactivate\nconda deactivate\n\n\n8.6 List your environments\nconda env list\n\n\n\n\n\n\nNote\n\n\n\nFor running nf-core pipelines on Unity, you generally do not need a conda environment — the pipeline manages its own software through Apptainer containers. Conda environments are more useful for tools you run separately, like R packages or custom Python scripts.",
     "crumbs": [
       "Using Unity"
     ]
@@ -965,8 +1085,8 @@
     "objectID": "using-unity.html#a-useful-mental-model",
     "href": "using-unity.html#a-useful-mental-model",
     "title": "Using Unity",
-    "section": "6 A useful mental model",
-    "text": "6 A useful mental model\nThink of the login node as the front desk. It helps you get organized and submit work.\nThink of interactive jobs as a temporary workbench. They are useful when you need to test something hands-on.\nThink of compute jobs as the production workspace. They are where long or heavy analyses should run.",
+    "section": "9 A useful mental model",
+    "text": "9 A useful mental model\nThink of the login node as the front desk. It helps you get organized and submit work.\nThink of interactive jobs as a temporary workbench. They are useful when you need to test something hands-on.\nThink of compute jobs as the production workspace. They are where long or heavy analyses should run.",
     "crumbs": [
       "Using Unity"
     ]
@@ -976,47 +1096,77 @@
     "href": "running.html",
     "title": "Run the Pipeline",
     "section": "",
-    "text": "On Unity, the pipeline runs as a SLURM batch job — not interactively in the terminal. You write a shell script with #SBATCH settings at the top, then submit it with sbatch.",
+    "text": "On Unity, the pipeline runs as a SLURM batch job — not interactively in the terminal. You write a shell script, submit it with sbatch, and SLURM runs it on a compute node while you can log out and do other things.",
     "crumbs": [
       "Run the Pipeline"
     ]
   },
   {
-    "objectID": "running.html#run-a-test-first",
-    "href": "running.html#run-a-test-first",
+    "objectID": "running.html#understanding-the-job-script",
+    "href": "running.html#understanding-the-job-script",
     "title": "Run the Pipeline",
-    "section": "1 Run a test first",
-    "text": "1 Run a test first\nBefore running with your own data, submit a test job to confirm Nextflow, Apptainer, and your workspace are all working.\nSave the following as nfcore-rnaseq-test.sh in your home directory. Update the --output, --error, --mail-user, and SCRATCH_RNASEQ lines to match your username and workspace path.\n#!/bin/bash\n#SBATCH --job-name=nfcore-rnaseq-test\n#SBATCH --partition=cpu\n#SBATCH --cpus-per-task=8\n#SBATCH --mem=48G\n#SBATCH --time=24:00:00\n#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.out\n#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.err\n#SBATCH --mail-type=BEGIN,END,FAIL\n#SBATCH --mail-user=you@email.edu\n\nset -euo pipefail\n\nSCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE\n\ncd \"$SCRATCH_RNASEQ\"\n\nmodule purge\nmodule load nextflow/26.04.1\nmodule load apptainer/latest\n\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/tmp\"\nmkdir -p \"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\n\nexport APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nexport APPTAINER_TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport NXF_APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\nexport NXF_OPTS='-Xms1g -Xmx4g'\nexport PROOT_NO_SECCOMP=1\n\n# Clean up any partial container pulls from a previous attempt\nfind \"$NXF_APPTAINER_CACHEDIR\" -type f -name \"*.pulling.*\" -delete || true\n\nnextflow run nf-core/rnaseq \\\n  -r 3.26.0 \\\n  -profile test,unity \\\n  --outdir test_results \\\n  -resume\nCreate the log directory and submit:\nmkdir -p ~/rnaseq_nf_core/job-logs\nsbatch nfcore-rnaseq-test.sh\nWatch progress with:\nsqueue --me\nAnd check the output log once it starts:\ntail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.*.out\n\n\n\n\n\n\nTip\n\n\n\nThe test profile uses a small built-in dataset and finishes in a few hours. If it completes without errors, your environment is ready.",
+    "section": "1 Understanding the job script",
+    "text": "1 Understanding the job script\nA job script is a plain text file. It has two parts:\n\n#SBATCH lines at the top — these tell SLURM how much time and memory to reserve, and where to write the output\nShell commands below — these are the actual commands that run\n\nHere is what each #SBATCH line means:\n#SBATCH --job-name=nfcore-rnaseq-test   # A label shown in the queue\n#SBATCH --partition=cpu                  # Use CPU nodes (not GPU)\n#SBATCH --cpus-per-task=8               # Reserve 8 CPU cores for the manager process\n#SBATCH --mem=48G                        # Reserve 48 GB of RAM\n#SBATCH --time=24:00:00                  # Maximum run time (hours:minutes:seconds)\n#SBATCH --output=.../%j.out             # File for standard output (%j = job ID)\n#SBATCH --error=.../%j.err              # File for error output\n#SBATCH --mail-type=BEGIN,END,FAIL      # Email you when the job starts, ends, or fails\n#SBATCH --mail-user=you@email.edu       # Your email address\n\n\n\n\n\n\nNote\n\n\n\nThe --cpus-per-task=8 and --mem=48G here are for the Nextflow manager process, not the individual pipeline steps. The pipeline itself will request additional resources for each step through SLURM automatically.",
     "crumbs": [
       "Run the Pipeline"
     ]
   },
   {
-    "objectID": "running.html#run-with-your-own-samples",
-    "href": "running.html#run-with-your-own-samples",
+    "objectID": "running.html#understanding-the-environment-setup",
+    "href": "running.html#understanding-the-environment-setup",
     "title": "Run the Pipeline",
-    "section": "2 Run with your own samples",
-    "text": "2 Run with your own samples\nFor a real run you need:\n\nA samplesheet CSV listing your samples\nA genome FASTA and GTF annotation file\nA params JSON file pointing to all of the above\n\n\n2.1 The samplesheet\nThe samplesheet must have these four columns:\nsample,fastq_1,fastq_2,strandedness\nC45-1B,/path/to/C45-1B_R1_001.fastq.gz,/path/to/C45-1B_R2_001.fastq.gz,reverse\nC45-1H,/path/to/C45-1H_R1_001.fastq.gz,/path/to/C45-1H_R2_001.fastq.gz,reverse\nSet strandedness to reverse, forward, or unstranded to match your library prep kit. If you are unsure, check the kit documentation or use the nf-core/rnaseq --salmon_quant_libtype A option to detect it automatically.\n\n\n2.2 The params file\nRather than putting all options on the command line, save them in a JSON file. Example params.json:\n{\n  \"input\": \"/path/to/samplesheet.csv\",\n  \"outdir\": \"/path/to/results\",\n  \"fasta\": \"/path/to/genome.fna\",\n  \"gtf\": \"/path/to/annotation.gtf\",\n  \"igenomes_ignore\": true,\n  \"aligner\": \"star_salmon\",\n  \"pseudo_aligner\": \"salmon\",\n  \"gtf_extra_attributes\": \"gene\",\n  \"featurecounts_group_type\": \"transcript_biotype\",\n  \"max_cpus\": 48,\n  \"max_memory\": \"256.GB\",\n  \"max_time\": \"72.h\"\n}\n\n\n2.3 The SLURM script\nSave the following as run-rnaseq.sh, filling in your paths:\n#!/bin/bash\n#SBATCH --job-name=nfcore-rnaseq\n#SBATCH --partition=cpu\n#SBATCH --cpus-per-task=8\n#SBATCH --mem=48G\n#SBATCH --time=3-00:00:00\n#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.out\n#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.err\n#SBATCH --mail-type=BEGIN,END,FAIL\n#SBATCH --mail-user=you@email.edu\n\nset -euo pipefail\n\nSCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE\nPARAMS=\"$SCRATCH_RNASEQ/params.json\"\n\ncd \"$SCRATCH_RNASEQ\"\n\nmodule purge\nmodule load nextflow/26.04.1\nmodule load apptainer/latest\n\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/tmp\"\n\nexport APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nexport APPTAINER_TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport PROOT_TMP_DIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport NXF_APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\nexport NXF_OPTS='-Xms1g -Xmx4g'\nexport PROOT_NO_SECCOMP=1\n\nnextflow run nf-core/rnaseq \\\n  -r 3.26.0 \\\n  -profile unity \\\n  -params-file \"$PARAMS\" \\\n  -resume\nSubmit:\nsbatch run-rnaseq.sh",
+    "section": "2 Understanding the environment setup",
+    "text": "2 Understanding the environment setup\nInside the script, several lines set up the environment before running Nextflow:\nmodule purge                         # Clear any previously loaded modules\nmodule load nextflow/26.04.1         # Load Nextflow\nmodule load apptainer/latest         # Load Apptainer (the container system)\nThe export lines tell Apptainer and Nextflow where to store container images and temporary files:\nexport APPTAINER_CACHEDIR=\"...\"      # Where Apptainer stores downloaded container images\nexport APPTAINER_TMPDIR=\"...\"        # Temporary files during container builds\nexport NXF_APPTAINER_CACHEDIR=\"...\"  # Where Nextflow looks for Apptainer images\nexport NXF_OPTS='-Xms1g -Xmx4g'    # Memory limits for the Nextflow Java process\nexport PROOT_NO_SECCOMP=1           # Required for Apptainer to work correctly on Unity\nThese variables must point to your scratch workspace so they do not fill up your home directory.",
     "crumbs": [
       "Run the Pipeline"
     ]
   },
   {
-    "objectID": "running.html#resume-an-interrupted-run",
-    "href": "running.html#resume-an-interrupted-run",
+    "objectID": "running.html#step-1-run-a-test-first",
+    "href": "running.html#step-1-run-a-test-first",
     "title": "Run the Pipeline",
-    "section": "3 Resume an interrupted run",
-    "text": "3 Resume an interrupted run\nAdd -resume to your nextflow run command (it is already included in the scripts above). Nextflow caches completed tasks, so resuming picks up from where it stopped without re-running finished steps.\n\n\n\n\n\n\nWarning\n\n\n\nOnly resume with the same params file and the same scratch directory. Changing the output path or key parameters will invalidate the cache.",
+    "section": "3 Step 1 — Run a test first",
+    "text": "3 Step 1 — Run a test first\nBefore running with your own data, run the built-in test profile. This uses a tiny dataset that comes with the pipeline and confirms everything is working correctly on Unity.\n\n3.1 Create the script\nOn Unity, open a new file with nano:\nnano ~/rnaseq_nf_core/nfcore-rnaseq-test.sh\nPaste in the following. Replace YOUR_USERNAME with your Unity username and YOUR_WORKSPACE with your scratch workspace name (from ws_list):\n#!/bin/bash\n#SBATCH --job-name=nfcore-rnaseq-test\n#SBATCH --partition=cpu\n#SBATCH --cpus-per-task=8\n#SBATCH --mem=48G\n#SBATCH --time=24:00:00\n#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.out\n#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.err\n#SBATCH --mail-type=BEGIN,END,FAIL\n#SBATCH --mail-user=you@email.edu\n\nset -euo pipefail\n\nSCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE\n\ncd \"$SCRATCH_RNASEQ\"\n\nmodule purge\nmodule load nextflow/26.04.1\nmodule load apptainer/latest\n\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/tmp\"\nmkdir -p \"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\n\nexport APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nexport APPTAINER_TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport NXF_APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\nexport NXF_OPTS='-Xms1g -Xmx4g'\nexport PROOT_NO_SECCOMP=1\n\n# Remove any partial container downloads from a previous attempt\nfind \"$NXF_APPTAINER_CACHEDIR\" -type f -name \"*.pulling.*\" -delete || true\n\nnextflow run nf-core/rnaseq \\\n  -r 3.26.0 \\\n  -profile test,unity \\\n  --outdir test_results \\\n  -resume\nSave and close nano: Ctrl + O, Enter, Ctrl + X.\n\n\n3.2 What the nextflow command means\nnextflow run nf-core/rnaseq \\   # Run the nf-core/rnaseq pipeline\n  -r 3.26.0 \\                   # Use version 3.26.0 (pin the version for reproducibility)\n  -profile test,unity \\          # Use the built-in test dataset AND Unity cluster settings\n  --outdir test_results \\        # Put all output in a folder called test_results\n  -resume                        # Resume from cached steps if re-run\n\n\n3.3 Submit and monitor the job\nsbatch ~/rnaseq_nf_core/nfcore-rnaseq-test.sh\nYou will see something like:\nSubmitted batch job 12345678\nNote the job ID — you will use it to check status or find your log files.\nCheck whether the job is running:\nsqueue --me\nWatch the log file update in real time (replace 12345678 with your job ID):\ntail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.12345678.out\nPress Ctrl + C to stop watching.\n\n\n\n\n\n\nTip\n\n\n\nThe test profile uses a small built-in dataset. It can take a few hours because the first run needs to download Apptainer container images. Subsequent runs are faster because the containers are cached.\n\n\n\n\n3.4 How to tell if the test succeeded\nA successful test run ends with something like:\n-[nf-core/rnaseq] Pipeline completed successfully -\nIf you see Pipeline completed with errors, check the .err log file for details.",
     "crumbs": [
       "Run the Pipeline"
     ]
   },
   {
-    "objectID": "running.html#record-the-exact-command",
-    "href": "running.html#record-the-exact-command",
+    "objectID": "running.html#step-2-run-with-your-own-samples",
+    "href": "running.html#step-2-run-with-your-own-samples",
     "title": "Run the Pipeline",
-    "section": "4 Record the exact command",
-    "text": "4 Record the exact command\nKeep a copy of your params file and SLURM script alongside your results. The pipeline_info/ folder in your output directory also records the exact parameters, software versions, and execution timeline automatically.",
+    "section": "4 Step 2 — Run with your own samples",
+    "text": "4 Step 2 — Run with your own samples\nFor a real run you need three things:\n\nA samplesheet CSV listing your samples and FASTQ file paths\nA genome FASTA and GTF annotation (see Frog Data Availability)\nA params JSON file that points to everything\n\n\n4.1 Create the samplesheet\nThe samplesheet is a CSV file with one row per sample. Create it with nano:\nnano /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv\nIt must have exactly these four columns:\nsample,fastq_1,fastq_2,strandedness\nC45-1B,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R2_001.fastq.gz,reverse\nC45-1H,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R2_001.fastq.gz,reverse\nEach column:\n\n\n\n\n\n\n\nColumn\nWhat to put\n\n\n\n\nsample\nA short name for the sample, no spaces\n\n\nfastq_1\nFull path to the R1 (forward) FASTQ file\n\n\nfastq_2\nFull path to the R2 (reverse) FASTQ file\n\n\nstrandedness\nreverse, forward, or unstranded (use reverse for most Illumina RNA kits)\n\n\n\n\n\n4.2 Create the params file\nRather than putting all options on the command line, save them in a JSON file. Create it with nano:\nnano /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/params.json\n{\n  \"input\": \"/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv\",\n  \"outdir\": \"/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/results\",\n  \"fasta\": \"/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.fna\",\n  \"gtf\": \"/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.gtf\",\n  \"igenomes_ignore\": true,\n  \"aligner\": \"star_salmon\",\n  \"pseudo_aligner\": \"salmon\",\n  \"gtf_extra_attributes\": \"gene\",\n  \"featurecounts_group_type\": \"transcript_biotype\",\n  \"max_cpus\": 48,\n  \"max_memory\": \"256.GB\",\n  \"max_time\": \"72.h\"\n}\nReplace YOUR_USERNAME and YOUR_WORKSPACE with your actual values.\n\n\n4.3 Create the SLURM script\nnano ~/rnaseq_nf_core/run-rnaseq.sh\n#!/bin/bash\n#SBATCH --job-name=nfcore-rnaseq\n#SBATCH --partition=cpu\n#SBATCH --cpus-per-task=8\n#SBATCH --mem=48G\n#SBATCH --time=3-00:00:00\n#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.out\n#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.err\n#SBATCH --mail-type=BEGIN,END,FAIL\n#SBATCH --mail-user=you@email.edu\n\nset -euo pipefail\n\nSCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE\nPARAMS=\"$SCRATCH_RNASEQ/params.json\"\n\ncd \"$SCRATCH_RNASEQ\"\n\nmodule purge\nmodule load nextflow/26.04.1\nmodule load apptainer/latest\n\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nmkdir -p \"$SCRATCH_RNASEQ/.apptainer/tmp\"\n\nexport APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.apptainer/build-cache\"\nexport APPTAINER_TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport PROOT_TMP_DIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport TMPDIR=\"$SCRATCH_RNASEQ/.apptainer/tmp\"\nexport NXF_APPTAINER_CACHEDIR=\"$SCRATCH_RNASEQ/.nextflow-apptainer-cache\"\nexport NXF_OPTS='-Xms1g -Xmx4g'\nexport PROOT_NO_SECCOMP=1\n\nnextflow run nf-core/rnaseq \\\n  -r 3.26.0 \\\n  -profile unity \\\n  -params-file \"$PARAMS\" \\\n  -resume\n\n\n4.4 Submit\nsbatch ~/rnaseq_nf_core/run-rnaseq.sh",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#checking-on-a-running-job",
+    "href": "running.html#checking-on-a-running-job",
+    "title": "Run the Pipeline",
+    "section": "5 Checking on a running job",
+    "text": "5 Checking on a running job\n\n\n\n\n\n\n\nTask\nCommand\n\n\n\n\nSee your jobs in the queue\nsqueue --me\n\n\nWatch the output log live\ntail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.out\n\n\nWatch the error log live\ntail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.err\n\n\nCancel a job\nscancel JOBID\n\n\n\nReplace JOBID with the number that sbatch printed when you submitted.",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#resuming-an-interrupted-run",
+    "href": "running.html#resuming-an-interrupted-run",
+    "title": "Run the Pipeline",
+    "section": "6 Resuming an interrupted run",
+    "text": "6 Resuming an interrupted run\nIf your job ran out of time or failed partway through, fix the problem and resubmit with the same script. The -resume flag is already included — Nextflow will skip steps that finished successfully and continue from where it stopped.\n\n\n\n\n\n\nWarning\n\n\n\nOnly resume using the same scratch directory and the same params file. Changing the output path or key parameters invalidates the cached steps and forces a full restart.",
+    "crumbs": [
+      "Run the Pipeline"
+    ]
+  },
+  {
+    "objectID": "running.html#record-keeping",
+    "href": "running.html#record-keeping",
+    "title": "Run the Pipeline",
+    "section": "7 Record keeping",
+    "text": "7 Record keeping\nKeep a copy of your params file and SLURM script alongside your final results. The pipeline_info/ folder inside the results directory also stores exact parameters, software versions, and execution logs automatically.",
     "crumbs": [
       "Run the Pipeline"
     ]
@@ -1026,57 +1176,37 @@
     "href": "troubleshooting.html",
     "title": "Troubleshooting",
     "section": "",
-    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
+    "text": "squeue --me\nIf the job is no longer listed, it has finished — either successfully or with an error.\n\n\n\ntail -n 50 ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.JOBID.out\nReplace JOBID with your actual job ID. The end of the output log usually shows what the pipeline was doing when it stopped.\n\n\n\ncat ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.JOBID.err\nThis file captures error messages from the pipeline. Look for lines starting with ERROR or WARN.\n\n\n\nWhen a pipeline step fails, Nextflow creates a detailed log inside the work/ directory. The output log will print something like:\nERROR ~ Error executing process 'NFCORE_RNASEQ:RNASEQ:...'\n...\nWork dir:\n  /scratch4/workspace/kfloer_smith_edu-demo/work/ab/c1234567890abc...\nNavigate to that directory and look at the log files:\ncd /scratch4/workspace/kfloer_smith_edu-demo/work/ab/c1234567890abc\nls -la\ncat .command.err\ncat .command.out",
     "crumbs": [
       "Troubleshooting"
     ]
   },
   {
-    "objectID": "troubleshooting.html#nextflow-is-not-found",
-    "href": "troubleshooting.html#nextflow-is-not-found",
+    "objectID": "troubleshooting.html#start-here-how-to-find-out-what-went-wrong",
+    "href": "troubleshooting.html#start-here-how-to-find-out-what-went-wrong",
     "title": "Troubleshooting",
     "section": "",
-    "text": "Check whether nextflow is on your PATH:\nwhich nextflow\nIf it is missing, add the install location to your shell profile.",
+    "text": "squeue --me\nIf the job is no longer listed, it has finished — either successfully or with an error.\n\n\n\ntail -n 50 ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.JOBID.out\nReplace JOBID with your actual job ID. The end of the output log usually shows what the pipeline was doing when it stopped.\n\n\n\ncat ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.JOBID.err\nThis file captures error messages from the pipeline. Look for lines starting with ERROR or WARN.\n\n\n\nWhen a pipeline step fails, Nextflow creates a detailed log inside the work/ directory. The output log will print something like:\nERROR ~ Error executing process 'NFCORE_RNASEQ:RNASEQ:...'\n...\nWork dir:\n  /scratch4/workspace/kfloer_smith_edu-demo/work/ab/c1234567890abc...\nNavigate to that directory and look at the log files:\ncd /scratch4/workspace/kfloer_smith_edu-demo/work/ab/c1234567890abc\nls -la\ncat .command.err\ncat .command.out",
     "crumbs": [
       "Troubleshooting"
     ]
   },
   {
-    "objectID": "troubleshooting.html#docker-is-not-running",
-    "href": "troubleshooting.html#docker-is-not-running",
+    "objectID": "troubleshooting.html#common-problems-and-fixes",
+    "href": "troubleshooting.html#common-problems-and-fixes",
     "title": "Troubleshooting",
-    "section": "2 Docker is not running",
-    "text": "2 Docker is not running\nCheck Docker:\ndocker info\nIf this fails, open Docker Desktop or restart the Docker service.",
+    "section": "2 Common problems and fixes",
+    "text": "2 Common problems and fixes\n\n2.1 The job was cancelled — time limit exceeded\nSymptom: The job disappears from squeue before finishing. The log ends without a completion message. SLURM emails you “CANCELLED” or “TIMEOUT”.\nFix: Increase --time in the #SBATCH header. For a full dataset, use at least 3-00:00:00 (3 days).\n#SBATCH --time=3-00:00:00\nThen resubmit. The -resume flag in the script will skip steps that already finished.\n\n\n\n2.2 The job failed — out of memory\nSymptom: The error log contains Out of memory, Killed, or a process exits with code 137.\nFix: Increase --mem in the #SBATCH header:\n#SBATCH --mem=128G\nFor large datasets with many samples, 128G or more may be needed.\n\n\n\n2.3 Nextflow module not found\nSymptom:\nmodule: command not found\nor\nERROR: Unable to find module nextflow/26.04.1\nFix: Check what version is available:\nmodule avail nextflow\nUpdate the module name in your script to match an available version. You can also browse available modules at the Unity module explorer.\n\n\n\n2.4 Apptainer container failed to pull\nSymptom: The log shows something like:\nFailed to pull singularity image\nFATAL:   Unable to pull docker://...\nFix: This usually means the container download was interrupted. The script already includes a line to clean up partial downloads before running:\nfind \"$NXF_APPTAINER_CACHEDIR\" -type f -name \"*.pulling.*\" -delete || true\nIf the problem persists:\n\nDelete the cache folder and try again:\nrm -rf /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/.nextflow-apptainer-cache\nResubmit the job — Nextflow will re-download the containers.\n\n\n\n\n2.5 The samplesheet is not found\nSymptom:\nERROR ~ No such file or directory: samplesheet.csv\nFix: Check that the path in your params.json exactly matches where the file actually is:\nls /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv\nIf the file is missing, create it (see the Run the Pipeline page).\n\n\n\n2.6 FASTQ files are not found\nSymptom:\nERROR ~ File does not exist: /path/to/sample_R1.fastq.gz\nFix: Check that the paths in your samplesheet are correct and that the files exist:\nls /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/\nMake sure you are using full absolute paths (starting with /) in the samplesheet, not relative paths.\n\n\n\n2.7 Workspace ran out of space\nSymptom: The log shows No space left on device or a step fails unexpectedly.\nFix: Check how much space is left:\ndf -h /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/\nThe work/ folder (where Nextflow stores intermediate files) can grow very large. To remove completed intermediate files while keeping final results, run this from inside the workspace directory:\nnextflow clean -f\n\n\n\n2.8 A pipeline step failed but I do not know why\nSteps to diagnose:\n\nFind the Work dir: path printed in the error message in your output log\nNavigate to that directory: cd /path/to/work/dir\nRead the task’s error log: cat .command.err\nRead the task’s output log: cat .command.out\nSee the exact command that ran: cat .command.sh\n\nThe .command.sh file shows the exact command Nextflow ran. You can copy it and try running it yourself in an interactive job to debug.\n\n\n\n2.9 Pipeline says it succeeded but results look wrong\nThings to check:\n\nOpen multiqc/star_salmon/multiqc_report.html and check alignment rates — very low alignment can produce a “successful” run with no useful data\nConfirm the GTF annotation file matches the genome FASTA (both should come from the same EGAPx assembly)\nCheck pipeline_info/params_*.json to confirm the correct genome and annotation were used",
     "crumbs": [
       "Troubleshooting"
     ]
   },
   {
-    "objectID": "troubleshooting.html#a-run-failed-halfway-through",
-    "href": "troubleshooting.html#a-run-failed-halfway-through",
+    "objectID": "troubleshooting.html#where-to-get-more-help",
+    "href": "troubleshooting.html#where-to-get-more-help",
     "title": "Troubleshooting",
-    "section": "3 A run failed halfway through",
-    "text": "3 A run failed halfway through\nUse -resume after fixing the problem:\nnextflow run nf-core/rnaseq \\\n  -profile docker \\\n  --input samplesheet.csv \\\n  --outdir results/rnaseq \\\n  --genome GRCh38 \\\n  -resume",
-    "crumbs": [
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html#disk-space-errors",
-    "href": "troubleshooting.html#disk-space-errors",
-    "title": "Troubleshooting",
-    "section": "4 Disk space errors",
-    "text": "4 Disk space errors\nCheck the size of the work directory:\ndu -sh work results\nMove large outputs to persistent storage before deleting anything.",
-    "crumbs": [
-      "Troubleshooting"
-    ]
-  },
-  {
-    "objectID": "troubleshooting.html#where-to-look-for-help",
-    "href": "troubleshooting.html#where-to-look-for-help",
-    "title": "Troubleshooting",
-    "section": "5 Where to look for help",
-    "text": "5 Where to look for help\n\nThe terminal error message\n.nextflow.log\nresults/rnaseq/pipeline_info/\nThe nf-core pipeline documentation\nThe nf-core Slack community",
+    "section": "3 Where to get more help",
+    "text": "3 Where to get more help\n\n\n\nResource\nLink\n\n\n\n\nnf-core/rnaseq documentation\nhttps://nf-co.re/rnaseq\n\n\nnf-core Slack community\nhttps://nf-co.re/join/slack\n\n\nUnity documentation\nhttps://docs.unity.rc.umass.edu\n\n\nUnity support\nEmail hpc@umass.edu",
     "crumbs": [
       "Troubleshooting"
     ]
@@ -1084,21 +1214,71 @@
   {
     "objectID": "setup.html",
     "href": "setup.html",
-    "title": "Run a Demo Pipeline",
+    "title": "Set Up Your Workspace",
     "section": "",
-    "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
+    "text": "Before running the pipeline, it helps to know what the tools are so the commands make more sense.\n\n\nNextflow is a workflow manager. Instead of running each analysis step yourself one by one, Nextflow runs all the steps automatically in the right order, handles errors, and lets you pick up where you left off if something fails.\nnf-core/rnaseq is a Nextflow pipeline that was built by the bioinformatics community to process RNA-seq data in a standardized and reproducible way.\n\n\n\nEvery step of the pipeline runs inside a container. A container is a self-contained package that includes the exact version of each software tool the pipeline needs. This means the pipeline runs the same way on any computer or cluster.\nApptainer (also called Singularity) is the container system used on Unity. When you run nf-core/rnaseq, Apptainer automatically downloads and uses the correct containers for each step. You do not need to install any bioinformatics tools manually.\n\n\n\nSLURM is Unity’s job scheduler. On a shared cluster, many people are running jobs at the same time. SLURM manages the queue — it decides which job runs on which compute node, and when.\nYou interact with SLURM by writing a job script (a shell script with #SBATCH settings at the top) and submitting it with the sbatch command. SLURM then runs your script on a compute node when resources are available.\n\n\n\n\n\n\nNote\n\n\n\nYou do not need to deeply understand any of these tools to follow this tutorial. Just know that Nextflow manages the analysis steps, Apptainer provides the software, and SLURM runs everything on the cluster.",
     "crumbs": [
-      "Run a Demo Pipeline"
+      "Set Up Your Workspace"
     ]
   },
   {
-    "objectID": "setup.html#creating-a-demo-scratch-directory",
-    "href": "setup.html#creating-a-demo-scratch-directory",
-    "title": "Run a Demo Pipeline",
+    "objectID": "setup.html#what-you-need-to-understand-first",
+    "href": "setup.html#what-you-need-to-understand-first",
+    "title": "Set Up Your Workspace",
     "section": "",
-    "text": "Before running an nf-core pipeline, we need a place with enough temporary storage. On Unity, this is called a workspace. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.\nWorkspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.\nMore information: https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n\nNow create a new workspace called nf-core-demo that will last for 30 days.\nRun:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: could not read email from users config ~/.ws_user.conf.\nInfo: reminder email will be sent to local user account\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nThis is the directory we will use for the tutorial.\n\n\n\nRun:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     creation time        : Mon Jun  8 11:03:16 2026\n     expiration date      : Wed Jul  8 11:03:16 2026\n     filesystem name      : workspace\n     available extensions : 10000\n\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow I have two workspaces:\n\nnf-core-demo, which we just created\nsimple, from an older project\n\n\n\n\nRun:\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nYour exact path may be different, so copy the path shown by your own ws_list output.\n\n\n\nIf your workspace is about to expire but you still need it, you can extend it.\nRun:\nws_extend nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30\nInfo: extending workspace.\nremaining extensions  : 9999\nremaining time in days: 30\nCheck that the expiration date changed:\nws_list\nExample output:\nid: nf-core-demo\n     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo\n     remaining time       : 29 days 23 hours\n     expiration date      : Fri Aug  7 11:03:16 2026\nYour exact expiration date will be different.\n\n\n\nOnly do this when you are completely finished with the tutorial files.\nRun:\nws_release nf-core-demo\nThen check your workspaces again:\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nNow nf-core-demo is gone, and only the older workspace remains.",
+    "text": "Before running the pipeline, it helps to know what the tools are so the commands make more sense.\n\n\nNextflow is a workflow manager. Instead of running each analysis step yourself one by one, Nextflow runs all the steps automatically in the right order, handles errors, and lets you pick up where you left off if something fails.\nnf-core/rnaseq is a Nextflow pipeline that was built by the bioinformatics community to process RNA-seq data in a standardized and reproducible way.\n\n\n\nEvery step of the pipeline runs inside a container. A container is a self-contained package that includes the exact version of each software tool the pipeline needs. This means the pipeline runs the same way on any computer or cluster.\nApptainer (also called Singularity) is the container system used on Unity. When you run nf-core/rnaseq, Apptainer automatically downloads and uses the correct containers for each step. You do not need to install any bioinformatics tools manually.\n\n\n\nSLURM is Unity’s job scheduler. On a shared cluster, many people are running jobs at the same time. SLURM manages the queue — it decides which job runs on which compute node, and when.\nYou interact with SLURM by writing a job script (a shell script with #SBATCH settings at the top) and submitting it with the sbatch command. SLURM then runs your script on a compute node when resources are available.\n\n\n\n\n\n\nNote\n\n\n\nYou do not need to deeply understand any of these tools to follow this tutorial. Just know that Nextflow manages the analysis steps, Apptainer provides the software, and SLURM runs everything on the cluster.",
     "crumbs": [
-      "Run a Demo Pipeline"
+      "Set Up Your Workspace"
+    ]
+  },
+  {
+    "objectID": "setup.html#step-1-create-the-log-directory",
+    "href": "setup.html#step-1-create-the-log-directory",
+    "title": "Set Up Your Workspace",
+    "section": "2 Step 1 — Create the log directory",
+    "text": "2 Step 1 — Create the log directory\nBefore anything else, create a folder to hold your SLURM job logs. These log files are where you will look when something goes wrong.\nmkdir -p ~/rnaseq_nf_core/job-logs\nThis creates the folder rnaseq_nf_core/job-logs inside your home directory. The -p flag creates the full path even if rnaseq_nf_core does not exist yet.",
+    "crumbs": [
+      "Set Up Your Workspace"
+    ]
+  },
+  {
+    "objectID": "setup.html#step-2-check-that-nextflow-is-available",
+    "href": "setup.html#step-2-check-that-nextflow-is-available",
+    "title": "Set Up Your Workspace",
+    "section": "3 Step 2 — Check that Nextflow is available",
+    "text": "3 Step 2 — Check that Nextflow is available\nOn Unity, software is loaded with the module system. Check that the Nextflow module is available:\nmodule avail nextflow\nLoad it:\nmodule load nextflow/26.04.1\nCheck the version:\nnextflow -version\nYou should see something like:\n      N E X T F L O W\n      version 26.04.1 build ...\nIf the module is not found, check the module explorer for the correct module name.",
+    "crumbs": [
+      "Set Up Your Workspace"
+    ]
+  },
+  {
+    "objectID": "setup.html#step-3-create-a-scratch-workspace",
+    "href": "setup.html#step-3-create-a-scratch-workspace",
+    "title": "Set Up Your Workspace",
+    "section": "4 Step 3 — Create a scratch workspace",
+    "text": "4 Step 3 — Create a scratch workspace\nThe pipeline creates a lot of large temporary files. Your home directory does not have enough space for this. On Unity, you use a scratch workspace — a temporary directory with much more space.\n\n\n\n\n\n\nWarning\n\n\n\nScratch workspaces expire after 30 days. They are meant for active work, not long-term storage. Always copy final results to /work/pi_lmangiamele_smith_edu/ before the workspace expires.\n\n\n\n4.1 Check your existing workspaces\nws_list\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_list\nid: simple\n     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple\n     remaining time       : 11 days 7 hours\n     creation time        : Wed May 20 18:42:17 2026\n     expiration date      : Fri Jun 19 18:42:17 2026\n     filesystem name      : workspace\n     available extensions : 9998\nIn this example, I already have one workspace from a different project called simple.\n\n\n4.2 Create a new workspace\nCreate a workspace called nf-core-demo that lasts 30 days:\nws_allocate nf-core-demo 30\nExample output:\n(base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30\nInfo: creating workspace.\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\nremaining extensions  : 10000\nremaining time in days: 30\nThe important line is the workspace path — copy it, you will need it:\n/scratch4/workspace/kfloer_smith_edu-nf-core-demo\n\n\n4.3 Move into the workspace\ncd /scratch4/workspace/kfloer_smith_edu-nf-core-demo\nUse the path shown in your own ws_list output — your path may differ slightly.\n\n\n4.4 Extend a workspace before it expires\nIf your workspace is about to expire and you still need it:\nws_extend nf-core-demo 30\nThen confirm:\nws_list\n\n\n4.5 Delete a workspace when you are done\nOnly do this when you have saved everything you need.\nws_release nf-core-demo",
+    "crumbs": [
+      "Set Up Your Workspace"
+    ]
+  },
+  {
+    "objectID": "setup.html#step-4-pull-the-nf-corernaseq-pipeline",
+    "href": "setup.html#step-4-pull-the-nf-corernaseq-pipeline",
+    "title": "Set Up Your Workspace",
+    "section": "5 Step 4 — Pull the nf-core/rnaseq pipeline",
+    "text": "5 Step 4 — Pull the nf-core/rnaseq pipeline\nDownloading the pipeline definition once means Nextflow does not need to fetch it again every time you run.\nmodule purge\nmodule load nextflow/26.04.1\n\nnextflow pull nf-core/rnaseq -r 3.26.0\nThis downloads the pipeline code (not the containers — those are downloaded later, when the pipeline actually runs).",
+    "crumbs": [
+      "Set Up Your Workspace"
+    ]
+  },
+  {
+    "objectID": "setup.html#you-are-ready",
+    "href": "setup.html#you-are-ready",
+    "title": "Set Up Your Workspace",
+    "section": "6 You are ready",
+    "text": "6 You are ready\nOnce your workspace is created and the pipeline is pulled, you are ready to run your first job. Continue to the Run the Pipeline page.",
+    "crumbs": [
+      "Set Up Your Workspace"
     ]
   }
 ]

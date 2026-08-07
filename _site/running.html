@@ -169,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Terminal</span></a>
+ <span class="menu-text">Using the Terminal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -187,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run a Demo Pipeline</span></a>
+ <span class="menu-text">Set Up Your Workspace</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -224,15 +224,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#run-a-test-first" id="toc-run-a-test-first" class="nav-link active" data-scroll-target="#run-a-test-first"><span class="header-section-number">1</span> Run a test first</a></li>
-  <li><a href="#run-with-your-own-samples" id="toc-run-with-your-own-samples" class="nav-link" data-scroll-target="#run-with-your-own-samples"><span class="header-section-number">2</span> Run with your own samples</a>
+  <li><a href="#understanding-the-job-script" id="toc-understanding-the-job-script" class="nav-link active" data-scroll-target="#understanding-the-job-script"><span class="header-section-number">1</span> Understanding the job script</a></li>
+  <li><a href="#understanding-the-environment-setup" id="toc-understanding-the-environment-setup" class="nav-link" data-scroll-target="#understanding-the-environment-setup"><span class="header-section-number">2</span> Understanding the environment setup</a></li>
+  <li><a href="#step-1-run-a-test-first" id="toc-step-1-run-a-test-first" class="nav-link" data-scroll-target="#step-1-run-a-test-first"><span class="header-section-number">3</span> Step 1 — Run a test first</a>
   <ul class="collapse">
-  <li><a href="#the-samplesheet" id="toc-the-samplesheet" class="nav-link" data-scroll-target="#the-samplesheet"><span class="header-section-number">2.1</span> The samplesheet</a></li>
-  <li><a href="#the-params-file" id="toc-the-params-file" class="nav-link" data-scroll-target="#the-params-file"><span class="header-section-number">2.2</span> The params file</a></li>
-  <li><a href="#the-slurm-script" id="toc-the-slurm-script" class="nav-link" data-scroll-target="#the-slurm-script"><span class="header-section-number">2.3</span> The SLURM script</a></li>
+  <li><a href="#create-the-script" id="toc-create-the-script" class="nav-link" data-scroll-target="#create-the-script"><span class="header-section-number">3.1</span> Create the script</a></li>
+  <li><a href="#what-the-nextflow-command-means" id="toc-what-the-nextflow-command-means" class="nav-link" data-scroll-target="#what-the-nextflow-command-means"><span class="header-section-number">3.2</span> What the nextflow command means</a></li>
+  <li><a href="#submit-and-monitor-the-job" id="toc-submit-and-monitor-the-job" class="nav-link" data-scroll-target="#submit-and-monitor-the-job"><span class="header-section-number">3.3</span> Submit and monitor the job</a></li>
+  <li><a href="#how-to-tell-if-the-test-succeeded" id="toc-how-to-tell-if-the-test-succeeded" class="nav-link" data-scroll-target="#how-to-tell-if-the-test-succeeded"><span class="header-section-number">3.4</span> How to tell if the test succeeded</a></li>
   </ul></li>
-  <li><a href="#resume-an-interrupted-run" id="toc-resume-an-interrupted-run" class="nav-link" data-scroll-target="#resume-an-interrupted-run"><span class="header-section-number">3</span> Resume an interrupted run</a></li>
-  <li><a href="#record-the-exact-command" id="toc-record-the-exact-command" class="nav-link" data-scroll-target="#record-the-exact-command"><span class="header-section-number">4</span> Record the exact command</a></li>
+  <li><a href="#step-2-run-with-your-own-samples" id="toc-step-2-run-with-your-own-samples" class="nav-link" data-scroll-target="#step-2-run-with-your-own-samples"><span class="header-section-number">4</span> Step 2 — Run with your own samples</a>
+  <ul class="collapse">
+  <li><a href="#create-the-samplesheet" id="toc-create-the-samplesheet" class="nav-link" data-scroll-target="#create-the-samplesheet"><span class="header-section-number">4.1</span> Create the samplesheet</a></li>
+  <li><a href="#create-the-params-file" id="toc-create-the-params-file" class="nav-link" data-scroll-target="#create-the-params-file"><span class="header-section-number">4.2</span> Create the params file</a></li>
+  <li><a href="#create-the-slurm-script" id="toc-create-the-slurm-script" class="nav-link" data-scroll-target="#create-the-slurm-script"><span class="header-section-number">4.3</span> Create the SLURM script</a></li>
+  <li><a href="#submit" id="toc-submit" class="nav-link" data-scroll-target="#submit"><span class="header-section-number">4.4</span> Submit</a></li>
+  </ul></li>
+  <li><a href="#checking-on-a-running-job" id="toc-checking-on-a-running-job" class="nav-link" data-scroll-target="#checking-on-a-running-job"><span class="header-section-number">5</span> Checking on a running job</a></li>
+  <li><a href="#resuming-an-interrupted-run" id="toc-resuming-an-interrupted-run" class="nav-link" data-scroll-target="#resuming-an-interrupted-run"><span class="header-section-number">6</span> Resuming an interrupted run</a></li>
+  <li><a href="#record-keeping" id="toc-record-keeping" class="nav-link" data-scroll-target="#record-keeping"><span class="header-section-number">7</span> Record keeping</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/running.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -258,57 +268,120 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>On Unity, the pipeline runs as a SLURM batch job — not interactively in the terminal. You write a shell script with <code>#SBATCH</code> settings at the top, then submit it with <code>sbatch</code>.</p>
-<section id="run-a-test-first" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="run-a-test-first"><span class="header-section-number">1</span> Run a test first</h2>
-<p>Before running with your own data, submit a test job to confirm Nextflow, Apptainer, and your workspace are all working.</p>
-<p>Save the following as <code>nfcore-rnaseq-test.sh</code> in your home directory. Update the <code>--output</code>, <code>--error</code>, <code>--mail-user</code>, and <code>SCRATCH_RNASEQ</code> lines to match your username and workspace path.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=nfcore-rnaseq-test</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --partition=cpu</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=48G</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=24:00:00</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.out</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.err</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-type=</span><span class="re">BEGIN</span><span class="co">,</span><span class="re">END</span><span class="co">,FAIL</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-user=you@email.edu</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">SCRATCH_RNASEQ</span><span class="op">=</span>/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">"</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> purge</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer/latest</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.nextflow-apptainer-cache"</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.nextflow-apptainer-cache"</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">'-Xms1g -Xmx4g'</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PROOT_NO_SECCOMP</span><span class="op">=</span>1</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up any partial container pulls from a previous attempt</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> <span class="st">"</span><span class="va">$NXF_APPTAINER_CACHEDIR</span><span class="st">"</span> <span class="at">-type</span> f <span class="at">-name</span> <span class="st">"*.pulling.*"</span> <span class="at">-delete</span> <span class="kw">||</span> <span class="fu">true</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="dt">\</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">-r</span> 3.26.0 <span class="dt">\</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">-profile</span> test,unity <span class="dt">\</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outdir</span> test_results <span class="dt">\</span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">-resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create the log directory and submit:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/rnaseq_nf_core/job-logs</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> nfcore-rnaseq-test.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Watch progress with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>And check the output log once it starts:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-f</span> ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.<span class="pp">*</span>.out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On Unity, the pipeline runs as a <strong>SLURM batch job</strong> — not interactively in the terminal. You write a shell script, submit it with <code>sbatch</code>, and SLURM runs it on a compute node while you can log out and do other things.</p>
+<section id="understanding-the-job-script" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="understanding-the-job-script"><span class="header-section-number">1</span> Understanding the job script</h2>
+<p>A job script is a plain text file. It has two parts:</p>
+<ol type="1">
+<li><strong><code>#SBATCH</code> lines at the top</strong> — these tell SLURM how much time and memory to reserve, and where to write the output</li>
+<li><strong>Shell commands below</strong> — these are the actual commands that run</li>
+</ol>
+<p>Here is what each <code>#SBATCH</code> line means:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=nfcore-rnaseq-test   # A label shown in the queue</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --partition=cpu                  # Use CPU nodes (not GPU)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8               # Reserve 8 CPU cores for the manager process</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=48G                        # Reserve 48 GB of RAM</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=24:00:00                  # Maximum run time (hours:minutes:seconds)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=.../%j.out             # File for standard output (%j = job ID)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=.../%j.err              # File for error output</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-type=</span><span class="re">BEGIN</span><span class="co">,</span><span class="re">END</span><span class="co">,FAIL      # Email you when the job starts, ends, or fails</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-user=you@email.edu       # Your email address</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>--cpus-per-task=8</code> and <code>--mem=48G</code> here are for the Nextflow manager process, not the individual pipeline steps. The pipeline itself will request additional resources for each step through SLURM automatically.</p>
+</div>
+</div>
+</section>
+<section id="understanding-the-environment-setup" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="understanding-the-environment-setup"><span class="header-section-number">2</span> Understanding the environment setup</h2>
+<p>Inside the script, several lines set up the environment before running Nextflow:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> purge                         <span class="co"># Clear any previously loaded modules</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1         <span class="co"># Load Nextflow</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer/latest         <span class="co"># Load Apptainer (the container system)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>export</code> lines tell Apptainer and Nextflow where to store container images and temporary files:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"..."</span>      <span class="co"># Where Apptainer stores downloaded container images</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_TMPDIR</span><span class="op">=</span><span class="st">"..."</span>        <span class="co"># Temporary files during container builds</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"..."</span>  <span class="co"># Where Nextflow looks for Apptainer images</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">'-Xms1g -Xmx4g'</span>    <span class="co"># Memory limits for the Nextflow Java process</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PROOT_NO_SECCOMP</span><span class="op">=</span>1           <span class="co"># Required for Apptainer to work correctly on Unity</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>These variables must point to your scratch workspace so they do not fill up your home directory.</p>
+</section>
+<section id="step-1-run-a-test-first" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="step-1-run-a-test-first"><span class="header-section-number">3</span> Step 1 — Run a test first</h2>
+<p>Before running with your own data, run the built-in test profile. This uses a tiny dataset that comes with the pipeline and confirms everything is working correctly on Unity.</p>
+<section id="create-the-script" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="create-the-script"><span class="header-section-number">3.1</span> Create the script</h3>
+<p>On Unity, open a new file with nano:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> ~/rnaseq_nf_core/nfcore-rnaseq-test.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Paste in the following. Replace <code>YOUR_USERNAME</code> with your Unity username and <code>YOUR_WORKSPACE</code> with your scratch workspace name (from <code>ws_list</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=nfcore-rnaseq-test</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --partition=cpu</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=48G</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=24:00:00</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.out</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.%j.err</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-type=</span><span class="re">BEGIN</span><span class="co">,</span><span class="re">END</span><span class="co">,FAIL</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-user=you@email.edu</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="va">SCRATCH_RNASEQ</span><span class="op">=</span>/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">"</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> purge</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer/latest</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.nextflow-apptainer-cache"</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.nextflow-apptainer-cache"</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">'-Xms1g -Xmx4g'</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PROOT_NO_SECCOMP</span><span class="op">=</span>1</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any partial container downloads from a previous attempt</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> <span class="st">"</span><span class="va">$NXF_APPTAINER_CACHEDIR</span><span class="st">"</span> <span class="at">-type</span> f <span class="at">-name</span> <span class="st">"*.pulling.*"</span> <span class="at">-delete</span> <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="dt">\</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">-r</span> 3.26.0 <span class="dt">\</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">-profile</span> test,unity <span class="dt">\</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outdir</span> test_results <span class="dt">\</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">-resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Save and close nano: <code>Ctrl + O</code>, <code>Enter</code>, <code>Ctrl + X</code>.</p>
+</section>
+<section id="what-the-nextflow-command-means" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="what-the-nextflow-command-means"><span class="header-section-number">3.2</span> What the nextflow command means</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="dt">\ </span>  <span class="co"># Run the nf-core/rnaseq pipeline</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-r</span> 3.26.0 <span class="dt">\ </span>                  <span class="co"># Use version 3.26.0 (pin the version for reproducibility)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-profile</span> test,unity <span class="dt">\ </span>         <span class="co"># Use the built-in test dataset AND Unity cluster settings</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--outdir</span> test_results <span class="dt">\ </span>       <span class="co"># Put all output in a folder called test_results</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-resume</span>                        <span class="co"># Resume from cached steps if re-run</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="submit-and-monitor-the-job" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="submit-and-monitor-the-job"><span class="header-section-number">3.3</span> Submit and monitor the job</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> ~/rnaseq_nf_core/nfcore-rnaseq-test.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You will see something like:</p>
+<pre class="text"><code>Submitted batch job 12345678</code></pre>
+<p>Note the job ID — you will use it to check status or find your log files.</p>
+<p>Check whether the job is running:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Watch the log file update in real time (replace <code>12345678</code> with your job ID):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-f</span> ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.12345678.out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Press <code>Ctrl + C</code> to stop watching.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -319,92 +392,169 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The test profile uses a small built-in dataset and finishes in a few hours. If it completes without errors, your environment is ready.</p>
+<p>The test profile uses a small built-in dataset. It can take a few hours because the first run needs to download Apptainer container images. Subsequent runs are faster because the containers are cached.</p>
 </div>
 </div>
 </section>
-<section id="run-with-your-own-samples" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="run-with-your-own-samples"><span class="header-section-number">2</span> Run with your own samples</h2>
-<p>For a real run you need:</p>
+<section id="how-to-tell-if-the-test-succeeded" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="how-to-tell-if-the-test-succeeded"><span class="header-section-number">3.4</span> How to tell if the test succeeded</h3>
+<p>A successful test run ends with something like:</p>
+<pre class="text"><code>-[nf-core/rnaseq] Pipeline completed successfully -</code></pre>
+<p>If you see <code>Pipeline completed with errors</code>, check the <code>.err</code> log file for details.</p>
+</section>
+</section>
+<section id="step-2-run-with-your-own-samples" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="step-2-run-with-your-own-samples"><span class="header-section-number">4</span> Step 2 — Run with your own samples</h2>
+<p>For a real run you need three things:</p>
 <ol type="1">
-<li>A <strong>samplesheet</strong> CSV listing your samples</li>
-<li>A <strong>genome FASTA</strong> and <strong>GTF annotation</strong> file</li>
-<li>A <strong>params JSON</strong> file pointing to all of the above</li>
+<li>A <strong>samplesheet</strong> CSV listing your samples and FASTQ file paths</li>
+<li>A <strong>genome FASTA</strong> and <strong>GTF annotation</strong> (see <a href="./frog-data-availability.html">Frog Data Availability</a>)</li>
+<li>A <strong>params JSON</strong> file that points to everything</li>
 </ol>
-<section id="the-samplesheet" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="the-samplesheet"><span class="header-section-number">2.1</span> The samplesheet</h3>
-<p>The samplesheet must have these four columns:</p>
+<section id="create-the-samplesheet" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="create-the-samplesheet"><span class="header-section-number">4.1</span> Create the samplesheet</h3>
+<p>The samplesheet is a CSV file with one row per sample. Create it with nano:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It must have exactly these four columns:</p>
 <pre class="text"><code>sample,fastq_1,fastq_2,strandedness
-C45-1B,/path/to/C45-1B_R1_001.fastq.gz,/path/to/C45-1B_R2_001.fastq.gz,reverse
-C45-1H,/path/to/C45-1H_R1_001.fastq.gz,/path/to/C45-1H_R2_001.fastq.gz,reverse</code></pre>
-<p>Set <code>strandedness</code> to <code>reverse</code>, <code>forward</code>, or <code>unstranded</code> to match your library prep kit. If you are unsure, check the kit documentation or use the nf-core/rnaseq <code>--salmon_quant_libtype A</code> option to detect it automatically.</p>
+C45-1B,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R2_001.fastq.gz,reverse
+C45-1H,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R2_001.fastq.gz,reverse</code></pre>
+<p>Each column:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What to put</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>sample</code></td>
+<td>A short name for the sample, no spaces</td>
+</tr>
+<tr class="even">
+<td><code>fastq_1</code></td>
+<td>Full path to the R1 (forward) FASTQ file</td>
+</tr>
+<tr class="odd">
+<td><code>fastq_2</code></td>
+<td>Full path to the R2 (reverse) FASTQ file</td>
+</tr>
+<tr class="even">
+<td><code>strandedness</code></td>
+<td><code>reverse</code>, <code>forward</code>, or <code>unstranded</code> (use <code>reverse</code> for most Illumina RNA kits)</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="the-params-file" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="the-params-file"><span class="header-section-number">2.2</span> The params file</h3>
-<p>Rather than putting all options on the command line, save them in a JSON file. Example <code>params.json</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"input"</span><span class="fu">:</span> <span class="st">"/path/to/samplesheet.csv"</span><span class="fu">,</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"outdir"</span><span class="fu">:</span> <span class="st">"/path/to/results"</span><span class="fu">,</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"fasta"</span><span class="fu">:</span> <span class="st">"/path/to/genome.fna"</span><span class="fu">,</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"gtf"</span><span class="fu">:</span> <span class="st">"/path/to/annotation.gtf"</span><span class="fu">,</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"igenomes_ignore"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"aligner"</span><span class="fu">:</span> <span class="st">"star_salmon"</span><span class="fu">,</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"pseudo_aligner"</span><span class="fu">:</span> <span class="st">"salmon"</span><span class="fu">,</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"gtf_extra_attributes"</span><span class="fu">:</span> <span class="st">"gene"</span><span class="fu">,</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"featurecounts_group_type"</span><span class="fu">:</span> <span class="st">"transcript_biotype"</span><span class="fu">,</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"max_cpus"</span><span class="fu">:</span> <span class="dv">48</span><span class="fu">,</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"max_memory"</span><span class="fu">:</span> <span class="st">"256.GB"</span><span class="fu">,</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"max_time"</span><span class="fu">:</span> <span class="st">"72.h"</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="create-the-params-file" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="create-the-params-file"><span class="header-section-number">4.2</span> Create the params file</h3>
+<p>Rather than putting all options on the command line, save them in a JSON file. Create it with nano:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/params.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"input"</span><span class="fu">:</span> <span class="st">"/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv"</span><span class="fu">,</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"outdir"</span><span class="fu">:</span> <span class="st">"/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/results"</span><span class="fu">,</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"fasta"</span><span class="fu">:</span> <span class="st">"/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.fna"</span><span class="fu">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"gtf"</span><span class="fu">:</span> <span class="st">"/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.gtf"</span><span class="fu">,</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"igenomes_ignore"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"aligner"</span><span class="fu">:</span> <span class="st">"star_salmon"</span><span class="fu">,</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"pseudo_aligner"</span><span class="fu">:</span> <span class="st">"salmon"</span><span class="fu">,</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"gtf_extra_attributes"</span><span class="fu">:</span> <span class="st">"gene"</span><span class="fu">,</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"featurecounts_group_type"</span><span class="fu">:</span> <span class="st">"transcript_biotype"</span><span class="fu">,</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"max_cpus"</span><span class="fu">:</span> <span class="dv">48</span><span class="fu">,</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"max_memory"</span><span class="fu">:</span> <span class="st">"256.GB"</span><span class="fu">,</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"max_time"</span><span class="fu">:</span> <span class="st">"72.h"</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Replace <code>YOUR_USERNAME</code> and <code>YOUR_WORKSPACE</code> with your actual values.</p>
 </section>
-<section id="the-slurm-script" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="the-slurm-script"><span class="header-section-number">2.3</span> The SLURM script</h3>
-<p>Save the following as <code>run-rnaseq.sh</code>, filling in your paths:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=nfcore-rnaseq</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --partition=cpu</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=48G</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=3-00:00:00</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.out</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.err</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-type=</span><span class="re">BEGIN</span><span class="co">,</span><span class="re">END</span><span class="co">,FAIL</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-user=you@email.edu</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="va">SCRATCH_RNASEQ</span><span class="op">=</span>/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="va">PARAMS</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/params.json"</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">"</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> purge</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer/latest</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PROOT_TMP_DIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.nextflow-apptainer-cache"</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">'-Xms1g -Xmx4g'</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PROOT_NO_SECCOMP</span><span class="op">=</span>1</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="dt">\</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">-r</span> 3.26.0 <span class="dt">\</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">-profile</span> unity <span class="dt">\</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">-params-file</span> <span class="st">"</span><span class="va">$PARAMS</span><span class="st">"</span> <span class="dt">\</span></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">-resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Submit:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> run-rnaseq.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="create-the-slurm-script" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="create-the-slurm-script"><span class="header-section-number">4.3</span> Create the SLURM script</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> ~/rnaseq_nf_core/run-rnaseq.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=nfcore-rnaseq</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --partition=cpu</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=48G</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=3-00:00:00</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.out</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.err</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-type=</span><span class="re">BEGIN</span><span class="co">,</span><span class="re">END</span><span class="co">,FAIL</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mail-user=you@email.edu</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="va">SCRATCH_RNASEQ</span><span class="op">=</span>/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="va">PARAMS</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/params.json"</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">"</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> purge</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer/latest</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/build-cache"</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">APPTAINER_TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PROOT_TMP_DIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TMPDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.apptainer/tmp"</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_APPTAINER_CACHEDIR</span><span class="op">=</span><span class="st">"</span><span class="va">$SCRATCH_RNASEQ</span><span class="st">/.nextflow-apptainer-cache"</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">'-Xms1g -Xmx4g'</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PROOT_NO_SECCOMP</span><span class="op">=</span>1</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="dt">\</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">-r</span> 3.26.0 <span class="dt">\</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">-profile</span> unity <span class="dt">\</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">-params-file</span> <span class="st">"</span><span class="va">$PARAMS</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">-resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="submit" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="submit"><span class="header-section-number">4.4</span> Submit</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> ~/rnaseq_nf_core/run-rnaseq.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="resume-an-interrupted-run" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="resume-an-interrupted-run"><span class="header-section-number">3</span> Resume an interrupted run</h2>
-<p>Add <code>-resume</code> to your <code>nextflow run</code> command (it is already included in the scripts above). Nextflow caches completed tasks, so resuming picks up from where it stopped without re-running finished steps.</p>
+<section id="checking-on-a-running-job" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="checking-on-a-running-job"><span class="header-section-number">5</span> Checking on a running job</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>See your jobs in the queue</td>
+<td><code>squeue --me</code></td>
+</tr>
+<tr class="even">
+<td>Watch the output log live</td>
+<td><code>tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.out</code></td>
+</tr>
+<tr class="odd">
+<td>Watch the error log live</td>
+<td><code>tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.err</code></td>
+</tr>
+<tr class="even">
+<td>Cancel a job</td>
+<td><code>scancel JOBID</code></td>
+</tr>
+</tbody>
+</table>
+<p>Replace <code>JOBID</code> with the number that <code>sbatch</code> printed when you submitted.</p>
+</section>
+<section id="resuming-an-interrupted-run" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="resuming-an-interrupted-run"><span class="header-section-number">6</span> Resuming an interrupted run</h2>
+<p>If your job ran out of time or failed partway through, fix the problem and resubmit with the same script. The <code>-resume</code> flag is already included — Nextflow will skip steps that finished successfully and continue from where it stopped.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -415,13 +565,13 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Only resume with the same params file and the same scratch directory. Changing the output path or key parameters will invalidate the cache.</p>
+<p>Only resume using the same scratch directory and the same params file. Changing the output path or key parameters invalidates the cached steps and forces a full restart.</p>
 </div>
 </div>
 </section>
-<section id="record-the-exact-command" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="record-the-exact-command"><span class="header-section-number">4</span> Record the exact command</h2>
-<p>Keep a copy of your params file and SLURM script alongside your results. The <code>pipeline_info/</code> folder in your output directory also records the exact parameters, software versions, and execution timeline automatically.</p>
+<section id="record-keeping" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="record-keeping"><span class="header-section-number">7</span> Record keeping</h2>
+<p>Keep a copy of your params file and SLURM script alongside your final results. The <code>pipeline_info/</code> folder inside the results directory also stores exact parameters, software versions, and execution logs automatically.</p>
 
 
 </section>

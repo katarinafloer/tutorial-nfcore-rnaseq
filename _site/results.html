@@ -169,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Terminal</span></a>
+ <span class="menu-text">Using the Terminal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -187,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run a Demo Pipeline</span></a>
+ <span class="menu-text">Set Up Your Workspace</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -224,10 +224,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#start-with-multiqc" id="toc-start-with-multiqc" class="nav-link active" data-scroll-target="#start-with-multiqc"><span class="header-section-number">1</span> Start with MultiQC</a></li>
-  <li><a href="#what-to-check-first" id="toc-what-to-check-first" class="nav-link" data-scroll-target="#what-to-check-first"><span class="header-section-number">2</span> What to check first</a></li>
-  <li><a href="#common-output-folders" id="toc-common-output-folders" class="nav-link" data-scroll-target="#common-output-folders"><span class="header-section-number">3</span> Common output folders</a></li>
-  <li><a href="#save-provenance" id="toc-save-provenance" class="nav-link" data-scroll-target="#save-provenance"><span class="header-section-number">4</span> Save provenance</a></li>
+  <li><a href="#did-the-pipeline-succeed" id="toc-did-the-pipeline-succeed" class="nav-link active" data-scroll-target="#did-the-pipeline-succeed"><span class="header-section-number">1</span> Did the pipeline succeed?</a></li>
+  <li><a href="#what-output-folders-were-created" id="toc-what-output-folders-were-created" class="nav-link" data-scroll-target="#what-output-folders-were-created"><span class="header-section-number">2</span> What output folders were created?</a></li>
+  <li><a href="#get-the-files-to-your-laptop" id="toc-get-the-files-to-your-laptop" class="nav-link" data-scroll-target="#get-the-files-to-your-laptop"><span class="header-section-number">3</span> Get the files to your laptop</a></li>
+  <li><a href="#reading-the-multiqc-report" id="toc-reading-the-multiqc-report" class="nav-link" data-scroll-target="#reading-the-multiqc-report"><span class="header-section-number">4</span> Reading the MultiQC report</a>
+  <ul class="collapse">
+  <li><a href="#general-statistics-table" id="toc-general-statistics-table" class="nav-link" data-scroll-target="#general-statistics-table"><span class="header-section-number">4.1</span> General statistics table</a></li>
+  <li><a href="#fastqc-sequence-quality" id="toc-fastqc-sequence-quality" class="nav-link" data-scroll-target="#fastqc-sequence-quality"><span class="header-section-number">4.2</span> FastQC — sequence quality</a></li>
+  <li><a href="#fastqc-adapter-content" id="toc-fastqc-adapter-content" class="nav-link" data-scroll-target="#fastqc-adapter-content"><span class="header-section-number">4.3</span> FastQC — adapter content</a></li>
+  <li><a href="#star-alignment-rate" id="toc-star-alignment-rate" class="nav-link" data-scroll-target="#star-alignment-rate"><span class="header-section-number">4.4</span> STAR — alignment rate</a></li>
+  <li><a href="#salmon-quantification" id="toc-salmon-quantification" class="nav-link" data-scroll-target="#salmon-quantification"><span class="header-section-number">4.5</span> Salmon — quantification</a></li>
+  <li><a href="#gene-body-coverage-rseqc" id="toc-gene-body-coverage-rseqc" class="nav-link" data-scroll-target="#gene-body-coverage-rseqc"><span class="header-section-number">4.6</span> Gene body coverage (RSeQC)</a></li>
+  <li><a href="#sample-clustering-and-correlation" id="toc-sample-clustering-and-correlation" class="nav-link" data-scroll-target="#sample-clustering-and-correlation"><span class="header-section-number">4.7</span> Sample clustering and correlation</a></li>
+  </ul></li>
+  <li><a href="#understanding-the-count-table" id="toc-understanding-the-count-table" class="nav-link" data-scroll-target="#understanding-the-count-table"><span class="header-section-number">5</span> Understanding the count table</a></li>
+  <li><a href="#save-provenance-files" id="toc-save-provenance-files" class="nav-link" data-scroll-target="#save-provenance-files"><span class="header-section-number">6</span> Save provenance files</a></li>
+  <li><a href="#what-to-do-next" id="toc-what-to-do-next" class="nav-link" data-scroll-target="#what-to-do-next"><span class="header-section-number">7</span> What to do next</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/results.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -253,27 +265,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="start-with-multiqc" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="start-with-multiqc"><span class="header-section-number">1</span> Start with MultiQC</h2>
-<p>Open the MultiQC report:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">open</span> results/rnaseq/multiqc/star_salmon/multiqc_report.html</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>On Linux:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xdg-open</span> results/rnaseq/multiqc/star_salmon/multiqc_report.html</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="did-the-pipeline-succeed" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="did-the-pipeline-succeed"><span class="header-section-number">1</span> Did the pipeline succeed?</h2>
+<p>The first thing to check is whether the pipeline actually finished without errors.</p>
+<p>In your output log file, a successful run ends with:</p>
+<pre class="text"><code>-[nf-core/rnaseq] Pipeline completed successfully -</code></pre>
+<p>If you see <code>Pipeline completed with errors</code> or the log cuts off mid-run, something went wrong. See the <a href="./troubleshooting.html">Troubleshooting</a> page.</p>
 </section>
-<section id="what-to-check-first" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="what-to-check-first"><span class="header-section-number">2</span> What to check first</h2>
-<p>Focus on:</p>
-<ul>
-<li>Sequencing quality</li>
-<li>Adapter content</li>
-<li>Alignment rate</li>
-<li>Duplication levels</li>
-<li>Gene body coverage</li>
-<li>Sample outliers</li>
-</ul>
-</section>
-<section id="common-output-folders" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="common-output-folders"><span class="header-section-number">3</span> Common output folders</h2>
+<section id="what-output-folders-were-created" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-output-folders-were-created"><span class="header-section-number">2</span> What output folders were created?</h2>
+<p>After a successful run, your results directory will contain:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -288,45 +289,210 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>fastqc/</code></td>
-<td>Per-sample read quality reports</td>
+<td>Per-sample read quality reports (before and after trimming)</td>
 </tr>
 <tr class="even">
-<td><code>multiqc/</code></td>
-<td>Aggregated quality-control report</td>
+<td><code>trimgalore/</code></td>
+<td>Trimming statistics and reports</td>
 </tr>
 <tr class="odd">
 <td><code>star_salmon/</code></td>
-<td>Alignment and transcript quantification outputs</td>
+<td>Alignment files (BAM), transcript quantification (Salmon), and count tables</td>
 </tr>
 <tr class="even">
+<td><code>multiqc/</code></td>
+<td>A single HTML report summarizing quality across all samples</td>
+</tr>
+<tr class="odd">
 <td><code>pipeline_info/</code></td>
-<td>Commands, software versions, reports, and provenance</td>
+<td>Software versions, parameters used, execution report</td>
+</tr>
+</tbody>
+</table>
+<p>The most important files for you are:</p>
+<ul>
+<li><code>multiqc/star_salmon/multiqc_report.html</code> — your first stop for QC</li>
+<li><code>star_salmon/salmon.merged.gene_counts.tsv</code> — the count table you will use for DESeq2</li>
+</ul>
+</section>
+<section id="get-the-files-to-your-laptop" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="get-the-files-to-your-laptop"><span class="header-section-number">3</span> Get the files to your laptop</h2>
+<p>The MultiQC report is an HTML file that you open in a browser. Copy it from Unity to your laptop using <code>scp</code>. Run this command <strong>from a terminal on your laptop</strong> (not from Unity):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/multiqc/star_salmon/multiqc_report.html ~/Desktop/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then open it by double-clicking it, or from the terminal:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">open</span> ~/Desktop/multiqc_report.html</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To copy the entire results folder (for archiving):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/ ~/Desktop/rnaseq_results/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="reading-the-multiqc-report" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="reading-the-multiqc-report"><span class="header-section-number">4</span> Reading the MultiQC report</h2>
+<p>MultiQC combines results from many tools into one scrollable HTML page. Here is what to look at and what to look for.</p>
+<section id="general-statistics-table" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="general-statistics-table"><span class="header-section-number">4.1</span> General statistics table</h3>
+<p>This is at the top of the report. It gives a quick overview of every sample. Columns to check:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it means</th>
+<th>What to look for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>% Dups</code></td>
+<td>Percentage of duplicate reads</td>
+<td>Under 50% is typical; very high duplication can indicate over-amplification</td>
+</tr>
+<tr class="even">
+<td><code>% GC</code></td>
+<td>GC content of reads</td>
+<td>Should be similar across samples; big differences can indicate contamination</td>
+</tr>
+<tr class="odd">
+<td><code>M Reads</code></td>
+<td>Millions of reads per sample</td>
+<td>Check that all samples have comparable read counts; a very low count is a flag</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="save-provenance" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="save-provenance"><span class="header-section-number">4</span> Save provenance</h2>
-<p>Archive these files with your analysis:</p>
+<section id="fastqc-sequence-quality" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="fastqc-sequence-quality"><span class="header-section-number">4.2</span> FastQC — sequence quality</h3>
+<p>Look at the <strong>Per Base Sequence Quality</strong> plot. This shows quality scores along the length of each read.</p>
 <ul>
-<li><code>pipeline_info/software_versions.yml</code></li>
-<li><code>pipeline_info/execution_report.html</code></li>
-<li><code>pipeline_info/execution_timeline.html</code></li>
-<li><code>pipeline_info/params_*.json</code></li>
+<li>Quality above 30 (the green zone) across most of the read is good</li>
+<li>A drop at the ends is normal — Illumina reads often drop in quality toward the 3’ end</li>
+<li>If quality drops early (before position 50), check whether trimming helped</li>
 </ul>
-<div class="callout callout-style-default callout-tip callout-titled">
+</section>
+<section id="fastqc-adapter-content" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="fastqc-adapter-content"><span class="header-section-number">4.3</span> FastQC — adapter content</h3>
+<p>Adapter contamination means sequencing read through the end of a fragment and into the Illumina adapter sequence. nf-core/rnaseq trims adapters automatically with Trim Galore, so you should see minimal adapters in the <strong>post-trimming</strong> FastQC plot.</p>
+<ul>
+<li>The post-trimming plot should show adapter content close to 0%</li>
+<li>If it is still high after trimming, the adapter detection may have failed — check the library prep documentation</li>
+</ul>
+</section>
+<section id="star-alignment-rate" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="star-alignment-rate"><span class="header-section-number">4.4</span> STAR — alignment rate</h3>
+<p>The <strong>STAR</strong> section shows what percentage of reads mapped to the genome.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Alignment rate</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>85–95%</td>
+<td>Good</td>
+</tr>
+<tr class="even">
+<td>70–85%</td>
+<td>Acceptable — check for rRNA contamination or genome completeness</td>
+</tr>
+<tr class="odd">
+<td>Below 70%</td>
+<td>Investigate — possible wrong reference, contamination, or library prep issue</td>
+</tr>
+</tbody>
+</table>
+<p>For <em>S. parvus</em>, alignment rates may be lower than for model organisms because the genome assembly is less complete. A rate in the 70–85% range is not unusual.</p>
+<p>Also look at:</p>
+<ul>
+<li><strong>Uniquely mapped</strong> — reads that map to exactly one place in the genome (best for quantification)</li>
+<li><strong>Multi-mapped</strong> — reads that map to more than one place (less useful; often from repetitive regions)</li>
+</ul>
+</section>
+<section id="salmon-quantification" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="salmon-quantification"><span class="header-section-number">4.5</span> Salmon — quantification</h3>
+<p>Salmon uses the aligned reads to estimate transcript abundances. The <strong>Salmon</strong> section shows the percentage of reads assigned to genes (mapping rate).</p>
+<ul>
+<li>A Salmon mapping rate similar to the STAR alignment rate is expected</li>
+<li>If Salmon’s rate is much lower than STAR’s, check whether the GTF matches the genome FASTA</li>
+</ul>
+</section>
+<section id="gene-body-coverage-rseqc" class="level3" data-number="4.6">
+<h3 data-number="4.6" class="anchored" data-anchor-id="gene-body-coverage-rseqc"><span class="header-section-number">4.6</span> Gene body coverage (RSeQC)</h3>
+<p>This plot shows read coverage across the length of genes, from 5’ (left) to 3’ (right).</p>
+<ul>
+<li>A flat or slightly 5’-biased curve is ideal</li>
+<li>A strong 3’ bias suggests RNA degradation in the sample — poor RNA quality at time of extraction</li>
+<li>A strong 5’ bias is rarer and may indicate specific library prep issues</li>
+</ul>
+</section>
+<section id="sample-clustering-and-correlation" class="level3" data-number="4.7">
+<h3 data-number="4.7" class="anchored" data-anchor-id="sample-clustering-and-correlation"><span class="header-section-number">4.7</span> Sample clustering and correlation</h3>
+<p>MultiQC often shows a sample-to-sample correlation heatmap or PCA from DESeq2. Use this to check:</p>
+<ul>
+<li>Do biological replicates cluster together?</li>
+<li>Do samples from the same tissue or treatment group cluster together?</li>
+<li>Is there an obvious outlier sample?</li>
+</ul>
+<p>If a sample looks very different from everything else, check its alignment rate, read count, and gene body coverage before including it in downstream analysis.</p>
+</section>
+</section>
+<section id="understanding-the-count-table" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="understanding-the-count-table"><span class="header-section-number">5</span> Understanding the count table</h2>
+<p>The key output for downstream analysis is:</p>
+<pre class="text"><code>star_salmon/salmon.merged.gene_counts.tsv</code></pre>
+<p>This is a tab-separated table where:</p>
+<ul>
+<li>Each <strong>row</strong> is a gene</li>
+<li>Each <strong>column</strong> is a sample</li>
+<li>Each <strong>cell</strong> contains the estimated count of reads for that gene in that sample</li>
+</ul>
+<p>These counts are what you pass to DESeq2 (or another differential expression tool) to find genes that differ between conditions.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <code>pipeline_info</code> directory is one of the most useful places to look when you need to reproduce or debug a run later.</p>
+<p>The counts are <strong>raw estimated counts</strong>, not normalized values. DESeq2 handles normalization internally. Do not normalize the counts yourself before running DESeq2.</p>
 </div>
 </div>
+<p>You can preview the file on Unity:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> star_salmon/salmon.merged.gene_counts.tsv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Copy it to your laptop for use in R:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run on your laptop</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/star_salmon/salmon.merged.gene_counts.tsv ~/Desktop/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="save-provenance-files" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="save-provenance-files"><span class="header-section-number">6</span> Save provenance files</h2>
+<p>Before you clean up the workspace or move on, archive these files — they document exactly what was run and make the analysis reproducible:</p>
+<ul>
+<li><code>pipeline_info/software_versions.yml</code> — every tool version used</li>
+<li><code>pipeline_info/execution_report.html</code> — a visual timeline of all pipeline steps</li>
+<li><code>pipeline_info/execution_timeline.html</code> — timing information</li>
+<li><code>pipeline_info/params_*.json</code> — the exact parameters used</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy the pipeline_info folder to lab storage</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> results/pipeline_info/ /work/pi_lmangiamele_smith_edu/YOUR_PROJECT_NAME/pipeline_info/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="what-to-do-next" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="what-to-do-next"><span class="header-section-number">7</span> What to do next</h2>
+<p>Once you are satisfied with the quality of the run:</p>
+<ol type="1">
+<li>Copy the count table (<code>salmon.merged.gene_counts.tsv</code>) and the <code>tx2gene</code> file to a safe location</li>
+<li>Copy the MultiQC report and pipeline_info folder for your records</li>
+<li>Proceed to <a href="./DGE.html">Differential Gene Expression Analysis</a> to run the DESeq2 analysis in R</li>
+</ol>
 
 
 </section>

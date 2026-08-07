@@ -134,7 +134,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Terminal</span></a>
+ <span class="menu-text">Using the Terminal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -152,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run a Demo Pipeline</span></a>
+ <span class="menu-text">Set Up Your Workspace</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -190,18 +190,20 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#the-big-idea" id="toc-the-big-idea" class="nav-link active" data-scroll-target="#the-big-idea"><span class="header-section-number">1</span> The big idea</a></li>
-  <li><a href="#the-nf-corernaseq-workflow" id="toc-the-nf-corernaseq-workflow" class="nav-link" data-scroll-target="#the-nf-corernaseq-workflow"><span class="header-section-number">2</span> The nf-core/rnaseq workflow</a></li>
-  <li><a href="#what-are-fastq-files" id="toc-what-are-fastq-files" class="nav-link" data-scroll-target="#what-are-fastq-files"><span class="header-section-number">3</span> What are FASTQ files?</a></li>
-  <li><a href="#what-does-the-pipeline-do" id="toc-what-does-the-pipeline-do" class="nav-link" data-scroll-target="#what-does-the-pipeline-do"><span class="header-section-number">4</span> What does the pipeline do?</a>
+  <li><a href="#from-sample-to-counts-the-basic-steps" id="toc-from-sample-to-counts-the-basic-steps" class="nav-link" data-scroll-target="#from-sample-to-counts-the-basic-steps"><span class="header-section-number">2</span> From sample to counts: the basic steps</a></li>
+  <li><a href="#key-terms" id="toc-key-terms" class="nav-link" data-scroll-target="#key-terms"><span class="header-section-number">3</span> Key terms</a></li>
+  <li><a href="#the-nf-corernaseq-workflow" id="toc-the-nf-corernaseq-workflow" class="nav-link" data-scroll-target="#the-nf-corernaseq-workflow"><span class="header-section-number">4</span> The nf-core/rnaseq workflow</a></li>
+  <li><a href="#what-are-fastq-files" id="toc-what-are-fastq-files" class="nav-link" data-scroll-target="#what-are-fastq-files"><span class="header-section-number">5</span> What are FASTQ files?</a></li>
+  <li><a href="#what-does-the-pipeline-do" id="toc-what-does-the-pipeline-do" class="nav-link" data-scroll-target="#what-does-the-pipeline-do"><span class="header-section-number">6</span> What does the pipeline do?</a>
   <ul class="collapse">
-  <li><a href="#pre-processing" id="toc-pre-processing" class="nav-link" data-scroll-target="#pre-processing"><span class="header-section-number">4.1</span> Pre-processing</a></li>
-  <li><a href="#alignment-and-quantification" id="toc-alignment-and-quantification" class="nav-link" data-scroll-target="#alignment-and-quantification"><span class="header-section-number">4.2</span> Alignment and quantification</a></li>
-  <li><a href="#post-processing" id="toc-post-processing" class="nav-link" data-scroll-target="#post-processing"><span class="header-section-number">4.3</span> Post-processing</a></li>
-  <li><a href="#contamination-screening" id="toc-contamination-screening" class="nav-link" data-scroll-target="#contamination-screening"><span class="header-section-number">4.4</span> Contamination screening</a></li>
-  <li><a href="#quality-control-and-reporting" id="toc-quality-control-and-reporting" class="nav-link" data-scroll-target="#quality-control-and-reporting"><span class="header-section-number">4.5</span> Quality control and reporting</a></li>
+  <li><a href="#pre-processing" id="toc-pre-processing" class="nav-link" data-scroll-target="#pre-processing"><span class="header-section-number">6.1</span> Pre-processing</a></li>
+  <li><a href="#alignment-and-quantification" id="toc-alignment-and-quantification" class="nav-link" data-scroll-target="#alignment-and-quantification"><span class="header-section-number">6.2</span> Alignment and quantification</a></li>
+  <li><a href="#post-processing" id="toc-post-processing" class="nav-link" data-scroll-target="#post-processing"><span class="header-section-number">6.3</span> Post-processing</a></li>
+  <li><a href="#contamination-screening" id="toc-contamination-screening" class="nav-link" data-scroll-target="#contamination-screening"><span class="header-section-number">6.4</span> Contamination screening</a></li>
+  <li><a href="#quality-control-and-reporting" id="toc-quality-control-and-reporting" class="nav-link" data-scroll-target="#quality-control-and-reporting"><span class="header-section-number">6.5</span> Quality control and reporting</a></li>
   </ul></li>
-  <li><a href="#what-do-we-get-at-the-end" id="toc-what-do-we-get-at-the-end" class="nav-link" data-scroll-target="#what-do-we-get-at-the-end"><span class="header-section-number">5</span> What do we get at the end?</a></li>
-  <li><a href="#what-rna-seq-does-not-tell-us-by-itself" id="toc-what-rna-seq-does-not-tell-us-by-itself" class="nav-link" data-scroll-target="#what-rna-seq-does-not-tell-us-by-itself"><span class="header-section-number">6</span> What RNA-seq does not tell us by itself</a></li>
+  <li><a href="#what-do-we-get-at-the-end" id="toc-what-do-we-get-at-the-end" class="nav-link" data-scroll-target="#what-do-we-get-at-the-end"><span class="header-section-number">7</span> What do we get at the end?</a></li>
+  <li><a href="#what-rna-seq-does-not-tell-us-by-itself" id="toc-what-rna-seq-does-not-tell-us-by-itself" class="nav-link" data-scroll-target="#what-rna-seq-does-not-tell-us-by-itself"><span class="header-section-number">8</span> What RNA-seq does not tell us by itself</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/rna-seq-concepts.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -230,11 +232,31 @@ ul.task-list li input[type="checkbox"] {
 <section id="the-big-idea" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="the-big-idea"><span class="header-section-number">1</span> The big idea</h2>
 <p>RNA-seq is a way to measure which genes are being expressed in a biological sample.</p>
-<p>Cells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene. RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.</p>
+<p>Cells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene — called <strong>messenger RNA</strong> (mRNA). RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.</p>
 <p>In this tutorial, we are interested in RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
 </section>
-<section id="the-nf-corernaseq-workflow" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="the-nf-corernaseq-workflow"><span class="header-section-number">2</span> The nf-core/rnaseq workflow</h2>
+<section id="from-sample-to-counts-the-basic-steps" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="from-sample-to-counts-the-basic-steps"><span class="header-section-number">2</span> From sample to counts: the basic steps</h2>
+<p>Here is the overall journey from a biological sample to a number you can analyze statistically.</p>
+<ol type="1">
+<li><strong>Extract RNA</strong> from the tissue — this happens in the wet lab before any computing begins</li>
+<li><strong>Sequence the RNA</strong> — the sequencing machine converts RNA fragments into short text strings called <strong>reads</strong>, stored in FASTQ files</li>
+<li><strong>Align the reads</strong> to a reference genome — figure out which gene each read came from</li>
+<li><strong>Count the reads per gene</strong> — for each gene, count how many reads mapped to it across each sample</li>
+<li><strong>Compare counts across conditions</strong> — use statistics to find genes where the count is higher or lower in one group vs another (differential expression)</li>
+</ol>
+<p>Steps 3–5 are what this tutorial covers computationally.</p>
+</section>
+<section id="key-terms" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="key-terms"><span class="header-section-number">3</span> Key terms</h2>
+<p><strong>Read</strong> — A short DNA/RNA sequence, typically 100–150 base pairs long, produced by the sequencer. Each read comes from one RNA molecule in the original sample.</p>
+<p><strong>Alignment</strong> — Matching each read back to the reference genome to figure out which gene it came from. A read that maps to a known gene region contributes to that gene’s count.</p>
+<p><strong>Count</strong> — The number of reads that mapped to a given gene in a given sample. More counts = higher expression (assuming similar total read depth across samples).</p>
+<p><strong>Quantification</strong> — The step that assigns counts to genes (or transcripts). Tools like Salmon do this by comparing reads to known gene sequences.</p>
+<p><strong>Differential expression</strong> — Comparing counts between groups (e.g., control vs.&nbsp;flutamide-treated) to find genes that are expressed at different levels. This is done with a statistical tool like DESeq2.</p>
+</section>
+<section id="the-nf-corernaseq-workflow" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="the-nf-corernaseq-workflow"><span class="header-section-number">4</span> The nf-core/rnaseq workflow</h2>
 <p>In this tutorial, we use <code>nf-core/rnaseq</code> to process RNA-seq data in a standardized and reproducible way.</p>
 <p>The nf-core/rnaseq pipeline can be visualized as a “metro map” of analysis steps. Each stop represents a tool or processing step, and each colored route represents a different analysis path through the pipeline.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -258,8 +280,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="what-are-fastq-files" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="what-are-fastq-files"><span class="header-section-number">3</span> What are FASTQ files?</h2>
+<section id="what-are-fastq-files" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="what-are-fastq-files"><span class="header-section-number">5</span> What are FASTQ files?</h2>
 <p>Sequencing machines produce reads. A read is a short sequence from an RNA molecule. These reads are usually stored in FASTQ files.</p>
 <p>FASTQ files often come in pairs:</p>
 <pre class="text"><code>sample1_R1.fastq.gz
@@ -271,11 +293,11 @@ sample1_R2.fastq.gz</code></pre>
 <li><code>.gz</code> means the file is compressed</li>
 </ul>
 </section>
-<section id="what-does-the-pipeline-do" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="what-does-the-pipeline-do"><span class="header-section-number">4</span> What does the pipeline do?</h2>
+<section id="what-does-the-pipeline-do" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="what-does-the-pipeline-do"><span class="header-section-number">6</span> What does the pipeline do?</h2>
 <p>The pipeline takes raw sequencing reads and turns them into quality-control reports, alignments, and expression estimates. These are the major steps shown in the nf-core/rnaseq workflow.</p>
-<section id="pre-processing" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="pre-processing"><span class="header-section-number">4.1</span> Pre-processing</h3>
+<section id="pre-processing" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="pre-processing"><span class="header-section-number">6.1</span> Pre-processing</h3>
 <p>These steps clean up and check the raw sequencing reads before alignment or quantification.</p>
 <ul>
 <li>Merge re-sequenced FASTQ files with <code>cat</code></li>
@@ -287,8 +309,8 @@ sample1_R2.fastq.gz</code></pre>
 <li>Remove ribosomal RNA with <code>SortMeRNA</code></li>
 </ul>
 </section>
-<section id="alignment-and-quantification" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="alignment-and-quantification"><span class="header-section-number">4.2</span> Alignment and quantification</h3>
+<section id="alignment-and-quantification" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="alignment-and-quantification"><span class="header-section-number">6.2</span> Alignment and quantification</h3>
 <p>After pre-processing, the pipeline can follow different routes. The route depends on whether you want genome alignment, transcript quantification, or pseudoalignment.</p>
 <p>The default route used in this tutorial is:</p>
 <pre class="text"><code>STAR -&gt; Salmon</code></pre>
@@ -300,8 +322,8 @@ sample1_R2.fastq.gz</code></pre>
 </ul>
 <p>For <code>STAR</code>, the Sentieon implementation can also be chosen if it is available and configured.</p>
 </section>
-<section id="post-processing" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="post-processing"><span class="header-section-number">4.3</span> Post-processing</h3>
+<section id="post-processing" class="level3" data-number="6.3">
+<h3 data-number="6.3" class="anchored" data-anchor-id="post-processing"><span class="header-section-number">6.3</span> Post-processing</h3>
 <p>After alignment and quantification, the pipeline organizes and summarizes the mapped reads.</p>
 <ul>
 <li>Sort and index alignments with <code>SAMtools</code></li>
@@ -311,8 +333,8 @@ sample1_R2.fastq.gz</code></pre>
 <li>Create bigWig coverage files with <code>BEDTools</code> and <code>bedGraphToBigWig</code></li>
 </ul>
 </section>
-<section id="contamination-screening" class="level3" data-number="4.4">
-<h3 data-number="4.4" class="anchored" data-anchor-id="contamination-screening"><span class="header-section-number">4.4</span> Contamination screening</h3>
+<section id="contamination-screening" class="level3" data-number="6.4">
+<h3 data-number="6.4" class="anchored" data-anchor-id="contamination-screening"><span class="header-section-number">6.4</span> Contamination screening</h3>
 <p>The pipeline can optionally screen selected reads for contamination. By default, this is done on unaligned reads.</p>
 <p>Optional tools include:</p>
 <ul>
@@ -320,8 +342,8 @@ sample1_R2.fastq.gz</code></pre>
 <li><code>Sylph</code></li>
 </ul>
 </section>
-<section id="quality-control-and-reporting" class="level3" data-number="4.5">
-<h3 data-number="4.5" class="anchored" data-anchor-id="quality-control-and-reporting"><span class="header-section-number">4.5</span> Quality control and reporting</h3>
+<section id="quality-control-and-reporting" class="level3" data-number="6.5">
+<h3 data-number="6.5" class="anchored" data-anchor-id="quality-control-and-reporting"><span class="header-section-number">6.5</span> Quality control and reporting</h3>
 <p>Quality control helps us decide whether the sequencing and analysis worked well enough to trust the results.</p>
 <p>The pipeline performs extensive QC with tools such as:</p>
 <ul>
@@ -336,8 +358,8 @@ sample1_R2.fastq.gz</code></pre>
 <p>The final report summarizes raw read quality, alignment metrics, gene biotypes, sample similarity, and strand-specificity checks.</p>
 </section>
 </section>
-<section id="what-do-we-get-at-the-end" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="what-do-we-get-at-the-end"><span class="header-section-number">5</span> What do we get at the end?</h2>
+<section id="what-do-we-get-at-the-end" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="what-do-we-get-at-the-end"><span class="header-section-number">7</span> What do we get at the end?</h2>
 <p>The main outputs are:</p>
 <ul>
 <li>Quality-control reports</li>
@@ -353,8 +375,8 @@ sample1_R2.fastq.gz</code></pre>
 <li>Which samples are ready for downstream analysis?</li>
 </ul>
 </section>
-<section id="what-rna-seq-does-not-tell-us-by-itself" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="what-rna-seq-does-not-tell-us-by-itself"><span class="header-section-number">6</span> What RNA-seq does not tell us by itself</h2>
+<section id="what-rna-seq-does-not-tell-us-by-itself" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="what-rna-seq-does-not-tell-us-by-itself"><span class="header-section-number">8</span> What RNA-seq does not tell us by itself</h2>
 <p>RNA-seq measures RNA abundance, not every part of biology directly. Gene expression can suggest biological patterns, but interpretation depends on experimental design, replication, annotation quality, and downstream statistics.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">

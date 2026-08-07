@@ -134,7 +134,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Terminal</span></a>
+ <span class="menu-text">Using the Terminal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -152,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run a Demo Pipeline</span></a>
+ <span class="menu-text">Set Up Your Workspace</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -190,9 +190,11 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#about-this-resource" id="toc-about-this-resource" class="nav-link active" data-scroll-target="#about-this-resource"><span class="header-section-number">1</span> About this resource</a></li>
-  <li><a href="#tutorial-path-needs-updating" id="toc-tutorial-path-needs-updating" class="nav-link" data-scroll-target="#tutorial-path-needs-updating"><span class="header-section-number">2</span> Tutorial path (needs updating)</a></li>
-  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites"><span class="header-section-number">3</span> Prerequisites</a></li>
-  <li><a href="#citation-and-credit" id="toc-citation-and-credit" class="nav-link" data-scroll-target="#citation-and-credit"><span class="header-section-number">4</span> Citation and credit</a></li>
+  <li><a href="#what-you-will-learn" id="toc-what-you-will-learn" class="nav-link" data-scroll-target="#what-you-will-learn"><span class="header-section-number">2</span> What you will learn</a></li>
+  <li><a href="#how-to-use-this-site" id="toc-how-to-use-this-site" class="nav-link" data-scroll-target="#how-to-use-this-site"><span class="header-section-number">3</span> How to use this site</a></li>
+  <li><a href="#tutorial-path" id="toc-tutorial-path" class="nav-link" data-scroll-target="#tutorial-path"><span class="header-section-number">4</span> Tutorial path</a></li>
+  <li><a href="#what-you-need-before-you-start" id="toc-what-you-need-before-you-start" class="nav-link" data-scroll-target="#what-you-need-before-you-start"><span class="header-section-number">5</span> What you need before you start</a></li>
+  <li><a href="#citation-and-credit" id="toc-citation-and-credit" class="nav-link" data-scroll-target="#citation-and-credit"><span class="header-section-number">6</span> Citation and credit</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -227,9 +229,9 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Illustration of the frog Staurois parvus.</figcaption>
 </figure>
 </div>
-<p>This website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
-<p>The workflow uses <a href="https://nf-co.re/">nf-core</a>, a community collection of standardized, reproducible Nextflow pipelines. The examples focus on <code>nf-core/rnaseq</code>, but the same general approach applies to other nf-core workflows.</p>
-<p>Visit the <a href="https://www.science.smith.edu/mangiamele/">Mangiamele Lab website</a> for more information about the lab and its research.</p>
+<p>This website is a bioinformatics resource for Mangiamele Lab members learning to run RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
+<p>The workflow uses <a href="https://nf-co.re/">nf-core</a>, a community collection of standardized, reproducible bioinformatics pipelines. The examples focus on <code>nf-core/rnaseq</code>, but the same approach applies to other nf-core workflows.</p>
+<p>Visit the <a href="https://www.science.smith.edu/mangiamele/">Mangiamele Lab website</a> for more about the lab and its research.</p>
 <p>Maintained by Katarina Flöer.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -241,9 +243,25 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.</p>
+<p>This tutorial is written for people using <strong>Unity</strong> (the UMass/Five Colleges computing cluster). It assumes you are on a Mac or Linux machine. Windows users can follow along but some terminal steps may look slightly different.</p>
 </div>
 </div>
+</section>
+<section id="what-you-will-learn" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-you-will-learn"><span class="header-section-number">2</span> What you will learn</h2>
+<p>By the end of this tutorial you will be able to:</p>
+<ol type="1">
+<li>Connect to the Unity computing cluster and navigate it from a terminal</li>
+<li>Set up a scratch workspace for running large analyses</li>
+<li>Submit an RNA-seq pipeline job with nf-core and SLURM</li>
+<li>Interpret the quality-control reports that come out of the pipeline</li>
+<li>Understand what the output files contain and what to do with them next</li>
+</ol>
+</section>
+<section id="how-to-use-this-site" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="how-to-use-this-site"><span class="header-section-number">3</span> How to use this site</h2>
+<p>Follow the pages in order using the sidebar on the left. Each page builds on the one before it.</p>
+<p>If you already know a topic, you can skip ahead. But if something in a later section does not make sense, it is worth going back to an earlier page — most concepts build on each other.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -254,29 +272,90 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.</p>
+<p>Throughout the tutorial you will see the username <code>kfloer_smith_edu</code> in example code. <strong>Replace it with your own Unity username everywhere you see it.</strong> If you are not sure what your username is, run <code>whoami</code> after logging in to Unity.</p>
 </div>
 </div>
 </section>
-<section id="tutorial-path-needs-updating" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="tutorial-path-needs-updating"><span class="header-section-number">2</span> Tutorial path (needs updating)</h2>
-<ol type="1">
-<li><a href="./setup.html">Set up your environment</a></li>
-<li><a href="./running.html">Run the pipeline</a></li>
-<li><a href="./results.html">Understand the results</a></li>
-<li><a href="./troubleshooting.html">Fix common issues</a></li>
-</ol>
+<section id="tutorial-path" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="tutorial-path"><span class="header-section-number">4</span> Tutorial path</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Page</th>
+<th>What you will do</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><a href="./rna-seq-concepts.html">What is RNA-seq?</a></td>
+<td>Learn what the pipeline does and why</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><a href="./file-types-storage.html">File types and storage</a></td>
+<td>Understand the files you will work with</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><a href="./frog-data-availability.html">Frog data availability</a></td>
+<td>Find the lab’s data on Unity</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><a href="./using-terminal.html">Using the terminal</a></td>
+<td>Learn the commands you will use most</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><a href="./connecting-to-unity.html">Connecting to Unity</a></td>
+<td>Log in to the cluster</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><a href="./using-unity.html">Using Unity</a></td>
+<td>Learn how Unity is organized</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td><a href="./setup.html">Set up your workspace</a></td>
+<td>Create a scratch directory for the pipeline</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><a href="./running.html">Run the pipeline</a></td>
+<td>Submit the nf-core/rnaseq job</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td><a href="./results.html">Interpret results</a></td>
+<td>Read the quality reports and count tables</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td><a href="./DGE.html">Differential expression</a></td>
+<td>Run the DESeq2 analysis in R</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td><a href="./troubleshooting.html">Troubleshooting</a></td>
+<td>Fix common problems</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="prerequisites" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="prerequisites"><span class="header-section-number">3</span> Prerequisites</h2>
-<p>You will need:</p>
+<section id="what-you-need-before-you-start" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="what-you-need-before-you-start"><span class="header-section-number">5</span> What you need before you start</h2>
 <ul>
-<li>Lisa to register your email with Unity</li>
-<li>A laptop with a terminal</li>
+<li>A Unity account (ask Lisa to register your email)</li>
+<li>A laptop with a terminal app (Terminal on Mac, Windows Terminal on Windows)</li>
+<li>Basic comfort reading and typing in a terminal — the <a href="./using-terminal.html">Using the terminal</a> page covers everything you need</li>
 </ul>
+<p>You do not need programming experience to follow this tutorial. All commands are written out step by step.</p>
 </section>
-<section id="citation-and-credit" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="citation-and-credit"><span class="header-section-number">4</span> Citation and credit</h2>
+<section id="citation-and-credit" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="citation-and-credit"><span class="header-section-number">6</span> Citation and credit</h2>
 <p>This tutorial uses community tools from <a href="https://nf-co.re/">nf-core</a> and <a href="https://www.nextflow.io/">Nextflow</a>.</p>
 
 

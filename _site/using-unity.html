@@ -169,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Terminal</span></a>
+ <span class="menu-text">Using the Terminal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -187,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run a Demo Pipeline</span></a>
+ <span class="menu-text">Set Up Your Workspace</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -224,12 +224,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#why-this-page-matters" id="toc-why-this-page-matters" class="nav-link active" data-scroll-target="#why-this-page-matters"><span class="header-section-number">1</span> Why this page matters</a></li>
-  <li><a href="#login-nodes" id="toc-login-nodes" class="nav-link" data-scroll-target="#login-nodes"><span class="header-section-number">2</span> Login nodes</a></li>
-  <li><a href="#interactive-jobs" id="toc-interactive-jobs" class="nav-link" data-scroll-target="#interactive-jobs"><span class="header-section-number">3</span> Interactive jobs</a></li>
-  <li><a href="#compute-jobs" id="toc-compute-jobs" class="nav-link" data-scroll-target="#compute-jobs"><span class="header-section-number">4</span> Compute jobs</a></li>
-  <li><a href="#which-one-should-i-use" id="toc-which-one-should-i-use" class="nav-link" data-scroll-target="#which-one-should-i-use"><span class="header-section-number">5</span> Which one should I use?</a></li>
-  <li><a href="#a-useful-mental-model" id="toc-a-useful-mental-model" class="nav-link" data-scroll-target="#a-useful-mental-model"><span class="header-section-number">6</span> A useful mental model</a></li>
+  <li><a href="#unity-resources" id="toc-unity-resources" class="nav-link active" data-scroll-target="#unity-resources"><span class="header-section-number">1</span> Unity resources</a></li>
+  <li><a href="#your-username" id="toc-your-username" class="nav-link" data-scroll-target="#your-username"><span class="header-section-number">2</span> Your username</a></li>
+  <li><a href="#login-nodes" id="toc-login-nodes" class="nav-link" data-scroll-target="#login-nodes"><span class="header-section-number">3</span> Login nodes</a></li>
+  <li><a href="#interactive-jobs" id="toc-interactive-jobs" class="nav-link" data-scroll-target="#interactive-jobs"><span class="header-section-number">4</span> Interactive jobs</a></li>
+  <li><a href="#compute-jobs" id="toc-compute-jobs" class="nav-link" data-scroll-target="#compute-jobs"><span class="header-section-number">5</span> Compute jobs</a></li>
+  <li><a href="#which-one-should-i-use" id="toc-which-one-should-i-use" class="nav-link" data-scroll-target="#which-one-should-i-use"><span class="header-section-number">6</span> Which one should I use?</a></li>
+  <li><a href="#project-architecture" id="toc-project-architecture" class="nav-link" data-scroll-target="#project-architecture"><span class="header-section-number">7</span> Project architecture</a></li>
+  <li><a href="#conda-and-mamba-environments" id="toc-conda-and-mamba-environments" class="nav-link" data-scroll-target="#conda-and-mamba-environments"><span class="header-section-number">8</span> Conda and mamba environments</a>
+  <ul class="collapse">
+  <li><a href="#check-what-condamamba-is-available" id="toc-check-what-condamamba-is-available" class="nav-link" data-scroll-target="#check-what-condamamba-is-available"><span class="header-section-number">8.1</span> Check what conda/mamba is available</a></li>
+  <li><a href="#create-a-new-environment" id="toc-create-a-new-environment" class="nav-link" data-scroll-target="#create-a-new-environment"><span class="header-section-number">8.2</span> Create a new environment</a></li>
+  <li><a href="#activate-an-environment" id="toc-activate-an-environment" class="nav-link" data-scroll-target="#activate-an-environment"><span class="header-section-number">8.3</span> Activate an environment</a></li>
+  <li><a href="#install-packages-into-the-active-environment" id="toc-install-packages-into-the-active-environment" class="nav-link" data-scroll-target="#install-packages-into-the-active-environment"><span class="header-section-number">8.4</span> Install packages into the active environment</a></li>
+  <li><a href="#deactivate" id="toc-deactivate" class="nav-link" data-scroll-target="#deactivate"><span class="header-section-number">8.5</span> Deactivate</a></li>
+  <li><a href="#list-your-environments" id="toc-list-your-environments" class="nav-link" data-scroll-target="#list-your-environments"><span class="header-section-number">8.6</span> List your environments</a></li>
+  </ul></li>
+  <li><a href="#a-useful-mental-model" id="toc-a-useful-mental-model" class="nav-link" data-scroll-target="#a-useful-mental-model"><span class="header-section-number">9</span> A useful mental model</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/using-unity.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -255,19 +266,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="why-this-page-matters" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="why-this-page-matters"><span class="header-section-number">1</span> Why this page matters</h2>
-<p>Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.</p>
-<p>For RNA-seq, it is important to know the difference between:</p>
-<ul>
-<li>Login nodes</li>
-<li>Interactive jobs</li>
-<li>Compute jobs</li>
-</ul>
-<p>Using the right place keeps the cluster responsive for everyone and helps your own work run more reliably.</p>
+<section id="unity-resources" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="unity-resources"><span class="header-section-number">1</span> Unity resources</h2>
+<p>Bookmark these links — you will use them regularly.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Resource</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scratch workspaces</td>
+<td><a href="https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/" class="uri">https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/</a></td>
+</tr>
+<tr class="even">
+<td>Module explorer (search available software)</td>
+<td><a href="https://ood.unity.rc.umass.edu/pun/sys/module-explorer" class="uri">https://ood.unity.rc.umass.edu/pun/sys/module-explorer</a></td>
+</tr>
+<tr class="odd">
+<td>Node specifications</td>
+<td><a href="https://docs.unityhpc.org/documentation/cluster_specs/nodes/" class="uri">https://docs.unityhpc.org/documentation/cluster_specs/nodes/</a></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="login-nodes" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="login-nodes"><span class="header-section-number">2</span> Login nodes</h2>
+<section id="your-username" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="your-username"><span class="header-section-number">2</span> Your username</h2>
+<p>Throughout this tutorial you will see prompts and paths that contain <code>kfloer_smith_edu</code>. That is Kate’s Unity username. <strong>Replace it with your own Unity username everywhere you see it.</strong></p>
+<p>For example, if your Unity username is <code>jsmith_smith_edu</code>, then:</p>
+<pre class="text"><code>/home/kfloer_smith_edu/          →   /home/jsmith_smith_edu/
+/scratch4/workspace/kfloer_smith_edu-demo/   →   /scratch4/workspace/jsmith_smith_edu-demo/</code></pre>
+<p>If you are not sure what your username is, run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">whoami</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="login-nodes" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="login-nodes"><span class="header-section-number">3</span> Login nodes</h2>
 <p>When you first connect to Unity with SSH, you land on a login node.</p>
 <p>Your prompt may look like this:</p>
 <pre class="text"><code>(base) kfloer_smith_edu@login1:~$</code></pre>
@@ -294,8 +329,8 @@ Warning
 </div>
 </div>
 </section>
-<section id="interactive-jobs" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="interactive-jobs"><span class="header-section-number">3</span> Interactive jobs</h2>
+<section id="interactive-jobs" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="interactive-jobs"><span class="header-section-number">4</span> Interactive jobs</h2>
 <p>An interactive job gives you a temporary compute session where you can run commands directly.</p>
 <p>Interactive jobs are useful for:</p>
 <ul>
@@ -306,10 +341,9 @@ Warning
 <li>Trying a short nf-core test run</li>
 </ul>
 <p>In an interactive job, you still type commands yourself, but the commands run on a compute node instead of the login node.</p>
-<p>Add the exact Unity command for starting an interactive job here:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add Unity interactive job command here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">srun</span> <span class="at">--partition</span><span class="op">=</span>cpu <span class="at">--cpus-per-task</span><span class="op">=</span>4 <span class="at">--mem</span><span class="op">=</span>16G <span class="at">--time</span><span class="op">=</span>2:00:00 <span class="at">--pty</span> bash</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Example prompt after starting an interactive job:</p>
-<pre class="text"><code>(base) kfloer_smith_edu@compute-node:~$</code></pre>
+<pre class="text"><code>(base) kfloer_smith_edu@gpu-node:~$</code></pre>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -324,8 +358,8 @@ Note
 </div>
 </div>
 </section>
-<section id="compute-jobs" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="compute-jobs"><span class="header-section-number">4</span> Compute jobs</h2>
+<section id="compute-jobs" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="compute-jobs"><span class="header-section-number">5</span> Compute jobs</h2>
 <p>A compute job is a job submitted to the cluster scheduler. Instead of typing commands one by one, you write a job script and submit it.</p>
 <p>Compute jobs are useful for:</p>
 <ul>
@@ -335,19 +369,13 @@ Note
 <li>Analyses that need lots of memory</li>
 <li>Work that should keep running after you log out</li>
 </ul>
-<p>A compute job usually includes:</p>
-<ul>
-<li>Requested time</li>
-<li>Requested CPUs</li>
-<li>Requested memory</li>
-<li>Output log file names</li>
-<li>Commands to run</li>
-</ul>
-<p>Add the exact Unity scheduler example here:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add Unity batch job submission command here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Submit a job script with <code>sbatch</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> my-script.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Check on your jobs:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="which-one-should-i-use" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="which-one-should-i-use"><span class="header-section-number">5</span> Which one should I use?</h2>
+<section id="which-one-should-i-use" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="which-one-should-i-use"><span class="header-section-number">6</span> Which one should I use?</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -391,8 +419,129 @@ Note
 </tbody>
 </table>
 </section>
-<section id="a-useful-mental-model" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="a-useful-mental-model"><span class="header-section-number">6</span> A useful mental model</h2>
+<section id="project-architecture" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="project-architecture"><span class="header-section-number">7</span> Project architecture</h2>
+<p>Before you start running analyses, think about where your files will live. Unity has three main storage areas with different purposes.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Location</th>
+<th>Path pattern</th>
+<th>Purpose</th>
+<th>Space</th>
+<th>Temporary?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Home directory</td>
+<td><code>/home/kfloer_smith_edu/</code></td>
+<td>Scripts, config files, small notes</td>
+<td>Limited (~50 GB)</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Lab shared storage</td>
+<td><code>/work/pi_lmangiamele_smith_edu/</code></td>
+<td>Shared data, reference genomes, final results</td>
+<td>Large</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Scratch workspace</td>
+<td><code>/scratch4/workspace/kfloer_smith_edu-WORKSPACE/</code></td>
+<td>Pipeline runs, intermediate files</td>
+<td>Very large</td>
+<td>Yes — 30 days</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A typical project setup looks like this:</strong></p>
+<pre class="text"><code>/home/kfloer_smith_edu/
+  rnaseq_nf_core/
+    job-logs/          ← SLURM output and error files
+    scripts/           ← Your .sh job scripts
+
+/work/pi_lmangiamele_smith_edu/
+  03_26_flut_yale_rnaseq/     ← Raw FASTQ files (input data)
+  output_tadpole_plus_adult/  ← Reference genome and annotation
+  results_final/              ← Final results you want to keep
+
+/scratch4/workspace/kfloer_smith_edu-rnaseq/
+  samplesheets/        ← Input samplesheet CSV
+  results/             ← nf-core pipeline output (large, temporary)
+  .nextflow-apptainer-cache/  ← Container image cache</code></pre>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Scratch workspaces expire after 30 days. Copy anything you want to keep (final results, count tables, MultiQC reports) to <code>/work/pi_lmangiamele_smith_edu/</code> before the workspace expires.</p>
+</div>
+</div>
+<p>The scratch workspace is where pipelines run because it is fast and has large capacity. Your home directory and the lab’s <code>/work/</code> directory are for permanent storage.</p>
+</section>
+<section id="conda-and-mamba-environments" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="conda-and-mamba-environments"><span class="header-section-number">8</span> Conda and mamba environments</h2>
+<p>Conda is a package manager that lets you install software and keep different versions of tools isolated from each other. <strong>Mamba</strong> is a faster drop-in replacement for conda — they use the same commands, mamba just solves environments more quickly.</p>
+<p>An <strong>environment</strong> is a self-contained collection of software. You create one environment per project (or per tool) so that different tools with conflicting dependencies do not interfere with each other.</p>
+<section id="check-what-condamamba-is-available" class="level3" data-number="8.1">
+<h3 data-number="8.1" class="anchored" data-anchor-id="check-what-condamamba-is-available"><span class="header-section-number">8.1</span> Check what conda/mamba is available</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load miniconda/latest</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Or if mamba is available:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mamba</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="create-a-new-environment" class="level3" data-number="8.2">
+<h3 data-number="8.2" class="anchored" data-anchor-id="create-a-new-environment"><span class="header-section-number">8.2</span> Create a new environment</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mamba</span> create <span class="at">-n</span> rnaseq-env python=3.11</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="activate-an-environment" class="level3" data-number="8.3">
+<h3 data-number="8.3" class="anchored" data-anchor-id="activate-an-environment"><span class="header-section-number">8.3</span> Activate an environment</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate rnaseq-env</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Your prompt will change to show the environment name:</p>
+<pre class="text"><code>(rnaseq-env) kfloer_smith_edu@login1:~$</code></pre>
+</section>
+<section id="install-packages-into-the-active-environment" class="level3" data-number="8.4">
+<h3 data-number="8.4" class="anchored" data-anchor-id="install-packages-into-the-active-environment"><span class="header-section-number">8.4</span> Install packages into the active environment</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mamba</span> install <span class="at">-c</span> bioconda <span class="at">-c</span> conda-forge fastqc multiqc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="deactivate" class="level3" data-number="8.5">
+<h3 data-number="8.5" class="anchored" data-anchor-id="deactivate"><span class="header-section-number">8.5</span> Deactivate</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> deactivate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="list-your-environments" class="level3" data-number="8.6">
+<h3 data-number="8.6" class="anchored" data-anchor-id="list-your-environments"><span class="header-section-number">8.6</span> List your environments</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For running nf-core pipelines on Unity, you generally do not need a conda environment — the pipeline manages its own software through Apptainer containers. Conda environments are more useful for tools you run separately, like R packages or custom Python scripts.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="a-useful-mental-model" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="a-useful-mental-model"><span class="header-section-number">9</span> A useful mental model</h2>
 <p>Think of the login node as the front desk. It helps you get organized and submit work.</p>
 <p>Think of interactive jobs as a temporary workbench. They are useful when you need to test something hands-on.</p>
 <p>Think of compute jobs as the production workspace. They are where long or heavy analyses should run.</p>

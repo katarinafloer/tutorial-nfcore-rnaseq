@@ -134,7 +134,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./using-terminal.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Terminal</span></a>
+ <span class="menu-text">Using the Terminal</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -152,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run a Demo Pipeline</span></a>
+ <span class="menu-text">Set Up Your Workspace</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -190,11 +190,19 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose"><span class="header-section-number">1</span> Purpose</a></li>
-  <li><a href="#genome-resources" id="toc-genome-resources" class="nav-link" data-scroll-target="#genome-resources"><span class="header-section-number">2</span> Genome Resources</a></li>
-  <li><a href="#rna-seq-reads" id="toc-rna-seq-reads" class="nav-link" data-scroll-target="#rna-seq-reads"><span class="header-section-number">3</span> RNA-seq Reads</a></li>
-  <li><a href="#sample-metadata" id="toc-sample-metadata" class="nav-link" data-scroll-target="#sample-metadata"><span class="header-section-number">4</span> Sample Metadata</a></li>
-  <li><a href="#other-useful-data" id="toc-other-useful-data" class="nav-link" data-scroll-target="#other-useful-data"><span class="header-section-number">5</span> Other Useful Data</a></li>
-  <li><a href="#download-notes" id="toc-download-notes" class="nav-link" data-scroll-target="#download-notes"><span class="header-section-number">6</span> Download Notes</a></li>
+  <li><a href="#what-is-sra-and-how-does-it-relate-to-ncbi" id="toc-what-is-sra-and-how-does-it-relate-to-ncbi" class="nav-link" data-scroll-target="#what-is-sra-and-how-does-it-relate-to-ncbi"><span class="header-section-number">2</span> What is SRA, and how does it relate to NCBI?</a></li>
+  <li><a href="#what-youll-most-likely-need" id="toc-what-youll-most-likely-need" class="nav-link" data-scroll-target="#what-youll-most-likely-need"><span class="header-section-number">3</span> What you’ll most likely need</a>
+  <ul class="collapse">
+  <li><a href="#rna-seq-reads-flutamide-experiment" id="toc-rna-seq-reads-flutamide-experiment" class="nav-link" data-scroll-target="#rna-seq-reads-flutamide-experiment"><span class="header-section-number">3.1</span> RNA-seq reads (flutamide experiment)</a></li>
+  <li><a href="#genome-assembly-egapx" id="toc-genome-assembly-egapx" class="nav-link" data-scroll-target="#genome-assembly-egapx"><span class="header-section-number">3.2</span> Genome assembly (EGAPx)</a></li>
+  </ul></li>
+  <li><a href="#some-other-useful-data" id="toc-some-other-useful-data" class="nav-link" data-scroll-target="#some-other-useful-data"><span class="header-section-number">4</span> Some other useful data</a>
+  <ul class="collapse">
+  <li><a href="#hifi-pacbio-reads-used-to-build-the-egapx-assembly" id="toc-hifi-pacbio-reads-used-to-build-the-egapx-assembly" class="nav-link" data-scroll-target="#hifi-pacbio-reads-used-to-build-the-egapx-assembly"><span class="header-section-number">4.1</span> HiFi PacBio reads (used to build the EGAPx assembly)</a></li>
+  <li><a href="#old-clr-pacbio-reads" id="toc-old-clr-pacbio-reads" class="nav-link" data-scroll-target="#old-clr-pacbio-reads"><span class="header-section-number">4.2</span> Old CLR PacBio reads</a></li>
+  <li><a href="#public-genome-resources" id="toc-public-genome-resources" class="nav-link" data-scroll-target="#public-genome-resources"><span class="header-section-number">4.3</span> Public genome resources</a></li>
+  </ul></li>
+  <li><a href="#download-notes" id="toc-download-notes" class="nav-link" data-scroll-target="#download-notes"><span class="header-section-number">5</span> Download notes</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/frog-data-availability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -222,10 +230,74 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="purpose" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="purpose"><span class="header-section-number">1</span> Purpose</h2>
-<p>This page collects links to public data resources used for <em>Staurois parvus</em> RNA-seq analysis in the Mangiamele Lab.</p>
+<p>This page collects the data files and repositories used for <em>Staurois parvus</em> RNA-seq analysis in the Mangiamele Lab.</p>
 </section>
-<section id="genome-resources" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="genome-resources"><span class="header-section-number">2</span> Genome Resources</h2>
+<section id="what-is-sra-and-how-does-it-relate-to-ncbi" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-is-sra-and-how-does-it-relate-to-ncbi"><span class="header-section-number">2</span> What is SRA, and how does it relate to NCBI?</h2>
+<p><strong>NCBI</strong> (National Center for Biotechnology Information) is a US government database that stores biological data — genome sequences, gene records, publications, and more. It is the main public archive for genomics data.</p>
+<p><strong>SRA</strong> (Sequence Read Archive) is the part of NCBI that specifically stores raw sequencing reads — the FASTQ files that come off a sequencer. When a paper publishes RNA-seq data, the raw reads are usually deposited in SRA, and each dataset is given a unique accession number that starts with <code>SRA</code>, <code>SRP</code>, <code>SRR</code>, or <code>PRJNA</code>.</p>
+<p>To download data from SRA you use a tool called <code>sra-tools</code> (specifically the <code>fasterq-dump</code> command), which converts SRA format back into FASTQ files.</p>
+<p><strong>GEO</strong> (Gene Expression Omnibus) is a related NCBI database that stores processed expression data — count tables, normalized values, and metadata. GEO records often link back to the raw SRA reads.</p>
+<p>In practice: if you see a paper say “data available at GEO accession GSE######”, the raw reads for that study are usually also in SRA under a linked accession.</p>
+</section>
+<section id="what-youll-most-likely-need" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="what-youll-most-likely-need"><span class="header-section-number">3</span> What you’ll most likely need</h2>
+<p>These are the files you need to run the nf-core/rnaseq pipeline and the downstream DESeq2 analysis.</p>
+<section id="rna-seq-reads-flutamide-experiment" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="rna-seq-reads-flutamide-experiment"><span class="header-section-number">3.1</span> RNA-seq reads (flutamide experiment)</h3>
+<p>Raw paired-end FASTQ files from the flutamide treatment experiment (Kate’s thesis).</p>
+<p><strong>On Unity:</strong></p>
+<pre class="text"><code>/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq</code></pre>
+<p><strong>Yale server (external):</strong></p>
+<p><a href="http://fcb.ycga.yale.edu:3010/fTvjY60iTRcfef5EWgR3HlRd5pz98l0/sample_dir_000020575/" class="uri">http://fcb.ycga.yale.edu:3010/fTvjY60iTRcfef5EWgR3HlRd5pz98l0/sample_dir_000020575/</a></p>
+</section>
+<section id="genome-assembly-egapx" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="genome-assembly-egapx"><span class="header-section-number">3.2</span> Genome assembly (EGAPx)</h3>
+<p>The <em>S. parvus</em> genome assembly annotated with EGAPx. Contains FASTA, GTF, and GFF files.</p>
+<p><strong>On Unity:</strong></p>
+<pre class="text"><code>/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult</code></pre>
+<p>Key files in that directory:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>complete.genomic.fna</code></td>
+<td>Genome FASTA (reference sequence)</td>
+</tr>
+<tr class="even">
+<td><code>complete.genomic.gtf</code></td>
+<td>Gene annotation in GTF format</td>
+</tr>
+<tr class="odd">
+<td><code>complete.genomic.gff</code></td>
+<td>Gene annotation in GFF format</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="some-other-useful-data" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="some-other-useful-data"><span class="header-section-number">4</span> Some other useful data</h2>
+<p>These files are not needed for the main RNA-seq pipeline but are useful context for the project.</p>
+<section id="hifi-pacbio-reads-used-to-build-the-egapx-assembly" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="hifi-pacbio-reads-used-to-build-the-egapx-assembly"><span class="header-section-number">4.1</span> HiFi PacBio reads (used to build the EGAPx assembly)</h3>
+<p><strong>On Unity:</strong></p>
+<pre class="text"><code>/work/pi_lmangiamele_smith_edu/yale_hifi_03_26</code></pre>
+<p><strong>Yale server (external):</strong></p>
+<p><a href="http://fcb.ycga.yale.edu:3010/Bcs7fnShP4sYdsw2ZmkH4Fxpcn83c60/20260313_lmangiamele_r84189_20260310_214511/" class="uri">http://fcb.ycga.yale.edu:3010/Bcs7fnShP4sYdsw2ZmkH4Fxpcn83c60/20260313_lmangiamele_r84189_20260310_214511/</a></p>
+</section>
+<section id="old-clr-pacbio-reads" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="old-clr-pacbio-reads"><span class="header-section-number">4.2</span> Old CLR PacBio reads</h3>
+<p><strong>On Unity:</strong></p>
+<pre class="text"><code>/work/pi_lmangiamele_smith_edu/pacbio_parvus</code></pre>
+</section>
+<section id="public-genome-resources" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="public-genome-resources"><span class="header-section-number">4.3</span> Public genome resources</h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -238,151 +310,30 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td>Old genome assembly</td>
-<td><a href="https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_951230385.1/">NCBI link</a></td>
+<td><a href="https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_951230385.1/">GCA_951230385.1</a></td>
 <td><a href="https://academic.oup.com/g3journal/article/13/10/jkad193/7251439">Paper</a></td>
 <td>2023</td>
 </tr>
 <tr class="even">
-<td>New Genome assembly</td>
+<td>New genome assembly</td>
 <td>Add link</td>
-<td>Add assembly version, accession, or source</td>
+<td>Add accession once deposited</td>
 <td>2026</td>
 </tr>
-<tr class="odd">
-<td>Genome FASTA</td>
-<td>Add link</td>
-<td>Add file name and date downloaded</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Gene annotation</td>
-<td>Add link</td>
-<td>Add GTF/GFF source and version</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Transcriptome</td>
-<td>Add link</td>
-<td>Optional</td>
-<td></td>
-</tr>
 </tbody>
 </table>
 </section>
-<section id="rna-seq-reads" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="rna-seq-reads"><span class="header-section-number">3</span> RNA-seq Reads</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Dataset</th>
-<th>Repository</th>
-<th>Accession or link</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>RNA-seq reads</td>
-<td>NCBI SRA</td>
-<td>Add link</td>
-<td>Add tissue, treatment, or project notes</td>
-</tr>
-<tr class="even">
-<td>RNA-seq reads</td>
-<td>GEO</td>
-<td>Add link</td>
-<td>Optional</td>
-</tr>
-<tr class="odd">
-<td>RNA-seq reads</td>
-<td>ENA</td>
-<td>Add link</td>
-<td>Optional</td>
-</tr>
-</tbody>
-</table>
 </section>
-<section id="sample-metadata" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="sample-metadata"><span class="header-section-number">4</span> Sample Metadata</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>File or record</th>
-<th>Link</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Sample metadata</td>
-<td>Add link</td>
-<td>Sample IDs, tissue, sex, treatment, collection details</td>
-</tr>
-<tr class="even">
-<td>Experimental design</td>
-<td>Add link</td>
-<td>Group comparisons or design notes</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="other-useful-data" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="other-useful-data"><span class="header-section-number">5</span> Other Useful Data</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Resource</th>
-<th>Link</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Related publication</td>
-<td>Add link</td>
-<td>Paper, preprint, or thesis</td>
-</tr>
-<tr class="even">
-<td>Supplementary files</td>
-<td>Add link</td>
-<td>Tables, scripts, or additional references</td>
-</tr>
-<tr class="odd">
-<td>Lab notes</td>
-<td>Add link</td>
-<td>Internal notes if appropriate</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="download-notes" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="download-notes"><span class="header-section-number">6</span> Download Notes</h2>
-<p>When adding data links, record:</p>
+<section id="download-notes" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="download-notes"><span class="header-section-number">5</span> Download notes</h2>
+<p>Whenever you use a dataset, record:</p>
 <ul>
-<li>Repository name</li>
-<li>Accession number</li>
+<li>Where you got it (Unity path or external URL)</li>
 <li>Date accessed</li>
 <li>File names downloaded</li>
 <li>Genome or annotation version</li>
-<li>Any filtering or processing already performed</li>
 </ul>
-<p>This information makes the analysis easier to reproduce later.</p>
+<p>This information makes the analysis reproducible and saves time if you need to re-run anything later.</p>
 
 
 </section>
