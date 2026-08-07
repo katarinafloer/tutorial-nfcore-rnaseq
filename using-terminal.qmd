@@ -27,7 +27,7 @@ Every command on this page is safe to run. You will not break anything by follow
 You should see a prompt that looks something like:
 
 ```text
-kfloer@Kates-MacBook-Pro ~ %
+your_username@your-computer ~ %
 ```
 
 The terminal is waiting for you to type a command. Press Enter after each command to run it.
@@ -86,7 +86,7 @@ Common hidden files you will encounter:
 | `~/.zshrc` | Terminal configuration, runs every time you open a new window |
 | `~/.bash_profile` | Same idea, but for the older bash shell |
 | `~/.gitignore` | Tells Git which files to ignore |
-| `~/.ssh/` | Folder containing SSH keys used to connect to remote servers like Unity |
+| `~/.ssh/` | Folder containing SSH keys used to connect to remote servers |
 
 To see hidden files in the terminal, add the `-a` flag to `ls`:
 
@@ -121,7 +121,7 @@ pwd
 **You should see something like:**
 
 ```text
-/Users/kfloer
+/Users/your_username
 ```
 
 Your path will show your own username. This is your **home directory**, the folder that belongs to you.
@@ -145,7 +145,7 @@ pwd
 **You should see:**
 
 ```text
-/Users/kfloer/Desktop
+/Users/your_username/Desktop
 ```
 
 ---
@@ -173,7 +173,7 @@ pwd
 **You should see:**
 
 ```text
-/Users/kfloer/Desktop/practice
+/Users/your_username/Desktop/practice
 ```
 
 ---
@@ -195,7 +195,7 @@ pwd
 **You should see:**
 
 ```text
-/Users/kfloer/Desktop
+/Users/your_username/Desktop
 ```
 
 Now go back into `practice` using its **full path**:
@@ -213,7 +213,7 @@ pwd
 **You should see:**
 
 ```text
-/Users/kfloer/Desktop/practice
+/Users/your_username/Desktop/practice
 ```
 
 You just navigated the same way using two different approaches. This is the difference between **relative paths** and **absolute paths**.
@@ -228,19 +228,19 @@ cd ..            # always means one folder up from your current location
 **Absolute paths** describe the full location starting from the top of the filesystem. They always start with `/` or `~` (which is shorthand for your home directory):
 
 ```bash
-cd ~/Desktop/practice              # works from anywhere
-cd /Users/kfloer/Desktop/practice  # exactly the same, written out in full
+cd ~/Desktop/practice                      # works from anywhere
+cd /Users/your_username/Desktop/practice   # exactly the same, written out in full
 ```
 
 ::: {.callout-tip}
-When you are unsure where you are, use an absolute path. It works from anywhere and never depends on your current location. This is especially important on Unity, where you will be navigating between your home directory, the lab `/work/` folder, and your scratch workspace.
+When you are unsure where you are, use an absolute path. It works from anywhere and never depends on your current location.
 :::
 
 ---
 
 ### Step 5: Create a text file with nano
 
-`nano` is a simple text editor that runs inside the terminal. You will use it to write scripts on Unity. Open a new file called `notes.txt`:
+`nano` is a simple text editor that runs inside the terminal. Open a new file called `notes.txt`:
 
 ```bash
 nano notes.txt
@@ -277,15 +277,15 @@ Avoid spaces in names and use underscores instead.
 Press Tab to autocomplete a file or folder name.
 Press the up arrow key to repeat a previous command.
 Press Ctrl+C to cancel a running command.
-On Unity, the terminal is how I submit jobs.
-SLURM is the job scheduler on Unity.
-sbatch submits a job script to SLURM.
-squeue --me shows my currently running jobs.
-A scratch workspace is temporary fast storage on Unity.
-Final results should be copied to /work/ before the workspace expires.
-Nextflow manages each step of the RNA-seq pipeline.
-Apptainer provides the software containers that the pipeline uses.
-nf-core/rnaseq is the specific pipeline used in this tutorial.
+Servers and clusters are accessed through the terminal.
+Bioinformatics tools often run on remote computers.
+Scripts automate repetitive tasks.
+Checking logs helps diagnose problems.
+Temporary storage is used for large files during analysis.
+Keeping organised folders makes research easier.
+Version control tracks changes in your scripts over time.
+Containers package software so it runs the same everywhere.
+Pipelines automate multi-step analyses.
 The terminal is one of the most powerful tools in bioinformatics.
 ```
 
@@ -320,7 +320,7 @@ ls -lh
 **You should see something like:**
 
 ```text
--rw-r--r--  1 kfloer  staff   1.1K Aug  7 14:23 notes.txt
+-rw-r--r--  1 your_username  staff   1.1K Aug  7 14:23 notes.txt
 ```
 
 Here is what each part means:
@@ -329,7 +329,7 @@ Here is what each part means:
 |---|---|---|
 | Type and permissions | `-rw-r--r--` | What kind of item it is and who can read, write, or run it |
 | Links | `1` | Number of hard links (usually 1 for files) |
-| Owner | `kfloer` | The user who owns the file |
+| Owner | `your_username` | The user who owns the file |
 | Group | `staff` | The group associated with the file |
 | Size | `1.1K` | File size in human-readable units (K/M/G instead of raw bytes) |
 | Date | `Aug  7 14:23` | When the file was last modified |
@@ -380,7 +380,7 @@ tail notes.txt
 ```
 
 ::: {.callout-tip}
-`head` and `tail` are useful when a file is very large, too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick `head` or `tail` gives you a preview without waiting for everything to scroll past.
+`head` and `tail` are useful when a file is very large, too large to print the whole thing at once. A quick `head` or `tail` gives you a preview without waiting for everything to scroll past.
 :::
 
 ---
@@ -444,15 +444,15 @@ You will run into two situations where a command takes over your terminal and yo
 If you accidentally run `cat` on a very large file, thousands of lines start scrolling past and will not stop on their own. Press `Ctrl+C` to cancel the command immediately.
 
 ```bash
-cat huge_log_file.txt   # thousands of lines start scrolling...
+cat huge_file.txt   # thousands of lines start scrolling...
 # press Ctrl+C to stop
 ```
 
 `Ctrl+C` cancels whatever command is currently running. Use it any time a command is doing something and you want it to stop.
 
-**Situation 2: a pager opens (less, man, git log)**
+**Situation 2: a pager opens (less, man)**
 
-Some commands open an interactive viewer called a **pager** instead of dumping everything to the screen at once. You will see this with `less`, `man`, and sometimes `git log`. The pager lets you scroll up and down through the content.
+Some commands open an interactive viewer called a **pager** instead of dumping everything to the screen at once. You will see this with `less` and `man`. The pager lets you scroll up and down through the content.
 
 To open a file in the pager:
 
@@ -497,8 +497,6 @@ You have practiced the core terminal commands you will use throughout this tutor
 | Stopped a running command | `Ctrl+C` |
 | Exited a pager | `q` |
 
-These same commands work on Unity. The only difference is that on Unity your home directory is `/home/your_username/` instead of `/Users/your_username/`.
-
 ---
 
 ## What is a shell script?
@@ -511,16 +509,14 @@ Shell scripts usually end with `.sh`. For example:
 
 ```bash
 #!/bin/bash
-module load nextflow/26.04.1
-nextflow run nf-core/rnaseq -r 3.26.0 -profile test,unity
+mkdir -p results/raw
+echo "Folders created."
 ```
 
 That is a three-line shell script. The first line (`#!/bin/bash`) tells the computer which program to use to interpret the commands, think of it like a `library()` call in R that sets up the environment. The next lines are commands you would type manually, saved so they run automatically.
 
-The job scripts in this tutorial are shell scripts with extra lines at the top starting with `#SBATCH`. Those are instructions for SLURM, they tell the job scheduler how much time and memory to reserve. Everything else is plain terminal commands.
-
 ::: {.callout-tip}
-The `.sh` extension is a convention, not a requirement. Some people name SLURM scripts `.sbatch`. Both work, the extension is just a label to remind you what the file does.
+The `.sh` extension is a convention, not a requirement. Both work, the extension is just a label to remind you what the file does.
 :::
 
 ---
@@ -551,7 +547,6 @@ The `.sh` extension is a convention, not a requirement. Some people name SLURM s
 | Copy a folder | `cp -r source/ destination/` |
 | Check folder size | `du -sh folder/` |
 | Check disk space | `df -h .` |
-| Copy files to/from Unity | `scp source destination` |
 | Cancel a running command | `Ctrl+C` |
 | Exit a pager | `q` |
 
@@ -563,33 +558,3 @@ The `.sh` extension is a convention, not a requirement. Some people name SLURM s
 - Use the `↑` arrow key to scroll back through previous commands, no need to retype.
 - Read error messages carefully, they usually tell you exactly what went wrong.
 - If a command seems stuck, press `Ctrl+C` to cancel it.
-
----
-
-## Copying files between Unity and your laptop
-
-`scp` copies files between your laptop and Unity. Run these commands **from a terminal on your laptop** (not from Unity).
-
-Copy a file from Unity to your current folder:
-
-```bash
-scp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .
-```
-
-Copy a whole folder from Unity to your laptop:
-
-```bash
-scp -r kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .
-```
-
-Copy a file from your laptop to Unity:
-
-```bash
-scp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/
-```
-
-The `.` at the end means "copy it here, into my current directory."
-
-::: {.callout-note}
-Replace `kfloer_smith_edu` with your own Unity username and replace the paths with your actual file paths.
-:::

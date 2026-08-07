@@ -250,7 +250,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#what-is-a-shell-script" id="toc-what-is-a-shell-script" class="nav-link" data-scroll-target="#what-is-a-shell-script"><span class="header-section-number">6</span> What is a shell script?</a></li>
   <li><a href="#quick-command-reference" id="toc-quick-command-reference" class="nav-link" data-scroll-target="#quick-command-reference"><span class="header-section-number">7</span> Quick command reference</a></li>
   <li><a href="#tips-for-beginners" id="toc-tips-for-beginners" class="nav-link" data-scroll-target="#tips-for-beginners"><span class="header-section-number">8</span> Tips for beginners</a></li>
-  <li><a href="#copying-files-between-unity-and-your-laptop" id="toc-copying-files-between-unity-and-your-laptop" class="nav-link" data-scroll-target="#copying-files-between-unity-and-your-laptop"><span class="header-section-number">9</span> Copying files between Unity and your laptop</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/using-terminal.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -302,7 +301,7 @@ Tip
 <p><strong>On macOS:</strong> Open the <strong>Terminal</strong> app. Find it in Applications → Utilities, or use Spotlight: press <code>⌘ + Space</code>, type “Terminal”, press Enter.</p>
 <p><strong>On Windows:</strong> Open <strong>Windows Terminal</strong> or <strong>PowerShell</strong>.</p>
 <p>You should see a prompt that looks something like:</p>
-<pre class="text"><code>kfloer@Kates-MacBook-Pro ~ %</code></pre>
+<pre class="text"><code>your_username@your-computer ~ %</code></pre>
 <p>The terminal is waiting for you to type a command. Press Enter after each command to run it.</p>
 <hr>
 </section>
@@ -371,7 +370,7 @@ Note
 </tr>
 <tr class="even">
 <td><code>~/.ssh/</code></td>
-<td>Folder containing SSH keys used to connect to remote servers like Unity</td>
+<td>Folder containing SSH keys used to connect to remote servers</td>
 </tr>
 </tbody>
 </table>
@@ -403,7 +402,7 @@ Note
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>pwd</code> stands for <strong>print working directory</strong>. It shows your full location in the filesystem.</p>
 <p><strong>You should see something like:</strong></p>
-<pre class="text"><code>/Users/kfloer</code></pre>
+<pre class="text"><code>/Users/your_username</code></pre>
 <p>Your path will show your own username. This is your <strong>home directory</strong>, the folder that belongs to you.</p>
 <hr>
 </section>
@@ -414,7 +413,7 @@ Note
 <p>Confirm you moved:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>You should see:</strong></p>
-<pre class="text"><code>/Users/kfloer/Desktop</code></pre>
+<pre class="text"><code>/Users/your_username/Desktop</code></pre>
 <hr>
 </section>
 <section id="step-3-create-a-new-folder" class="level3" data-number="4.3">
@@ -426,7 +425,7 @@ Note
 <p>Confirm your location:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>You should see:</strong></p>
-<pre class="text"><code>/Users/kfloer/Desktop/practice</code></pre>
+<pre class="text"><code>/Users/your_username/Desktop/practice</code></pre>
 <hr>
 </section>
 <section id="step-4-navigate-up-and-down-and-understand-file-paths" class="level3" data-number="4.4">
@@ -436,20 +435,20 @@ Note
 <p><code>..</code> always means “the folder above where I currently am”. Confirm:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>You should see:</strong></p>
-<pre class="text"><code>/Users/kfloer/Desktop</code></pre>
+<pre class="text"><code>/Users/your_username/Desktop</code></pre>
 <p>Now go back into <code>practice</code> using its <strong>full path</strong>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/practice</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Confirm:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>You should see:</strong></p>
-<pre class="text"><code>/Users/kfloer/Desktop/practice</code></pre>
+<pre class="text"><code>/Users/your_username/Desktop/practice</code></pre>
 <p>You just navigated the same way using two different approaches. This is the difference between <strong>relative paths</strong> and <strong>absolute paths</strong>.</p>
 <p><strong>Relative paths</strong> describe a location relative to where you currently are. They do not start with <code>/</code> or <code>~</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> practice      <span class="co"># only works if you are already in ~/Desktop</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..            <span class="co"># always means one folder up from your current location</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Absolute paths</strong> describe the full location starting from the top of the filesystem. They always start with <code>/</code> or <code>~</code> (which is shorthand for your home directory):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/practice              <span class="co"># works from anywhere</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Users/kfloer/Desktop/practice  <span class="co"># exactly the same, written out in full</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/practice                      <span class="co"># works from anywhere</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Users/your_username/Desktop/practice   <span class="co"># exactly the same, written out in full</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -460,14 +459,14 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>When you are unsure where you are, use an absolute path. It works from anywhere and never depends on your current location. This is especially important on Unity, where you will be navigating between your home directory, the lab <code>/work/</code> folder, and your scratch workspace.</p>
+<p>When you are unsure where you are, use an absolute path. It works from anywhere and never depends on your current location.</p>
 </div>
 </div>
 <hr>
 </section>
 <section id="step-5-create-a-text-file-with-nano" class="level3" data-number="4.5">
 <h3 data-number="4.5" class="anchored" data-anchor-id="step-5-create-a-text-file-with-nano"><span class="header-section-number">4.5</span> Step 5: Create a text file with nano</h3>
-<p><code>nano</code> is a simple text editor that runs inside the terminal. You will use it to write scripts on Unity. Open a new file called <code>notes.txt</code>:</p>
+<p><code>nano</code> is a simple text editor that runs inside the terminal. Open a new file called <code>notes.txt</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The screen changes, you are now inside the editor. You can type normally. The bottom of the screen shows keyboard shortcuts:</p>
 <pre class="text"><code>^O  Write Out (save)       ^X  Exit</code></pre>
@@ -493,15 +492,15 @@ Avoid spaces in names and use underscores instead.
 Press Tab to autocomplete a file or folder name.
 Press the up arrow key to repeat a previous command.
 Press Ctrl+C to cancel a running command.
-On Unity, the terminal is how I submit jobs.
-SLURM is the job scheduler on Unity.
-sbatch submits a job script to SLURM.
-squeue --me shows my currently running jobs.
-A scratch workspace is temporary fast storage on Unity.
-Final results should be copied to /work/ before the workspace expires.
-Nextflow manages each step of the RNA-seq pipeline.
-Apptainer provides the software containers that the pipeline uses.
-nf-core/rnaseq is the specific pipeline used in this tutorial.
+Servers and clusters are accessed through the terminal.
+Bioinformatics tools often run on remote computers.
+Scripts automate repetitive tasks.
+Checking logs helps diagnose problems.
+Temporary storage is used for large files during analysis.
+Keeping organised folders makes research easier.
+Version control tracks changes in your scripts over time.
+Containers package software so it runs the same everywhere.
+Pipelines automate multi-step analyses.
 The terminal is one of the most powerful tools in bioinformatics.</code></pre>
 <p><strong>To save:</strong> press <code>Ctrl + O</code>, then press <code>Enter</code> to confirm the filename.</p>
 <p><strong>To exit nano:</strong> press <code>Ctrl + X</code>.</p>
@@ -517,7 +516,7 @@ The terminal is one of the most powerful tools in bioinformatics.</code></pre>
 <p>Now run it with flags for more detail:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>You should see something like:</strong></p>
-<pre class="text"><code>-rw-r--r--  1 kfloer  staff   1.1K Aug  7 14:23 notes.txt</code></pre>
+<pre class="text"><code>-rw-r--r--  1 your_username  staff   1.1K Aug  7 14:23 notes.txt</code></pre>
 <p>Here is what each part means:</p>
 <table class="caption-top table">
 <colgroup>
@@ -545,7 +544,7 @@ The terminal is one of the most powerful tools in bioinformatics.</code></pre>
 </tr>
 <tr class="odd">
 <td>Owner</td>
-<td><code>kfloer</code></td>
+<td><code>your_username</code></td>
 <td>The user who owns the file</td>
 </tr>
 <tr class="even">
@@ -606,7 +605,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>head</code> and <code>tail</code> are useful when a file is very large, too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick <code>head</code> or <code>tail</code> gives you a preview without waiting for everything to scroll past.</p>
+<p><code>head</code> and <code>tail</code> are useful when a file is very large, too large to print the whole thing at once. A quick <code>head</code> or <code>tail</code> gives you a preview without waiting for everything to scroll past.</p>
 </div>
 </div>
 <hr>
@@ -639,11 +638,11 @@ Tip
 <p>You will run into two situations where a command takes over your terminal and you need to get out.</p>
 <p><strong>Situation 1: <code>cat</code> on a huge file</strong></p>
 <p>If you accidentally run <code>cat</code> on a very large file, thousands of lines start scrolling past and will not stop on their own. Press <code>Ctrl+C</code> to cancel the command immediately.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> huge_log_file.txt   <span class="co"># thousands of lines start scrolling...</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> huge_file.txt   <span class="co"># thousands of lines start scrolling...</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># press Ctrl+C to stop</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>Ctrl+C</code> cancels whatever command is currently running. Use it any time a command is doing something and you want it to stop.</p>
-<p><strong>Situation 2: a pager opens (less, man, git log)</strong></p>
-<p>Some commands open an interactive viewer called a <strong>pager</strong> instead of dumping everything to the screen at once. You will see this with <code>less</code>, <code>man</code>, and sometimes <code>git log</code>. The pager lets you scroll up and down through the content.</p>
+<p><strong>Situation 2: a pager opens (less, man)</strong></p>
+<p>Some commands open an interactive viewer called a <strong>pager</strong> instead of dumping everything to the screen at once. You will see this with <code>less</code> and <code>man</code>. The pager lets you scroll up and down through the content.</p>
 <p>To open a file in the pager:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> ~/Desktop/notes_backup.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Inside <code>less</code>:</p>
@@ -746,7 +745,6 @@ Note
 </tr>
 </tbody>
 </table>
-<p>These same commands work on Unity. The only difference is that on Unity your home directory is <code>/home/your_username/</code> instead of <code>/Users/your_username/</code>.</p>
 <hr>
 </section>
 <section id="what-is-a-shell-script" class="level2" data-number="6">
@@ -755,10 +753,9 @@ Note
 <p>A <strong>shell script</strong> is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line, just like R runs a <code>.R</code> file line by line.</p>
 <p>Shell scripts usually end with <code>.sh</code>. For example:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="at">-r</span> 3.26.0 <span class="at">-profile</span> test,unity</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> results/raw</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Folders created."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>That is a three-line shell script. The first line (<code>#!/bin/bash</code>) tells the computer which program to use to interpret the commands, think of it like a <code>library()</code> call in R that sets up the environment. The next lines are commands you would type manually, saved so they run automatically.</p>
-<p>The job scripts in this tutorial are shell scripts with extra lines at the top starting with <code>#SBATCH</code>. Those are instructions for SLURM, they tell the job scheduler how much time and memory to reserve. Everything else is plain terminal commands.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -769,7 +766,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <code>.sh</code> extension is a convention, not a requirement. Some people name SLURM scripts <code>.sbatch</code>. Both work, the extension is just a label to remind you what the file does.</p>
+<p>The <code>.sh</code> extension is a convention, not a requirement. Both work, the extension is just a label to remind you what the file does.</p>
 </div>
 </div>
 <hr>
@@ -873,14 +870,10 @@ Tip
 <td><code>df -h .</code></td>
 </tr>
 <tr class="odd">
-<td>Copy files to/from Unity</td>
-<td><code>scp source destination</code></td>
-</tr>
-<tr class="even">
 <td>Cancel a running command</td>
 <td><code>Ctrl+C</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Exit a pager</td>
 <td><code>q</code></td>
 </tr>
@@ -897,31 +890,6 @@ Tip
 <li>Read error messages carefully, they usually tell you exactly what went wrong.</li>
 <li>If a command seems stuck, press <code>Ctrl+C</code> to cancel it.</li>
 </ul>
-<hr>
-</section>
-<section id="copying-files-between-unity-and-your-laptop" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="copying-files-between-unity-and-your-laptop"><span class="header-section-number">9</span> Copying files between Unity and your laptop</h2>
-<p><code>scp</code> copies files between your laptop and Unity. Run these commands <strong>from a terminal on your laptop</strong> (not from Unity).</p>
-<p>Copy a file from Unity to your current folder:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Copy a whole folder from Unity to your laptop:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Copy a file from your laptop to Unity:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>.</code> at the end means “copy it here, into my current directory.”</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Replace <code>kfloer_smith_edu</code> with your own Unity username and replace the paths with your actual file paths.</p>
-</div>
-</div>
 
 
 </section>
