@@ -8,6 +8,7 @@ Bookmark these links — you will use them regularly.
 
 | Resource | Link |
 |---|---|
+| Connecting to Unity via SSH | <https://docs.unityhpc.org/documentation/connecting/ssh/> |
 | Scratch workspaces | <https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/> |
 | Module explorer (search available software) | <https://ood.unity.rc.umass.edu/pun/sys/module-explorer> |
 | Node specifications | <https://docs.unityhpc.org/documentation/cluster_specs/nodes/> |

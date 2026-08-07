@@ -2,122 +2,265 @@
 title: "Using the Terminal"
 ---
 
-## Why use the terminal?
+## What is the terminal?
 
-RNA-seq analysis happens on a remote computing cluster (Unity). The cluster does not have a graphical desktop — you interact with it entirely by typing commands into a terminal window.
+The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.
 
-This page covers the commands you will use most often. You do not need to memorize them. Refer back here whenever you need a reminder.
+This might feel unfamiliar at first — especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.
+
+This page is a follow-along exercise. Work through the steps in order and run each command yourself.
+
+::: {.callout-tip}
+Every command on this page is safe to run. You will not break anything by following these steps.
+:::
 
 ## Open a terminal
 
-**On macOS:** Open the **Terminal** app. You can find it in Applications → Utilities, or search for it with Spotlight (⌘ + Space, type "Terminal").
+**On macOS:** Open the **Terminal** app. Find it in Applications → Utilities, or use Spotlight: press `⌘ + Space`, type "Terminal", press Enter.
 
-**On Windows:** Open **Windows Terminal**, **PowerShell**, or install [Git Bash](https://git-scm.com/downloads).
+**On Windows:** Open **Windows Terminal** or **PowerShell**.
 
-**On Linux:** Open your terminal application.
+You should see a prompt that looks something like:
+
+```text
+kfloer@Kates-MacBook-Pro ~ %
+```
+
+The terminal is waiting for you to type a command. Press Enter after each command to run it.
+
+---
+
+## Follow-along exercise
+
+### Step 1 — Find out where you are
+
+```bash
+pwd
+```
+
+`pwd` stands for **print working directory**. It shows where you currently are in the filesystem.
+
+**You should see something like:**
+
+```text
+/Users/kfloer
+```
+
+Your path will show your own username. This location — `/Users/your_name` — is your **home directory**, the folder that belongs to you.
+
+---
+
+### Step 2 — Move to the Desktop
+
+```bash
+cd Desktop
+```
+
+`cd` stands for **change directory**. It moves you into a different folder.
+
+Confirm you moved:
+
+```bash
+pwd
+```
+
+**You should see:**
+
+```text
+/Users/kfloer/Desktop
+```
+
+---
+
+### Step 3 — Create a new folder
+
+```bash
+mkdir tutorial
+```
+
+`mkdir` stands for **make directory**. This creates a new folder called `tutorial` on your Desktop. You should be able to see it appear on your Desktop.
+
+Move into the new folder:
+
+```bash
+cd tutorial
+```
+
+Confirm your location:
+
+```bash
+pwd
+```
+
+**You should see:**
+
+```text
+/Users/kfloer/Desktop/tutorial
+```
+
+---
+
+### Step 4 — Create a text file with nano
+
+`nano` is a simple text editor that runs inside the terminal. You will use it to write scripts on Unity. Open a new file called `notes.txt`:
+
+```bash
+nano notes.txt
+```
+
+The screen changes — you are now inside the editor. You can type normally. The bottom of the screen shows keyboard shortcuts:
+
+```text
+^O  Write Out (save)       ^X  Exit
+```
+
+The `^` symbol means `Ctrl`. So `^O` means `Ctrl + O`.
+
+Type the following 30 lines into the editor. On macOS you can paste with `Cmd + V`:
+
+```text
+Hello, this is a terminal tutorial.
+I am practicing using the command line.
+The terminal is a text-based interface for my computer.
+Commands are typed and run by pressing Enter.
+pwd shows my current location.
+cd moves me to a different folder.
+mkdir creates a new folder.
+nano opens a text file for editing.
+cat shows the contents of a file.
+head shows the first 10 lines of a file.
+tail shows the last 10 lines of a file.
+mv moves or renames a file.
+cp copies a file.
+ls lists files in a folder.
+The terminal is case-sensitive.
+File and folder names matter exactly.
+Avoid spaces in names and use underscores instead.
+Press Tab to autocomplete a file or folder name.
+Press the up arrow key to repeat a previous command.
+Press Ctrl+C to cancel a running command.
+On Unity, the terminal is how I submit jobs.
+SLURM is the job scheduler on Unity.
+sbatch submits a job script to SLURM.
+squeue --me shows my currently running jobs.
+A scratch workspace is temporary fast storage on Unity.
+Final results should be copied to /work/ before the workspace expires.
+Nextflow manages each step of the RNA-seq pipeline.
+Apptainer provides the software containers that the pipeline uses.
+nf-core/rnaseq is the specific pipeline used in this tutorial.
+The terminal is one of the most powerful tools in bioinformatics.
+```
+
+**To save:** press `Ctrl + O`, then press `Enter` to confirm the filename.
+
+**To exit nano:** press `Ctrl + X`.
+
+You are back at the regular terminal prompt.
+
+---
+
+### Step 5 — Read the file
+
+Print the entire file to the terminal:
+
+```bash
+cat notes.txt
+```
+
+All 30 lines will appear.
+
+Show just the first 10 lines:
+
+```bash
+head notes.txt
+```
+
+Show just the last 10 lines:
+
+```bash
+tail notes.txt
+```
+
+::: {.callout-tip}
+`head` and `tail` are useful when a file is very large — too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick `head` or `tail` gives you a preview without waiting for everything to scroll past.
+:::
+
+---
+
+### Step 6 — Move the file to the Desktop
+
+Right now `notes.txt` is inside the `tutorial` folder. Move it up one level to the Desktop:
+
+```bash
+mv notes.txt ../
+```
+
+`mv` stands for **move**. The destination `../` means "one folder up" — in this case, the Desktop.
+
+Confirm the file is gone from the `tutorial` folder:
+
+```bash
+ls
+```
+
+The folder should be empty — no output, or a blank line.
+
+Confirm the file is now on the Desktop:
+
+```bash
+ls ..
+```
+
+You should see `notes.txt` listed among your Desktop items.
+
+---
+
+## You are done
+
+You have practiced the core terminal commands you will use throughout this tutorial:
+
+| What you did | Command |
+|---|---|
+| Checked your location | `pwd` |
+| Moved to a folder | `cd` |
+| Created a folder | `mkdir` |
+| Created and edited a file | `nano` |
+| Printed a whole file | `cat` |
+| Previewed the start of a file | `head` |
+| Previewed the end of a file | `tail` |
+| Moved a file | `mv` |
+
+These same commands work on Unity. The only difference is that on Unity your home directory is `/home/your_username/` instead of `/Users/your_username/`.
+
+---
 
 ## Understanding file paths
 
 A path describes where a file or folder is located. There are two types:
 
-**Absolute path** — starts from the very top of the filesystem with `/`. It works the same no matter where you currently are.
+**Absolute path** — starts from the very top of the filesystem with `/`. It always points to the same place, no matter where you currently are.
 
 ```text
 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq
 ```
 
-**Relative path** — starts from wherever you currently are. A `.` means "here" and `..` means "one folder up".
+**Relative path** — starts from wherever you currently are. A single dot `.` means "here" and two dots `..` mean "one folder up".
 
 ```text
-../results/multiqc_report.html
+../notes.txt
 ```
 
 ::: {.callout-tip}
 When in doubt, use absolute paths. They are harder to get wrong because they always point to the same place.
 :::
 
-## Where am I?
-
-Print your current working directory:
-
-```bash
-pwd
-```
-
-Example output:
-
-```text
-/home/kfloer_smith_edu
-```
-
-## List files
-
-List files in the current directory:
-
-```bash
-ls
-```
-
-Show more information, including file sizes:
-
-```bash
-ls -lh
-```
-
-Example output:
-
-```text
-drwxr-xr-x  2 kfloer_smith_edu users  4.0K Jun  8 results/
--rw-r--r--  1 kfloer_smith_edu users  1.2K Jun  8 samplesheet.csv
-```
-
-The columns show: permissions, number of links, owner, group, size, date modified, name. Entries starting with `d` are directories; entries starting with `-` are files.
-
-## Change directories
-
-Move into a folder:
-
-```bash
-cd results
-```
-
-Move up one folder:
-
-```bash
-cd ..
-```
-
-Move to your home directory (the shortcut `~` always means your home):
-
-```bash
-cd ~
-```
-
-Move to an absolute path:
-
-```bash
-cd /work/pi_lmangiamele_smith_edu
-```
-
-## Make a new directory
-
-Create a folder:
-
-```bash
-mkdir job-logs
-```
-
-Create a nested folder path all at once (the `-p` flag creates any missing parent folders):
-
-```bash
-mkdir -p ~/rnaseq_nf_core/job-logs
-```
+---
 
 ## What is a shell script?
 
-If you have written code in R, you already understand the idea of a script: a text file containing a list of commands that run in order from top to bottom.
+If you have written code in R, you already understand the idea of a script: a text file containing commands that run in order from top to bottom.
 
-A **shell script** is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs your `.R` file line by line.
+A **shell script** is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs a `.R` file line by line.
 
 Shell scripts usually end with `.sh`. For example:
 
@@ -127,116 +270,55 @@ module load nextflow/26.04.1
 nextflow run nf-core/rnaseq -r 3.26.0 -profile test,unity
 ```
 
-That is a three-line shell script. The first line (`#!/bin/bash`) tells the computer which program to use to interpret the commands — think of it like a `library()` call in R that sets up the environment. The next lines are just the commands you would type manually, but saved so they run automatically.
+That is a three-line shell script. The first line (`#!/bin/bash`) tells the computer which program to use to interpret the commands — think of it like a `library()` call in R that sets up the environment. The next lines are commands you would type manually, saved so they run automatically.
 
-The job scripts in this tutorial are shell scripts with a few extra lines at the top that start with `#SBATCH`. Those lines are instructions for SLURM (the cluster job scheduler) — they tell SLURM how much time and memory to reserve. Everything else in the script is plain terminal commands.
-
-::: {.callout-tip}
-The `.sh` file extension is a convention, not a requirement. Some people name SLURM scripts `.sbatch`. Both work — the extension is just a label to remind you what the file is for.
-:::
-
-## Create and edit a text file with nano
-
-`nano` is a simple terminal text editor. You will use it to write job scripts on Unity.
-
-Open a new file (or open an existing one):
-
-```bash
-nano my-script.sh
-```
-
-This opens the file inside the terminal. You can type normally. At the bottom of the screen you will see shortcuts:
-
-```text
-^O  Write Out (save)       ^X  Exit
-^K  Cut line               ^U  Paste
-```
-
-The `^` symbol means `Ctrl`. So `^O` means `Ctrl + O`.
-
-**To save:** press `Ctrl + O`, then press `Enter` to confirm the filename.
-
-**To exit:** press `Ctrl + X`.
+The job scripts in this tutorial are shell scripts with extra lines at the top starting with `#SBATCH`. Those are instructions for SLURM — they tell the job scheduler how much time and memory to reserve. Everything else is plain terminal commands.
 
 ::: {.callout-tip}
-If you accidentally start nano and want to leave without saving, press `Ctrl + X` and then type `N` when asked if you want to save.
+The `.sh` extension is a convention, not a requirement. Some people name SLURM scripts `.sbatch`. Both work — the extension is just a label to remind you what the file does.
 :::
 
-## Look at text files without editing
+---
 
-Print a whole file to the terminal:
+## Quick command reference
 
-```bash
-cat samplesheet.csv
-```
+| Goal | Command |
+|---|---|
+| See where you are | `pwd` |
+| List files | `ls` |
+| List files with sizes | `ls -lh` |
+| Move into a folder | `cd folder_name` |
+| Move up one folder | `cd ..` |
+| Go to home directory | `cd ~` |
+| Create a folder | `mkdir folder_name` |
+| Create nested folders | `mkdir -p parent/child` |
+| Create or edit a file | `nano file.txt` |
+| Print a file | `cat file.txt` |
+| Preview the start | `head file.txt` |
+| Preview the end | `tail file.txt` |
+| Watch a file update live | `tail -f file.txt` |
+| Move or rename a file | `mv old new` |
+| Copy a file | `cp source destination` |
+| Copy a folder | `cp -r source/ destination/` |
+| Check folder size | `du -sh folder/` |
+| Check disk space | `df -h .` |
+| Copy files to/from Unity | `scp source destination` |
+| Cancel a running command | `Ctrl + C` |
 
-Show just the first 10 lines of a file:
+## Tips for beginners
 
-```bash
-head samplesheet.csv
-```
+- File and folder names are **case-sensitive**. `Results` and `results` are two different folders.
+- Avoid spaces in file names — use underscores `_` or hyphens `-` instead.
+- Press `Tab` to autocomplete a file or folder name. Press it twice to see all matches if there are several.
+- Use the `↑` arrow key to scroll back through previous commands — no need to retype.
+- Read error messages carefully — they usually tell you exactly what went wrong.
+- If a command seems stuck, press `Ctrl + C` to cancel it.
 
-Show just the last 10 lines:
-
-```bash
-tail samplesheet.csv
-```
-
-Watch a file update in real time (useful for watching log files as a job runs):
-
-```bash
-tail -f job-logs/nfcore-rnaseq-test.12345.out
-```
-
-Press `Ctrl + C` to stop watching.
-
-## Move, rename, and copy files
-
-Move a file into a folder:
-
-```bash
-mv samplesheet.csv nf-core-demo/
-```
-
-Rename a file:
-
-```bash
-mv old_name.csv new_name.csv
-```
-
-Copy a file:
-
-```bash
-cp samplesheet.csv samplesheet_backup.csv
-```
-
-Copy an entire folder and everything inside it:
-
-```bash
-cp -r results/ results_backup/
-```
-
-## Check disk usage
-
-See how much space a file or folder is using:
-
-```bash
-du -sh results/
-```
-
-See how much space is left on the filesystem you are currently on:
-
-```bash
-df -h .
-```
-
-On Unity, you will use this to make sure you have not filled your scratch workspace.
-
-## Copy files between Unity and your laptop
+## Copying files between Unity and your laptop
 
 `scp` copies files between your laptop and Unity. Run these commands **from a terminal on your laptop** (not from Unity).
 
-Copy a file from Unity to your current folder on your laptop:
+Copy a file from Unity to your current folder:
 
 ```bash
 scp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .
@@ -257,38 +339,5 @@ scp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kflo
 The `.` at the end means "copy it here, into my current directory."
 
 ::: {.callout-note}
-Replace `kfloer_smith_edu` with your own Unity username, and replace the paths with your actual paths.
+Replace `kfloer_smith_edu` with your own Unity username and replace the paths with your actual file paths.
 :::
-
-## Common commands at a glance
-
-| Goal | Command |
-|---|---|
-| See where you are | `pwd` |
-| List files | `ls` |
-| List files with sizes | `ls -lh` |
-| Move into a folder | `cd folder_name` |
-| Move up one folder | `cd ..` |
-| Go to home directory | `cd ~` |
-| Create a folder | `mkdir folder_name` |
-| Create nested folders | `mkdir -p parent/child/grandchild` |
-| Create/edit a file | `nano file.txt` |
-| Print a file | `cat file.txt` |
-| Preview the start | `head file.txt` |
-| Preview the end | `tail file.txt` |
-| Watch a file live | `tail -f file.txt` |
-| Move or rename | `mv old new` |
-| Copy a file | `cp source destination` |
-| Copy a folder | `cp -r source/ destination/` |
-| Folder size | `du -sh folder/` |
-| Disk space left | `df -h .` |
-| Copy to/from server | `scp source destination` |
-
-## Tips for beginners
-
-- File and folder names are case-sensitive. `Results` and `results` are different.
-- Avoid spaces in file names — use underscores `_` or hyphens `-` instead.
-- Press `Tab` to autocomplete a file or folder name. Press it twice to see all options.
-- Use the `↑` arrow key to scroll through previous commands.
-- Read error messages carefully — they usually tell you exactly what went wrong.
-- If a command seems to hang, press `Ctrl + C` to cancel it.

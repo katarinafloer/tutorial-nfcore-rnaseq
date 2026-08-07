@@ -776,17 +776,17 @@
     "href": "using-terminal.html",
     "title": "Using the Terminal",
     "section": "",
-    "text": "RNA-seq analysis happens on a remote computing cluster (Unity). The cluster does not have a graphical desktop — you interact with it entirely by typing commands into a terminal window.\nThis page covers the commands you will use most often. You do not need to memorize them. Refer back here whenever you need a reminder.",
+    "text": "The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.\nThis might feel unfamiliar at first — especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.\nThis page is a follow-along exercise. Work through the steps in order and run each command yourself.\n\n\n\n\n\n\nTip\n\n\n\nEvery command on this page is safe to run. You will not break anything by following these steps.",
     "crumbs": [
       "Using the Terminal"
     ]
   },
   {
-    "objectID": "using-terminal.html#why-use-the-terminal",
-    "href": "using-terminal.html#why-use-the-terminal",
+    "objectID": "using-terminal.html#what-is-the-terminal",
+    "href": "using-terminal.html#what-is-the-terminal",
     "title": "Using the Terminal",
     "section": "",
-    "text": "RNA-seq analysis happens on a remote computing cluster (Unity). The cluster does not have a graphical desktop — you interact with it entirely by typing commands into a terminal window.\nThis page covers the commands you will use most often. You do not need to memorize them. Refer back here whenever you need a reminder.",
+    "text": "The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.\nThis might feel unfamiliar at first — especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.\nThis page is a follow-along exercise. Work through the steps in order and run each command yourself.\n\n\n\n\n\n\nTip\n\n\n\nEvery command on this page is safe to run. You will not break anything by following these steps.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -796,7 +796,27 @@
     "href": "using-terminal.html#open-a-terminal",
     "title": "Using the Terminal",
     "section": "2 Open a terminal",
-    "text": "2 Open a terminal\nOn macOS: Open the Terminal app. You can find it in Applications → Utilities, or search for it with Spotlight (⌘ + Space, type “Terminal”).\nOn Windows: Open Windows Terminal, PowerShell, or install Git Bash.\nOn Linux: Open your terminal application.",
+    "text": "2 Open a terminal\nOn macOS: Open the Terminal app. Find it in Applications → Utilities, or use Spotlight: press ⌘ + Space, type “Terminal”, press Enter.\nOn Windows: Open Windows Terminal or PowerShell.\nYou should see a prompt that looks something like:\nkfloer@Kates-MacBook-Pro ~ %\nThe terminal is waiting for you to type a command. Press Enter after each command to run it.",
+    "crumbs": [
+      "Using the Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#follow-along-exercise",
+    "href": "using-terminal.html#follow-along-exercise",
+    "title": "Using the Terminal",
+    "section": "3 Follow-along exercise",
+    "text": "3 Follow-along exercise\n\n3.1 Step 1 — Find out where you are\npwd\npwd stands for print working directory. It shows where you currently are in the filesystem.\nYou should see something like:\n/Users/kfloer\nYour path will show your own username. This location — /Users/your_name — is your home directory, the folder that belongs to you.\n\n\n\n3.2 Step 2 — Move to the Desktop\ncd Desktop\ncd stands for change directory. It moves you into a different folder.\nConfirm you moved:\npwd\nYou should see:\n/Users/kfloer/Desktop\n\n\n\n3.3 Step 3 — Create a new folder\nmkdir tutorial\nmkdir stands for make directory. This creates a new folder called tutorial on your Desktop. You should be able to see it appear on your Desktop.\nMove into the new folder:\ncd tutorial\nConfirm your location:\npwd\nYou should see:\n/Users/kfloer/Desktop/tutorial\n\n\n\n3.4 Step 4 — Create a text file with nano\nnano is a simple text editor that runs inside the terminal. You will use it to write scripts on Unity. Open a new file called notes.txt:\nnano notes.txt\nThe screen changes — you are now inside the editor. You can type normally. The bottom of the screen shows keyboard shortcuts:\n^O  Write Out (save)       ^X  Exit\nThe ^ symbol means Ctrl. So ^O means Ctrl + O.\nType the following 30 lines into the editor. On macOS you can paste with Cmd + V:\nHello, this is a terminal tutorial.\nI am practicing using the command line.\nThe terminal is a text-based interface for my computer.\nCommands are typed and run by pressing Enter.\npwd shows my current location.\ncd moves me to a different folder.\nmkdir creates a new folder.\nnano opens a text file for editing.\ncat shows the contents of a file.\nhead shows the first 10 lines of a file.\ntail shows the last 10 lines of a file.\nmv moves or renames a file.\ncp copies a file.\nls lists files in a folder.\nThe terminal is case-sensitive.\nFile and folder names matter exactly.\nAvoid spaces in names and use underscores instead.\nPress Tab to autocomplete a file or folder name.\nPress the up arrow key to repeat a previous command.\nPress Ctrl+C to cancel a running command.\nOn Unity, the terminal is how I submit jobs.\nSLURM is the job scheduler on Unity.\nsbatch submits a job script to SLURM.\nsqueue --me shows my currently running jobs.\nA scratch workspace is temporary fast storage on Unity.\nFinal results should be copied to /work/ before the workspace expires.\nNextflow manages each step of the RNA-seq pipeline.\nApptainer provides the software containers that the pipeline uses.\nnf-core/rnaseq is the specific pipeline used in this tutorial.\nThe terminal is one of the most powerful tools in bioinformatics.\nTo save: press Ctrl + O, then press Enter to confirm the filename.\nTo exit nano: press Ctrl + X.\nYou are back at the regular terminal prompt.\n\n\n\n3.5 Step 5 — Read the file\nPrint the entire file to the terminal:\ncat notes.txt\nAll 30 lines will appear.\nShow just the first 10 lines:\nhead notes.txt\nShow just the last 10 lines:\ntail notes.txt\n\n\n\n\n\n\nTip\n\n\n\nhead and tail are useful when a file is very large — too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick head or tail gives you a preview without waiting for everything to scroll past.\n\n\n\n\n\n3.6 Step 6 — Move the file to the Desktop\nRight now notes.txt is inside the tutorial folder. Move it up one level to the Desktop:\nmv notes.txt ../\nmv stands for move. The destination ../ means “one folder up” — in this case, the Desktop.\nConfirm the file is gone from the tutorial folder:\nls\nThe folder should be empty — no output, or a blank line.\nConfirm the file is now on the Desktop:\nls ..\nYou should see notes.txt listed among your Desktop items.",
+    "crumbs": [
+      "Using the Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#you-are-done",
+    "href": "using-terminal.html#you-are-done",
+    "title": "Using the Terminal",
+    "section": "4 You are done",
+    "text": "4 You are done\nYou have practiced the core terminal commands you will use throughout this tutorial:\n\n\n\nWhat you did\nCommand\n\n\n\n\nChecked your location\npwd\n\n\nMoved to a folder\ncd\n\n\nCreated a folder\nmkdir\n\n\nCreated and edited a file\nnano\n\n\nPrinted a whole file\ncat\n\n\nPreviewed the start of a file\nhead\n\n\nPreviewed the end of a file\ntail\n\n\nMoved a file\nmv\n\n\n\nThese same commands work on Unity. The only difference is that on Unity your home directory is /home/your_username/ instead of /Users/your_username/.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -805,48 +825,8 @@
     "objectID": "using-terminal.html#understanding-file-paths",
     "href": "using-terminal.html#understanding-file-paths",
     "title": "Using the Terminal",
-    "section": "3 Understanding file paths",
-    "text": "3 Understanding file paths\nA path describes where a file or folder is located. There are two types:\nAbsolute path — starts from the very top of the filesystem with /. It works the same no matter where you currently are.\n/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nRelative path — starts from wherever you currently are. A . means “here” and .. means “one folder up”.\n../results/multiqc_report.html\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, use absolute paths. They are harder to get wrong because they always point to the same place.",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#where-am-i",
-    "href": "using-terminal.html#where-am-i",
-    "title": "Using the Terminal",
-    "section": "4 Where am I?",
-    "text": "4 Where am I?\nPrint your current working directory:\npwd\nExample output:\n/home/kfloer_smith_edu",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#list-files",
-    "href": "using-terminal.html#list-files",
-    "title": "Using the Terminal",
-    "section": "5 List files",
-    "text": "5 List files\nList files in the current directory:\nls\nShow more information, including file sizes:\nls -lh\nExample output:\ndrwxr-xr-x  2 kfloer_smith_edu users  4.0K Jun  8 results/\n-rw-r--r--  1 kfloer_smith_edu users  1.2K Jun  8 samplesheet.csv\nThe columns show: permissions, number of links, owner, group, size, date modified, name. Entries starting with d are directories; entries starting with - are files.",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#change-directories",
-    "href": "using-terminal.html#change-directories",
-    "title": "Using the Terminal",
-    "section": "6 Change directories",
-    "text": "6 Change directories\nMove into a folder:\ncd results\nMove up one folder:\ncd ..\nMove to your home directory (the shortcut ~ always means your home):\ncd ~\nMove to an absolute path:\ncd /work/pi_lmangiamele_smith_edu",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#make-a-new-directory",
-    "href": "using-terminal.html#make-a-new-directory",
-    "title": "Using the Terminal",
-    "section": "7 Make a new directory",
-    "text": "7 Make a new directory\nCreate a folder:\nmkdir job-logs\nCreate a nested folder path all at once (the -p flag creates any missing parent folders):\nmkdir -p ~/rnaseq_nf_core/job-logs",
+    "section": "5 Understanding file paths",
+    "text": "5 Understanding file paths\nA path describes where a file or folder is located. There are two types:\nAbsolute path — starts from the very top of the filesystem with /. It always points to the same place, no matter where you currently are.\n/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq\nRelative path — starts from wherever you currently are. A single dot . means “here” and two dots .. mean “one folder up”.\n../notes.txt\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, use absolute paths. They are harder to get wrong because they always point to the same place.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -855,68 +835,18 @@
     "objectID": "using-terminal.html#what-is-a-shell-script",
     "href": "using-terminal.html#what-is-a-shell-script",
     "title": "Using the Terminal",
-    "section": "8 What is a shell script?",
-    "text": "8 What is a shell script?\nIf you have written code in R, you already understand the idea of a script: a text file containing a list of commands that run in order from top to bottom.\nA shell script is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs your .R file line by line.\nShell scripts usually end with .sh. For example:\n#!/bin/bash\nmodule load nextflow/26.04.1\nnextflow run nf-core/rnaseq -r 3.26.0 -profile test,unity\nThat is a three-line shell script. The first line (#!/bin/bash) tells the computer which program to use to interpret the commands — think of it like a library() call in R that sets up the environment. The next lines are just the commands you would type manually, but saved so they run automatically.\nThe job scripts in this tutorial are shell scripts with a few extra lines at the top that start with #SBATCH. Those lines are instructions for SLURM (the cluster job scheduler) — they tell SLURM how much time and memory to reserve. Everything else in the script is plain terminal commands.\n\n\n\n\n\n\nTip\n\n\n\nThe .sh file extension is a convention, not a requirement. Some people name SLURM scripts .sbatch. Both work — the extension is just a label to remind you what the file is for.",
+    "section": "6 What is a shell script?",
+    "text": "6 What is a shell script?\nIf you have written code in R, you already understand the idea of a script: a text file containing commands that run in order from top to bottom.\nA shell script is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs a .R file line by line.\nShell scripts usually end with .sh. For example:\n#!/bin/bash\nmodule load nextflow/26.04.1\nnextflow run nf-core/rnaseq -r 3.26.0 -profile test,unity\nThat is a three-line shell script. The first line (#!/bin/bash) tells the computer which program to use to interpret the commands — think of it like a library() call in R that sets up the environment. The next lines are commands you would type manually, saved so they run automatically.\nThe job scripts in this tutorial are shell scripts with extra lines at the top starting with #SBATCH. Those are instructions for SLURM — they tell the job scheduler how much time and memory to reserve. Everything else is plain terminal commands.\n\n\n\n\n\n\nTip\n\n\n\nThe .sh extension is a convention, not a requirement. Some people name SLURM scripts .sbatch. Both work — the extension is just a label to remind you what the file does.",
     "crumbs": [
       "Using the Terminal"
     ]
   },
   {
-    "objectID": "using-terminal.html#create-and-edit-a-text-file-with-nano",
-    "href": "using-terminal.html#create-and-edit-a-text-file-with-nano",
+    "objectID": "using-terminal.html#quick-command-reference",
+    "href": "using-terminal.html#quick-command-reference",
     "title": "Using the Terminal",
-    "section": "9 Create and edit a text file with nano",
-    "text": "9 Create and edit a text file with nano\nnano is a simple terminal text editor. You will use it to write job scripts on Unity.\nOpen a new file (or open an existing one):\nnano my-script.sh\nThis opens the file inside the terminal. You can type normally. At the bottom of the screen you will see shortcuts:\n^O  Write Out (save)       ^X  Exit\n^K  Cut line               ^U  Paste\nThe ^ symbol means Ctrl. So ^O means Ctrl + O.\nTo save: press Ctrl + O, then press Enter to confirm the filename.\nTo exit: press Ctrl + X.\n\n\n\n\n\n\nTip\n\n\n\nIf you accidentally start nano and want to leave without saving, press Ctrl + X and then type N when asked if you want to save.",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#look-at-text-files-without-editing",
-    "href": "using-terminal.html#look-at-text-files-without-editing",
-    "title": "Using the Terminal",
-    "section": "10 Look at text files without editing",
-    "text": "10 Look at text files without editing\nPrint a whole file to the terminal:\ncat samplesheet.csv\nShow just the first 10 lines of a file:\nhead samplesheet.csv\nShow just the last 10 lines:\ntail samplesheet.csv\nWatch a file update in real time (useful for watching log files as a job runs):\ntail -f job-logs/nfcore-rnaseq-test.12345.out\nPress Ctrl + C to stop watching.",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#move-rename-and-copy-files",
-    "href": "using-terminal.html#move-rename-and-copy-files",
-    "title": "Using the Terminal",
-    "section": "11 Move, rename, and copy files",
-    "text": "11 Move, rename, and copy files\nMove a file into a folder:\nmv samplesheet.csv nf-core-demo/\nRename a file:\nmv old_name.csv new_name.csv\nCopy a file:\ncp samplesheet.csv samplesheet_backup.csv\nCopy an entire folder and everything inside it:\ncp -r results/ results_backup/",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#check-disk-usage",
-    "href": "using-terminal.html#check-disk-usage",
-    "title": "Using the Terminal",
-    "section": "12 Check disk usage",
-    "text": "12 Check disk usage\nSee how much space a file or folder is using:\ndu -sh results/\nSee how much space is left on the filesystem you are currently on:\ndf -h .\nOn Unity, you will use this to make sure you have not filled your scratch workspace.",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#copy-files-between-unity-and-your-laptop",
-    "href": "using-terminal.html#copy-files-between-unity-and-your-laptop",
-    "title": "Using the Terminal",
-    "section": "13 Copy files between Unity and your laptop",
-    "text": "13 Copy files between Unity and your laptop\nscp copies files between your laptop and Unity. Run these commands from a terminal on your laptop (not from Unity).\nCopy a file from Unity to your current folder on your laptop:\nscp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .\nCopy a whole folder from Unity to your laptop:\nscp -r kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .\nCopy a file from your laptop to Unity:\nscp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/\nThe . at the end means “copy it here, into my current directory.”\n\n\n\n\n\n\nNote\n\n\n\nReplace kfloer_smith_edu with your own Unity username, and replace the paths with your actual paths.",
-    "crumbs": [
-      "Using the Terminal"
-    ]
-  },
-  {
-    "objectID": "using-terminal.html#common-commands-at-a-glance",
-    "href": "using-terminal.html#common-commands-at-a-glance",
-    "title": "Using the Terminal",
-    "section": "14 Common commands at a glance",
-    "text": "14 Common commands at a glance\n\n\n\nGoal\nCommand\n\n\n\n\nSee where you are\npwd\n\n\nList files\nls\n\n\nList files with sizes\nls -lh\n\n\nMove into a folder\ncd folder_name\n\n\nMove up one folder\ncd ..\n\n\nGo to home directory\ncd ~\n\n\nCreate a folder\nmkdir folder_name\n\n\nCreate nested folders\nmkdir -p parent/child/grandchild\n\n\nCreate/edit a file\nnano file.txt\n\n\nPrint a file\ncat file.txt\n\n\nPreview the start\nhead file.txt\n\n\nPreview the end\ntail file.txt\n\n\nWatch a file live\ntail -f file.txt\n\n\nMove or rename\nmv old new\n\n\nCopy a file\ncp source destination\n\n\nCopy a folder\ncp -r source/ destination/\n\n\nFolder size\ndu -sh folder/\n\n\nDisk space left\ndf -h .\n\n\nCopy to/from server\nscp source destination",
+    "section": "7 Quick command reference",
+    "text": "7 Quick command reference\n\n\n\nGoal\nCommand\n\n\n\n\nSee where you are\npwd\n\n\nList files\nls\n\n\nList files with sizes\nls -lh\n\n\nMove into a folder\ncd folder_name\n\n\nMove up one folder\ncd ..\n\n\nGo to home directory\ncd ~\n\n\nCreate a folder\nmkdir folder_name\n\n\nCreate nested folders\nmkdir -p parent/child\n\n\nCreate or edit a file\nnano file.txt\n\n\nPrint a file\ncat file.txt\n\n\nPreview the start\nhead file.txt\n\n\nPreview the end\ntail file.txt\n\n\nWatch a file update live\ntail -f file.txt\n\n\nMove or rename a file\nmv old new\n\n\nCopy a file\ncp source destination\n\n\nCopy a folder\ncp -r source/ destination/\n\n\nCheck folder size\ndu -sh folder/\n\n\nCheck disk space\ndf -h .\n\n\nCopy files to/from Unity\nscp source destination\n\n\nCancel a running command\nCtrl + C",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -925,8 +855,18 @@
     "objectID": "using-terminal.html#tips-for-beginners",
     "href": "using-terminal.html#tips-for-beginners",
     "title": "Using the Terminal",
-    "section": "15 Tips for beginners",
-    "text": "15 Tips for beginners\n\nFile and folder names are case-sensitive. Results and results are different.\nAvoid spaces in file names — use underscores _ or hyphens - instead.\nPress Tab to autocomplete a file or folder name. Press it twice to see all options.\nUse the ↑ arrow key to scroll through previous commands.\nRead error messages carefully — they usually tell you exactly what went wrong.\nIf a command seems to hang, press Ctrl + C to cancel it.",
+    "section": "8 Tips for beginners",
+    "text": "8 Tips for beginners\n\nFile and folder names are case-sensitive. Results and results are two different folders.\nAvoid spaces in file names — use underscores _ or hyphens - instead.\nPress Tab to autocomplete a file or folder name. Press it twice to see all matches if there are several.\nUse the ↑ arrow key to scroll back through previous commands — no need to retype.\nRead error messages carefully — they usually tell you exactly what went wrong.\nIf a command seems stuck, press Ctrl + C to cancel it.",
+    "crumbs": [
+      "Using the Terminal"
+    ]
+  },
+  {
+    "objectID": "using-terminal.html#copying-files-between-unity-and-your-laptop",
+    "href": "using-terminal.html#copying-files-between-unity-and-your-laptop",
+    "title": "Using the Terminal",
+    "section": "9 Copying files between Unity and your laptop",
+    "text": "9 Copying files between Unity and your laptop\nscp copies files between your laptop and Unity. Run these commands from a terminal on your laptop (not from Unity).\nCopy a file from Unity to your current folder:\nscp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .\nCopy a whole folder from Unity to your laptop:\nscp -r kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .\nCopy a file from your laptop to Unity:\nscp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/\nThe . at the end means “copy it here, into my current directory.”\n\n\n\n\n\n\nNote\n\n\n\nReplace kfloer_smith_edu with your own Unity username and replace the paths with your actual file paths.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -1016,7 +956,7 @@
     "href": "using-unity.html",
     "title": "Using Unity",
     "section": "",
-    "text": "Bookmark these links — you will use them regularly.\n\n\n\nResource\nLink\n\n\n\n\nScratch workspaces\nhttps://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nModule explorer (search available software)\nhttps://ood.unity.rc.umass.edu/pun/sys/module-explorer\n\n\nNode specifications\nhttps://docs.unityhpc.org/documentation/cluster_specs/nodes/",
+    "text": "Bookmark these links — you will use them regularly.\n\n\n\nResource\nLink\n\n\n\n\nConnecting to Unity via SSH\nhttps://docs.unityhpc.org/documentation/connecting/ssh/\n\n\nScratch workspaces\nhttps://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nModule explorer (search available software)\nhttps://ood.unity.rc.umass.edu/pun/sys/module-explorer\n\n\nNode specifications\nhttps://docs.unityhpc.org/documentation/cluster_specs/nodes/",
     "crumbs": [
       "Using Unity"
     ]
@@ -1026,7 +966,7 @@
     "href": "using-unity.html#unity-resources",
     "title": "Using Unity",
     "section": "",
-    "text": "Bookmark these links — you will use them regularly.\n\n\n\nResource\nLink\n\n\n\n\nScratch workspaces\nhttps://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nModule explorer (search available software)\nhttps://ood.unity.rc.umass.edu/pun/sys/module-explorer\n\n\nNode specifications\nhttps://docs.unityhpc.org/documentation/cluster_specs/nodes/",
+    "text": "Bookmark these links — you will use them regularly.\n\n\n\nResource\nLink\n\n\n\n\nConnecting to Unity via SSH\nhttps://docs.unityhpc.org/documentation/connecting/ssh/\n\n\nScratch workspaces\nhttps://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/\n\n\nModule explorer (search available software)\nhttps://ood.unity.rc.umass.edu/pun/sys/module-explorer\n\n\nNode specifications\nhttps://docs.unityhpc.org/documentation/cluster_specs/nodes/",
     "crumbs": [
       "Using Unity"
     ]
