@@ -33,7 +33,7 @@ By the end of this tutorial you will be able to:
 
 Follow the pages in order using the sidebar on the left. Each page builds on the one before it.
 
-If you already know a topic, you can skip ahead. But if something in a later section does not make sense, it is worth going back to an earlier page — most concepts build on each other.
+If you already know a topic, you can skip ahead. But if something in a later section does not make sense, it is worth going back to an earlier page, most concepts build on each other.
 
 ::: {.callout-tip}
 Throughout the tutorial you will see the username `kfloer_smith_edu` in example code. **Replace it with your own Unity username everywhere you see it.** If you are not sure what your username is, run `whoami` after logging in to Unity.
@@ -59,7 +59,7 @@ Throughout the tutorial you will see the username `kfloer_smith_edu` in example 
 
 - A Unity account (ask Lisa to register your email)
 - A laptop with a terminal app (Terminal on Mac, Windows Terminal on Windows)
-- Basic comfort reading and typing in a terminal — the [Using the terminal](using-terminal.qmd) page covers everything you need
+- Basic comfort reading and typing in a terminal, the [Using the terminal](using-terminal.qmd) page covers everything you need
 
 You do not need programming experience to follow this tutorial. All commands are written out step by step.
 

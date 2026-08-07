@@ -4,7 +4,7 @@ title: "Using Unity"
 
 ## Unity resources
 
-Bookmark these links — you will use them regularly.
+Bookmark these links, you will use them regularly.
 
 | Resource | Link |
 |---|---|
@@ -127,7 +127,7 @@ Before you start running analyses, think about where your files will live. Unity
 |---|---|---|---|---|
 | Home directory | `/home/kfloer_smith_edu/` | Scripts, config files, small notes | Limited (~50 GB) | No |
 | Lab shared storage | `/work/pi_lmangiamele_smith_edu/` | Shared data, reference genomes, final results | Large | No |
-| Scratch workspace | `/scratch4/workspace/kfloer_smith_edu-WORKSPACE/` | Pipeline runs, intermediate files | Very large | Yes — 30 days |
+| Scratch workspace | `/scratch4/workspace/kfloer_smith_edu-WORKSPACE/` | Pipeline runs, intermediate files | Very large | Yes: 30 days |
 
 **A typical project setup looks like this:**
 
@@ -156,7 +156,7 @@ The scratch workspace is where pipelines run because it is fast and has large ca
 
 ## Conda and mamba environments
 
-Conda is a package manager that lets you install software and keep different versions of tools isolated from each other. **Mamba** is a faster drop-in replacement for conda — they use the same commands, mamba just solves environments more quickly.
+Conda is a package manager that lets you install software and keep different versions of tools isolated from each other. **Mamba** is a faster drop-in replacement for conda, they use the same commands, mamba just solves environments more quickly.
 
 An **environment** is a self-contained collection of software. You create one environment per project (or per tool) so that different tools with conflicting dependencies do not interfere with each other.
 
@@ -210,7 +210,7 @@ conda env list
 ```
 
 ::: {.callout-note}
-For running nf-core pipelines on Unity, you generally do not need a conda environment — the pipeline manages its own software through Apptainer containers. Conda environments are more useful for tools you run separately, like R packages or custom Python scripts.
+For running nf-core pipelines on Unity, you generally do not need a conda environment, the pipeline manages its own software through Apptainer containers. Conda environments are more useful for tools you run separately, like R packages or custom Python scripts.
 :::
 
 ## A useful mental model

@@ -230,10 +230,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#reading-the-multiqc-report" id="toc-reading-the-multiqc-report" class="nav-link" data-scroll-target="#reading-the-multiqc-report"><span class="header-section-number">4</span> Reading the MultiQC report</a>
   <ul class="collapse">
   <li><a href="#general-statistics-table" id="toc-general-statistics-table" class="nav-link" data-scroll-target="#general-statistics-table"><span class="header-section-number">4.1</span> General statistics table</a></li>
-  <li><a href="#fastqc-sequence-quality" id="toc-fastqc-sequence-quality" class="nav-link" data-scroll-target="#fastqc-sequence-quality"><span class="header-section-number">4.2</span> FastQC — sequence quality</a></li>
-  <li><a href="#fastqc-adapter-content" id="toc-fastqc-adapter-content" class="nav-link" data-scroll-target="#fastqc-adapter-content"><span class="header-section-number">4.3</span> FastQC — adapter content</a></li>
-  <li><a href="#star-alignment-rate" id="toc-star-alignment-rate" class="nav-link" data-scroll-target="#star-alignment-rate"><span class="header-section-number">4.4</span> STAR — alignment rate</a></li>
-  <li><a href="#salmon-quantification" id="toc-salmon-quantification" class="nav-link" data-scroll-target="#salmon-quantification"><span class="header-section-number">4.5</span> Salmon — quantification</a></li>
+  <li><a href="#fastqc-sequence-quality" id="toc-fastqc-sequence-quality" class="nav-link" data-scroll-target="#fastqc-sequence-quality"><span class="header-section-number">4.2</span> FastQC: sequence quality</a></li>
+  <li><a href="#fastqc-adapter-content" id="toc-fastqc-adapter-content" class="nav-link" data-scroll-target="#fastqc-adapter-content"><span class="header-section-number">4.3</span> FastQC: adapter content</a></li>
+  <li><a href="#star-alignment-rate" id="toc-star-alignment-rate" class="nav-link" data-scroll-target="#star-alignment-rate"><span class="header-section-number">4.4</span> STAR: alignment rate</a></li>
+  <li><a href="#salmon-quantification" id="toc-salmon-quantification" class="nav-link" data-scroll-target="#salmon-quantification"><span class="header-section-number">4.5</span> Salmon: quantification</a></li>
   <li><a href="#gene-body-coverage-rseqc" id="toc-gene-body-coverage-rseqc" class="nav-link" data-scroll-target="#gene-body-coverage-rseqc"><span class="header-section-number">4.6</span> Gene body coverage (RSeQC)</a></li>
   <li><a href="#sample-clustering-and-correlation" id="toc-sample-clustering-and-correlation" class="nav-link" data-scroll-target="#sample-clustering-and-correlation"><span class="header-section-number">4.7</span> Sample clustering and correlation</a></li>
   </ul></li>
@@ -311,8 +311,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>The most important files for you are:</p>
 <ul>
-<li><code>multiqc/star_salmon/multiqc_report.html</code> — your first stop for QC</li>
-<li><code>star_salmon/salmon.merged.gene_counts.tsv</code> — the count table you will use for DESeq2</li>
+<li><code>multiqc/star_salmon/multiqc_report.html</code>, your first stop for QC</li>
+<li><code>star_salmon/salmon.merged.gene_counts.tsv</code>, the count table you will use for DESeq2</li>
 </ul>
 </section>
 <section id="get-the-files-to-your-laptop" class="level2" data-number="3">
@@ -363,24 +363,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 <section id="fastqc-sequence-quality" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="fastqc-sequence-quality"><span class="header-section-number">4.2</span> FastQC — sequence quality</h3>
+<h3 data-number="4.2" class="anchored" data-anchor-id="fastqc-sequence-quality"><span class="header-section-number">4.2</span> FastQC: sequence quality</h3>
 <p>Look at the <strong>Per Base Sequence Quality</strong> plot. This shows quality scores along the length of each read.</p>
 <ul>
 <li>Quality above 30 (the green zone) across most of the read is good</li>
-<li>A drop at the ends is normal — Illumina reads often drop in quality toward the 3’ end</li>
+<li>A drop at the ends is normal, Illumina reads often drop in quality toward the 3’ end</li>
 <li>If quality drops early (before position 50), check whether trimming helped</li>
 </ul>
 </section>
 <section id="fastqc-adapter-content" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="fastqc-adapter-content"><span class="header-section-number">4.3</span> FastQC — adapter content</h3>
+<h3 data-number="4.3" class="anchored" data-anchor-id="fastqc-adapter-content"><span class="header-section-number">4.3</span> FastQC: adapter content</h3>
 <p>Adapter contamination means sequencing read through the end of a fragment and into the Illumina adapter sequence. nf-core/rnaseq trims adapters automatically with Trim Galore, so you should see minimal adapters in the <strong>post-trimming</strong> FastQC plot.</p>
 <ul>
 <li>The post-trimming plot should show adapter content close to 0%</li>
-<li>If it is still high after trimming, the adapter detection may have failed — check the library prep documentation</li>
+<li>If it is still high after trimming, the adapter detection may have failed, check the library prep documentation</li>
 </ul>
 </section>
 <section id="star-alignment-rate" class="level3" data-number="4.4">
-<h3 data-number="4.4" class="anchored" data-anchor-id="star-alignment-rate"><span class="header-section-number">4.4</span> STAR — alignment rate</h3>
+<h3 data-number="4.4" class="anchored" data-anchor-id="star-alignment-rate"><span class="header-section-number">4.4</span> STAR: alignment rate</h3>
 <p>The <strong>STAR</strong> section shows what percentage of reads mapped to the genome.</p>
 <table class="caption-top table">
 <colgroup>
@@ -400,23 +400,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>70–85%</td>
-<td>Acceptable — check for rRNA contamination or genome completeness</td>
+<td>Acceptable: check for rRNA contamination or genome completeness</td>
 </tr>
 <tr class="odd">
 <td>Below 70%</td>
-<td>Investigate — possible wrong reference, contamination, or library prep issue</td>
+<td>Investigate: possible wrong reference, contamination, or library prep issue</td>
 </tr>
 </tbody>
 </table>
 <p>For <em>S. parvus</em>, alignment rates may be lower than for model organisms because the genome assembly is less complete. A rate in the 70–85% range is not unusual.</p>
 <p>Also look at:</p>
 <ul>
-<li><strong>Uniquely mapped</strong> — reads that map to exactly one place in the genome (best for quantification)</li>
-<li><strong>Multi-mapped</strong> — reads that map to more than one place (less useful; often from repetitive regions)</li>
+<li><strong>Uniquely mapped</strong>, reads that map to exactly one place in the genome (best for quantification)</li>
+<li><strong>Multi-mapped</strong>, reads that map to more than one place (less useful; often from repetitive regions)</li>
 </ul>
 </section>
 <section id="salmon-quantification" class="level3" data-number="4.5">
-<h3 data-number="4.5" class="anchored" data-anchor-id="salmon-quantification"><span class="header-section-number">4.5</span> Salmon — quantification</h3>
+<h3 data-number="4.5" class="anchored" data-anchor-id="salmon-quantification"><span class="header-section-number">4.5</span> Salmon: quantification</h3>
 <p>Salmon uses the aligned reads to estimate transcript abundances. The <strong>Salmon</strong> section shows the percentage of reads assigned to genes (mapping rate).</p>
 <ul>
 <li>A Salmon mapping rate similar to the STAR alignment rate is expected</li>
@@ -428,7 +428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This plot shows read coverage across the length of genes, from 5’ (left) to 3’ (right).</p>
 <ul>
 <li>A flat or slightly 5’-biased curve is ideal</li>
-<li>A strong 3’ bias suggests RNA degradation in the sample — poor RNA quality at time of extraction</li>
+<li>A strong 3’ bias suggests RNA degradation in the sample, poor RNA quality at time of extraction</li>
 <li>A strong 5’ bias is rarer and may indicate specific library prep issues</li>
 </ul>
 </section>
@@ -475,12 +475,12 @@ Note
 </section>
 <section id="save-provenance-files" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="save-provenance-files"><span class="header-section-number">6</span> Save provenance files</h2>
-<p>Before you clean up the workspace or move on, archive these files — they document exactly what was run and make the analysis reproducible:</p>
+<p>Before you clean up the workspace or move on, archive these files, they document exactly what was run and make the analysis reproducible:</p>
 <ul>
-<li><code>pipeline_info/software_versions.yml</code> — every tool version used</li>
-<li><code>pipeline_info/execution_report.html</code> — a visual timeline of all pipeline steps</li>
-<li><code>pipeline_info/execution_timeline.html</code> — timing information</li>
-<li><code>pipeline_info/params_*.json</code> — the exact parameters used</li>
+<li><code>pipeline_info/software_versions.yml</code>, every tool version used</li>
+<li><code>pipeline_info/execution_report.html</code>, a visual timeline of all pipeline steps</li>
+<li><code>pipeline_info/execution_timeline.html</code>, timing information</li>
+<li><code>pipeline_info/params_*.json</code>, the exact parameters used</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy the pipeline_info folder to lab storage</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> results/pipeline_info/ /work/pi_lmangiamele_smith_edu/YOUR_PROJECT_NAME/pipeline_info/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

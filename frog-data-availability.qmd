@@ -8,13 +8,13 @@ This page collects the data files and repositories used for *Staurois parvus* RN
 
 ## What is SRA, and how does it relate to NCBI?
 
-**NCBI** (National Center for Biotechnology Information) is a US government database that stores biological data — genome sequences, gene records, publications, and more. It is the main public archive for genomics data.
+**NCBI** (National Center for Biotechnology Information) is a US government database that stores biological data, genome sequences, gene records, publications, and more. It is the main public archive for genomics data.
 
-**SRA** (Sequence Read Archive) is the part of NCBI that specifically stores raw sequencing reads — the FASTQ files that come off a sequencer. When a paper publishes RNA-seq data, the raw reads are usually deposited in SRA, and each dataset is given a unique accession number that starts with `SRA`, `SRP`, `SRR`, or `PRJNA`.
+**SRA** (Sequence Read Archive) is the part of NCBI that specifically stores raw sequencing reads, the FASTQ files that come off a sequencer. When a paper publishes RNA-seq data, the raw reads are usually deposited in SRA, and each dataset is given a unique accession number that starts with `SRA`, `SRP`, `SRR`, or `PRJNA`.
 
 To download data from SRA you use a tool called `sra-tools` (specifically the `fasterq-dump` command), which converts SRA format back into FASTQ files.
 
-**GEO** (Gene Expression Omnibus) is a related NCBI database that stores processed expression data — count tables, normalized values, and metadata. GEO records often link back to the raw SRA reads.
+**GEO** (Gene Expression Omnibus) is a related NCBI database that stores processed expression data, count tables, normalized values, and metadata. GEO records often link back to the raw SRA reads.
 
 In practice: if you see a paper say "data available at GEO accession GSE######", the raw reads for that study are usually also in SRA under a linked accession.
 

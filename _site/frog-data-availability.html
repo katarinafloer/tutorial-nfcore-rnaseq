@@ -234,10 +234,10 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="what-is-sra-and-how-does-it-relate-to-ncbi" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="what-is-sra-and-how-does-it-relate-to-ncbi"><span class="header-section-number">2</span> What is SRA, and how does it relate to NCBI?</h2>
-<p><strong>NCBI</strong> (National Center for Biotechnology Information) is a US government database that stores biological data — genome sequences, gene records, publications, and more. It is the main public archive for genomics data.</p>
-<p><strong>SRA</strong> (Sequence Read Archive) is the part of NCBI that specifically stores raw sequencing reads — the FASTQ files that come off a sequencer. When a paper publishes RNA-seq data, the raw reads are usually deposited in SRA, and each dataset is given a unique accession number that starts with <code>SRA</code>, <code>SRP</code>, <code>SRR</code>, or <code>PRJNA</code>.</p>
+<p><strong>NCBI</strong> (National Center for Biotechnology Information) is a US government database that stores biological data, genome sequences, gene records, publications, and more. It is the main public archive for genomics data.</p>
+<p><strong>SRA</strong> (Sequence Read Archive) is the part of NCBI that specifically stores raw sequencing reads, the FASTQ files that come off a sequencer. When a paper publishes RNA-seq data, the raw reads are usually deposited in SRA, and each dataset is given a unique accession number that starts with <code>SRA</code>, <code>SRP</code>, <code>SRR</code>, or <code>PRJNA</code>.</p>
 <p>To download data from SRA you use a tool called <code>sra-tools</code> (specifically the <code>fasterq-dump</code> command), which converts SRA format back into FASTQ files.</p>
-<p><strong>GEO</strong> (Gene Expression Omnibus) is a related NCBI database that stores processed expression data — count tables, normalized values, and metadata. GEO records often link back to the raw SRA reads.</p>
+<p><strong>GEO</strong> (Gene Expression Omnibus) is a related NCBI database that stores processed expression data, count tables, normalized values, and metadata. GEO records often link back to the raw SRA reads.</p>
 <p>In practice: if you see a paper say “data available at GEO accession GSE######”, the raw reads for that study are usually also in SRA under a linked accession.</p>
 </section>
 <section id="what-youll-most-likely-need" class="level2" data-number="3">

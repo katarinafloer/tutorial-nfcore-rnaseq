@@ -6,7 +6,7 @@ title: "Using the Terminal"
 
 The terminal is a text-based interface for your computer. Instead of clicking on icons, you type commands and press Enter to run them.
 
-This might feel unfamiliar at first — especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.
+This might feel unfamiliar at first, especially if you are used to R with RStudio, which has a graphical interface. But the terminal is the main way bioinformaticians interact with computing clusters, and after a little practice the commands become second nature.
 
 This page is a follow-along exercise. Work through the steps in order and run each command yourself.
 
@@ -32,7 +32,7 @@ The terminal is waiting for you to type a command. Press Enter after each comman
 
 ## Follow-along exercise
 
-### Step 1 — Find out where you are
+### Step 1: Find out where you are
 
 ```bash
 pwd
@@ -46,11 +46,11 @@ pwd
 /Users/kfloer
 ```
 
-Your path will show your own username. This location — `/Users/your_name` — is your **home directory**, the folder that belongs to you.
+Your path will show your own username. This location, `/Users/your_name`, is your **home directory**, the folder that belongs to you.
 
 ---
 
-### Step 2 — Move to the Desktop
+### Step 2: Move to the Desktop
 
 ```bash
 cd Desktop
@@ -72,7 +72,7 @@ pwd
 
 ---
 
-### Step 3 — Create a new folder
+### Step 3: Create a new folder
 
 ```bash
 mkdir tutorial
@@ -100,7 +100,7 @@ pwd
 
 ---
 
-### Step 4 — Create a text file with nano
+### Step 4: Create a text file with nano
 
 `nano` is a simple text editor that runs inside the terminal. You will use it to write scripts on Unity. Open a new file called `notes.txt`:
 
@@ -108,7 +108,7 @@ pwd
 nano notes.txt
 ```
 
-The screen changes — you are now inside the editor. You can type normally. The bottom of the screen shows keyboard shortcuts:
+The screen changes, you are now inside the editor. You can type normally. The bottom of the screen shows keyboard shortcuts:
 
 ```text
 ^O  Write Out (save)       ^X  Exit
@@ -159,7 +159,7 @@ You are back at the regular terminal prompt.
 
 ---
 
-### Step 5 — Read the file
+### Step 5: Read the file
 
 Print the entire file to the terminal:
 
@@ -182,33 +182,80 @@ tail notes.txt
 ```
 
 ::: {.callout-tip}
-`head` and `tail` are useful when a file is very large — too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick `head` or `tail` gives you a preview without waiting for everything to scroll past.
+`head` and `tail` are useful when a file is very large, too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick `head` or `tail` gives you a preview without waiting for everything to scroll past.
+:::
+
+### When output won't stop: Ctrl+C vs q
+
+You will run into two situations where a command takes over your terminal and you need to get out.
+
+**Situation 1: `cat` on a huge file**
+
+If you accidentally run `cat` on a very large file, thousands of lines start scrolling past and will not stop on their own. Press `Ctrl+C` to cancel the command immediately.
+
+```bash
+cat huge_log_file.txt   # thousands of lines start scrolling...
+# press Ctrl+C to stop
+```
+
+`Ctrl+C` cancels whatever command is currently running. Use it any time a command is doing something and you want it to stop.
+
+**Situation 2: a pager opens (less, man, git log)**
+
+Some commands open an interactive viewer called a **pager** instead of dumping everything to the screen at once. You will see this with `less`, `man`, and sometimes `git log`. The pager lets you scroll up and down through the content.
+
+To open a large file in the pager:
+
+```bash
+less notes.txt
+```
+
+Inside `less`:
+
+- `↓` / `↑` arrow keys or `j` / `k` to scroll line by line
+- `Space` to jump down a full page
+- `q` to quit and return to the terminal
+
+The key difference: if the terminal is **waiting for a command**, use `Ctrl+C`. If a **pager or interactive program** is open, use `q`.
+
+::: {.callout-note}
+A quick way to tell which situation you are in: if you can see a `:` or `(END)` at the very bottom of the screen, you are inside a pager. Press `q` to exit. If the terminal prompt (`$` or `%`) is not visible at all and output is still printing, press `Ctrl+C`.
 :::
 
 ---
 
-### Step 6 — Move the file to the Desktop
+### Step 6: Move the file to the Desktop
 
-Right now `notes.txt` is inside the `tutorial` folder. Move it up one level to the Desktop:
+Right now `notes.txt` is inside the `tutorial` folder. You can see its full path:
 
 ```bash
-mv notes.txt ../
+pwd
 ```
 
-`mv` stands for **move**. The destination `../` means "one folder up" — in this case, the Desktop.
+```text
+/Users/kfloer/Desktop/tutorial
+```
+
+Use that full path to move the file to the Desktop:
+
+```bash
+mv ~/Desktop/tutorial/notes.txt ~/Desktop/
+```
+
+`mv` takes two arguments: where the file is now, and where you want it to go. The `~` is shorthand for your home directory, so `~/Desktop/` is the same as `/Users/kfloer/Desktop/`.
 
 Confirm the file is gone from the `tutorial` folder:
 
 ```bash
-ls
+ls ~/Desktop/tutorial/
 ```
 
-The folder should be empty — no output, or a blank line.
+The folder should be empty, no output, or a blank line.
 
 Confirm the file is now on the Desktop:
 
 ```bash
-ls ..
+ls ~/Desktop/
 ```
 
 You should see `notes.txt` listed among your Desktop items.
@@ -238,13 +285,13 @@ These same commands work on Unity. The only difference is that on Unity your hom
 
 A path describes where a file or folder is located. There are two types:
 
-**Absolute path** — starts from the very top of the filesystem with `/`. It always points to the same place, no matter where you currently are.
+**Absolute path**, starts from the very top of the filesystem with `/`. It always points to the same place, no matter where you currently are.
 
 ```text
 /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq
 ```
 
-**Relative path** — starts from wherever you currently are. A single dot `.` means "here" and two dots `..` mean "one folder up".
+**Relative path**, starts from wherever you currently are. A single dot `.` means "here" and two dots `..` mean "one folder up".
 
 ```text
 ../notes.txt
@@ -260,7 +307,7 @@ When in doubt, use absolute paths. They are harder to get wrong because they alw
 
 If you have written code in R, you already understand the idea of a script: a text file containing commands that run in order from top to bottom.
 
-A **shell script** is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs a `.R` file line by line.
+A **shell script** is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line, just like R runs a `.R` file line by line.
 
 Shell scripts usually end with `.sh`. For example:
 
@@ -270,12 +317,12 @@ module load nextflow/26.04.1
 nextflow run nf-core/rnaseq -r 3.26.0 -profile test,unity
 ```
 
-That is a three-line shell script. The first line (`#!/bin/bash`) tells the computer which program to use to interpret the commands — think of it like a `library()` call in R that sets up the environment. The next lines are commands you would type manually, saved so they run automatically.
+That is a three-line shell script. The first line (`#!/bin/bash`) tells the computer which program to use to interpret the commands, think of it like a `library()` call in R that sets up the environment. The next lines are commands you would type manually, saved so they run automatically.
 
-The job scripts in this tutorial are shell scripts with extra lines at the top starting with `#SBATCH`. Those are instructions for SLURM — they tell the job scheduler how much time and memory to reserve. Everything else is plain terminal commands.
+The job scripts in this tutorial are shell scripts with extra lines at the top starting with `#SBATCH`. Those are instructions for SLURM, they tell the job scheduler how much time and memory to reserve. Everything else is plain terminal commands.
 
 ::: {.callout-tip}
-The `.sh` extension is a convention, not a requirement. Some people name SLURM scripts `.sbatch`. Both work — the extension is just a label to remind you what the file does.
+The `.sh` extension is a convention, not a requirement. Some people name SLURM scripts `.sbatch`. Both work, the extension is just a label to remind you what the file does.
 :::
 
 ---
@@ -308,10 +355,10 @@ The `.sh` extension is a convention, not a requirement. Some people name SLURM s
 ## Tips for beginners
 
 - File and folder names are **case-sensitive**. `Results` and `results` are two different folders.
-- Avoid spaces in file names — use underscores `_` or hyphens `-` instead.
+- Avoid spaces in file names, use underscores `_` or hyphens `-` instead.
 - Press `Tab` to autocomplete a file or folder name. Press it twice to see all matches if there are several.
-- Use the `↑` arrow key to scroll back through previous commands — no need to retype.
-- Read error messages carefully — they usually tell you exactly what went wrong.
+- Use the `↑` arrow key to scroll back through previous commands, no need to retype.
+- Read error messages carefully, they usually tell you exactly what went wrong.
 - If a command seems stuck, press `Ctrl + C` to cancel it.
 
 ## Copying files between Unity and your laptop

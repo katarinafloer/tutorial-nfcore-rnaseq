@@ -233,8 +233,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#common-problems-and-fixes" id="toc-common-problems-and-fixes" class="nav-link" data-scroll-target="#common-problems-and-fixes"><span class="header-section-number">2</span> Common problems and fixes</a>
   <ul class="collapse">
-  <li><a href="#the-job-was-cancelled-time-limit-exceeded" id="toc-the-job-was-cancelled-time-limit-exceeded" class="nav-link" data-scroll-target="#the-job-was-cancelled-time-limit-exceeded"><span class="header-section-number">2.1</span> The job was cancelled — time limit exceeded</a></li>
-  <li><a href="#the-job-failed-out-of-memory" id="toc-the-job-failed-out-of-memory" class="nav-link" data-scroll-target="#the-job-failed-out-of-memory"><span class="header-section-number">2.2</span> The job failed — out of memory</a></li>
+  <li><a href="#the-job-was-cancelled-time-limit-exceeded" id="toc-the-job-was-cancelled-time-limit-exceeded" class="nav-link" data-scroll-target="#the-job-was-cancelled-time-limit-exceeded"><span class="header-section-number">2.1</span> The job was cancelled: time limit exceeded</a></li>
+  <li><a href="#the-job-failed-out-of-memory" id="toc-the-job-failed-out-of-memory" class="nav-link" data-scroll-target="#the-job-failed-out-of-memory"><span class="header-section-number">2.2</span> The job failed: out of memory</a></li>
   <li><a href="#nextflow-module-not-found" id="toc-nextflow-module-not-found" class="nav-link" data-scroll-target="#nextflow-module-not-found"><span class="header-section-number">2.3</span> Nextflow module not found</a></li>
   <li><a href="#apptainer-container-failed-to-pull" id="toc-apptainer-container-failed-to-pull" class="nav-link" data-scroll-target="#apptainer-container-failed-to-pull"><span class="header-section-number">2.4</span> Apptainer container failed to pull</a></li>
   <li><a href="#the-samplesheet-is-not-found" id="toc-the-samplesheet-is-not-found" class="nav-link" data-scroll-target="#the-samplesheet-is-not-found"><span class="header-section-number">2.5</span> The samplesheet is not found</a></li>
@@ -274,7 +274,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="check-whether-the-job-is-still-running" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="check-whether-the-job-is-still-running"><span class="header-section-number">1.1</span> Check whether the job is still running</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If the job is no longer listed, it has finished — either successfully or with an error.</p>
+<p>If the job is no longer listed, it has finished, either successfully or with an error.</p>
 </section>
 <section id="read-the-output-log" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="read-the-output-log"><span class="header-section-number">1.2</span> Read the output log</h3>
@@ -304,7 +304,7 @@ Work dir:
 <section id="common-problems-and-fixes" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="common-problems-and-fixes"><span class="header-section-number">2</span> Common problems and fixes</h2>
 <section id="the-job-was-cancelled-time-limit-exceeded" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="the-job-was-cancelled-time-limit-exceeded"><span class="header-section-number">2.1</span> The job was cancelled — time limit exceeded</h3>
+<h3 data-number="2.1" class="anchored" data-anchor-id="the-job-was-cancelled-time-limit-exceeded"><span class="header-section-number">2.1</span> The job was cancelled: time limit exceeded</h3>
 <p><strong>Symptom:</strong> The job disappears from <code>squeue</code> before finishing. The log ends without a completion message. SLURM emails you “CANCELLED” or “TIMEOUT”.</p>
 <p><strong>Fix:</strong> Increase <code>--time</code> in the <code>#SBATCH</code> header. For a full dataset, use at least <code>3-00:00:00</code> (3 days).</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=3-00:00:00</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -312,7 +312,7 @@ Work dir:
 <hr>
 </section>
 <section id="the-job-failed-out-of-memory" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="the-job-failed-out-of-memory"><span class="header-section-number">2.2</span> The job failed — out of memory</h3>
+<h3 data-number="2.2" class="anchored" data-anchor-id="the-job-failed-out-of-memory"><span class="header-section-number">2.2</span> The job failed: out of memory</h3>
 <p><strong>Symptom:</strong> The error log contains <code>Out of memory</code>, <code>Killed</code>, or a process exits with code <code>137</code>.</p>
 <p><strong>Fix:</strong> Increase <code>--mem</code> in the <code>#SBATCH</code> header:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=128G</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -341,7 +341,7 @@ FATAL:   Unable to pull docker://...</code></pre>
 <ol type="1">
 <li><p>Delete the cache folder and try again:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/.nextflow-apptainer-cache</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p>Resubmit the job — Nextflow will re-download the containers.</p></li>
+<li><p>Resubmit the job, Nextflow will re-download the containers.</p></li>
 </ol>
 <hr>
 </section>
@@ -389,7 +389,7 @@ FATAL:   Unable to pull docker://...</code></pre>
 <h3 data-number="2.9" class="anchored" data-anchor-id="pipeline-says-it-succeeded-but-results-look-wrong"><span class="header-section-number">2.9</span> Pipeline says it succeeded but results look wrong</h3>
 <p><strong>Things to check:</strong></p>
 <ul>
-<li>Open <code>multiqc/star_salmon/multiqc_report.html</code> and check alignment rates — very low alignment can produce a “successful” run with no useful data</li>
+<li>Open <code>multiqc/star_salmon/multiqc_report.html</code> and check alignment rates, very low alignment can produce a “successful” run with no useful data</li>
 <li>Confirm the GTF annotation file matches the genome FASTA (both should come from the same EGAPx assembly)</li>
 <li>Check <code>pipeline_info/params_*.json</code> to confirm the correct genome and annotation were used</li>
 </ul>

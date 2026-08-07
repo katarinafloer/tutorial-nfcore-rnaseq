@@ -28,8 +28,8 @@ After a successful run, your results directory will contain:
 
 The most important files for you are:
 
-- `multiqc/star_salmon/multiqc_report.html` — your first stop for QC
-- `star_salmon/salmon.merged.gene_counts.tsv` — the count table you will use for DESeq2
+- `multiqc/star_salmon/multiqc_report.html`, your first stop for QC
+- `star_salmon/salmon.merged.gene_counts.tsv`, the count table you will use for DESeq2
 
 ## Get the files to your laptop
 
@@ -65,39 +65,39 @@ This is at the top of the report. It gives a quick overview of every sample. Col
 | `% GC` | GC content of reads | Should be similar across samples; big differences can indicate contamination |
 | `M Reads` | Millions of reads per sample | Check that all samples have comparable read counts; a very low count is a flag |
 
-### FastQC — sequence quality
+### FastQC: sequence quality
 
 Look at the **Per Base Sequence Quality** plot. This shows quality scores along the length of each read.
 
 - Quality above 30 (the green zone) across most of the read is good
-- A drop at the ends is normal — Illumina reads often drop in quality toward the 3' end
+- A drop at the ends is normal, Illumina reads often drop in quality toward the 3' end
 - If quality drops early (before position 50), check whether trimming helped
 
-### FastQC — adapter content
+### FastQC: adapter content
 
 Adapter contamination means sequencing read through the end of a fragment and into the Illumina adapter sequence. nf-core/rnaseq trims adapters automatically with Trim Galore, so you should see minimal adapters in the **post-trimming** FastQC plot.
 
 - The post-trimming plot should show adapter content close to 0%
-- If it is still high after trimming, the adapter detection may have failed — check the library prep documentation
+- If it is still high after trimming, the adapter detection may have failed, check the library prep documentation
 
-### STAR — alignment rate
+### STAR: alignment rate
 
 The **STAR** section shows what percentage of reads mapped to the genome.
 
 | Alignment rate | Interpretation |
 |---|---|
 | 85–95% | Good |
-| 70–85% | Acceptable — check for rRNA contamination or genome completeness |
-| Below 70% | Investigate — possible wrong reference, contamination, or library prep issue |
+| 70–85% | Acceptable: check for rRNA contamination or genome completeness |
+| Below 70% | Investigate: possible wrong reference, contamination, or library prep issue |
 
 For *S. parvus*, alignment rates may be lower than for model organisms because the genome assembly is less complete. A rate in the 70–85% range is not unusual.
 
 Also look at:
 
-- **Uniquely mapped** — reads that map to exactly one place in the genome (best for quantification)
-- **Multi-mapped** — reads that map to more than one place (less useful; often from repetitive regions)
+- **Uniquely mapped**, reads that map to exactly one place in the genome (best for quantification)
+- **Multi-mapped**, reads that map to more than one place (less useful; often from repetitive regions)
 
-### Salmon — quantification
+### Salmon: quantification
 
 Salmon uses the aligned reads to estimate transcript abundances. The **Salmon** section shows the percentage of reads assigned to genes (mapping rate).
 
@@ -109,7 +109,7 @@ Salmon uses the aligned reads to estimate transcript abundances. The **Salmon** 
 This plot shows read coverage across the length of genes, from 5' (left) to 3' (right).
 
 - A flat or slightly 5'-biased curve is ideal
-- A strong 3' bias suggests RNA degradation in the sample — poor RNA quality at time of extraction
+- A strong 3' bias suggests RNA degradation in the sample, poor RNA quality at time of extraction
 - A strong 5' bias is rarer and may indicate specific library prep issues
 
 ### Sample clustering and correlation
@@ -157,12 +157,12 @@ scp kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOU
 
 ## Save provenance files
 
-Before you clean up the workspace or move on, archive these files — they document exactly what was run and make the analysis reproducible:
+Before you clean up the workspace or move on, archive these files, they document exactly what was run and make the analysis reproducible:
 
-- `pipeline_info/software_versions.yml` — every tool version used
-- `pipeline_info/execution_report.html` — a visual timeline of all pipeline steps
-- `pipeline_info/execution_timeline.html` — timing information
-- `pipeline_info/params_*.json` — the exact parameters used
+- `pipeline_info/software_versions.yml`, every tool version used
+- `pipeline_info/execution_report.html`, a visual timeline of all pipeline steps
+- `pipeline_info/execution_timeline.html`, timing information
+- `pipeline_info/params_*.json`, the exact parameters used
 
 ```bash
 # Copy the pipeline_info folder to lab storage

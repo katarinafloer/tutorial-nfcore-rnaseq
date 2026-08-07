@@ -232,28 +232,28 @@ ul.task-list li input[type="checkbox"] {
 <section id="the-big-idea" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="the-big-idea"><span class="header-section-number">1</span> The big idea</h2>
 <p>RNA-seq is a way to measure which genes are being expressed in a biological sample.</p>
-<p>Cells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene — called <strong>messenger RNA</strong> (mRNA). RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.</p>
+<p>Cells use DNA as the long-term instruction manual, but they do not use every gene all the time. When a gene is active, the cell often makes RNA copies of that gene, called <strong>messenger RNA</strong> (mRNA). RNA-seq lets us sequence those RNA molecules and estimate which genes were active (or inactive), and how strongly, in each sample.</p>
 <p>In this tutorial, we are interested in RNA-seq analysis for the frog <em>Staurois parvus</em>.</p>
 </section>
 <section id="from-sample-to-counts-the-basic-steps" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="from-sample-to-counts-the-basic-steps"><span class="header-section-number">2</span> From sample to counts: the basic steps</h2>
 <p>Here is the overall journey from a biological sample to a number you can analyze statistically.</p>
 <ol type="1">
-<li><strong>Extract RNA</strong> from the tissue — this happens in the wet lab before any computing begins</li>
-<li><strong>Sequence the RNA</strong> — the sequencing machine converts RNA fragments into short text strings called <strong>reads</strong>, stored in FASTQ files</li>
-<li><strong>Align the reads</strong> to a reference genome — figure out which gene each read came from</li>
-<li><strong>Count the reads per gene</strong> — for each gene, count how many reads mapped to it across each sample</li>
-<li><strong>Compare counts across conditions</strong> — use statistics to find genes where the count is higher or lower in one group vs another (differential expression)</li>
+<li><strong>Extract RNA</strong> from the tissue, this happens in the wet lab before any computing begins</li>
+<li><strong>Sequence the RNA</strong>, the sequencing machine converts RNA fragments into short text strings called <strong>reads</strong>, stored in FASTQ files</li>
+<li><strong>Align the reads</strong> to a reference genome, figure out which gene each read came from</li>
+<li><strong>Count the reads per gene</strong>, for each gene, count how many reads mapped to it across each sample</li>
+<li><strong>Compare counts across conditions</strong>, use statistics to find genes where the count is higher or lower in one group vs another (differential expression)</li>
 </ol>
 <p>Steps 3–5 are what this tutorial covers computationally.</p>
 </section>
 <section id="key-terms" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="key-terms"><span class="header-section-number">3</span> Key terms</h2>
-<p><strong>Read</strong> — A short DNA/RNA sequence, typically 100–150 base pairs long, produced by the sequencer. Each read comes from one RNA molecule in the original sample.</p>
-<p><strong>Alignment</strong> — Matching each read back to the reference genome to figure out which gene it came from. A read that maps to a known gene region contributes to that gene’s count.</p>
-<p><strong>Count</strong> — The number of reads that mapped to a given gene in a given sample. More counts = higher expression (assuming similar total read depth across samples).</p>
-<p><strong>Quantification</strong> — The step that assigns counts to genes (or transcripts). Tools like Salmon do this by comparing reads to known gene sequences.</p>
-<p><strong>Differential expression</strong> — Comparing counts between groups (e.g., control vs.&nbsp;flutamide-treated) to find genes that are expressed at different levels. This is done with a statistical tool like DESeq2.</p>
+<p><strong>Read</strong>, A short DNA/RNA sequence, typically 100–150 base pairs long, produced by the sequencer. Each read comes from one RNA molecule in the original sample.</p>
+<p><strong>Alignment</strong>, Matching each read back to the reference genome to figure out which gene it came from. A read that maps to a known gene region contributes to that gene’s count.</p>
+<p><strong>Count</strong>, The number of reads that mapped to a given gene in a given sample. More counts = higher expression (assuming similar total read depth across samples).</p>
+<p><strong>Quantification</strong>, The step that assigns counts to genes (or transcripts). Tools like Salmon do this by comparing reads to known gene sequences.</p>
+<p><strong>Differential expression</strong>, Comparing counts between groups (e.g., control vs.&nbsp;flutamide-treated) to find genes that are expressed at different levels. This is done with a statistical tool like DESeq2.</p>
 </section>
 <section id="the-nf-corernaseq-workflow" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="the-nf-corernaseq-workflow"><span class="header-section-number">4</span> The nf-core/rnaseq workflow</h2>

@@ -2,14 +2,14 @@
 title: "Run the Pipeline"
 ---
 
-On Unity, the pipeline runs as a **SLURM batch job** — not interactively in the terminal. You write a shell script, submit it with `sbatch`, and SLURM runs it on a compute node while you can log out and do other things.
+On Unity, the pipeline runs as a **SLURM batch job**, not interactively in the terminal. You write a shell script, submit it with `sbatch`, and SLURM runs it on a compute node while you can log out and do other things.
 
 ## Understanding the job script
 
 A job script is a plain text file. It has two parts:
 
-1. **`#SBATCH` lines at the top** — these tell SLURM how much time and memory to reserve, and where to write the output
-2. **Shell commands below** — these are the actual commands that run
+1. **`#SBATCH` lines at the top**, these tell SLURM how much time and memory to reserve, and where to write the output
+2. **Shell commands below**, these are the actual commands that run
 
 Here is what each `#SBATCH` line means:
 
@@ -51,7 +51,7 @@ export PROOT_NO_SECCOMP=1           # Required for Apptainer to work correctly o
 
 These variables must point to your scratch workspace so they do not fill up your home directory.
 
-## Step 1 — Run a test first
+## Step 1: Run a test first
 
 Before running with your own data, run the built-in test profile. This uses a tiny dataset that comes with the pipeline and confirms everything is working correctly on Unity.
 
@@ -131,7 +131,7 @@ You will see something like:
 Submitted batch job 12345678
 ```
 
-Note the job ID — you will use it to check status or find your log files.
+Note the job ID, you will use it to check status or find your log files.
 
 Check whether the job is running:
 
@@ -161,7 +161,7 @@ A successful test run ends with something like:
 
 If you see `Pipeline completed with errors`, check the `.err` log file for details.
 
-## Step 2 — Run with your own samples
+## Step 2: Run with your own samples
 
 For a real run you need three things:
 
@@ -287,7 +287,7 @@ Replace `JOBID` with the number that `sbatch` printed when you submitted.
 
 ## Resuming an interrupted run
 
-If your job ran out of time or failed partway through, fix the problem and resubmit with the same script. The `-resume` flag is already included — Nextflow will skip steps that finished successfully and continue from where it stopped.
+If your job ran out of time or failed partway through, fix the problem and resubmit with the same script. The `-resume` flag is already included, Nextflow will skip steps that finished successfully and continue from where it stopped.
 
 ::: {.callout-warning}
 Only resume using the same scratch directory and the same params file. Changing the output path or key parameters invalidates the cached steps and forces a full restart.

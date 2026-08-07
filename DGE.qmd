@@ -21,7 +21,7 @@ editor: source
 ## Required packages
 
 Run once if anything below fails to load. `apeglm`, `clusterProfiler` and `org.Hs.eg.db`
-are optional — the script detects their absence and either falls back to `ashr` or skips
+are optional, the script detects their absence and either falls back to `ashr` or skips
 enrichment, rather than erroring.
 
 ```r
@@ -253,8 +253,8 @@ knitr::kable(group_n[order(-group_n$n), ], row.names = FALSE,
 ::: {.callout-important}
 ## Power is not uniform across groups
 
-`old_control_head` has only **n = 2**. Both contrasts that use it — the nervous-system
-developmental contrast and the head AR-blockade contrast — are substantially less powerful
+`old_control_head` has only **n = 2**. Both contrasts that use it, the nervous-system
+developmental contrast and the head AR-blockade contrast, are substantially less powerful
 than the body contrasts, and dispersion for those genes is estimated largely from the rest of
 the experiment. Treat head results as exploratory, and expect fewer significant genes there
 for reasons of sample size rather than biology.
@@ -265,7 +265,7 @@ for reasons of sample size rather than biology.
 Per the DESeq2 vignette, transcript-level Salmon estimates are summarised to gene level
 with `tximport`, which also produces the average-transcript-length offset that corrects
 for isoform-usage shifts between samples. `DESeqDataSetFromTximport()` consumes estimated
-counts — never normalised values.
+counts, never normalised values.
 
 ```{r}
 #| label: tximport
@@ -317,7 +317,7 @@ cat("Levels:", paste(levels(dds$group), collapse = ", "), "\n")
 ### Pre-filtering
 
 Following the vignette: keep genes with at least `MIN_COUNT` reads in at least as many
-samples as the *smallest group*. This is a memory/speed measure — `results()` performs
+samples as the *smallest group*. This is a memory/speed measure, `results()` performs
 independent filtering on top of it.
 
 ```{r}
@@ -459,7 +459,7 @@ p_scree
 ## 5. Sample clustering
 
 ::: {.callout-note}
-## All genes, or only some? — the practical answer
+## All genes, or only some?: the practical answer
 
 It depends on what is being clustered, and the two cases pull in opposite directions.
 
@@ -470,7 +470,7 @@ cluster, which makes groups look cleaner than they are and can manufacture appar
 structure. Using every gene gives an honest picture of global similarity, and with ~20k
 genes the distances are stable.
 
-**Clustering genes** (the expression heatmap): use a **restricted set** — either the top
+**Clustering genes** (the expression heatmap): use a **restricted set**, either the top
 variable genes or the significant genes from a contrast. Clustering all 20k genes produces
 a figure with no readable structure and is dominated by genes that do not change.
 
@@ -712,7 +712,7 @@ summarise_contrast <- function(res_df) {
 }
 ```
 
-### 6a. Developmental change with leg emergence — body
+### 6a. Developmental change with leg emergence: body
 
 **old_control_body vs young_control_body** (n = 4 vs 5). Captures everything that changes in
 the trunk/hind-limb/tail compartment between day 45 and day 103, including limb outgrowth
@@ -738,7 +738,7 @@ ggsave(file.path(OUT_DIR, "figures", "volcano_leg_emergence_body.png"),
 p1
 ```
 
-### 6b. Developmental change in the nervous system — head
+### 6b. Developmental change in the nervous system: head
 
 **old_control_head vs young_control_head** (n = 2 vs 4). Underpowered on the old side; read
 with the caveat above.
@@ -763,7 +763,7 @@ ggsave(file.path(OUT_DIR, "figures", "volcano_nervous_system_head.png"),
 p2
 ```
 
-### 6c. AR blockade in older tadpoles — body
+### 6c. AR blockade in older tadpoles: body
 
 **old_flutamide_body vs old_control_body** (n = 5 vs 4). The primary test of androgen
 receptor involvement in the limb/trunk compartment.
@@ -788,7 +788,7 @@ ggsave(file.path(OUT_DIR, "figures", "volcano_AR_blockade_body.png"),
 p3
 ```
 
-### 6d. AR blockade in older tadpoles — head
+### 6d. AR blockade in older tadpoles: head
 
 **old_flutamide_head vs old_control_head** (n = 4 vs 2).
 
@@ -822,7 +822,7 @@ ways to do that and they answer slightly different questions, so both are run.
 
 The DESeq2 vignette is explicit that `collapseReplicates` is intended for multiple
 sequencing runs of the *same library*, and that biological replicates must not be collapsed.
-Head and body are different tissues, not technical replicates — but summing their counts is
+Head and body are different tissues, not technical replicates, but summing their counts is
 still a legitimate operation if what you want is a **whole-animal transcriptome**. It is a
 change of biological unit, not a technical merge, so we treat it as such and interpret it
 that way: fold changes become "per whole tadpole", weighted by how much RNA each compartment
@@ -830,13 +830,13 @@ contributes.
 
 The harder problem is that only **6 of 9** day-103 animals have both tissues sequenced
 (controls C103-4, C103-5; flutamide F103-1, F103-2, F103-3, F103-5). Summing an animal that
-is missing its head would compare a body-only pseudo-animal against whole animals — a
+is missing its head would compare a body-only pseudo-animal against whole animals, a
 composition artifact masquerading as a treatment effect. Approach A therefore uses only
 complete animals, which costs power (**2 vs 4**). Approach B keeps every sample and models
 tissue as a covariate instead, which is the statistically stronger option.
 :::
 
-### Approach A — sum head + body per animal (complete animals only)
+### Approach A: sum head + body per animal (complete animals only)
 
 ```{r}
 #| label: collapse-complete
@@ -911,7 +911,7 @@ ggsave(file.path(OUT_DIR, "figures", "volcano_whole_animal_collapsed.png"),
 p5
 ```
 
-### Approach B — all day-103 samples, tissue as a covariate
+### Approach B: all day-103 samples, tissue as a covariate
 
 `~ tissue + treatment` uses all 15 day-103 libraries and estimates the flutamide effect
 *after* absorbing the large baseline difference between head and body. This is the
@@ -1055,7 +1055,7 @@ p_sum
 A targeted look at the pathway the hypothesis is about, independent of whether these genes
 survive genome-wide correction.
 
-### Detection check — read this before interpreting anything below
+### Detection check: read this before interpreting anything below
 
 Pre-filtering silently removes genes, so before asking *"is AR differentially expressed?"*
 we must ask *"is AR detected at all?"*. This table reports raw counts for every pathway gene
@@ -1225,7 +1225,7 @@ if (length(bait) >= 2) {
 }
 ```
 
-## 9b. Why is AR not detected? — diagnosing the three hypotheses
+## 9b. Why is AR not detected?: diagnosing the three hypotheses
 
 Section 9 established *that* `AR` is undetected. This section establishes *why*, by testing
 each of the three candidate explanations against evidence that is already on disk. The logic
@@ -1259,7 +1259,7 @@ gtf_attr <- function(x, key) {
 }
 ```
 
-### Hypothesis 1 — is the gene model broken?
+### Hypothesis 1: is the gene model broken?
 
 A fragmented or truncated model would show too few exons, a short CDS, or a protein well
 below the ~770-820 aa expected for an anuran androgen receptor.
@@ -1314,7 +1314,7 @@ if (RUN_AR_DIAG) {
 }
 ```
 
-### Hypothesis 2 — did Salmon ever see the transcript?
+### Hypothesis 2: did Salmon ever see the transcript?
 
 An index/annotation mismatch would mean the AR transcript is absent from `quant.sf`, or
 present with an implausible effective length. We also read out the per-library counts here,
@@ -1448,7 +1448,7 @@ if (RUN_AR_DIAG) {
 }
 ```
 
-### The decisive comparison — AR against the other nuclear receptors
+### The decisive comparison: AR against the other nuclear receptors
 
 If quantification were broken, other receptors of similar length and expression class would
 fail too. If instead the whole sex-steroid axis is silent while every other nuclear receptor
@@ -1816,7 +1816,7 @@ structurally complete, and Salmon had the transcript in its index and assigned i
 The locus is not in a dead region, and the reads do not scale with depth. Meanwhile every
 non-gonadal nuclear receptor quantifies normally while the sex-steroid axis is silent as a
 unit. Section 9c closes the annotation question at the sequence level. What remains is
-Hypothesis 3 — **AR transcript is below the detection limit of bulk RNA-seq at these
+Hypothesis 3, **AR transcript is below the detection limit of bulk RNA-seq at these
 stages**, measured here as <0.2 TPM in every library.
 
 **Recommended next steps, in order of cost:**
@@ -1843,7 +1843,7 @@ effect.
 
 Section 9b showed the model is *structurally* plausible: eight exons, an in-frame CDS,
 annotated start and stop. That is an argument from bookkeeping. The stronger test is the
-sequence itself — translate the CDS and ask whether the protein is an androgen receptor.
+sequence itself, translate the CDS and ask whether the protein is an androgen receptor.
 This is the test that closes the annotation hypothesis permanently, and it needs the
 assembly FASTA (`complete.genomic.fna`) as well as the GTF.
 
@@ -1992,7 +1992,7 @@ if (RUN_AR_SEQ) {
 
 A second, independent check: align the whole protein to a curated anuran AR. Identity
 should be high in the DNA- and ligand-binding domains and low in the N-terminal domain.
-That profile is itself diagnostic — a spurious match would be uniformly mediocre.
+That profile is itself diagnostic, a spurious match would be uniformly mediocre.
 
 The reference is fetched from UniProt when the network is available; the section degrades
 to the zinc-finger test alone if it is not, so a rendered report never depends on an
@@ -2099,7 +2099,7 @@ The consequence for the manuscript is that AR non-detection can now be stated wi
 hedge about annotation quality: the receptor is annotated correctly, was quantified, and is
 present at <0.2 TPM in every library. That is a **measured detection limit in bulk tissue**,
 and it is the sentence to write. It is not evidence that AR is absent from the motor
-circuits the hypothesis concerns — bulk dilution across whole heads and bodies is the
+circuits the hypothesis concerns, bulk dilution across whole heads and bodies is the
 expected reason a focally expressed receptor goes uncounted.
 
 The translated protein is written to `results_v2/tables/AR_protein.faa` if you want to
@@ -2107,10 +2107,10 @@ submit it to NCBI or use it as a `tblastn` query against another assembly.
 :::
 
 
-## 9d. Genes with a description but no symbol — how much information is recoverable?
+## 9d. Genes with a description but no symbol: how much information is recoverable?
 
 A large share of this annotation's gene models carry a `description` (a free-text protein
-name such as `"solute carrier family 1 member 4"`) but no `gene` attribute — no symbol.
+name such as `"solute carrier family 1 member 4"`) but no `gene` attribute, no symbol.
 Enrichment tools key on symbols, so every such gene is silently dropped from Section 10,
 and the loss is not small. This section measures the loss, tests whether it can be
 recovered, and validates the recovery before using it.
@@ -2122,7 +2122,7 @@ model confidently in an established orthology group. A description is generated 
 best protein alignment, which is a weaker claim: `"claudin-3-like"` means *the best hit
 resembled claudin-3*, not *this is CLDN3*. Withholding the symbol is the pipeline being
 honest about that difference. For a non-model species with no curated nomenclature, this is
-expected and normal — *Staurois parvus* has no gene-naming authority, and NCBI will not
+expected and normal, *Staurois parvus* has no gene-naming authority, and NCBI will not
 mint symbols for it.
 
 ```{r}
@@ -2300,19 +2300,19 @@ if (RUN_SYMBOL) {
 ```
 
 ::: {.callout-warning}
-## Recovered symbols are orthology hypotheses, not names — and the distinction is recorded
+## Recovered symbols are orthology hypotheses, not names: and the distinction is recorded
 
 The `symbol_source` column in `gene_symbol_map.csv` separates three kinds of claim, and they
 are **not** interchangeable:
 
-- **`egapx`** — EGAPx assigned the symbol from its own orthology evidence. Use freely.
-- **`recovered_exact`** — the description matched an official gene name exactly
+- **`egapx`**, EGAPx assigned the symbol from its own orthology evidence. Use freely.
+- **`recovered_exact`**, the description matched an official gene name exactly
   (`"pro-opiomelanocortin"` → `POMC`). Safe; this is a formatting fix, recovering a symbol
   EGAPx could have written but didn't.
-- **`recovered_paralog`** — the description ended in `-like`
+- **`recovered_paralog`**, the description ended in `-like`
   (`egapxtmp_019179`, `"aldehyde oxidase 1-like"` → `AOX1`). **This is the one to be careful
   with.** It asserts *resembles AOX1*, not *is AOX1*. Most recovered symbols are of this kind,
-  and several distinct frog models frequently map to the same human symbol — the chunk below
+  and several distinct frog models frequently map to the same human symbol, the chunk below
   counts how often. That is a real signature of lineage-specific gene family expansion, which
   is scientifically interesting in its own right, but it means a recovered symbol is **not a
   unique identifier**.
@@ -2321,8 +2321,8 @@ are **not** interchangeable:
 is reasonable: gene sets are defined at family/pathway level, and a gene that resembles AOX1
 closely enough to be named for it usually belongs in the same GO terms. **What it does not
 license** is writing "AOX1 is upregulated in *S. parvus*" in the manuscript. For any gene you
-intend to name in the text, the identification must be confirmed independently — reciprocal
-best BLAST hit at minimum, ideally a gene tree — exactly as Section 9c did for AR.
+intend to name in the text, the identification must be confirmed independently, reciprocal
+best BLAST hit at minimum, ideally a gene tree, exactly as Section 9c did for AR.
 
 **In the manuscript**, report the gene as `egapxtmp_019179` (AOX1-like) and state the recovery
 method in the methods. Never silently replace the model ID with a human symbol: the ID is the
@@ -2438,7 +2438,7 @@ remainder are `egapxtmp_*` placeholders with no symbol. Enrichment is therefore 
 treating those symbols as **human orthologue proxies** against `org.Hs.eg.db`.
 
 Symbols recovered in Section 9d are folded in here, keyed on `gene_id`, and only ever fill a
-gap — an EGAPx-assigned symbol is never overwritten. If Section 9d was skipped, enrichment
+gap, an EGAPx-assigned symbol is never overwritten. If Section 9d was skipped, enrichment
 runs on EGAPx symbols alone. The recovery is a modest widening of the input rather than a
 transformation of it; Section 9d quantifies exactly how modest, and why the remainder needs
 sequence-based orthology instead.
@@ -2631,12 +2631,12 @@ if (length(enrich_all) > 0) {
 }
 ```
 
-### GSEA — for contrasts with too few significant genes
+### GSEA: for contrasts with too few significant genes
 
 Over-representation analysis needs a reasonably sized significant-gene list, which the
 AR-blockade contrasts do not have. GSEA sidesteps that: it ranks *every* tested gene and
 asks whether a pathway's members sit preferentially at one end of the ranking. It therefore
-detects coordinated, individually-subthreshold shifts — the pattern most likely for a
+detects coordinated, individually-subthreshold shifts, the pattern most likely for a
 receptor-blockade experiment at this sample size.
 
 Genes are ranked by the Wald statistic (`log2FoldChange / lfcSE`), which carries both
@@ -2754,7 +2754,7 @@ if (length(enrich_all) > 0) {
 }
 ```
 
-## 10b. Functional enrichment — direct GO annotation (eggNOG-mapper)
+## 10b. Functional enrichment: direct GO annotation (eggNOG-mapper)
 
 Section 10 treats every `egapxtmp_*` model that lacks a symbol as invisible: `enrichGO()`
 requires a human symbol to retrieve GO terms, so roughly half the expressed transcriptome
@@ -3130,7 +3130,7 @@ if (RUN_EXTRA && length(kegg_ora) > 0) {
 }
 ```
 
-### GSEA — GO Biological Process and KEGG
+### GSEA: GO Biological Process and KEGG
 
 GSEA ranks *all* tested genes by their shrunken log2 fold change and tests whether genes
 annotated with each term cluster at the top or bottom of that list. It does not use a
@@ -3238,7 +3238,7 @@ if (RUN_EXTRA) {
 ### COG functional category profile
 
 COG categories describe the *broad functional class* of each gene model. This is not a
-statistical enrichment test — it shows whether upregulated and downregulated genes are
+statistical enrichment test, it shows whether upregulated and downregulated genes are
 concentrated in particular functional classes compared with all tested genes.
 
 ```{r}

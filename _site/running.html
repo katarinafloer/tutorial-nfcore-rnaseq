@@ -226,14 +226,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#understanding-the-job-script" id="toc-understanding-the-job-script" class="nav-link active" data-scroll-target="#understanding-the-job-script"><span class="header-section-number">1</span> Understanding the job script</a></li>
   <li><a href="#understanding-the-environment-setup" id="toc-understanding-the-environment-setup" class="nav-link" data-scroll-target="#understanding-the-environment-setup"><span class="header-section-number">2</span> Understanding the environment setup</a></li>
-  <li><a href="#step-1-run-a-test-first" id="toc-step-1-run-a-test-first" class="nav-link" data-scroll-target="#step-1-run-a-test-first"><span class="header-section-number">3</span> Step 1 — Run a test first</a>
+  <li><a href="#step-1-run-a-test-first" id="toc-step-1-run-a-test-first" class="nav-link" data-scroll-target="#step-1-run-a-test-first"><span class="header-section-number">3</span> Step 1: Run a test first</a>
   <ul class="collapse">
   <li><a href="#create-the-script" id="toc-create-the-script" class="nav-link" data-scroll-target="#create-the-script"><span class="header-section-number">3.1</span> Create the script</a></li>
   <li><a href="#what-the-nextflow-command-means" id="toc-what-the-nextflow-command-means" class="nav-link" data-scroll-target="#what-the-nextflow-command-means"><span class="header-section-number">3.2</span> What the nextflow command means</a></li>
   <li><a href="#submit-and-monitor-the-job" id="toc-submit-and-monitor-the-job" class="nav-link" data-scroll-target="#submit-and-monitor-the-job"><span class="header-section-number">3.3</span> Submit and monitor the job</a></li>
   <li><a href="#how-to-tell-if-the-test-succeeded" id="toc-how-to-tell-if-the-test-succeeded" class="nav-link" data-scroll-target="#how-to-tell-if-the-test-succeeded"><span class="header-section-number">3.4</span> How to tell if the test succeeded</a></li>
   </ul></li>
-  <li><a href="#step-2-run-with-your-own-samples" id="toc-step-2-run-with-your-own-samples" class="nav-link" data-scroll-target="#step-2-run-with-your-own-samples"><span class="header-section-number">4</span> Step 2 — Run with your own samples</a>
+  <li><a href="#step-2-run-with-your-own-samples" id="toc-step-2-run-with-your-own-samples" class="nav-link" data-scroll-target="#step-2-run-with-your-own-samples"><span class="header-section-number">4</span> Step 2: Run with your own samples</a>
   <ul class="collapse">
   <li><a href="#create-the-samplesheet" id="toc-create-the-samplesheet" class="nav-link" data-scroll-target="#create-the-samplesheet"><span class="header-section-number">4.1</span> Create the samplesheet</a></li>
   <li><a href="#create-the-params-file" id="toc-create-the-params-file" class="nav-link" data-scroll-target="#create-the-params-file"><span class="header-section-number">4.2</span> Create the params file</a></li>
@@ -268,13 +268,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>On Unity, the pipeline runs as a <strong>SLURM batch job</strong> — not interactively in the terminal. You write a shell script, submit it with <code>sbatch</code>, and SLURM runs it on a compute node while you can log out and do other things.</p>
+<p>On Unity, the pipeline runs as a <strong>SLURM batch job</strong>, not interactively in the terminal. You write a shell script, submit it with <code>sbatch</code>, and SLURM runs it on a compute node while you can log out and do other things.</p>
 <section id="understanding-the-job-script" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="understanding-the-job-script"><span class="header-section-number">1</span> Understanding the job script</h2>
 <p>A job script is a plain text file. It has two parts:</p>
 <ol type="1">
-<li><strong><code>#SBATCH</code> lines at the top</strong> — these tell SLURM how much time and memory to reserve, and where to write the output</li>
-<li><strong>Shell commands below</strong> — these are the actual commands that run</li>
+<li><strong><code>#SBATCH</code> lines at the top</strong>, these tell SLURM how much time and memory to reserve, and where to write the output</li>
+<li><strong>Shell commands below</strong>, these are the actual commands that run</li>
 </ol>
 <p>Here is what each <code>#SBATCH</code> line means:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=nfcore-rnaseq-test   # A label shown in the queue</span></span>
@@ -315,7 +315,7 @@ Note
 <p>These variables must point to your scratch workspace so they do not fill up your home directory.</p>
 </section>
 <section id="step-1-run-a-test-first" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="step-1-run-a-test-first"><span class="header-section-number">3</span> Step 1 — Run a test first</h2>
+<h2 data-number="3" class="anchored" data-anchor-id="step-1-run-a-test-first"><span class="header-section-number">3</span> Step 1: Run a test first</h2>
 <p>Before running with your own data, run the built-in test profile. This uses a tiny dataset that comes with the pipeline and confirms everything is working correctly on Unity.</p>
 <section id="create-the-script" class="level3" data-number="3.1">
 <h3 data-number="3.1" class="anchored" data-anchor-id="create-the-script"><span class="header-section-number">3.1</span> Create the script</h3>
@@ -376,7 +376,7 @@ Note
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> ~/rnaseq_nf_core/nfcore-rnaseq-test.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You will see something like:</p>
 <pre class="text"><code>Submitted batch job 12345678</code></pre>
-<p>Note the job ID — you will use it to check status or find your log files.</p>
+<p>Note the job ID, you will use it to check status or find your log files.</p>
 <p>Check whether the job is running:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Watch the log file update in real time (replace <code>12345678</code> with your job ID):</p>
@@ -404,7 +404,7 @@ Tip
 </section>
 </section>
 <section id="step-2-run-with-your-own-samples" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="step-2-run-with-your-own-samples"><span class="header-section-number">4</span> Step 2 — Run with your own samples</h2>
+<h2 data-number="4" class="anchored" data-anchor-id="step-2-run-with-your-own-samples"><span class="header-section-number">4</span> Step 2: Run with your own samples</h2>
 <p>For a real run you need three things:</p>
 <ol type="1">
 <li>A <strong>samplesheet</strong> CSV listing your samples and FASTQ file paths</li>
@@ -554,7 +554,7 @@ C45-1H,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R1_0
 </section>
 <section id="resuming-an-interrupted-run" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="resuming-an-interrupted-run"><span class="header-section-number">6</span> Resuming an interrupted run</h2>
-<p>If your job ran out of time or failed partway through, fix the problem and resubmit with the same script. The <code>-resume</code> flag is already included — Nextflow will skip steps that finished successfully and continue from where it stopped.</p>
+<p>If your job ran out of time or failed partway through, fix the problem and resubmit with the same script. The <code>-resume</code> flag is already included, Nextflow will skip steps that finished successfully and continue from where it stopped.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

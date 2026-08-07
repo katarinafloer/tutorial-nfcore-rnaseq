@@ -2,15 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/rna-seq-concepts.html</loc>
-    <lastmod>2026-08-07T06:02:33.365Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.111Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/DGE.html</loc>
-    <lastmod>2026-08-07T04:54:50.195Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.113Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/frog-data-availability.html</loc>
-    <lastmod>2026-08-07T05:47:52.183Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.110Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/connecting-to-unity.html</loc>
@@ -18,7 +18,7 @@
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/index.html</loc>
-    <lastmod>2026-08-07T05:55:30.732Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.109Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/sparvusgenome_readme_draft.html</loc>
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/file-types-storage.html</loc>
-    <lastmod>2026-08-07T06:31:09.200Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.109Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/egapx_instructions.html</loc>
@@ -34,26 +34,26 @@
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/using-terminal.html</loc>
-    <lastmod>2026-08-07T19:59:08.243Z</lastmod>
+    <lastmod>2026-08-07T20:06:36.347Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/results.html</loc>
-    <lastmod>2026-08-07T06:00:36.748Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.110Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/using-unity.html</loc>
-    <lastmod>2026-08-07T19:50:55.896Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.110Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/running.html</loc>
-    <lastmod>2026-08-07T05:59:04.925Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.110Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/troubleshooting.html</loc>
-    <lastmod>2026-08-07T06:02:11.365Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.111Z</lastmod>
   </url>
   <url>
     <loc>https://katarinafloer.github.io/tutorial-nfcore-rnaseq/setup.html</loc>
-    <lastmod>2026-08-07T05:57:59.437Z</lastmod>
+    <lastmod>2026-08-07T20:03:56.111Z</lastmod>
   </url>
 </urlset>

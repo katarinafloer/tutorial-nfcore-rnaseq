@@ -20,7 +20,7 @@ Every step of the pipeline runs inside a **container**. A container is a self-co
 
 ### What is SLURM?
 
-**SLURM** is Unity's job scheduler. On a shared cluster, many people are running jobs at the same time. SLURM manages the queue — it decides which job runs on which compute node, and when.
+**SLURM** is Unity's job scheduler. On a shared cluster, many people are running jobs at the same time. SLURM manages the queue, it decides which job runs on which compute node, and when.
 
 You interact with SLURM by writing a **job script** (a shell script with `#SBATCH` settings at the top) and submitting it with the `sbatch` command. SLURM then runs your script on a compute node when resources are available.
 
@@ -28,7 +28,7 @@ You interact with SLURM by writing a **job script** (a shell script with `#SBATC
 You do not need to deeply understand any of these tools to follow this tutorial. Just know that Nextflow manages the analysis steps, Apptainer provides the software, and SLURM runs everything on the cluster.
 :::
 
-## Step 1 — Create the log directory
+## Step 1: Create the log directory
 
 Before anything else, create a folder to hold your SLURM job logs. These log files are where you will look when something goes wrong.
 
@@ -38,7 +38,7 @@ mkdir -p ~/rnaseq_nf_core/job-logs
 
 This creates the folder `rnaseq_nf_core/job-logs` inside your home directory. The `-p` flag creates the full path even if `rnaseq_nf_core` does not exist yet.
 
-## Step 2 — Check that Nextflow is available
+## Step 2: Check that Nextflow is available
 
 On Unity, software is loaded with the `module` system. Check that the Nextflow module is available:
 
@@ -67,9 +67,9 @@ You should see something like:
 
 If the module is not found, check the [module explorer](https://ood.unity.rc.umass.edu/pun/sys/module-explorer) for the correct module name.
 
-## Step 3 — Create a scratch workspace
+## Step 3: Create a scratch workspace
 
-The pipeline creates a lot of large temporary files. Your home directory does not have enough space for this. On Unity, you use a **scratch workspace** — a temporary directory with much more space.
+The pipeline creates a lot of large temporary files. Your home directory does not have enough space for this. On Unity, you use a **scratch workspace**, a temporary directory with much more space.
 
 ::: {.callout-warning}
 Scratch workspaces expire after 30 days. They are meant for active work, not long-term storage. Always copy final results to `/work/pi_lmangiamele_smith_edu/` before the workspace expires.
@@ -114,7 +114,7 @@ remaining extensions  : 10000
 remaining time in days: 30
 ```
 
-The important line is the workspace path — copy it, you will need it:
+The important line is the workspace path, copy it, you will need it:
 
 ```text
 /scratch4/workspace/kfloer_smith_edu-nf-core-demo
@@ -126,7 +126,7 @@ The important line is the workspace path — copy it, you will need it:
 cd /scratch4/workspace/kfloer_smith_edu-nf-core-demo
 ```
 
-Use the path shown in your own `ws_list` output — your path may differ slightly.
+Use the path shown in your own `ws_list` output, your path may differ slightly.
 
 ### Extend a workspace before it expires
 
@@ -150,7 +150,7 @@ ws_list
 ws_release nf-core-demo
 ```
 
-## Step 4 — Pull the nf-core/rnaseq pipeline
+## Step 4: Pull the nf-core/rnaseq pipeline
 
 Downloading the pipeline definition once means Nextflow does not need to fetch it again every time you run.
 
@@ -161,7 +161,7 @@ module load nextflow/26.04.1
 nextflow pull nf-core/rnaseq -r 3.26.0
 ```
 
-This downloads the pipeline code (not the containers — those are downloaded later, when the pipeline actually runs).
+This downloads the pipeline code (not the containers, those are downloaded later, when the pipeline actually runs).
 
 ## You are ready
 

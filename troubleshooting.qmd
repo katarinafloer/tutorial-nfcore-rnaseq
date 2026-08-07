@@ -10,7 +10,7 @@ title: "Troubleshooting"
 squeue --me
 ```
 
-If the job is no longer listed, it has finished — either successfully or with an error.
+If the job is no longer listed, it has finished, either successfully or with an error.
 
 ### Read the output log
 
@@ -52,7 +52,7 @@ cat .command.out
 
 ## Common problems and fixes
 
-### The job was cancelled — time limit exceeded
+### The job was cancelled: time limit exceeded
 
 **Symptom:** The job disappears from `squeue` before finishing. The log ends without a completion message. SLURM emails you "CANCELLED" or "TIMEOUT".
 
@@ -66,7 +66,7 @@ Then resubmit. The `-resume` flag in the script will skip steps that already fin
 
 ---
 
-### The job failed — out of memory
+### The job failed: out of memory
 
 **Symptom:** The error log contains `Out of memory`, `Killed`, or a process exits with code `137`.
 
@@ -125,7 +125,7 @@ If the problem persists:
    ```bash
    rm -rf /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/.nextflow-apptainer-cache
    ```
-2. Resubmit the job — Nextflow will re-download the containers.
+2. Resubmit the job, Nextflow will re-download the containers.
 
 ---
 
@@ -201,7 +201,7 @@ The `.command.sh` file shows the exact command Nextflow ran. You can copy it and
 
 **Things to check:**
 
-- Open `multiqc/star_salmon/multiqc_report.html` and check alignment rates — very low alignment can produce a "successful" run with no useful data
+- Open `multiqc/star_salmon/multiqc_report.html` and check alignment rates, very low alignment can produce a "successful" run with no useful data
 - Confirm the GTF annotation file matches the genome FASTA (both should come from the same EGAPx assembly)
 - Check `pipeline_info/params_*.json` to confirm the correct genome and annotation were used
 
