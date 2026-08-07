@@ -226,18 +226,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#what-is-the-terminal" id="toc-what-is-the-terminal" class="nav-link active" data-scroll-target="#what-is-the-terminal"><span class="header-section-number">1</span> What is the terminal?</a></li>
   <li><a href="#open-a-terminal" id="toc-open-a-terminal" class="nav-link" data-scroll-target="#open-a-terminal"><span class="header-section-number">2</span> Open a terminal</a></li>
-  <li><a href="#follow-along-exercise" id="toc-follow-along-exercise" class="nav-link" data-scroll-target="#follow-along-exercise"><span class="header-section-number">3</span> Follow-along exercise</a>
+  <li><a href="#make-the-terminal-easier-to-read-macos-only" id="toc-make-the-terminal-easier-to-read-macos-only" class="nav-link" data-scroll-target="#make-the-terminal-easier-to-read-macos-only"><span class="header-section-number">3</span> Make the terminal easier to read (macOS only)</a>
   <ul class="collapse">
-  <li><a href="#step-1-find-out-where-you-are" id="toc-step-1-find-out-where-you-are" class="nav-link" data-scroll-target="#step-1-find-out-where-you-are"><span class="header-section-number">3.1</span> Step 1: Find out where you are</a></li>
-  <li><a href="#step-2-move-to-the-desktop" id="toc-step-2-move-to-the-desktop" class="nav-link" data-scroll-target="#step-2-move-to-the-desktop"><span class="header-section-number">3.2</span> Step 2: Move to the Desktop</a></li>
-  <li><a href="#step-3-create-a-new-folder" id="toc-step-3-create-a-new-folder" class="nav-link" data-scroll-target="#step-3-create-a-new-folder"><span class="header-section-number">3.3</span> Step 3: Create a new folder</a></li>
-  <li><a href="#step-4-create-a-text-file-with-nano" id="toc-step-4-create-a-text-file-with-nano" class="nav-link" data-scroll-target="#step-4-create-a-text-file-with-nano"><span class="header-section-number">3.4</span> Step 4: Create a text file with nano</a></li>
-  <li><a href="#step-5-read-the-file" id="toc-step-5-read-the-file" class="nav-link" data-scroll-target="#step-5-read-the-file"><span class="header-section-number">3.5</span> Step 5: Read the file</a></li>
-  <li><a href="#when-output-wont-stop-ctrlc-vs-q" id="toc-when-output-wont-stop-ctrlc-vs-q" class="nav-link" data-scroll-target="#when-output-wont-stop-ctrlc-vs-q"><span class="header-section-number">3.6</span> When output won’t stop: Ctrl+C vs q</a></li>
-  <li><a href="#step-6-move-the-file-to-the-desktop" id="toc-step-6-move-the-file-to-the-desktop" class="nav-link" data-scroll-target="#step-6-move-the-file-to-the-desktop"><span class="header-section-number">3.7</span> Step 6: Move the file to the Desktop</a></li>
+  <li><a href="#add-colors-to-ls" id="toc-add-colors-to-ls" class="nav-link" data-scroll-target="#add-colors-to-ls"><span class="header-section-number">3.1</span> Add colors to ls</a></li>
+  <li><a href="#add-syntax-highlighting" id="toc-add-syntax-highlighting" class="nav-link" data-scroll-target="#add-syntax-highlighting"><span class="header-section-number">3.2</span> Add syntax highlighting</a></li>
+  <li><a href="#apply-the-changes" id="toc-apply-the-changes" class="nav-link" data-scroll-target="#apply-the-changes"><span class="header-section-number">3.3</span> Apply the changes</a></li>
+  <li><a href="#what-are-hidden-files" id="toc-what-are-hidden-files" class="nav-link" data-scroll-target="#what-are-hidden-files"><span class="header-section-number">3.4</span> What are hidden files?</a></li>
   </ul></li>
-  <li><a href="#you-are-done" id="toc-you-are-done" class="nav-link" data-scroll-target="#you-are-done"><span class="header-section-number">4</span> You are done</a></li>
-  <li><a href="#understanding-file-paths" id="toc-understanding-file-paths" class="nav-link" data-scroll-target="#understanding-file-paths"><span class="header-section-number">5</span> Understanding file paths</a></li>
+  <li><a href="#follow-along-exercise" id="toc-follow-along-exercise" class="nav-link" data-scroll-target="#follow-along-exercise"><span class="header-section-number">4</span> Follow-along exercise</a>
+  <ul class="collapse">
+  <li><a href="#step-1-find-out-where-you-are" id="toc-step-1-find-out-where-you-are" class="nav-link" data-scroll-target="#step-1-find-out-where-you-are"><span class="header-section-number">4.1</span> Step 1: Find out where you are</a></li>
+  <li><a href="#step-2-move-to-the-desktop" id="toc-step-2-move-to-the-desktop" class="nav-link" data-scroll-target="#step-2-move-to-the-desktop"><span class="header-section-number">4.2</span> Step 2: Move to the Desktop</a></li>
+  <li><a href="#step-3-create-a-new-folder" id="toc-step-3-create-a-new-folder" class="nav-link" data-scroll-target="#step-3-create-a-new-folder"><span class="header-section-number">4.3</span> Step 3: Create a new folder</a></li>
+  <li><a href="#step-4-navigate-up-and-down-and-understand-file-paths" id="toc-step-4-navigate-up-and-down-and-understand-file-paths" class="nav-link" data-scroll-target="#step-4-navigate-up-and-down-and-understand-file-paths"><span class="header-section-number">4.4</span> Step 4: Navigate up and down, and understand file paths</a></li>
+  <li><a href="#step-5-create-a-text-file-with-nano" id="toc-step-5-create-a-text-file-with-nano" class="nav-link" data-scroll-target="#step-5-create-a-text-file-with-nano"><span class="header-section-number">4.5</span> Step 5: Create a text file with nano</a></li>
+  <li><a href="#step-6-list-files" id="toc-step-6-list-files" class="nav-link" data-scroll-target="#step-6-list-files"><span class="header-section-number">4.6</span> Step 6: List files</a></li>
+  <li><a href="#step-7-read-the-file" id="toc-step-7-read-the-file" class="nav-link" data-scroll-target="#step-7-read-the-file"><span class="header-section-number">4.7</span> Step 7: Read the file</a></li>
+  <li><a href="#step-8-rename-a-file" id="toc-step-8-rename-a-file" class="nav-link" data-scroll-target="#step-8-rename-a-file"><span class="header-section-number">4.8</span> Step 8: Rename a file</a></li>
+  <li><a href="#step-9-move-a-file" id="toc-step-9-move-a-file" class="nav-link" data-scroll-target="#step-9-move-a-file"><span class="header-section-number">4.9</span> Step 9: Move a file</a></li>
+  <li><a href="#when-output-wont-stop-ctrlc-vs-q" id="toc-when-output-wont-stop-ctrlc-vs-q" class="nav-link" data-scroll-target="#when-output-wont-stop-ctrlc-vs-q"><span class="header-section-number">4.10</span> When output won’t stop: Ctrl+C vs q</a></li>
+  </ul></li>
+  <li><a href="#you-are-done" id="toc-you-are-done" class="nav-link" data-scroll-target="#you-are-done"><span class="header-section-number">5</span> You are done</a></li>
   <li><a href="#what-is-a-shell-script" id="toc-what-is-a-shell-script" class="nav-link" data-scroll-target="#what-is-a-shell-script"><span class="header-section-number">6</span> What is a shell script?</a></li>
   <li><a href="#quick-command-reference" id="toc-quick-command-reference" class="nav-link" data-scroll-target="#quick-command-reference"><span class="header-section-number">7</span> Quick command reference</a></li>
   <li><a href="#tips-for-beginners" id="toc-tips-for-beginners" class="nav-link" data-scroll-target="#tips-for-beginners"><span class="header-section-number">8</span> Tips for beginners</a></li>
@@ -286,6 +295,7 @@ Tip
 <p>Every command on this page is safe to run. You will not break anything by following these steps.</p>
 </div>
 </div>
+<hr>
 </section>
 <section id="open-a-terminal" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="open-a-terminal"><span class="header-section-number">2</span> Open a terminal</h2>
@@ -296,43 +306,169 @@ Tip
 <p>The terminal is waiting for you to type a command. Press Enter after each command to run it.</p>
 <hr>
 </section>
-<section id="follow-along-exercise" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="follow-along-exercise"><span class="header-section-number">3</span> Follow-along exercise</h2>
-<section id="step-1-find-out-where-you-are" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="step-1-find-out-where-you-are"><span class="header-section-number">3.1</span> Step 1: Find out where you are</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>pwd</code> stands for <strong>print working directory</strong>. It shows where you currently are in the filesystem.</p>
-<p><strong>You should see something like:</strong></p>
-<pre class="text"><code>/Users/kfloer</code></pre>
-<p>Your path will show your own username. This location, <code>/Users/your_name</code>, is your <strong>home directory</strong>, the folder that belongs to you.</p>
+<section id="make-the-terminal-easier-to-read-macos-only" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="make-the-terminal-easier-to-read-macos-only"><span class="header-section-number">3</span> Make the terminal easier to read (macOS only)</h2>
+<p>Before jumping into commands, run this one-time setup to add colors and syntax highlighting to your terminal. Colors make it much easier to tell files from folders, spot typos, and read output at a glance.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This section is for macOS only. If you are on Windows, skip ahead to the exercise.</p>
+</div>
+</div>
+<section id="add-colors-to-ls" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="add-colors-to-ls"><span class="header-section-number">3.1</span> Add colors to ls</h3>
+<p>By default, <code>ls</code> lists everything in plain white text. These two lines turn on color coding so folders, files, and special items each appear in a different color:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export CLICOLOR=1'</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export LSCOLORS=GxFxCxDxBxegedabagaced'</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="add-syntax-highlighting" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="add-syntax-highlighting"><span class="header-section-number">3.2</span> Add syntax highlighting</h3>
+<p>Syntax highlighting colors your commands as you type. Recognized commands appear in green, unknown commands in red, and file paths in a different color. This makes it easy to catch typos before you press Enter.</p>
+<p>First, install the highlighting package using Homebrew:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install zsh-syntax-highlighting</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then tell your terminal to load it every time it starts:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="apply-the-changes" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="apply-the-changes"><span class="header-section-number">3.3</span> Apply the changes</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This reloads your terminal settings without closing and reopening the window. You should immediately see colors when you run <code>ls</code> or start typing commands.</p>
+</section>
+<section id="what-are-hidden-files" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="what-are-hidden-files"><span class="header-section-number">3.4</span> What are hidden files?</h3>
+<p>When you ran <code>echo '...' &gt;&gt; ~/.zshrc</code>, you were writing into a <strong>hidden file</strong>. Any file or folder whose name starts with a <code>.</code> is hidden. Hidden files do not appear in Finder or in a plain <code>ls</code> because they are configuration files you do not usually need to touch day to day.</p>
+<p>Common hidden files you will encounter:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~/.zshrc</code></td>
+<td>Terminal configuration, runs every time you open a new window</td>
+</tr>
+<tr class="even">
+<td><code>~/.bash_profile</code></td>
+<td>Same idea, but for the older bash shell</td>
+</tr>
+<tr class="odd">
+<td><code>~/.gitignore</code></td>
+<td>Tells Git which files to ignore</td>
+</tr>
+<tr class="even">
+<td><code>~/.ssh/</code></td>
+<td>Folder containing SSH keys used to connect to remote servers like Unity</td>
+</tr>
+</tbody>
+</table>
+<p>To see hidden files in the terminal, add the <code>-a</code> flag to <code>ls</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-a</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To see hidden files with full details:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lha</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You will now see entries starting with <code>.</code> that were invisible before, including <code>.</code> (the current folder itself) and <code>..</code> (the folder above it).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On macOS Finder, you can toggle hidden files with <code>Cmd + Shift + .</code> and they will appear greyed out.</p>
+</div>
+</div>
 <hr>
 </section>
-<section id="step-2-move-to-the-desktop" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="step-2-move-to-the-desktop"><span class="header-section-number">3.2</span> Step 2: Move to the Desktop</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Desktop</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="follow-along-exercise" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="follow-along-exercise"><span class="header-section-number">4</span> Follow-along exercise</h2>
+<section id="step-1-find-out-where-you-are" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="step-1-find-out-where-you-are"><span class="header-section-number">4.1</span> Step 1: Find out where you are</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>pwd</code> stands for <strong>print working directory</strong>. It shows your full location in the filesystem.</p>
+<p><strong>You should see something like:</strong></p>
+<pre class="text"><code>/Users/kfloer</code></pre>
+<p>Your path will show your own username. This is your <strong>home directory</strong>, the folder that belongs to you.</p>
+<hr>
+</section>
+<section id="step-2-move-to-the-desktop" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="step-2-move-to-the-desktop"><span class="header-section-number">4.2</span> Step 2: Move to the Desktop</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Desktop</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>cd</code> stands for <strong>change directory</strong>. It moves you into a different folder.</p>
 <p>Confirm you moved:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>You should see:</strong></p>
 <pre class="text"><code>/Users/kfloer/Desktop</code></pre>
 <hr>
 </section>
-<section id="step-3-create-a-new-folder" class="level3" data-number="3.3">
-<h3 data-number="3.3" class="anchored" data-anchor-id="step-3-create-a-new-folder"><span class="header-section-number">3.3</span> Step 3: Create a new folder</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> tutorial</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>mkdir</code> stands for <strong>make directory</strong>. This creates a new folder called <code>tutorial</code> on your Desktop. You should be able to see it appear on your Desktop.</p>
+<section id="step-3-create-a-new-folder" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="step-3-create-a-new-folder"><span class="header-section-number">4.3</span> Step 3: Create a new folder</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> practice</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>mkdir</code> stands for <strong>make directory</strong>. This creates a new folder called <code>practice</code> on your Desktop. You should be able to see it appear there.</p>
 <p>Move into the new folder:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tutorial</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> practice</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Confirm your location:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>You should see:</strong></p>
-<pre class="text"><code>/Users/kfloer/Desktop/tutorial</code></pre>
+<pre class="text"><code>/Users/kfloer/Desktop/practice</code></pre>
 <hr>
 </section>
-<section id="step-4-create-a-text-file-with-nano" class="level3" data-number="3.4">
-<h3 data-number="3.4" class="anchored" data-anchor-id="step-4-create-a-text-file-with-nano"><span class="header-section-number">3.4</span> Step 4: Create a text file with nano</h3>
+<section id="step-4-navigate-up-and-down-and-understand-file-paths" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="step-4-navigate-up-and-down-and-understand-file-paths"><span class="header-section-number">4.4</span> Step 4: Navigate up and down, and understand file paths</h3>
+<p>You are currently inside <code>~/Desktop/practice</code>. Move up one level to the Desktop:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>..</code> always means “the folder above where I currently am”. Confirm:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>You should see:</strong></p>
+<pre class="text"><code>/Users/kfloer/Desktop</code></pre>
+<p>Now go back into <code>practice</code> using its <strong>full path</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/practice</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Confirm:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>You should see:</strong></p>
+<pre class="text"><code>/Users/kfloer/Desktop/practice</code></pre>
+<p>You just navigated the same way using two different approaches. This is the difference between <strong>relative paths</strong> and <strong>absolute paths</strong>.</p>
+<p><strong>Relative paths</strong> describe a location relative to where you currently are. They do not start with <code>/</code> or <code>~</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> practice      <span class="co"># only works if you are already in ~/Desktop</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..            <span class="co"># always means one folder up from your current location</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Absolute paths</strong> describe the full location starting from the top of the filesystem. They always start with <code>/</code> or <code>~</code> (which is shorthand for your home directory):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/practice              <span class="co"># works from anywhere</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Users/kfloer/Desktop/practice  <span class="co"># exactly the same, written out in full</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When you are unsure where you are, use an absolute path. It works from anywhere and never depends on your current location. This is especially important on Unity, where you will be navigating between your home directory, the lab <code>/work/</code> folder, and your scratch workspace.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="step-5-create-a-text-file-with-nano" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="step-5-create-a-text-file-with-nano"><span class="header-section-number">4.5</span> Step 5: Create a text file with nano</h3>
 <p><code>nano</code> is a simple text editor that runs inside the terminal. You will use it to write scripts on Unity. Open a new file called <code>notes.txt</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The screen changes, you are now inside the editor. You can type normally. The bottom of the screen shows keyboard shortcuts:</p>
 <pre class="text"><code>^O  Write Out (save)       ^X  Exit</code></pre>
 <p>The <code>^</code> symbol means <code>Ctrl</code>. So <code>^O</code> means <code>Ctrl + O</code>.</p>
@@ -372,15 +508,94 @@ The terminal is one of the most powerful tools in bioinformatics.</code></pre>
 <p>You are back at the regular terminal prompt.</p>
 <hr>
 </section>
-<section id="step-5-read-the-file" class="level3" data-number="3.5">
-<h3 data-number="3.5" class="anchored" data-anchor-id="step-5-read-the-file"><span class="header-section-number">3.5</span> Step 5: Read the file</h3>
+<section id="step-6-list-files" class="level3" data-number="4.6">
+<h3 data-number="4.6" class="anchored" data-anchor-id="step-6-list-files"><span class="header-section-number">4.6</span> Step 6: List files</h3>
+<p>Now that you have created a file, list what is in the current folder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>You should see:</strong></p>
+<pre class="text"><code>notes.txt</code></pre>
+<p>Now run it with flags for more detail:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>You should see something like:</strong></p>
+<pre class="text"><code>-rw-r--r--  1 kfloer  staff   1.1K Aug  7 14:23 notes.txt</code></pre>
+<p>Here is what each part means:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Type and permissions</td>
+<td><code>-rw-r--r--</code></td>
+<td>What kind of item it is and who can read, write, or run it</td>
+</tr>
+<tr class="even">
+<td>Links</td>
+<td><code>1</code></td>
+<td>Number of hard links (usually 1 for files)</td>
+</tr>
+<tr class="odd">
+<td>Owner</td>
+<td><code>kfloer</code></td>
+<td>The user who owns the file</td>
+</tr>
+<tr class="even">
+<td>Group</td>
+<td><code>staff</code></td>
+<td>The group associated with the file</td>
+</tr>
+<tr class="odd">
+<td>Size</td>
+<td><code>1.1K</code></td>
+<td>File size in human-readable units (K/M/G instead of raw bytes)</td>
+</tr>
+<tr class="even">
+<td>Date</td>
+<td><code>Aug  7 14:23</code></td>
+<td>When the file was last modified</td>
+</tr>
+<tr class="odd">
+<td>Name</td>
+<td><code>notes.txt</code></td>
+<td>The file or folder name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reading the permissions string</strong></p>
+<p>The first column (<code>-rw-r--r--</code>) is 10 characters long:</p>
+<pre class="text"><code>- rw- r-- r--
+| |   |   |
+| |   |   other users (everyone else): read only
+| |   group: read only
+| owner (you): read and write
+file (-) or directory (d)</code></pre>
+<ul>
+<li><code>r</code> means read permission (can open and view)</li>
+<li><code>w</code> means write permission (can edit or delete)</li>
+<li><code>x</code> means execute permission (can run as a program)</li>
+<li><code>-</code> means that permission is not granted</li>
+</ul>
+<p>A text file typically shows <code>rw-</code> for the owner and <code>r--</code> for everyone else. A folder shows <code>d</code> at the start instead of <code>-</code>.</p>
+<hr>
+</section>
+<section id="step-7-read-the-file" class="level3" data-number="4.7">
+<h3 data-number="4.7" class="anchored" data-anchor-id="step-7-read-the-file"><span class="header-section-number">4.7</span> Step 7: Read the file</h3>
 <p>Print the entire file to the terminal:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>All 30 lines will appear.</p>
 <p>Show just the first 10 lines:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Show just the last 10 lines:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -394,22 +609,46 @@ Tip
 <p><code>head</code> and <code>tail</code> are useful when a file is very large, too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick <code>head</code> or <code>tail</code> gives you a preview without waiting for everything to scroll past.</p>
 </div>
 </div>
+<hr>
 </section>
-<section id="when-output-wont-stop-ctrlc-vs-q" class="level3" data-number="3.6">
-<h3 data-number="3.6" class="anchored" data-anchor-id="when-output-wont-stop-ctrlc-vs-q"><span class="header-section-number">3.6</span> When output won’t stop: Ctrl+C vs q</h3>
+<section id="step-8-rename-a-file" class="level3" data-number="4.8">
+<h3 data-number="4.8" class="anchored" data-anchor-id="step-8-rename-a-file"><span class="header-section-number">4.8</span> Step 8: Rename a file</h3>
+<p><code>mv</code> stands for <strong>move</strong>, but it is also how you rename a file. When you point it at two names in the same folder, it renames the file in place:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/Desktop/practice/notes.txt ~/Desktop/practice/notes_backup.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Confirm the rename worked:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ~/Desktop/practice/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>You should see:</strong></p>
+<pre class="text"><code>notes_backup.txt</code></pre>
+<p>The original <code>notes.txt</code> is gone and <code>notes_backup.txt</code> is in its place. The file contents are unchanged.</p>
+<hr>
+</section>
+<section id="step-9-move-a-file" class="level3" data-number="4.9">
+<h3 data-number="4.9" class="anchored" data-anchor-id="step-9-move-a-file"><span class="header-section-number">4.9</span> Step 9: Move a file</h3>
+<p>Now move the file out of <code>practice</code> and onto the Desktop using full paths for both source and destination:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/Desktop/practice/notes_backup.txt ~/Desktop/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Confirm the file is gone from <code>practice</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ~/Desktop/practice/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The folder should be empty, no output, or a blank line.</p>
+<p>Confirm the file is now on the Desktop:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ~/Desktop/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You should see <code>notes_backup.txt</code> listed among your Desktop items.</p>
+<hr>
+</section>
+<section id="when-output-wont-stop-ctrlc-vs-q" class="level3" data-number="4.10">
+<h3 data-number="4.10" class="anchored" data-anchor-id="when-output-wont-stop-ctrlc-vs-q"><span class="header-section-number">4.10</span> When output won’t stop: Ctrl+C vs q</h3>
 <p>You will run into two situations where a command takes over your terminal and you need to get out.</p>
 <p><strong>Situation 1: <code>cat</code> on a huge file</strong></p>
 <p>If you accidentally run <code>cat</code> on a very large file, thousands of lines start scrolling past and will not stop on their own. Press <code>Ctrl+C</code> to cancel the command immediately.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> huge_log_file.txt   <span class="co"># thousands of lines start scrolling...</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># press Ctrl+C to stop</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> huge_log_file.txt   <span class="co"># thousands of lines start scrolling...</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># press Ctrl+C to stop</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>Ctrl+C</code> cancels whatever command is currently running. Use it any time a command is doing something and you want it to stop.</p>
 <p><strong>Situation 2: a pager opens (less, man, git log)</strong></p>
 <p>Some commands open an interactive viewer called a <strong>pager</strong> instead of dumping everything to the screen at once. You will see this with <code>less</code>, <code>man</code>, and sometimes <code>git log</code>. The pager lets you scroll up and down through the content.</p>
-<p>To open a large file in the pager:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> notes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To open a file in the pager:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> ~/Desktop/notes_backup.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Inside <code>less</code>:</p>
 <ul>
-<li><code>↓</code> / <code>↑</code> arrow keys or <code>j</code> / <code>k</code> to scroll line by line</li>
+<li>Arrow keys or <code>j</code> / <code>k</code> to scroll line by line</li>
 <li><code>Space</code> to jump down a full page</li>
 <li><code>q</code> to quit and return to the terminal</li>
 </ul>
@@ -424,30 +663,14 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A quick way to tell which situation you are in: if you can see a <code>:</code> or <code>(END)</code> at the very bottom of the screen, you are inside a pager. Press <code>q</code> to exit. If the terminal prompt (<code>$</code> or <code>%</code>) is not visible at all and output is still printing, press <code>Ctrl+C</code>.</p>
+<p>A quick way to tell which situation you are in: if you can see a <code>:</code> or <code>(END)</code> at the very bottom of the screen, you are inside a pager. Press <code>q</code> to exit. If the terminal prompt (<code>$</code> or <code>%</code>) is not visible and output is still printing, press <code>Ctrl+C</code>.</p>
 </div>
 </div>
 <hr>
 </section>
-<section id="step-6-move-the-file-to-the-desktop" class="level3" data-number="3.7">
-<h3 data-number="3.7" class="anchored" data-anchor-id="step-6-move-the-file-to-the-desktop"><span class="header-section-number">3.7</span> Step 6: Move the file to the Desktop</h3>
-<p>Right now <code>notes.txt</code> is inside the <code>tutorial</code> folder. You can see its full path:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre class="text"><code>/Users/kfloer/Desktop/tutorial</code></pre>
-<p>Use that full path to move the file to the Desktop:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ~/Desktop/tutorial/notes.txt ~/Desktop/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>mv</code> takes two arguments: where the file is now, and where you want it to go. The <code>~</code> is shorthand for your home directory, so <code>~/Desktop/</code> is the same as <code>/Users/kfloer/Desktop/</code>.</p>
-<p>Confirm the file is gone from the <code>tutorial</code> folder:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ~/Desktop/tutorial/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The folder should be empty, no output, or a blank line.</p>
-<p>Confirm the file is now on the Desktop:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ~/Desktop/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You should see <code>notes.txt</code> listed among your Desktop items.</p>
-<hr>
 </section>
-</section>
-<section id="you-are-done" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="you-are-done"><span class="header-section-number">4</span> You are done</h2>
+<section id="you-are-done" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="you-are-done"><span class="header-section-number">5</span> You are done</h2>
 <p>You have practiced the core terminal commands you will use throughout this tutorial:</p>
 <table class="caption-top table">
 <thead>
@@ -462,8 +685,16 @@ Note
 <td><code>pwd</code></td>
 </tr>
 <tr class="even">
-<td>Moved to a folder</td>
-<td><code>cd</code></td>
+<td>Moved into a folder</td>
+<td><code>cd folder_name</code></td>
+</tr>
+<tr class="odd">
+<td>Moved up one folder</td>
+<td><code>cd ..</code></td>
+</tr>
+<tr class="even">
+<td>Navigated using a full path</td>
+<td><code>cd ~/Desktop/practice</code></td>
 </tr>
 <tr class="odd">
 <td>Created a folder</td>
@@ -474,46 +705,48 @@ Note
 <td><code>nano</code></td>
 </tr>
 <tr class="odd">
+<td>Listed files</td>
+<td><code>ls</code></td>
+</tr>
+<tr class="even">
+<td>Listed files with details and permissions</td>
+<td><code>ls -lh</code></td>
+</tr>
+<tr class="odd">
+<td>Saw hidden files</td>
+<td><code>ls -a</code> or <code>ls -lha</code></td>
+</tr>
+<tr class="even">
 <td>Printed a whole file</td>
 <td><code>cat</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Previewed the start of a file</td>
 <td><code>head</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Previewed the end of a file</td>
 <td><code>tail</code></td>
 </tr>
+<tr class="odd">
+<td>Renamed a file</td>
+<td><code>mv old_name new_name</code></td>
+</tr>
 <tr class="even">
 <td>Moved a file</td>
-<td><code>mv</code></td>
+<td><code>mv /full/path/file /destination/</code></td>
+</tr>
+<tr class="odd">
+<td>Stopped a running command</td>
+<td><code>Ctrl+C</code></td>
+</tr>
+<tr class="even">
+<td>Exited a pager</td>
+<td><code>q</code></td>
 </tr>
 </tbody>
 </table>
 <p>These same commands work on Unity. The only difference is that on Unity your home directory is <code>/home/your_username/</code> instead of <code>/Users/your_username/</code>.</p>
-<hr>
-</section>
-<section id="understanding-file-paths" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="understanding-file-paths"><span class="header-section-number">5</span> Understanding file paths</h2>
-<p>A path describes where a file or folder is located. There are two types:</p>
-<p><strong>Absolute path</strong>, starts from the very top of the filesystem with <code>/</code>. It always points to the same place, no matter where you currently are.</p>
-<pre class="text"><code>/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq</code></pre>
-<p><strong>Relative path</strong>, starts from wherever you currently are. A single dot <code>.</code> means “here” and two dots <code>..</code> mean “one folder up”.</p>
-<pre class="text"><code>../notes.txt</code></pre>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>When in doubt, use absolute paths. They are harder to get wrong because they always point to the same place.</p>
-</div>
-</div>
 <hr>
 </section>
 <section id="what-is-a-shell-script" class="level2" data-number="6">
@@ -521,9 +754,9 @@ Tip
 <p>If you have written code in R, you already understand the idea of a script: a text file containing commands that run in order from top to bottom.</p>
 <p>A <strong>shell script</strong> is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line, just like R runs a <code>.R</code> file line by line.</p>
 <p>Shell scripts usually end with <code>.sh</code>. For example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="at">-r</span> 3.26.0 <span class="at">-profile</span> test,unity</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="at">-r</span> 3.26.0 <span class="at">-profile</span> test,unity</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>That is a three-line shell script. The first line (<code>#!/bin/bash</code>) tells the computer which program to use to interpret the commands, think of it like a <code>library()</code> call in R that sets up the environment. The next lines are commands you would type manually, saved so they run automatically.</p>
 <p>The job scripts in this tutorial are shell scripts with extra lines at the top starting with <code>#SBATCH</code>. Those are instructions for SLURM, they tell the job scheduler how much time and memory to reserve. Everything else is plain terminal commands.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -560,20 +793,28 @@ Tip
 <td><code>ls</code></td>
 </tr>
 <tr class="odd">
-<td>List files with sizes</td>
+<td>List files with sizes and permissions</td>
 <td><code>ls -lh</code></td>
 </tr>
 <tr class="even">
+<td>List all files including hidden</td>
+<td><code>ls -a</code> or <code>ls -lha</code></td>
+</tr>
+<tr class="odd">
 <td>Move into a folder</td>
 <td><code>cd folder_name</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Move up one folder</td>
 <td><code>cd ..</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Go to home directory</td>
 <td><code>cd ~</code></td>
+</tr>
+<tr class="even">
+<td>Navigate using full path</td>
+<td><code>cd ~/Desktop/practice</code></td>
 </tr>
 <tr class="odd">
 <td>Create a folder</td>
@@ -604,8 +845,16 @@ Tip
 <td><code>tail -f file.txt</code></td>
 </tr>
 <tr class="even">
-<td>Move or rename a file</td>
-<td><code>mv old new</code></td>
+<td>Scroll through a large file</td>
+<td><code>less file.txt</code></td>
+</tr>
+<tr class="odd">
+<td>Rename a file</td>
+<td><code>mv old_name.txt new_name.txt</code></td>
+</tr>
+<tr class="even">
+<td>Move a file</td>
+<td><code>mv /source/file.txt /destination/</code></td>
 </tr>
 <tr class="odd">
 <td>Copy a file</td>
@@ -629,7 +878,11 @@ Tip
 </tr>
 <tr class="even">
 <td>Cancel a running command</td>
-<td><code>Ctrl + C</code></td>
+<td><code>Ctrl+C</code></td>
+</tr>
+<tr class="odd">
+<td>Exit a pager</td>
+<td><code>q</code></td>
 </tr>
 </tbody>
 </table>
@@ -642,18 +895,19 @@ Tip
 <li>Press <code>Tab</code> to autocomplete a file or folder name. Press it twice to see all matches if there are several.</li>
 <li>Use the <code>↑</code> arrow key to scroll back through previous commands, no need to retype.</li>
 <li>Read error messages carefully, they usually tell you exactly what went wrong.</li>
-<li>If a command seems stuck, press <code>Ctrl + C</code> to cancel it.</li>
+<li>If a command seems stuck, press <code>Ctrl+C</code> to cancel it.</li>
 </ul>
+<hr>
 </section>
 <section id="copying-files-between-unity-and-your-laptop" class="level2" data-number="9">
 <h2 data-number="9" class="anchored" data-anchor-id="copying-files-between-unity-and-your-laptop"><span class="header-section-number">9</span> Copying files between Unity and your laptop</h2>
 <p><code>scp</code> copies files between your laptop and Unity. Run these commands <strong>from a terminal on your laptop</strong> (not from Unity).</p>
 <p>Copy a file from Unity to your current folder:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Copy a whole folder from Unity to your laptop:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Copy a file from your laptop to Unity:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The <code>.</code> at the end means “copy it here, into my current directory.”</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">

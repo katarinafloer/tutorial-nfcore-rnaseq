@@ -16,6 +16,8 @@ This page is a follow-along exercise. Work through the steps in order and run ea
 Every command on this page is safe to run. You will not break anything by following these steps.
 :::
 
+---
+
 ## Open a terminal
 
 **On macOS:** Open the **Terminal** app. Find it in Applications → Utilities, or use Spotlight: press `⌘ + Space`, type "Terminal", press Enter.
@@ -32,6 +34,80 @@ The terminal is waiting for you to type a command. Press Enter after each comman
 
 ---
 
+## Make the terminal easier to read (macOS only)
+
+Before jumping into commands, run this one-time setup to add colors and syntax highlighting to your terminal. Colors make it much easier to tell files from folders, spot typos, and read output at a glance.
+
+::: {.callout-note}
+This section is for macOS only. If you are on Windows, skip ahead to the exercise.
+:::
+
+### Add colors to ls
+
+By default, `ls` lists everything in plain white text. These two lines turn on color coding so folders, files, and special items each appear in a different color:
+
+```bash
+echo 'export CLICOLOR=1' >> ~/.zshrc
+echo 'export LSCOLORS=GxFxCxDxBxegedabagaced' >> ~/.zshrc
+```
+
+### Add syntax highlighting
+
+Syntax highlighting colors your commands as you type. Recognized commands appear in green, unknown commands in red, and file paths in a different color. This makes it easy to catch typos before you press Enter.
+
+First, install the highlighting package using Homebrew:
+
+```bash
+brew install zsh-syntax-highlighting
+```
+
+Then tell your terminal to load it every time it starts:
+
+```bash
+echo 'source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' >> ~/.zshrc
+```
+
+### Apply the changes
+
+```bash
+source ~/.zshrc
+```
+
+This reloads your terminal settings without closing and reopening the window. You should immediately see colors when you run `ls` or start typing commands.
+
+### What are hidden files?
+
+When you ran `echo '...' >> ~/.zshrc`, you were writing into a **hidden file**. Any file or folder whose name starts with a `.` is hidden. Hidden files do not appear in Finder or in a plain `ls` because they are configuration files you do not usually need to touch day to day.
+
+Common hidden files you will encounter:
+
+| File | What it is |
+|---|---|
+| `~/.zshrc` | Terminal configuration, runs every time you open a new window |
+| `~/.bash_profile` | Same idea, but for the older bash shell |
+| `~/.gitignore` | Tells Git which files to ignore |
+| `~/.ssh/` | Folder containing SSH keys used to connect to remote servers like Unity |
+
+To see hidden files in the terminal, add the `-a` flag to `ls`:
+
+```bash
+ls -a
+```
+
+To see hidden files with full details:
+
+```bash
+ls -lha
+```
+
+You will now see entries starting with `.` that were invisible before, including `.` (the current folder itself) and `..` (the folder above it).
+
+::: {.callout-note}
+On macOS Finder, you can toggle hidden files with `Cmd + Shift + .` and they will appear greyed out.
+:::
+
+---
+
 ## Follow-along exercise
 
 ### Step 1: Find out where you are
@@ -40,7 +116,7 @@ The terminal is waiting for you to type a command. Press Enter after each comman
 pwd
 ```
 
-`pwd` stands for **print working directory**. It shows where you currently are in the filesystem.
+`pwd` stands for **print working directory**. It shows your full location in the filesystem.
 
 **You should see something like:**
 
@@ -48,7 +124,7 @@ pwd
 /Users/kfloer
 ```
 
-Your path will show your own username. This location, `/Users/your_name`, is your **home directory**, the folder that belongs to you.
+Your path will show your own username. This is your **home directory**, the folder that belongs to you.
 
 ---
 
@@ -77,15 +153,15 @@ pwd
 ### Step 3: Create a new folder
 
 ```bash
-mkdir tutorial
+mkdir practice
 ```
 
-`mkdir` stands for **make directory**. This creates a new folder called `tutorial` on your Desktop. You should be able to see it appear on your Desktop.
+`mkdir` stands for **make directory**. This creates a new folder called `practice` on your Desktop. You should be able to see it appear there.
 
 Move into the new folder:
 
 ```bash
-cd tutorial
+cd practice
 ```
 
 Confirm your location:
@@ -97,12 +173,72 @@ pwd
 **You should see:**
 
 ```text
-/Users/kfloer/Desktop/tutorial
+/Users/kfloer/Desktop/practice
 ```
 
 ---
 
-### Step 4: Create a text file with nano
+### Step 4: Navigate up and down, and understand file paths
+
+You are currently inside `~/Desktop/practice`. Move up one level to the Desktop:
+
+```bash
+cd ..
+```
+
+`..` always means "the folder above where I currently am". Confirm:
+
+```bash
+pwd
+```
+
+**You should see:**
+
+```text
+/Users/kfloer/Desktop
+```
+
+Now go back into `practice` using its **full path**:
+
+```bash
+cd ~/Desktop/practice
+```
+
+Confirm:
+
+```bash
+pwd
+```
+
+**You should see:**
+
+```text
+/Users/kfloer/Desktop/practice
+```
+
+You just navigated the same way using two different approaches. This is the difference between **relative paths** and **absolute paths**.
+
+**Relative paths** describe a location relative to where you currently are. They do not start with `/` or `~`:
+
+```bash
+cd practice      # only works if you are already in ~/Desktop
+cd ..            # always means one folder up from your current location
+```
+
+**Absolute paths** describe the full location starting from the top of the filesystem. They always start with `/` or `~` (which is shorthand for your home directory):
+
+```bash
+cd ~/Desktop/practice              # works from anywhere
+cd /Users/kfloer/Desktop/practice  # exactly the same, written out in full
+```
+
+::: {.callout-tip}
+When you are unsure where you are, use an absolute path. It works from anywhere and never depends on your current location. This is especially important on Unity, where you will be navigating between your home directory, the lab `/work/` folder, and your scratch workspace.
+:::
+
+---
+
+### Step 5: Create a text file with nano
 
 `nano` is a simple text editor that runs inside the terminal. You will use it to write scripts on Unity. Open a new file called `notes.txt`:
 
@@ -161,7 +297,67 @@ You are back at the regular terminal prompt.
 
 ---
 
-### Step 5: Read the file
+### Step 6: List files
+
+Now that you have created a file, list what is in the current folder:
+
+```bash
+ls
+```
+
+**You should see:**
+
+```text
+notes.txt
+```
+
+Now run it with flags for more detail:
+
+```bash
+ls -lh
+```
+
+**You should see something like:**
+
+```text
+-rw-r--r--  1 kfloer  staff   1.1K Aug  7 14:23 notes.txt
+```
+
+Here is what each part means:
+
+| Part | Example | Meaning |
+|---|---|---|
+| Type and permissions | `-rw-r--r--` | What kind of item it is and who can read, write, or run it |
+| Links | `1` | Number of hard links (usually 1 for files) |
+| Owner | `kfloer` | The user who owns the file |
+| Group | `staff` | The group associated with the file |
+| Size | `1.1K` | File size in human-readable units (K/M/G instead of raw bytes) |
+| Date | `Aug  7 14:23` | When the file was last modified |
+| Name | `notes.txt` | The file or folder name |
+
+**Reading the permissions string**
+
+The first column (`-rw-r--r--`) is 10 characters long:
+
+```text
+- rw- r-- r--
+| |   |   |
+| |   |   other users (everyone else): read only
+| |   group: read only
+| owner (you): read and write
+file (-) or directory (d)
+```
+
+- `r` means read permission (can open and view)
+- `w` means write permission (can edit or delete)
+- `x` means execute permission (can run as a program)
+- `-` means that permission is not granted
+
+A text file typically shows `rw-` for the owner and `r--` for everyone else. A folder shows `d` at the start instead of `-`.
+
+---
+
+### Step 7: Read the file
 
 Print the entire file to the terminal:
 
@@ -187,6 +383,58 @@ tail notes.txt
 `head` and `tail` are useful when a file is very large, too large to print the whole thing at once. On Unity, log files can have thousands of lines. A quick `head` or `tail` gives you a preview without waiting for everything to scroll past.
 :::
 
+---
+
+### Step 8: Rename a file
+
+`mv` stands for **move**, but it is also how you rename a file. When you point it at two names in the same folder, it renames the file in place:
+
+```bash
+mv ~/Desktop/practice/notes.txt ~/Desktop/practice/notes_backup.txt
+```
+
+Confirm the rename worked:
+
+```bash
+ls ~/Desktop/practice/
+```
+
+**You should see:**
+
+```text
+notes_backup.txt
+```
+
+The original `notes.txt` is gone and `notes_backup.txt` is in its place. The file contents are unchanged.
+
+---
+
+### Step 9: Move a file
+
+Now move the file out of `practice` and onto the Desktop using full paths for both source and destination:
+
+```bash
+mv ~/Desktop/practice/notes_backup.txt ~/Desktop/
+```
+
+Confirm the file is gone from `practice`:
+
+```bash
+ls ~/Desktop/practice/
+```
+
+The folder should be empty, no output, or a blank line.
+
+Confirm the file is now on the Desktop:
+
+```bash
+ls ~/Desktop/
+```
+
+You should see `notes_backup.txt` listed among your Desktop items.
+
+---
+
 ### When output won't stop: Ctrl+C vs q
 
 You will run into two situations where a command takes over your terminal and you need to get out.
@@ -206,61 +454,23 @@ cat huge_log_file.txt   # thousands of lines start scrolling...
 
 Some commands open an interactive viewer called a **pager** instead of dumping everything to the screen at once. You will see this with `less`, `man`, and sometimes `git log`. The pager lets you scroll up and down through the content.
 
-To open a large file in the pager:
+To open a file in the pager:
 
 ```bash
-less notes.txt
+less ~/Desktop/notes_backup.txt
 ```
 
 Inside `less`:
 
-- `↓` / `↑` arrow keys or `j` / `k` to scroll line by line
+- Arrow keys or `j` / `k` to scroll line by line
 - `Space` to jump down a full page
 - `q` to quit and return to the terminal
 
 The key difference: if the terminal is **waiting for a command**, use `Ctrl+C`. If a **pager or interactive program** is open, use `q`.
 
 ::: {.callout-note}
-A quick way to tell which situation you are in: if you can see a `:` or `(END)` at the very bottom of the screen, you are inside a pager. Press `q` to exit. If the terminal prompt (`$` or `%`) is not visible at all and output is still printing, press `Ctrl+C`.
+A quick way to tell which situation you are in: if you can see a `:` or `(END)` at the very bottom of the screen, you are inside a pager. Press `q` to exit. If the terminal prompt (`$` or `%`) is not visible and output is still printing, press `Ctrl+C`.
 :::
-
----
-
-### Step 6: Move the file to the Desktop
-
-Right now `notes.txt` is inside the `tutorial` folder. You can see its full path:
-
-```bash
-pwd
-```
-
-```text
-/Users/kfloer/Desktop/tutorial
-```
-
-Use that full path to move the file to the Desktop:
-
-```bash
-mv ~/Desktop/tutorial/notes.txt ~/Desktop/
-```
-
-`mv` takes two arguments: where the file is now, and where you want it to go. The `~` is shorthand for your home directory, so `~/Desktop/` is the same as `/Users/kfloer/Desktop/`.
-
-Confirm the file is gone from the `tutorial` folder:
-
-```bash
-ls ~/Desktop/tutorial/
-```
-
-The folder should be empty, no output, or a blank line.
-
-Confirm the file is now on the Desktop:
-
-```bash
-ls ~/Desktop/
-```
-
-You should see `notes.txt` listed among your Desktop items.
 
 ---
 
@@ -271,37 +481,23 @@ You have practiced the core terminal commands you will use throughout this tutor
 | What you did | Command |
 |---|---|
 | Checked your location | `pwd` |
-| Moved to a folder | `cd` |
+| Moved into a folder | `cd folder_name` |
+| Moved up one folder | `cd ..` |
+| Navigated using a full path | `cd ~/Desktop/practice` |
 | Created a folder | `mkdir` |
 | Created and edited a file | `nano` |
+| Listed files | `ls` |
+| Listed files with details and permissions | `ls -lh` |
+| Saw hidden files | `ls -a` or `ls -lha` |
 | Printed a whole file | `cat` |
 | Previewed the start of a file | `head` |
 | Previewed the end of a file | `tail` |
-| Moved a file | `mv` |
+| Renamed a file | `mv old_name new_name` |
+| Moved a file | `mv /full/path/file /destination/` |
+| Stopped a running command | `Ctrl+C` |
+| Exited a pager | `q` |
 
 These same commands work on Unity. The only difference is that on Unity your home directory is `/home/your_username/` instead of `/Users/your_username/`.
-
----
-
-## Understanding file paths
-
-A path describes where a file or folder is located. There are two types:
-
-**Absolute path**, starts from the very top of the filesystem with `/`. It always points to the same place, no matter where you currently are.
-
-```text
-/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq
-```
-
-**Relative path**, starts from wherever you currently are. A single dot `.` means "here" and two dots `..` mean "one folder up".
-
-```text
-../notes.txt
-```
-
-::: {.callout-tip}
-When in doubt, use absolute paths. They are harder to get wrong because they always point to the same place.
-:::
 
 ---
 
@@ -335,10 +531,12 @@ The `.sh` extension is a convention, not a requirement. Some people name SLURM s
 |---|---|
 | See where you are | `pwd` |
 | List files | `ls` |
-| List files with sizes | `ls -lh` |
+| List files with sizes and permissions | `ls -lh` |
+| List all files including hidden | `ls -a` or `ls -lha` |
 | Move into a folder | `cd folder_name` |
 | Move up one folder | `cd ..` |
 | Go to home directory | `cd ~` |
+| Navigate using full path | `cd ~/Desktop/practice` |
 | Create a folder | `mkdir folder_name` |
 | Create nested folders | `mkdir -p parent/child` |
 | Create or edit a file | `nano file.txt` |
@@ -346,13 +544,16 @@ The `.sh` extension is a convention, not a requirement. Some people name SLURM s
 | Preview the start | `head file.txt` |
 | Preview the end | `tail file.txt` |
 | Watch a file update live | `tail -f file.txt` |
-| Move or rename a file | `mv old new` |
+| Scroll through a large file | `less file.txt` |
+| Rename a file | `mv old_name.txt new_name.txt` |
+| Move a file | `mv /source/file.txt /destination/` |
 | Copy a file | `cp source destination` |
 | Copy a folder | `cp -r source/ destination/` |
 | Check folder size | `du -sh folder/` |
 | Check disk space | `df -h .` |
 | Copy files to/from Unity | `scp source destination` |
-| Cancel a running command | `Ctrl + C` |
+| Cancel a running command | `Ctrl+C` |
+| Exit a pager | `q` |
 
 ## Tips for beginners
 
@@ -361,7 +562,9 @@ The `.sh` extension is a convention, not a requirement. Some people name SLURM s
 - Press `Tab` to autocomplete a file or folder name. Press it twice to see all matches if there are several.
 - Use the `↑` arrow key to scroll back through previous commands, no need to retype.
 - Read error messages carefully, they usually tell you exactly what went wrong.
-- If a command seems stuck, press `Ctrl + C` to cancel it.
+- If a command seems stuck, press `Ctrl+C` to cancel it.
+
+---
 
 ## Copying files between Unity and your laptop
 
