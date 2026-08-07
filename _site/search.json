@@ -566,11 +566,21 @@
     ]
   },
   {
+    "objectID": "file-types-storage.html#what-file-extensions-mean",
+    "href": "file-types-storage.html#what-file-extensions-mean",
+    "title": "File Types and File Sizes",
+    "section": "3 What file extensions mean",
+    "text": "3 What file extensions mean\nA file extension is the short suffix after the last dot in a filename. It tells you what format the file is in — or what program created it.\n\n\n\n\n\n\n\nExtension\nWhat it is\n\n\n\n\n.sh\nShell script — a text file containing terminal commands that run in order\n\n\n.sbatch\nSame as .sh — just an alternate name some people use for SLURM job scripts\n\n\n.csv\nComma-separated values — a table where commas separate columns (open in Excel or R)\n\n\n.tsv\nTab-separated values — same idea, but tabs separate columns instead of commas\n\n\n.json\nStructured settings file using key-value pairs — used to pass parameters to Nextflow\n\n\n.txt, .log, .out, .err\nPlain text files — usually log messages and error output\n\n\n.fastq or .fq\nRaw sequencing reads\n\n\n.fastq.gz\nSame, but compressed with gzip — smaller on disk; most tools read .gz directly\n\n\n.fa or .fasta\nFASTA format — genome sequence or transcript sequences\n\n\n.gtf or .gff\nGene annotation file — describes where genes are in the genome\n\n\n.bam\nBinary alignment file — aligned reads (not human-readable; needs special tools)\n\n\n.bai\nIndex for a BAM file — required to quickly look up specific positions in a BAM\n\n\n.html\nWeb page — open in a browser (used for MultiQC reports)\n\n\n.R, .Rmd, .qmd\nR script, R Markdown, or Quarto document\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nSome files have two-part extensions. .fastq.gz means the file is in FASTQ format and it has been compressed with gzip. The .gz part does not change what is inside — it just makes the file smaller for storage and transfer.",
+    "crumbs": [
+      "File Types and File Sizes"
+    ]
+  },
+  {
     "objectID": "file-types-storage.html#fastq-files",
     "href": "file-types-storage.html#fastq-files",
     "title": "File Types and File Sizes",
-    "section": "3 FASTQ files",
-    "text": "3 FASTQ files\nFASTQ files are usually the main input for RNA-seq pipelines.\nPaired-end data often has two files per sample:\nsample1_R1.fastq.gz\nsample1_R2.fastq.gz\nThe file names usually tell you:\n\nThe sample name\nWhether the file is read 1 (R1) or read 2 (R2)\nWhether the file is compressed (.gz)\n\nFASTQ files can be large. A single compressed FASTQ file may be several gigabytes.",
+    "section": "4 FASTQ files",
+    "text": "4 FASTQ files\nFASTQ files are usually the main input for RNA-seq pipelines.\nPaired-end data often has two files per sample:\nsample1_R1.fastq.gz\nsample1_R2.fastq.gz\n\n4.1 Anatomy of a FASTQ filename\nIllumina sequencers produce FASTQ files with names that follow a consistent pattern. Here is an example from the S. parvus dataset:\nC45-1B_S2_L002_R1_001.fastq.gz\nEach part of the name means something:\n\n\n\n\n\n\n\n\nPart\nExample\nMeaning\n\n\n\n\nSample name\nC45-1B\nThe sample label set during sequencing. In this lab: condition-timepoint-replicate-tissue (B = body, H = head)\n\n\nIllumina sample number\nS2\nAssigned automatically during demultiplexing — which barcode belonged to which sample\n\n\nLane\nL002\nWhich physical lane on the sequencing flowcell was used. Some runs use multiple lanes\n\n\nRead direction\nR1\nWhether this is read 1 or read 2 of a paired-end run\n\n\nFile number\n001\nUsually 001; Illumina sometimes splits one sample across multiple files\n\n\nFormat\n.fastq.gz\nFASTQ format, compressed with gzip\n\n\n\nSo C45-1B_S2_L002_R1_001.fastq.gz is: sample C45-1B (body, replicate 1), demultiplexed as sample #2, from lane 2, read 1.\nIts paired file would be C45-1B_S2_L002_R2_001.fastq.gz.\nFASTQ files can be large. A single compressed FASTQ file may be several gigabytes.",
     "crumbs": [
       "File Types and File Sizes"
     ]
@@ -579,8 +589,8 @@
     "objectID": "file-types-storage.html#reference-files",
     "href": "file-types-storage.html#reference-files",
     "title": "File Types and File Sizes",
-    "section": "4 Reference files",
-    "text": "4 Reference files\nReference files describe the genome or transcriptome you want to compare your reads against.\nCommon reference files include:\ngenome.fa\nannotation.gtf\nFor non-model organisms like Staurois parvus, reference files may come from a lab assembly or a closely related species, depending on the project.\n\n\n\n\n\n\nNote\n\n\n\nThe choice of reference affects the interpretation of RNA-seq results. Always record which genome and annotation files were used.",
+    "section": "5 Reference files",
+    "text": "5 Reference files\nReference files describe the genome or transcriptome you want to compare your reads against.\nCommon reference files include:\ngenome.fa\nannotation.gtf\nFor non-model organisms like Staurois parvus, reference files may come from a lab assembly or a closely related species, depending on the project.\n\n\n\n\n\n\nNote\n\n\n\nThe choice of reference affects the interpretation of RNA-seq results. Always record which genome and annotation files were used.",
     "crumbs": [
       "File Types and File Sizes"
     ]
@@ -589,8 +599,8 @@
     "objectID": "file-types-storage.html#pipeline-outputs",
     "href": "file-types-storage.html#pipeline-outputs",
     "title": "File Types and File Sizes",
-    "section": "5 Pipeline outputs",
-    "text": "5 Pipeline outputs\nnf-core pipelines create organized output folders. The exact files depend on the options you choose, but common outputs include:\n\nQuality-control reports\nQuantification tables\nAlignment files\nPipeline logs\nSoftware version files\nMultiQC summary reports\n\nThe most useful output to open first is usually:\nmultiqc_report.html",
+    "section": "6 Pipeline outputs",
+    "text": "6 Pipeline outputs\nnf-core pipelines create organized output folders. The exact files depend on the options you choose, but common outputs include:\n\nQuality-control reports\nQuantification tables\nAlignment files\nPipeline logs\nSoftware version files\nMultiQC summary reports\n\nThe most useful output to open first is usually:\nmultiqc_report.html",
     "crumbs": [
       "File Types and File Sizes"
     ]
@@ -599,8 +609,8 @@
     "objectID": "file-types-storage.html#intermediate-files",
     "href": "file-types-storage.html#intermediate-files",
     "title": "File Types and File Sizes",
-    "section": "6 Intermediate files",
-    "text": "6 Intermediate files\nRNA-seq pipelines also create intermediate files while they are running.\nIntermediate files are files created between the raw input files and the final results. They are useful for the pipeline, but they are not always files you need to inspect directly.\nOne common example is the Nextflow work/ directory. This directory can become large because it stores temporary files for many pipeline steps.\n\n\n\n\n\n\nNote\n\n\n\nFor now, just know that intermediate files can take up space. Later pages will show how to check file sizes and decide what can be cleaned up.",
+    "section": "7 Intermediate files",
+    "text": "7 Intermediate files\nRNA-seq pipelines also create intermediate files while they are running.\nIntermediate files are files created between the raw input files and the final results. They are useful for the pipeline, but they are not always files you need to inspect directly.\nOne common example is the Nextflow work/ directory. This directory can become large because it stores temporary files for many pipeline steps.\n\n\n\n\n\n\nNote\n\n\n\nFor now, just know that intermediate files can take up space. Later pages will show how to check file sizes and decide what can be cleaned up.",
     "crumbs": [
       "File Types and File Sizes"
     ]
@@ -609,8 +619,8 @@
     "objectID": "file-types-storage.html#typical-storage-needs",
     "href": "file-types-storage.html#typical-storage-needs",
     "title": "File Types and File Sizes",
-    "section": "7 Typical storage needs",
-    "text": "7 Typical storage needs\nExact storage needs depend on the number of samples, read depth, reference files, and pipeline options.\nAs a rough guide:\n\n\n\nProject size\nInput FASTQs\nSuggested scratch space\n\n\n\n\nSmall test run\nLess than 5 GB\n30 GB\n\n\nSmall project\n10-50 GB\n100-300 GB\n\n\nMedium project\n50-200 GB\n300 GB-1 TB\n\n\nLarge project\nMore than 200 GB\n1 TB or more\n\n\n\nFor this tutorial, we create a workspace with 30 GB because it is meant for a small demo.",
+    "section": "8 Typical storage needs",
+    "text": "8 Typical storage needs\nExact storage needs depend on the number of samples, read depth, reference files, and pipeline options.\nAs a rough guide:\n\n\n\nProject size\nInput FASTQs\nSuggested scratch space\n\n\n\n\nSmall test run\nLess than 5 GB\n30 GB\n\n\nSmall project\n10-50 GB\n100-300 GB\n\n\nMedium project\n50-200 GB\n300 GB-1 TB\n\n\nLarge project\nMore than 200 GB\n1 TB or more\n\n\n\nFor this tutorial, we create a workspace with 30 GB because it is meant for a small demo.",
     "crumbs": [
       "File Types and File Sizes"
     ]
@@ -619,8 +629,8 @@
     "objectID": "file-types-storage.html#what-files-are-most-important",
     "href": "file-types-storage.html#what-files-are-most-important",
     "title": "File Types and File Sizes",
-    "section": "8 What files are most important?",
-    "text": "8 What files are most important?\nUsually keep:\n\nsamplesheet.csv\nFinal results folder\nMultiQC report\nCount or expression tables\nPipeline information files\nExact commands and parameters used\n\nUsually do not keep forever:\n\nLarge temporary work/ files\nFailed test outputs\nDuplicate downloaded references\nOld intermediate files that can be regenerated",
+    "section": "9 What files are most important?",
+    "text": "9 What files are most important?\nUsually keep:\n\nsamplesheet.csv\nFinal results folder\nMultiQC report\nCount or expression tables\nPipeline information files\nExact commands and parameters used\n\nUsually do not keep forever:\n\nLarge temporary work/ files\nFailed test outputs\nDuplicate downloaded references\nOld intermediate files that can be regenerated",
     "crumbs": [
       "File Types and File Sizes"
     ]
@@ -629,8 +639,8 @@
     "objectID": "file-types-storage.html#big-picture",
     "href": "file-types-storage.html#big-picture",
     "title": "File Types and File Sizes",
-    "section": "9 Big picture",
-    "text": "9 Big picture\n\nRaw FASTQ files are the original sequencing data.\nReference files tell the pipeline what genome or annotation to use.\nOutput files are the results and reports from the pipeline.\nIntermediate files help the pipeline run but may be large.\nMetadata and notes make the analysis reproducible.\n\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, do not delete raw data, metadata, or final results. Temporary and intermediate files are easier to regenerate than original data.",
+    "section": "10 Big picture",
+    "text": "10 Big picture\n\nRaw FASTQ files are the original sequencing data.\nReference files tell the pipeline what genome or annotation to use.\nOutput files are the results and reports from the pipeline.\nIntermediate files help the pipeline run but may be large.\nMetadata and notes make the analysis reproducible.\n\n\n\n\n\n\n\nTip\n\n\n\nWhen in doubt, do not delete raw data, metadata, or final results. Temporary and intermediate files are easier to regenerate than original data.",
     "crumbs": [
       "File Types and File Sizes"
     ]
@@ -842,11 +852,21 @@
     ]
   },
   {
+    "objectID": "using-terminal.html#what-is-a-shell-script",
+    "href": "using-terminal.html#what-is-a-shell-script",
+    "title": "Using the Terminal",
+    "section": "8 What is a shell script?",
+    "text": "8 What is a shell script?\nIf you have written code in R, you already understand the idea of a script: a text file containing a list of commands that run in order from top to bottom.\nA shell script is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs your .R file line by line.\nShell scripts usually end with .sh. For example:\n#!/bin/bash\nmodule load nextflow/26.04.1\nnextflow run nf-core/rnaseq -r 3.26.0 -profile test,unity\nThat is a three-line shell script. The first line (#!/bin/bash) tells the computer which program to use to interpret the commands — think of it like a library() call in R that sets up the environment. The next lines are just the commands you would type manually, but saved so they run automatically.\nThe job scripts in this tutorial are shell scripts with a few extra lines at the top that start with #SBATCH. Those lines are instructions for SLURM (the cluster job scheduler) — they tell SLURM how much time and memory to reserve. Everything else in the script is plain terminal commands.\n\n\n\n\n\n\nTip\n\n\n\nThe .sh file extension is a convention, not a requirement. Some people name SLURM scripts .sbatch. Both work — the extension is just a label to remind you what the file is for.",
+    "crumbs": [
+      "Using the Terminal"
+    ]
+  },
+  {
     "objectID": "using-terminal.html#create-and-edit-a-text-file-with-nano",
     "href": "using-terminal.html#create-and-edit-a-text-file-with-nano",
     "title": "Using the Terminal",
-    "section": "8 Create and edit a text file with nano",
-    "text": "8 Create and edit a text file with nano\nnano is a simple terminal text editor. You will use it to write job scripts on Unity.\nOpen a new file (or open an existing one):\nnano my-script.sh\nThis opens the file inside the terminal. You can type normally. At the bottom of the screen you will see shortcuts:\n^O  Write Out (save)       ^X  Exit\n^K  Cut line               ^U  Paste\nThe ^ symbol means Ctrl. So ^O means Ctrl + O.\nTo save: press Ctrl + O, then press Enter to confirm the filename.\nTo exit: press Ctrl + X.\n\n\n\n\n\n\nTip\n\n\n\nIf you accidentally start nano and want to leave without saving, press Ctrl + X and then type N when asked if you want to save.",
+    "section": "9 Create and edit a text file with nano",
+    "text": "9 Create and edit a text file with nano\nnano is a simple terminal text editor. You will use it to write job scripts on Unity.\nOpen a new file (or open an existing one):\nnano my-script.sh\nThis opens the file inside the terminal. You can type normally. At the bottom of the screen you will see shortcuts:\n^O  Write Out (save)       ^X  Exit\n^K  Cut line               ^U  Paste\nThe ^ symbol means Ctrl. So ^O means Ctrl + O.\nTo save: press Ctrl + O, then press Enter to confirm the filename.\nTo exit: press Ctrl + X.\n\n\n\n\n\n\nTip\n\n\n\nIf you accidentally start nano and want to leave without saving, press Ctrl + X and then type N when asked if you want to save.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -855,8 +875,8 @@
     "objectID": "using-terminal.html#look-at-text-files-without-editing",
     "href": "using-terminal.html#look-at-text-files-without-editing",
     "title": "Using the Terminal",
-    "section": "9 Look at text files without editing",
-    "text": "9 Look at text files without editing\nPrint a whole file to the terminal:\ncat samplesheet.csv\nShow just the first 10 lines of a file:\nhead samplesheet.csv\nShow just the last 10 lines:\ntail samplesheet.csv\nWatch a file update in real time (useful for watching log files as a job runs):\ntail -f job-logs/nfcore-rnaseq-test.12345.out\nPress Ctrl + C to stop watching.",
+    "section": "10 Look at text files without editing",
+    "text": "10 Look at text files without editing\nPrint a whole file to the terminal:\ncat samplesheet.csv\nShow just the first 10 lines of a file:\nhead samplesheet.csv\nShow just the last 10 lines:\ntail samplesheet.csv\nWatch a file update in real time (useful for watching log files as a job runs):\ntail -f job-logs/nfcore-rnaseq-test.12345.out\nPress Ctrl + C to stop watching.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -865,8 +885,8 @@
     "objectID": "using-terminal.html#move-rename-and-copy-files",
     "href": "using-terminal.html#move-rename-and-copy-files",
     "title": "Using the Terminal",
-    "section": "10 Move, rename, and copy files",
-    "text": "10 Move, rename, and copy files\nMove a file into a folder:\nmv samplesheet.csv nf-core-demo/\nRename a file:\nmv old_name.csv new_name.csv\nCopy a file:\ncp samplesheet.csv samplesheet_backup.csv\nCopy an entire folder and everything inside it:\ncp -r results/ results_backup/",
+    "section": "11 Move, rename, and copy files",
+    "text": "11 Move, rename, and copy files\nMove a file into a folder:\nmv samplesheet.csv nf-core-demo/\nRename a file:\nmv old_name.csv new_name.csv\nCopy a file:\ncp samplesheet.csv samplesheet_backup.csv\nCopy an entire folder and everything inside it:\ncp -r results/ results_backup/",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -875,8 +895,8 @@
     "objectID": "using-terminal.html#check-disk-usage",
     "href": "using-terminal.html#check-disk-usage",
     "title": "Using the Terminal",
-    "section": "11 Check disk usage",
-    "text": "11 Check disk usage\nSee how much space a file or folder is using:\ndu -sh results/\nSee how much space is left on the filesystem you are currently on:\ndf -h .\nOn Unity, you will use this to make sure you have not filled your scratch workspace.",
+    "section": "12 Check disk usage",
+    "text": "12 Check disk usage\nSee how much space a file or folder is using:\ndu -sh results/\nSee how much space is left on the filesystem you are currently on:\ndf -h .\nOn Unity, you will use this to make sure you have not filled your scratch workspace.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -885,8 +905,8 @@
     "objectID": "using-terminal.html#copy-files-between-unity-and-your-laptop",
     "href": "using-terminal.html#copy-files-between-unity-and-your-laptop",
     "title": "Using the Terminal",
-    "section": "12 Copy files between Unity and your laptop",
-    "text": "12 Copy files between Unity and your laptop\nscp copies files between your laptop and Unity. Run these commands from a terminal on your laptop (not from Unity).\nCopy a file from Unity to your current folder on your laptop:\nscp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .\nCopy a whole folder from Unity to your laptop:\nscp -r kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .\nCopy a file from your laptop to Unity:\nscp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/\nThe . at the end means “copy it here, into my current directory.”\n\n\n\n\n\n\nNote\n\n\n\nReplace kfloer_smith_edu with your own Unity username, and replace the paths with your actual paths.",
+    "section": "13 Copy files between Unity and your laptop",
+    "text": "13 Copy files between Unity and your laptop\nscp copies files between your laptop and Unity. Run these commands from a terminal on your laptop (not from Unity).\nCopy a file from Unity to your current folder on your laptop:\nscp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .\nCopy a whole folder from Unity to your laptop:\nscp -r kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .\nCopy a file from your laptop to Unity:\nscp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/\nThe . at the end means “copy it here, into my current directory.”\n\n\n\n\n\n\nNote\n\n\n\nReplace kfloer_smith_edu with your own Unity username, and replace the paths with your actual paths.",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -895,8 +915,8 @@
     "objectID": "using-terminal.html#common-commands-at-a-glance",
     "href": "using-terminal.html#common-commands-at-a-glance",
     "title": "Using the Terminal",
-    "section": "13 Common commands at a glance",
-    "text": "13 Common commands at a glance\n\n\n\nGoal\nCommand\n\n\n\n\nSee where you are\npwd\n\n\nList files\nls\n\n\nList files with sizes\nls -lh\n\n\nMove into a folder\ncd folder_name\n\n\nMove up one folder\ncd ..\n\n\nGo to home directory\ncd ~\n\n\nCreate a folder\nmkdir folder_name\n\n\nCreate nested folders\nmkdir -p parent/child/grandchild\n\n\nCreate/edit a file\nnano file.txt\n\n\nPrint a file\ncat file.txt\n\n\nPreview the start\nhead file.txt\n\n\nPreview the end\ntail file.txt\n\n\nWatch a file live\ntail -f file.txt\n\n\nMove or rename\nmv old new\n\n\nCopy a file\ncp source destination\n\n\nCopy a folder\ncp -r source/ destination/\n\n\nFolder size\ndu -sh folder/\n\n\nDisk space left\ndf -h .\n\n\nCopy to/from server\nscp source destination",
+    "section": "14 Common commands at a glance",
+    "text": "14 Common commands at a glance\n\n\n\nGoal\nCommand\n\n\n\n\nSee where you are\npwd\n\n\nList files\nls\n\n\nList files with sizes\nls -lh\n\n\nMove into a folder\ncd folder_name\n\n\nMove up one folder\ncd ..\n\n\nGo to home directory\ncd ~\n\n\nCreate a folder\nmkdir folder_name\n\n\nCreate nested folders\nmkdir -p parent/child/grandchild\n\n\nCreate/edit a file\nnano file.txt\n\n\nPrint a file\ncat file.txt\n\n\nPreview the start\nhead file.txt\n\n\nPreview the end\ntail file.txt\n\n\nWatch a file live\ntail -f file.txt\n\n\nMove or rename\nmv old new\n\n\nCopy a file\ncp source destination\n\n\nCopy a folder\ncp -r source/ destination/\n\n\nFolder size\ndu -sh folder/\n\n\nDisk space left\ndf -h .\n\n\nCopy to/from server\nscp source destination",
     "crumbs": [
       "Using the Terminal"
     ]
@@ -905,8 +925,8 @@
     "objectID": "using-terminal.html#tips-for-beginners",
     "href": "using-terminal.html#tips-for-beginners",
     "title": "Using the Terminal",
-    "section": "14 Tips for beginners",
-    "text": "14 Tips for beginners\n\nFile and folder names are case-sensitive. Results and results are different.\nAvoid spaces in file names — use underscores _ or hyphens - instead.\nPress Tab to autocomplete a file or folder name. Press it twice to see all options.\nUse the ↑ arrow key to scroll through previous commands.\nRead error messages carefully — they usually tell you exactly what went wrong.\nIf a command seems to hang, press Ctrl + C to cancel it.",
+    "section": "15 Tips for beginners",
+    "text": "15 Tips for beginners\n\nFile and folder names are case-sensitive. Results and results are different.\nAvoid spaces in file names — use underscores _ or hyphens - instead.\nPress Tab to autocomplete a file or folder name. Press it twice to see all options.\nUse the ↑ arrow key to scroll through previous commands.\nRead error messages carefully — they usually tell you exactly what went wrong.\nIf a command seems to hang, press Ctrl + C to cancel it.",
     "crumbs": [
       "Using the Terminal"
     ]

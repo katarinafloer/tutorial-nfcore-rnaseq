@@ -231,13 +231,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#list-files" id="toc-list-files" class="nav-link" data-scroll-target="#list-files"><span class="header-section-number">5</span> List files</a></li>
   <li><a href="#change-directories" id="toc-change-directories" class="nav-link" data-scroll-target="#change-directories"><span class="header-section-number">6</span> Change directories</a></li>
   <li><a href="#make-a-new-directory" id="toc-make-a-new-directory" class="nav-link" data-scroll-target="#make-a-new-directory"><span class="header-section-number">7</span> Make a new directory</a></li>
-  <li><a href="#create-and-edit-a-text-file-with-nano" id="toc-create-and-edit-a-text-file-with-nano" class="nav-link" data-scroll-target="#create-and-edit-a-text-file-with-nano"><span class="header-section-number">8</span> Create and edit a text file with nano</a></li>
-  <li><a href="#look-at-text-files-without-editing" id="toc-look-at-text-files-without-editing" class="nav-link" data-scroll-target="#look-at-text-files-without-editing"><span class="header-section-number">9</span> Look at text files without editing</a></li>
-  <li><a href="#move-rename-and-copy-files" id="toc-move-rename-and-copy-files" class="nav-link" data-scroll-target="#move-rename-and-copy-files"><span class="header-section-number">10</span> Move, rename, and copy files</a></li>
-  <li><a href="#check-disk-usage" id="toc-check-disk-usage" class="nav-link" data-scroll-target="#check-disk-usage"><span class="header-section-number">11</span> Check disk usage</a></li>
-  <li><a href="#copy-files-between-unity-and-your-laptop" id="toc-copy-files-between-unity-and-your-laptop" class="nav-link" data-scroll-target="#copy-files-between-unity-and-your-laptop"><span class="header-section-number">12</span> Copy files between Unity and your laptop</a></li>
-  <li><a href="#common-commands-at-a-glance" id="toc-common-commands-at-a-glance" class="nav-link" data-scroll-target="#common-commands-at-a-glance"><span class="header-section-number">13</span> Common commands at a glance</a></li>
-  <li><a href="#tips-for-beginners" id="toc-tips-for-beginners" class="nav-link" data-scroll-target="#tips-for-beginners"><span class="header-section-number">14</span> Tips for beginners</a></li>
+  <li><a href="#what-is-a-shell-script" id="toc-what-is-a-shell-script" class="nav-link" data-scroll-target="#what-is-a-shell-script"><span class="header-section-number">8</span> What is a shell script?</a></li>
+  <li><a href="#create-and-edit-a-text-file-with-nano" id="toc-create-and-edit-a-text-file-with-nano" class="nav-link" data-scroll-target="#create-and-edit-a-text-file-with-nano"><span class="header-section-number">9</span> Create and edit a text file with nano</a></li>
+  <li><a href="#look-at-text-files-without-editing" id="toc-look-at-text-files-without-editing" class="nav-link" data-scroll-target="#look-at-text-files-without-editing"><span class="header-section-number">10</span> Look at text files without editing</a></li>
+  <li><a href="#move-rename-and-copy-files" id="toc-move-rename-and-copy-files" class="nav-link" data-scroll-target="#move-rename-and-copy-files"><span class="header-section-number">11</span> Move, rename, and copy files</a></li>
+  <li><a href="#check-disk-usage" id="toc-check-disk-usage" class="nav-link" data-scroll-target="#check-disk-usage"><span class="header-section-number">12</span> Check disk usage</a></li>
+  <li><a href="#copy-files-between-unity-and-your-laptop" id="toc-copy-files-between-unity-and-your-laptop" class="nav-link" data-scroll-target="#copy-files-between-unity-and-your-laptop"><span class="header-section-number">13</span> Copy files between Unity and your laptop</a></li>
+  <li><a href="#common-commands-at-a-glance" id="toc-common-commands-at-a-glance" class="nav-link" data-scroll-target="#common-commands-at-a-glance"><span class="header-section-number">14</span> Common commands at a glance</a></li>
+  <li><a href="#tips-for-beginners" id="toc-tips-for-beginners" class="nav-link" data-scroll-target="#tips-for-beginners"><span class="header-section-number">15</span> Tips for beginners</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/using-terminal.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -331,11 +332,35 @@ Tip
 <p>Create a nested folder path all at once (the <code>-p</code> flag creates any missing parent folders):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/rnaseq_nf_core/job-logs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="create-and-edit-a-text-file-with-nano" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="create-and-edit-a-text-file-with-nano"><span class="header-section-number">8</span> Create and edit a text file with nano</h2>
+<section id="what-is-a-shell-script" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="what-is-a-shell-script"><span class="header-section-number">8</span> What is a shell script?</h2>
+<p>If you have written code in R, you already understand the idea of a script: a text file containing a list of commands that run in order from top to bottom.</p>
+<p>A <strong>shell script</strong> is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs your <code>.R</code> file line by line.</p>
+<p>Shell scripts usually end with <code>.sh</code>. For example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load nextflow/26.04.1</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run nf-core/rnaseq <span class="at">-r</span> 3.26.0 <span class="at">-profile</span> test,unity</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>That is a three-line shell script. The first line (<code>#!/bin/bash</code>) tells the computer which program to use to interpret the commands — think of it like a <code>library()</code> call in R that sets up the environment. The next lines are just the commands you would type manually, but saved so they run automatically.</p>
+<p>The job scripts in this tutorial are shell scripts with a few extra lines at the top that start with <code>#SBATCH</code>. Those lines are instructions for SLURM (the cluster job scheduler) — they tell SLURM how much time and memory to reserve. Everything else in the script is plain terminal commands.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>.sh</code> file extension is a convention, not a requirement. Some people name SLURM scripts <code>.sbatch</code>. Both work — the extension is just a label to remind you what the file is for.</p>
+</div>
+</div>
+</section>
+<section id="create-and-edit-a-text-file-with-nano" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="create-and-edit-a-text-file-with-nano"><span class="header-section-number">9</span> Create and edit a text file with nano</h2>
 <p><code>nano</code> is a simple terminal text editor. You will use it to write job scripts on Unity.</p>
 <p>Open a new file (or open an existing one):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> my-script.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> my-script.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This opens the file inside the terminal. You can type normally. At the bottom of the screen you will see shortcuts:</p>
 <pre class="text"><code>^O  Write Out (save)       ^X  Exit
 ^K  Cut line               ^U  Paste</code></pre>
@@ -356,46 +381,46 @@ Tip
 </div>
 </div>
 </section>
-<section id="look-at-text-files-without-editing" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="look-at-text-files-without-editing"><span class="header-section-number">9</span> Look at text files without editing</h2>
+<section id="look-at-text-files-without-editing" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="look-at-text-files-without-editing"><span class="header-section-number">10</span> Look at text files without editing</h2>
 <p>Print a whole file to the terminal:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> samplesheet.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> samplesheet.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Show just the first 10 lines of a file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> samplesheet.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> samplesheet.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Show just the last 10 lines:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> samplesheet.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> samplesheet.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Watch a file update in real time (useful for watching log files as a job runs):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-f</span> job-logs/nfcore-rnaseq-test.12345.out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-f</span> job-logs/nfcore-rnaseq-test.12345.out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Press <code>Ctrl + C</code> to stop watching.</p>
 </section>
-<section id="move-rename-and-copy-files" class="level2" data-number="10">
-<h2 data-number="10" class="anchored" data-anchor-id="move-rename-and-copy-files"><span class="header-section-number">10</span> Move, rename, and copy files</h2>
+<section id="move-rename-and-copy-files" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="move-rename-and-copy-files"><span class="header-section-number">11</span> Move, rename, and copy files</h2>
 <p>Move a file into a folder:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> samplesheet.csv nf-core-demo/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> samplesheet.csv nf-core-demo/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Rename a file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> old_name.csv new_name.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> old_name.csv new_name.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Copy a file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> samplesheet.csv samplesheet_backup.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> samplesheet.csv samplesheet_backup.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Copy an entire folder and everything inside it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> results/ results_backup/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> results/ results_backup/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="check-disk-usage" class="level2" data-number="11">
-<h2 data-number="11" class="anchored" data-anchor-id="check-disk-usage"><span class="header-section-number">11</span> Check disk usage</h2>
+<section id="check-disk-usage" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="check-disk-usage"><span class="header-section-number">12</span> Check disk usage</h2>
 <p>See how much space a file or folder is using:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">du</span> <span class="at">-sh</span> results/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">du</span> <span class="at">-sh</span> results/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See how much space is left on the filesystem you are currently on:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>On Unity, you will use this to make sure you have not filled your scratch workspace.</p>
 </section>
-<section id="copy-files-between-unity-and-your-laptop" class="level2" data-number="12">
-<h2 data-number="12" class="anchored" data-anchor-id="copy-files-between-unity-and-your-laptop"><span class="header-section-number">12</span> Copy files between Unity and your laptop</h2>
+<section id="copy-files-between-unity-and-your-laptop" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="copy-files-between-unity-and-your-laptop"><span class="header-section-number">13</span> Copy files between Unity and your laptop</h2>
 <p><code>scp</code> copies files between your laptop and Unity. Run these commands <strong>from a terminal on your laptop</strong> (not from Unity).</p>
 <p>Copy a file from Unity to your current folder on your laptop:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Copy a whole folder from Unity to your laptop:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Copy a file from your laptop to Unity:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The <code>.</code> at the end means “copy it here, into my current directory.”</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -411,8 +436,8 @@ Note
 </div>
 </div>
 </section>
-<section id="common-commands-at-a-glance" class="level2" data-number="13">
-<h2 data-number="13" class="anchored" data-anchor-id="common-commands-at-a-glance"><span class="header-section-number">13</span> Common commands at a glance</h2>
+<section id="common-commands-at-a-glance" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="common-commands-at-a-glance"><span class="header-section-number">14</span> Common commands at a glance</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -500,8 +525,8 @@ Note
 </tbody>
 </table>
 </section>
-<section id="tips-for-beginners" class="level2" data-number="14">
-<h2 data-number="14" class="anchored" data-anchor-id="tips-for-beginners"><span class="header-section-number">14</span> Tips for beginners</h2>
+<section id="tips-for-beginners" class="level2" data-number="15">
+<h2 data-number="15" class="anchored" data-anchor-id="tips-for-beginners"><span class="header-section-number">15</span> Tips for beginners</h2>
 <ul>
 <li>File and folder names are case-sensitive. <code>Results</code> and <code>results</code> are different.</li>
 <li>Avoid spaces in file names — use underscores <code>_</code> or hyphens <code>-</code> instead.</li>

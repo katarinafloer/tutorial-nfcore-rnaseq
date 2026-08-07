@@ -24,6 +24,31 @@ Before running a pipeline, it helps to recognize which files are raw data, which
 | HTML | `multiqc_report.html` | Interactive report opened in a browser | Pipeline output | Each dataset |
 | LOG/TXT | `.nextflow.log` | Logs and command output | Pipeline output | Each dataset |
 
+## What file extensions mean
+
+A file extension is the short suffix after the last dot in a filename. It tells you what format the file is in — or what program created it.
+
+| Extension | What it is |
+|---|---|
+| `.sh` | Shell script — a text file containing terminal commands that run in order |
+| `.sbatch` | Same as `.sh` — just an alternate name some people use for SLURM job scripts |
+| `.csv` | Comma-separated values — a table where commas separate columns (open in Excel or R) |
+| `.tsv` | Tab-separated values — same idea, but tabs separate columns instead of commas |
+| `.json` | Structured settings file using key-value pairs — used to pass parameters to Nextflow |
+| `.txt`, `.log`, `.out`, `.err` | Plain text files — usually log messages and error output |
+| `.fastq` or `.fq` | Raw sequencing reads |
+| `.fastq.gz` | Same, but compressed with gzip — smaller on disk; most tools read `.gz` directly |
+| `.fa` or `.fasta` | FASTA format — genome sequence or transcript sequences |
+| `.gtf` or `.gff` | Gene annotation file — describes where genes are in the genome |
+| `.bam` | Binary alignment file — aligned reads (not human-readable; needs special tools) |
+| `.bai` | Index for a BAM file — required to quickly look up specific positions in a BAM |
+| `.html` | Web page — open in a browser (used for MultiQC reports) |
+| `.R`, `.Rmd`, `.qmd` | R script, R Markdown, or Quarto document |
+
+::: {.callout-note}
+Some files have two-part extensions. `.fastq.gz` means the file is in FASTQ format **and** it has been compressed with gzip. The `.gz` part does not change what is inside — it just makes the file smaller for storage and transfer.
+:::
+
 ## FASTQ files
 
 FASTQ files are usually the main input for RNA-seq pipelines.
@@ -35,11 +60,28 @@ sample1_R1.fastq.gz
 sample1_R2.fastq.gz
 ```
 
-The file names usually tell you:
+### Anatomy of a FASTQ filename
 
-- The sample name
-- Whether the file is read 1 (`R1`) or read 2 (`R2`)
-- Whether the file is compressed (`.gz`)
+Illumina sequencers produce FASTQ files with names that follow a consistent pattern. Here is an example from the *S. parvus* dataset:
+
+```text
+C45-1B_S2_L002_R1_001.fastq.gz
+```
+
+Each part of the name means something:
+
+| Part | Example | Meaning |
+|---|---|---|
+| Sample name | `C45-1B` | The sample label set during sequencing. In this lab: condition-timepoint-replicate-tissue (B = body, H = head) |
+| Illumina sample number | `S2` | Assigned automatically during demultiplexing — which barcode belonged to which sample |
+| Lane | `L002` | Which physical lane on the sequencing flowcell was used. Some runs use multiple lanes |
+| Read direction | `R1` | Whether this is read 1 or read 2 of a paired-end run |
+| File number | `001` | Usually `001`; Illumina sometimes splits one sample across multiple files |
+| Format | `.fastq.gz` | FASTQ format, compressed with gzip |
+
+So `C45-1B_S2_L002_R1_001.fastq.gz` is: sample C45-1B (body, replicate 1), demultiplexed as sample #2, from lane 2, read 1.
+
+Its paired file would be `C45-1B_S2_L002_R2_001.fastq.gz`.
 
 FASTQ files can be large. A single compressed FASTQ file may be several gigabytes.
 

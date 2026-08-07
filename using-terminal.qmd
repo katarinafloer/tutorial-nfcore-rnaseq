@@ -113,6 +113,28 @@ Create a nested folder path all at once (the `-p` flag creates any missing paren
 mkdir -p ~/rnaseq_nf_core/job-logs
 ```
 
+## What is a shell script?
+
+If you have written code in R, you already understand the idea of a script: a text file containing a list of commands that run in order from top to bottom.
+
+A **shell script** is exactly the same thing, except the commands are terminal commands instead of R commands. When you run a shell script, the computer reads it from top to bottom and executes each line — just like R runs your `.R` file line by line.
+
+Shell scripts usually end with `.sh`. For example:
+
+```bash
+#!/bin/bash
+module load nextflow/26.04.1
+nextflow run nf-core/rnaseq -r 3.26.0 -profile test,unity
+```
+
+That is a three-line shell script. The first line (`#!/bin/bash`) tells the computer which program to use to interpret the commands — think of it like a `library()` call in R that sets up the environment. The next lines are just the commands you would type manually, but saved so they run automatically.
+
+The job scripts in this tutorial are shell scripts with a few extra lines at the top that start with `#SBATCH`. Those lines are instructions for SLURM (the cluster job scheduler) — they tell SLURM how much time and memory to reserve. Everything else in the script is plain terminal commands.
+
+::: {.callout-tip}
+The `.sh` file extension is a convention, not a requirement. Some people name SLURM scripts `.sbatch`. Both work — the extension is just a label to remind you what the file is for.
+:::
+
 ## Create and edit a text file with nano
 
 `nano` is a simple terminal text editor. You will use it to write job scripts on Unity.

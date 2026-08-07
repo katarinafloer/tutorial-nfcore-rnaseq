@@ -191,13 +191,17 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link active" data-scroll-target="#why-this-matters"><span class="header-section-number">1</span> Why this matters</a></li>
   <li><a href="#common-file-types" id="toc-common-file-types" class="nav-link" data-scroll-target="#common-file-types"><span class="header-section-number">2</span> Common file types</a></li>
-  <li><a href="#fastq-files" id="toc-fastq-files" class="nav-link" data-scroll-target="#fastq-files"><span class="header-section-number">3</span> FASTQ files</a></li>
-  <li><a href="#reference-files" id="toc-reference-files" class="nav-link" data-scroll-target="#reference-files"><span class="header-section-number">4</span> Reference files</a></li>
-  <li><a href="#pipeline-outputs" id="toc-pipeline-outputs" class="nav-link" data-scroll-target="#pipeline-outputs"><span class="header-section-number">5</span> Pipeline outputs</a></li>
-  <li><a href="#intermediate-files" id="toc-intermediate-files" class="nav-link" data-scroll-target="#intermediate-files"><span class="header-section-number">6</span> Intermediate files</a></li>
-  <li><a href="#typical-storage-needs" id="toc-typical-storage-needs" class="nav-link" data-scroll-target="#typical-storage-needs"><span class="header-section-number">7</span> Typical storage needs</a></li>
-  <li><a href="#what-files-are-most-important" id="toc-what-files-are-most-important" class="nav-link" data-scroll-target="#what-files-are-most-important"><span class="header-section-number">8</span> What files are most important?</a></li>
-  <li><a href="#big-picture" id="toc-big-picture" class="nav-link" data-scroll-target="#big-picture"><span class="header-section-number">9</span> Big picture</a></li>
+  <li><a href="#what-file-extensions-mean" id="toc-what-file-extensions-mean" class="nav-link" data-scroll-target="#what-file-extensions-mean"><span class="header-section-number">3</span> What file extensions mean</a></li>
+  <li><a href="#fastq-files" id="toc-fastq-files" class="nav-link" data-scroll-target="#fastq-files"><span class="header-section-number">4</span> FASTQ files</a>
+  <ul class="collapse">
+  <li><a href="#anatomy-of-a-fastq-filename" id="toc-anatomy-of-a-fastq-filename" class="nav-link" data-scroll-target="#anatomy-of-a-fastq-filename"><span class="header-section-number">4.1</span> Anatomy of a FASTQ filename</a></li>
+  </ul></li>
+  <li><a href="#reference-files" id="toc-reference-files" class="nav-link" data-scroll-target="#reference-files"><span class="header-section-number">5</span> Reference files</a></li>
+  <li><a href="#pipeline-outputs" id="toc-pipeline-outputs" class="nav-link" data-scroll-target="#pipeline-outputs"><span class="header-section-number">6</span> Pipeline outputs</a></li>
+  <li><a href="#intermediate-files" id="toc-intermediate-files" class="nav-link" data-scroll-target="#intermediate-files"><span class="header-section-number">7</span> Intermediate files</a></li>
+  <li><a href="#typical-storage-needs" id="toc-typical-storage-needs" class="nav-link" data-scroll-target="#typical-storage-needs"><span class="header-section-number">8</span> Typical storage needs</a></li>
+  <li><a href="#what-files-are-most-important" id="toc-what-files-are-most-important" class="nav-link" data-scroll-target="#what-files-are-most-important"><span class="header-section-number">9</span> What files are most important?</a></li>
+  <li><a href="#big-picture" id="toc-big-picture" class="nav-link" data-scroll-target="#big-picture"><span class="header-section-number">10</span> Big picture</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/edit/main/file-types-storage.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/katarinafloer/tutorial-nfcore-rnaseq/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -315,22 +319,157 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="fastq-files" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="fastq-files"><span class="header-section-number">3</span> FASTQ files</h2>
+<section id="what-file-extensions-mean" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="what-file-extensions-mean"><span class="header-section-number">3</span> What file extensions mean</h2>
+<p>A file extension is the short suffix after the last dot in a filename. It tells you what format the file is in — or what program created it.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Extension</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.sh</code></td>
+<td>Shell script — a text file containing terminal commands that run in order</td>
+</tr>
+<tr class="even">
+<td><code>.sbatch</code></td>
+<td>Same as <code>.sh</code> — just an alternate name some people use for SLURM job scripts</td>
+</tr>
+<tr class="odd">
+<td><code>.csv</code></td>
+<td>Comma-separated values — a table where commas separate columns (open in Excel or R)</td>
+</tr>
+<tr class="even">
+<td><code>.tsv</code></td>
+<td>Tab-separated values — same idea, but tabs separate columns instead of commas</td>
+</tr>
+<tr class="odd">
+<td><code>.json</code></td>
+<td>Structured settings file using key-value pairs — used to pass parameters to Nextflow</td>
+</tr>
+<tr class="even">
+<td><code>.txt</code>, <code>.log</code>, <code>.out</code>, <code>.err</code></td>
+<td>Plain text files — usually log messages and error output</td>
+</tr>
+<tr class="odd">
+<td><code>.fastq</code> or <code>.fq</code></td>
+<td>Raw sequencing reads</td>
+</tr>
+<tr class="even">
+<td><code>.fastq.gz</code></td>
+<td>Same, but compressed with gzip — smaller on disk; most tools read <code>.gz</code> directly</td>
+</tr>
+<tr class="odd">
+<td><code>.fa</code> or <code>.fasta</code></td>
+<td>FASTA format — genome sequence or transcript sequences</td>
+</tr>
+<tr class="even">
+<td><code>.gtf</code> or <code>.gff</code></td>
+<td>Gene annotation file — describes where genes are in the genome</td>
+</tr>
+<tr class="odd">
+<td><code>.bam</code></td>
+<td>Binary alignment file — aligned reads (not human-readable; needs special tools)</td>
+</tr>
+<tr class="even">
+<td><code>.bai</code></td>
+<td>Index for a BAM file — required to quickly look up specific positions in a BAM</td>
+</tr>
+<tr class="odd">
+<td><code>.html</code></td>
+<td>Web page — open in a browser (used for MultiQC reports)</td>
+</tr>
+<tr class="even">
+<td><code>.R</code>, <code>.Rmd</code>, <code>.qmd</code></td>
+<td>R script, R Markdown, or Quarto document</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Some files have two-part extensions. <code>.fastq.gz</code> means the file is in FASTQ format <strong>and</strong> it has been compressed with gzip. The <code>.gz</code> part does not change what is inside — it just makes the file smaller for storage and transfer.</p>
+</div>
+</div>
+</section>
+<section id="fastq-files" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="fastq-files"><span class="header-section-number">4</span> FASTQ files</h2>
 <p>FASTQ files are usually the main input for RNA-seq pipelines.</p>
 <p>Paired-end data often has two files per sample:</p>
 <pre class="text"><code>sample1_R1.fastq.gz
 sample1_R2.fastq.gz</code></pre>
-<p>The file names usually tell you:</p>
-<ul>
-<li>The sample name</li>
-<li>Whether the file is read 1 (<code>R1</code>) or read 2 (<code>R2</code>)</li>
-<li>Whether the file is compressed (<code>.gz</code>)</li>
-</ul>
+<section id="anatomy-of-a-fastq-filename" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="anatomy-of-a-fastq-filename"><span class="header-section-number">4.1</span> Anatomy of a FASTQ filename</h3>
+<p>Illumina sequencers produce FASTQ files with names that follow a consistent pattern. Here is an example from the <em>S. parvus</em> dataset:</p>
+<pre class="text"><code>C45-1B_S2_L002_R1_001.fastq.gz</code></pre>
+<p>Each part of the name means something:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sample name</td>
+<td><code>C45-1B</code></td>
+<td>The sample label set during sequencing. In this lab: condition-timepoint-replicate-tissue (B = body, H = head)</td>
+</tr>
+<tr class="even">
+<td>Illumina sample number</td>
+<td><code>S2</code></td>
+<td>Assigned automatically during demultiplexing — which barcode belonged to which sample</td>
+</tr>
+<tr class="odd">
+<td>Lane</td>
+<td><code>L002</code></td>
+<td>Which physical lane on the sequencing flowcell was used. Some runs use multiple lanes</td>
+</tr>
+<tr class="even">
+<td>Read direction</td>
+<td><code>R1</code></td>
+<td>Whether this is read 1 or read 2 of a paired-end run</td>
+</tr>
+<tr class="odd">
+<td>File number</td>
+<td><code>001</code></td>
+<td>Usually <code>001</code>; Illumina sometimes splits one sample across multiple files</td>
+</tr>
+<tr class="even">
+<td>Format</td>
+<td><code>.fastq.gz</code></td>
+<td>FASTQ format, compressed with gzip</td>
+</tr>
+</tbody>
+</table>
+<p>So <code>C45-1B_S2_L002_R1_001.fastq.gz</code> is: sample C45-1B (body, replicate 1), demultiplexed as sample #2, from lane 2, read 1.</p>
+<p>Its paired file would be <code>C45-1B_S2_L002_R2_001.fastq.gz</code>.</p>
 <p>FASTQ files can be large. A single compressed FASTQ file may be several gigabytes.</p>
 </section>
-<section id="reference-files" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="reference-files"><span class="header-section-number">4</span> Reference files</h2>
+</section>
+<section id="reference-files" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="reference-files"><span class="header-section-number">5</span> Reference files</h2>
 <p>Reference files describe the genome or transcriptome you want to compare your reads against.</p>
 <p>Common reference files include:</p>
 <pre class="text"><code>genome.fa
@@ -350,8 +489,8 @@ Note
 </div>
 </div>
 </section>
-<section id="pipeline-outputs" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="pipeline-outputs"><span class="header-section-number">5</span> Pipeline outputs</h2>
+<section id="pipeline-outputs" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="pipeline-outputs"><span class="header-section-number">6</span> Pipeline outputs</h2>
 <p>nf-core pipelines create organized output folders. The exact files depend on the options you choose, but common outputs include:</p>
 <ul>
 <li>Quality-control reports</li>
@@ -364,8 +503,8 @@ Note
 <p>The most useful output to open first is usually:</p>
 <pre class="text"><code>multiqc_report.html</code></pre>
 </section>
-<section id="intermediate-files" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="intermediate-files"><span class="header-section-number">6</span> Intermediate files</h2>
+<section id="intermediate-files" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="intermediate-files"><span class="header-section-number">7</span> Intermediate files</h2>
 <p>RNA-seq pipelines also create intermediate files while they are running.</p>
 <p>Intermediate files are files created between the raw input files and the final results. They are useful for the pipeline, but they are not always files you need to inspect directly.</p>
 <p>One common example is the Nextflow <code>work/</code> directory. This directory can become large because it stores temporary files for many pipeline steps.</p>
@@ -383,8 +522,8 @@ Note
 </div>
 </div>
 </section>
-<section id="typical-storage-needs" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="typical-storage-needs"><span class="header-section-number">7</span> Typical storage needs</h2>
+<section id="typical-storage-needs" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="typical-storage-needs"><span class="header-section-number">8</span> Typical storage needs</h2>
 <p>Exact storage needs depend on the number of samples, read depth, reference files, and pipeline options.</p>
 <p>As a rough guide:</p>
 <table class="caption-top table">
@@ -420,8 +559,8 @@ Note
 </table>
 <p>For this tutorial, we create a workspace with 30 GB because it is meant for a small demo.</p>
 </section>
-<section id="what-files-are-most-important" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="what-files-are-most-important"><span class="header-section-number">8</span> What files are most important?</h2>
+<section id="what-files-are-most-important" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="what-files-are-most-important"><span class="header-section-number">9</span> What files are most important?</h2>
 <p>Usually keep:</p>
 <ul>
 <li><code>samplesheet.csv</code></li>
@@ -439,8 +578,8 @@ Note
 <li>Old intermediate files that can be regenerated</li>
 </ul>
 </section>
-<section id="big-picture" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="big-picture"><span class="header-section-number">9</span> Big picture</h2>
+<section id="big-picture" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="big-picture"><span class="header-section-number">10</span> Big picture</h2>
 <ul>
 <li>Raw FASTQ files are the original sequencing data.</li>
 <li>Reference files tell the pipeline what genome or annotation to use.</li>
