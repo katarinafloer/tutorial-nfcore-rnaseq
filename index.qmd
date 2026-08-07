@@ -7,36 +7,62 @@ subtitle: "RNA-seq analysis for *Staurois parvus* using nf-core"
 
 ![Illustration of the frog Staurois parvus.](assets/staurois-parvus.png){fig-align="center" width="280"}
 
-This website is a bioinformatics resource for Mangiamele Lab members learning to do RNA-seq analysis for the frog *Staurois parvus*.
+This website is a bioinformatics resource for Mangiamele Lab members learning to run RNA-seq analysis for the frog *Staurois parvus*.
 
-The workflow uses [nf-core](https://nf-co.re/), a community collection of standardized, reproducible Nextflow pipelines. The examples focus on `nf-core/rnaseq`, but the same general approach applies to other nf-core workflows.
+The workflow uses [nf-core](https://nf-co.re/), a community collection of standardized, reproducible bioinformatics pipelines. The examples focus on `nf-core/rnaseq`, but the same approach applies to other nf-core workflows.
 
-Visit the [Mangiamele Lab website](https://www.science.smith.edu/mangiamele/) for more information about the lab and its research.
+Visit the [Mangiamele Lab website](https://www.science.smith.edu/mangiamele/) for more about the lab and its research.
 
 Maintained by Katarina Flöer.
 
 ::: {.callout-note}
-This tutorial is currently optimized for Mac users. Windows and Linux users can still follow the overall workflow, but some terminal commands or setup steps may differ.
+This tutorial is written for people using **Unity** (the UMass/Five Colleges computing cluster). It assumes you are on a Mac or Linux machine. Windows users can follow along but some terminal steps may look slightly different.
 :::
+
+## What you will learn
+
+By the end of this tutorial you will be able to:
+
+1. Connect to the Unity computing cluster and navigate it from a terminal
+2. Set up a scratch workspace for running large analyses
+3. Submit an RNA-seq pipeline job with nf-core and SLURM
+4. Interpret the quality-control reports that come out of the pipeline
+5. Understand what the output files contain and what to do with them next
+
+## How to use this site
+
+Follow the pages in order using the sidebar on the left. Each page builds on the one before it.
+
+If you already know a topic, you can skip ahead. But if something in a later section does not make sense, it is worth going back to an earlier page — most concepts build on each other.
 
 ::: {.callout-tip}
-Use this site as a practical guide for setting up a workspace, running the pipeline, checking results, and troubleshooting common issues.
+Throughout the tutorial you will see the username `kfloer_smith_edu` in example code. **Replace it with your own Unity username everywhere you see it.** If you are not sure what your username is, run `whoami` after logging in to Unity.
 :::
 
-## Tutorial path (needs updating)
+## Tutorial path
 
-1. [Set up your environment](setup.qmd)
-2. [Run the pipeline](running.qmd)
-3. [Understand the results](results.qmd)
-4. [Fix common issues](troubleshooting.qmd)
+| Step | Page | What you will do |
+|---|---|---|
+| 1 | [What is RNA-seq?](rna-seq-concepts.qmd) | Learn what the pipeline does and why |
+| 2 | [File types and storage](file-types-storage.qmd) | Understand the files you will work with |
+| 3 | [Frog data availability](frog-data-availability.qmd) | Find the lab's data on Unity |
+| 4 | [Using the terminal](using-terminal.qmd) | Learn the commands you will use most |
+| 5 | [Connecting to Unity](connecting-to-unity.qmd) | Log in to the cluster |
+| 6 | [Using Unity](using-unity.qmd) | Learn how Unity is organized |
+| 7 | [Set up your workspace](setup.qmd) | Create a scratch directory for the pipeline |
+| 8 | [Run the pipeline](running.qmd) | Submit the nf-core/rnaseq job |
+| 9 | [Interpret results](results.qmd) | Read the quality reports and count tables |
+| 10 | [Differential expression](DGE.qmd) | Run the DESeq2 analysis in R |
+| 11 | [Troubleshooting](troubleshooting.qmd) | Fix common problems |
 
-## Prerequisites
+## What you need before you start
 
-You will need:
+- A Unity account (ask Lisa to register your email)
+- A laptop with a terminal app (Terminal on Mac, Windows Terminal on Windows)
+- Basic comfort reading and typing in a terminal — the [Using the terminal](using-terminal.qmd) page covers everything you need
 
-- Lisa to register your email with Unity
-- A laptop with a terminal 
+You do not need programming experience to follow this tutorial. All commands are written out step by step.
 
 ## Citation and credit
 
-This tutorial uses community tools from [nf-core](https://nf-co.re/) and [Nextflow](https://www.nextflow.io/). 
+This tutorial uses community tools from [nf-core](https://nf-co.re/) and [Nextflow](https://www.nextflow.io/).

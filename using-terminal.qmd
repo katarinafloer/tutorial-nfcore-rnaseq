@@ -1,24 +1,40 @@
 ---
-title: "Using Terminal"
+title: "Using the Terminal"
 ---
 
 ## Why use the terminal?
 
-RNA-seq analysis often happens on remote computers and high-performance computing clusters. The terminal lets you move around folders, create files, transfer data, and run analysis commands.
+RNA-seq analysis happens on a remote computing cluster (Unity). The cluster does not have a graphical desktop — you interact with it entirely by typing commands into a terminal window.
 
-You do not need to memorize every command. The goal is to understand the basic pattern:
-
-```text
-command options input
-```
+This page covers the commands you will use most often. You do not need to memorize them. Refer back here whenever you need a reminder.
 
 ## Open a terminal
 
-On macOS, open **Terminal**.
+**On macOS:** Open the **Terminal** app. You can find it in Applications → Utilities, or search for it with Spotlight (⌘ + Space, type "Terminal").
 
-On Windows, open **Windows Terminal**, **PowerShell**, or another SSH-compatible terminal.
+**On Windows:** Open **Windows Terminal**, **PowerShell**, or install [Git Bash](https://git-scm.com/downloads).
 
-On Linux, open your terminal application.
+**On Linux:** Open your terminal application.
+
+## Understanding file paths
+
+A path describes where a file or folder is located. There are two types:
+
+**Absolute path** — starts from the very top of the filesystem with `/`. It works the same no matter where you currently are.
+
+```text
+/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq
+```
+
+**Relative path** — starts from wherever you currently are. A `.` means "here" and `..` means "one folder up".
+
+```text
+../results/multiqc_report.html
+```
+
+::: {.callout-tip}
+When in doubt, use absolute paths. They are harder to get wrong because they always point to the same place.
+:::
 
 ## Where am I?
 
@@ -31,7 +47,7 @@ pwd
 Example output:
 
 ```text
-/Users/katefloer/Documents/RNAseq
+/home/kfloer_smith_edu
 ```
 
 ## List files
@@ -51,13 +67,11 @@ ls -lh
 Example output:
 
 ```text
--rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv
-drwxr-xr-x  4 user  group   128B Jun  8 results
+drwxr-xr-x  2 kfloer_smith_edu users  4.0K Jun  8 results/
+-rw-r--r--  1 kfloer_smith_edu users  1.2K Jun  8 samplesheet.csv
 ```
 
-::: {.callout-note}
-The columns in `ls -lh` output have specific meanings. In `-rw-r--r--  1 user  group   2.1K Jun  8 samplesheet.csv`, the first column shows file permissions. `-rw-r--r--` means this is a regular file. The owner can read and write it (`rw-`), the group can read it (`r--`), and everyone else can read it (`r--`). A directory usually starts with `d`, such as `drwxr-xr-x`. The `1` is the number of links to the file, `user` is the owner, `group` is the group, `2.1K` is the file size, `Jun 8` is the last modified date, and `samplesheet.csv` is the file name.
-:::
+The columns show: permissions, number of links, owner, group, size, date modified, name. Entries starting with `d` are directories; entries starting with `-` are files.
 
 ## Change directories
 
@@ -73,10 +87,16 @@ Move up one folder:
 cd ..
 ```
 
-Move to your home directory:
+Move to your home directory (the shortcut `~` always means your home):
 
 ```bash
-cd
+cd ~
+```
+
+Move to an absolute path:
+
+```bash
+cd /work/pi_lmangiamele_smith_edu
 ```
 
 ## Make a new directory
@@ -84,16 +104,71 @@ cd
 Create a folder:
 
 ```bash
-mkdir nf-core-demo
+mkdir job-logs
 ```
 
-Create a nested folder path:
+Create a nested folder path all at once (the `-p` flag creates any missing parent folders):
 
 ```bash
-mkdir -p projects/nf-core-demo/results
+mkdir -p ~/rnaseq_nf_core/job-logs
 ```
 
-## Move or rename files
+## Create and edit a text file with nano
+
+`nano` is a simple terminal text editor. You will use it to write job scripts on Unity.
+
+Open a new file (or open an existing one):
+
+```bash
+nano my-script.sh
+```
+
+This opens the file inside the terminal. You can type normally. At the bottom of the screen you will see shortcuts:
+
+```text
+^O  Write Out (save)       ^X  Exit
+^K  Cut line               ^U  Paste
+```
+
+The `^` symbol means `Ctrl`. So `^O` means `Ctrl + O`.
+
+**To save:** press `Ctrl + O`, then press `Enter` to confirm the filename.
+
+**To exit:** press `Ctrl + X`.
+
+::: {.callout-tip}
+If you accidentally start nano and want to leave without saving, press `Ctrl + X` and then type `N` when asked if you want to save.
+:::
+
+## Look at text files without editing
+
+Print a whole file to the terminal:
+
+```bash
+cat samplesheet.csv
+```
+
+Show just the first 10 lines of a file:
+
+```bash
+head samplesheet.csv
+```
+
+Show just the last 10 lines:
+
+```bash
+tail samplesheet.csv
+```
+
+Watch a file update in real time (useful for watching log files as a job runs):
+
+```bash
+tail -f job-logs/nfcore-rnaseq-test.12345.out
+```
+
+Press `Ctrl + C` to stop watching.
+
+## Move, rename, and copy files
 
 Move a file into a folder:
 
@@ -107,51 +182,63 @@ Rename a file:
 mv old_name.csv new_name.csv
 ```
 
-## Look at text files
-
-Print a whole file to the terminal:
+Copy a file:
 
 ```bash
-cat samplesheet.csv
+cp samplesheet.csv samplesheet_backup.csv
 ```
 
-Show the first lines of a file:
+Copy an entire folder and everything inside it:
 
 ```bash
-head samplesheet.csv
+cp -r results/ results_backup/
 ```
 
-Show the last lines of a file:
+## Check disk usage
+
+See how much space a file or folder is using:
 
 ```bash
-tail samplesheet.csv
+du -sh results/
 ```
 
-For large log files, `tail` is often more useful than `cat`.
-
-## Copy files with scp
-
-`scp` copies files between your personal computer and a remote server.
-
-Copy a file from your computer to Unity:
+See how much space is left on the filesystem you are currently on:
 
 ```bash
-scp samplesheet.csv your_username@unity.rc.umass.edu:/path/to/destination/
+df -h .
 ```
 
-Copy a file from Unity to your computer:
+On Unity, you will use this to make sure you have not filled your scratch workspace.
+
+## Copy files between Unity and your laptop
+
+`scp` copies files between your laptop and Unity. Run these commands **from a terminal on your laptop** (not from Unity).
+
+Copy a file from Unity to your current folder on your laptop:
 
 ```bash
-scp your_username@unity.rc.umass.edu:/path/to/file.txt .
+scp kfloer_smith_edu@unity.rc.umass.edu:/path/to/multiqc_report.html .
 ```
 
-The final `.` means "copy the file here, into my current directory."
+Copy a whole folder from Unity to your laptop:
+
+```bash
+scp -r kfloer_smith_edu@unity.rc.umass.edu:/path/to/results/ .
+```
+
+Copy a file from your laptop to Unity:
+
+```bash
+scp samplesheet.csv kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-demo/
+```
+
+The `.` at the end means "copy it here, into my current directory."
 
 ::: {.callout-note}
-Replace `your_username` and the file paths with your own username and locations.
+Replace `kfloer_smith_edu` with your own Unity username, and replace the paths with your actual paths.
 :::
 
-## Common patterns
+## Common commands at a glance
 
 | Goal | Command |
 |---|---|
@@ -160,17 +247,26 @@ Replace `your_username` and the file paths with your own username and locations.
 | List files with sizes | `ls -lh` |
 | Move into a folder | `cd folder_name` |
 | Move up one folder | `cd ..` |
+| Go to home directory | `cd ~` |
 | Create a folder | `mkdir folder_name` |
-| Move or rename files | `mv old new` |
+| Create nested folders | `mkdir -p parent/child/grandchild` |
+| Create/edit a file | `nano file.txt` |
 | Print a file | `cat file.txt` |
-| Preview the start of a file | `head file.txt` |
-| Preview the end of a file | `tail file.txt` |
-| Copy files to/from a server | `scp source destination` |
+| Preview the start | `head file.txt` |
+| Preview the end | `tail file.txt` |
+| Watch a file live | `tail -f file.txt` |
+| Move or rename | `mv old new` |
+| Copy a file | `cp source destination` |
+| Copy a folder | `cp -r source/ destination/` |
+| Folder size | `du -sh folder/` |
+| Disk space left | `df -h .` |
+| Copy to/from server | `scp source destination` |
 
 ## Tips for beginners
 
-- File and folder names are case-sensitive on many systems.
-- Spaces in file names can make terminal work harder.
-- Press the `Tab` key to autocomplete file and folder names.
-- Use the up arrow to repeat a previous command.
-- Read error messages slowly. They often tell you what went wrong.
+- File and folder names are case-sensitive. `Results` and `results` are different.
+- Avoid spaces in file names — use underscores `_` or hyphens `-` instead.
+- Press `Tab` to autocomplete a file or folder name. Press it twice to see all options.
+- Use the `↑` arrow key to scroll through previous commands.
+- Read error messages carefully — they usually tell you exactly what went wrong.
+- If a command seems to hang, press `Ctrl + C` to cancel it.

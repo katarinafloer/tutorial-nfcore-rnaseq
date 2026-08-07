@@ -2,53 +2,216 @@
 title: "Troubleshooting"
 ---
 
-## Nextflow is not found
+## Start here: how to find out what went wrong
 
-Check whether `nextflow` is on your `PATH`:
-
-```bash
-which nextflow
-```
-
-If it is missing, add the install location to your shell profile.
-
-## Docker is not running
-
-Check Docker:
+### Check whether the job is still running
 
 ```bash
-docker info
+squeue --me
 ```
 
-If this fails, open Docker Desktop or restart the Docker service.
+If the job is no longer listed, it has finished — either successfully or with an error.
 
-## A run failed halfway through
-
-Use `-resume` after fixing the problem:
+### Read the output log
 
 ```bash
-nextflow run nf-core/rnaseq \
-  -profile docker \
-  --input samplesheet.csv \
-  --outdir results/rnaseq \
-  --genome GRCh38 \
-  -resume
+tail -n 50 ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.JOBID.out
 ```
 
-## Disk space errors
+Replace `JOBID` with your actual job ID. The end of the output log usually shows what the pipeline was doing when it stopped.
 
-Check the size of the work directory:
+### Read the error log
 
 ```bash
-du -sh work results
+cat ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.JOBID.err
 ```
 
-Move large outputs to persistent storage before deleting anything.
+This file captures error messages from the pipeline. Look for lines starting with `ERROR` or `WARN`.
 
-## Where to look for help
+### Find failed task logs inside the work directory
 
-- The terminal error message
-- `.nextflow.log`
-- `results/rnaseq/pipeline_info/`
-- The nf-core pipeline documentation
-- The nf-core Slack community
+When a pipeline step fails, Nextflow creates a detailed log inside the `work/` directory. The output log will print something like:
+
+```text
+ERROR ~ Error executing process 'NFCORE_RNASEQ:RNASEQ:...'
+...
+Work dir:
+  /scratch4/workspace/kfloer_smith_edu-demo/work/ab/c1234567890abc...
+```
+
+Navigate to that directory and look at the log files:
+
+```bash
+cd /scratch4/workspace/kfloer_smith_edu-demo/work/ab/c1234567890abc
+ls -la
+cat .command.err
+cat .command.out
+```
+
+---
+
+## Common problems and fixes
+
+### The job was cancelled — time limit exceeded
+
+**Symptom:** The job disappears from `squeue` before finishing. The log ends without a completion message. SLURM emails you "CANCELLED" or "TIMEOUT".
+
+**Fix:** Increase `--time` in the `#SBATCH` header. For a full dataset, use at least `3-00:00:00` (3 days).
+
+```bash
+#SBATCH --time=3-00:00:00
+```
+
+Then resubmit. The `-resume` flag in the script will skip steps that already finished.
+
+---
+
+### The job failed — out of memory
+
+**Symptom:** The error log contains `Out of memory`, `Killed`, or a process exits with code `137`.
+
+**Fix:** Increase `--mem` in the `#SBATCH` header:
+
+```bash
+#SBATCH --mem=128G
+```
+
+For large datasets with many samples, 128G or more may be needed.
+
+---
+
+### Nextflow module not found
+
+**Symptom:**
+
+```text
+module: command not found
+```
+
+or
+
+```text
+ERROR: Unable to find module nextflow/26.04.1
+```
+
+**Fix:** Check what version is available:
+
+```bash
+module avail nextflow
+```
+
+Update the module name in your script to match an available version. You can also browse available modules at the [Unity module explorer](https://ood.unity.rc.umass.edu/pun/sys/module-explorer).
+
+---
+
+### Apptainer container failed to pull
+
+**Symptom:** The log shows something like:
+
+```text
+Failed to pull singularity image
+FATAL:   Unable to pull docker://...
+```
+
+**Fix:** This usually means the container download was interrupted. The script already includes a line to clean up partial downloads before running:
+
+```bash
+find "$NXF_APPTAINER_CACHEDIR" -type f -name "*.pulling.*" -delete || true
+```
+
+If the problem persists:
+
+1. Delete the cache folder and try again:
+   ```bash
+   rm -rf /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/.nextflow-apptainer-cache
+   ```
+2. Resubmit the job — Nextflow will re-download the containers.
+
+---
+
+### The samplesheet is not found
+
+**Symptom:**
+
+```text
+ERROR ~ No such file or directory: samplesheet.csv
+```
+
+**Fix:** Check that the path in your `params.json` exactly matches where the file actually is:
+
+```bash
+ls /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv
+```
+
+If the file is missing, create it (see the [Run the Pipeline](running.qmd) page).
+
+---
+
+### FASTQ files are not found
+
+**Symptom:**
+
+```text
+ERROR ~ File does not exist: /path/to/sample_R1.fastq.gz
+```
+
+**Fix:** Check that the paths in your samplesheet are correct and that the files exist:
+
+```bash
+ls /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/
+```
+
+Make sure you are using full absolute paths (starting with `/`) in the samplesheet, not relative paths.
+
+---
+
+### Workspace ran out of space
+
+**Symptom:** The log shows `No space left on device` or a step fails unexpectedly.
+
+**Fix:** Check how much space is left:
+
+```bash
+df -h /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/
+```
+
+The `work/` folder (where Nextflow stores intermediate files) can grow very large. To remove completed intermediate files while keeping final results, run this from inside the workspace directory:
+
+```bash
+nextflow clean -f
+```
+
+---
+
+### A pipeline step failed but I do not know why
+
+**Steps to diagnose:**
+
+1. Find the `Work dir:` path printed in the error message in your output log
+2. Navigate to that directory: `cd /path/to/work/dir`
+3. Read the task's error log: `cat .command.err`
+4. Read the task's output log: `cat .command.out`
+5. See the exact command that ran: `cat .command.sh`
+
+The `.command.sh` file shows the exact command Nextflow ran. You can copy it and try running it yourself in an interactive job to debug.
+
+---
+
+### Pipeline says it succeeded but results look wrong
+
+**Things to check:**
+
+- Open `multiqc/star_salmon/multiqc_report.html` and check alignment rates — very low alignment can produce a "successful" run with no useful data
+- Confirm the GTF annotation file matches the genome FASTA (both should come from the same EGAPx assembly)
+- Check `pipeline_info/params_*.json` to confirm the correct genome and annotation were used
+
+---
+
+## Where to get more help
+
+| Resource | Link |
+|---|---|
+| nf-core/rnaseq documentation | <https://nf-co.re/rnaseq> |
+| nf-core Slack community | <https://nf-co.re/join/slack> |
+| Unity documentation | <https://docs.unity.rc.umass.edu> |
+| Unity support | Email `hpc@umass.edu` |

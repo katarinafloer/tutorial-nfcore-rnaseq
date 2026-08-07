@@ -1,18 +1,81 @@
 ---
-title: "Run a Demo Pipeline"
+title: "Set Up Your Workspace"
 ---
 
-## Creating a Demo Scratch Directory
+## What you need to understand first
 
-Before running an `nf-core` pipeline, we need a place with enough temporary storage. On Unity, this is called a **workspace**. A workspace is a scratch directory that gives you more space for data, pipeline outputs, and temporary files.
+Before running the pipeline, it helps to know what the tools are so the commands make more sense.
 
-Workspaces are temporary. The maximum duration is 30 days, but you can extend a workspace if you still need it. When you are finished, you can delete it.
+### What is Nextflow?
 
-More information: <https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/>
+**Nextflow** is a workflow manager. Instead of running each analysis step yourself one by one, Nextflow runs all the steps automatically in the right order, handles errors, and lets you pick up where you left off if something fails.
+
+`nf-core/rnaseq` is a Nextflow pipeline that was built by the bioinformatics community to process RNA-seq data in a standardized and reproducible way.
+
+### What is Apptainer?
+
+Every step of the pipeline runs inside a **container**. A container is a self-contained package that includes the exact version of each software tool the pipeline needs. This means the pipeline runs the same way on any computer or cluster.
+
+**Apptainer** (also called Singularity) is the container system used on Unity. When you run nf-core/rnaseq, Apptainer automatically downloads and uses the correct containers for each step. You do not need to install any bioinformatics tools manually.
+
+### What is SLURM?
+
+**SLURM** is Unity's job scheduler. On a shared cluster, many people are running jobs at the same time. SLURM manages the queue — it decides which job runs on which compute node, and when.
+
+You interact with SLURM by writing a **job script** (a shell script with `#SBATCH` settings at the top) and submitting it with the `sbatch` command. SLURM then runs your script on a compute node when resources are available.
+
+::: {.callout-note}
+You do not need to deeply understand any of these tools to follow this tutorial. Just know that Nextflow manages the analysis steps, Apptainer provides the software, and SLURM runs everything on the cluster.
+:::
+
+## Step 1 — Create the log directory
+
+Before anything else, create a folder to hold your SLURM job logs. These log files are where you will look when something goes wrong.
+
+```bash
+mkdir -p ~/rnaseq_nf_core/job-logs
+```
+
+This creates the folder `rnaseq_nf_core/job-logs` inside your home directory. The `-p` flag creates the full path even if `rnaseq_nf_core` does not exist yet.
+
+## Step 2 — Check that Nextflow is available
+
+On Unity, software is loaded with the `module` system. Check that the Nextflow module is available:
+
+```bash
+module avail nextflow
+```
+
+Load it:
+
+```bash
+module load nextflow/26.04.1
+```
+
+Check the version:
+
+```bash
+nextflow -version
+```
+
+You should see something like:
+
+```text
+      N E X T F L O W
+      version 26.04.1 build ...
+```
+
+If the module is not found, check the [module explorer](https://ood.unity.rc.umass.edu/pun/sys/module-explorer) for the correct module name.
+
+## Step 3 — Create a scratch workspace
+
+The pipeline creates a lot of large temporary files. Your home directory does not have enough space for this. On Unity, you use a **scratch workspace** — a temporary directory with much more space.
+
+::: {.callout-warning}
+Scratch workspaces expire after 30 days. They are meant for active work, not long-term storage. Always copy final results to `/work/pi_lmangiamele_smith_edu/` before the workspace expires.
+:::
 
 ### Check your existing workspaces
-
-Run:
 
 ```bash
 ws_list
@@ -35,9 +98,7 @@ In this example, I already have one workspace from a different project called `s
 
 ### Create a new workspace
 
-Now create a new workspace called `nf-core-demo` that will last for 30 days.
-
-Run:
+Create a workspace called `nf-core-demo` that lasts 30 days:
 
 ```bash
 ws_allocate nf-core-demo 30
@@ -47,129 +108,61 @@ Example output:
 
 ```text
 (base) kfloer_smith_edu@login1:~$ ws_allocate nf-core-demo 30
-Info: could not read email from users config ~/.ws_user.conf.
-Info: reminder email will be sent to local user account
 Info: creating workspace.
 /scratch4/workspace/kfloer_smith_edu-nf-core-demo
 remaining extensions  : 10000
 remaining time in days: 30
 ```
 
-The important line is the workspace path:
+The important line is the workspace path — copy it, you will need it:
 
 ```text
 /scratch4/workspace/kfloer_smith_edu-nf-core-demo
 ```
 
-This is the directory we will use for the tutorial.
-
-### Check that the new workspace was created
-
-Run:
-
-```bash
-ws_list
-```
-
-Example output:
-
-```text
-(base) kfloer_smith_edu@login1:~$ ws_list
-id: nf-core-demo
-     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo
-     remaining time       : 29 days 23 hours
-     creation time        : Mon Jun  8 11:03:16 2026
-     expiration date      : Wed Jul  8 11:03:16 2026
-     filesystem name      : workspace
-     available extensions : 10000
-
-id: simple
-     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
-     remaining time       : 11 days 7 hours
-     creation time        : Wed May 20 18:42:17 2026
-     expiration date      : Fri Jun 19 18:42:17 2026
-     filesystem name      : workspace
-     available extensions : 9998
-```
-
-Now I have two workspaces:
-
-- `nf-core-demo`, which we just created
-- `simple`, from an older project
-
 ### Move into the workspace
-
-Run:
 
 ```bash
 cd /scratch4/workspace/kfloer_smith_edu-nf-core-demo
 ```
 
-Your exact path may be different, so copy the path shown by your own `ws_list` output.
+Use the path shown in your own `ws_list` output — your path may differ slightly.
 
-### Extend a workspace
+### Extend a workspace before it expires
 
-If your workspace is about to expire but you still need it, you can extend it.
-
-Run:
+If your workspace is about to expire and you still need it:
 
 ```bash
 ws_extend nf-core-demo 30
 ```
 
-Example output:
-
-```text
-(base) kfloer_smith_edu@login1:~$ ws_extend nf-core-demo 30
-Info: extending workspace.
-remaining extensions  : 9999
-remaining time in days: 30
-```
-
-Check that the expiration date changed:
+Then confirm:
 
 ```bash
 ws_list
 ```
 
-Example output:
+### Delete a workspace when you are done
 
-```text
-id: nf-core-demo
-     workspace directory  : /scratch4/workspace/kfloer_smith_edu-nf-core-demo
-     remaining time       : 29 days 23 hours
-     expiration date      : Fri Aug  7 11:03:16 2026
-```
-
-Your exact expiration date will be different.
-
-### Delete the demo workspace when finished
-
-**Only do this when you are completely finished with the tutorial files.**
-
-Run:
+**Only do this when you have saved everything you need.**
 
 ```bash
 ws_release nf-core-demo
 ```
 
-Then check your workspaces again:
+## Step 4 — Pull the nf-core/rnaseq pipeline
+
+Downloading the pipeline definition once means Nextflow does not need to fetch it again every time you run.
 
 ```bash
-ws_list
+module purge
+module load nextflow/26.04.1
+
+nextflow pull nf-core/rnaseq -r 3.26.0
 ```
 
-Example output:
+This downloads the pipeline code (not the containers — those are downloaded later, when the pipeline actually runs).
 
-```text
-(base) kfloer_smith_edu@login1:~$ ws_list
-id: simple
-     workspace directory  : /scratch3/workspace/kfloer_smith_edu-simple
-     remaining time       : 11 days 7 hours
-     creation time        : Wed May 20 18:42:17 2026
-     expiration date      : Fri Jun 19 18:42:17 2026
-     filesystem name      : workspace
-     available extensions : 9998
-```
+## You are ready
 
-Now `nf-core-demo` is gone, and only the older workspace remains.
+Once your workspace is created and the pipeline is pulled, you are ready to run your first job. Continue to the [Run the Pipeline](running.qmd) page.

@@ -2,13 +2,68 @@
 title: "Run the Pipeline"
 ---
 
-On Unity, the pipeline runs as a SLURM batch job — not interactively in the terminal. You write a shell script with `#SBATCH` settings at the top, then submit it with `sbatch`.
+On Unity, the pipeline runs as a **SLURM batch job** — not interactively in the terminal. You write a shell script, submit it with `sbatch`, and SLURM runs it on a compute node while you can log out and do other things.
 
-## Run a test first
+## Understanding the job script
 
-Before running with your own data, submit a test job to confirm Nextflow, Apptainer, and your workspace are all working.
+A job script is a plain text file. It has two parts:
 
-Save the following as `nfcore-rnaseq-test.sh` in your home directory. Update the `--output`, `--error`, `--mail-user`, and `SCRATCH_RNASEQ` lines to match your username and workspace path.
+1. **`#SBATCH` lines at the top** — these tell SLURM how much time and memory to reserve, and where to write the output
+2. **Shell commands below** — these are the actual commands that run
+
+Here is what each `#SBATCH` line means:
+
+```bash
+#SBATCH --job-name=nfcore-rnaseq-test   # A label shown in the queue
+#SBATCH --partition=cpu                  # Use CPU nodes (not GPU)
+#SBATCH --cpus-per-task=8               # Reserve 8 CPU cores for the manager process
+#SBATCH --mem=48G                        # Reserve 48 GB of RAM
+#SBATCH --time=24:00:00                  # Maximum run time (hours:minutes:seconds)
+#SBATCH --output=.../%j.out             # File for standard output (%j = job ID)
+#SBATCH --error=.../%j.err              # File for error output
+#SBATCH --mail-type=BEGIN,END,FAIL      # Email you when the job starts, ends, or fails
+#SBATCH --mail-user=you@email.edu       # Your email address
+```
+
+::: {.callout-note}
+The `--cpus-per-task=8` and `--mem=48G` here are for the Nextflow manager process, not the individual pipeline steps. The pipeline itself will request additional resources for each step through SLURM automatically.
+:::
+
+## Understanding the environment setup
+
+Inside the script, several lines set up the environment before running Nextflow:
+
+```bash
+module purge                         # Clear any previously loaded modules
+module load nextflow/26.04.1         # Load Nextflow
+module load apptainer/latest         # Load Apptainer (the container system)
+```
+
+The `export` lines tell Apptainer and Nextflow where to store container images and temporary files:
+
+```bash
+export APPTAINER_CACHEDIR="..."      # Where Apptainer stores downloaded container images
+export APPTAINER_TMPDIR="..."        # Temporary files during container builds
+export NXF_APPTAINER_CACHEDIR="..."  # Where Nextflow looks for Apptainer images
+export NXF_OPTS='-Xms1g -Xmx4g'    # Memory limits for the Nextflow Java process
+export PROOT_NO_SECCOMP=1           # Required for Apptainer to work correctly on Unity
+```
+
+These variables must point to your scratch workspace so they do not fill up your home directory.
+
+## Step 1 — Run a test first
+
+Before running with your own data, run the built-in test profile. This uses a tiny dataset that comes with the pipeline and confirms everything is working correctly on Unity.
+
+### Create the script
+
+On Unity, open a new file with nano:
+
+```bash
+nano ~/rnaseq_nf_core/nfcore-rnaseq-test.sh
+```
+
+Paste in the following. Replace `YOUR_USERNAME` with your Unity username and `YOUR_WORKSPACE` with your scratch workspace name (from `ws_list`):
 
 ```bash
 #!/bin/bash
@@ -42,7 +97,7 @@ export NXF_APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.nextflow-apptainer-cache"
 export NXF_OPTS='-Xms1g -Xmx4g'
 export PROOT_NO_SECCOMP=1
 
-# Clean up any partial container pulls from a previous attempt
+# Remove any partial container downloads from a previous attempt
 find "$NXF_APPTAINER_CACHEDIR" -type f -name "*.pulling.*" -delete || true
 
 nextflow run nf-core/rnaseq \
@@ -52,59 +107,107 @@ nextflow run nf-core/rnaseq \
   -resume
 ```
 
-Create the log directory and submit:
+Save and close nano: `Ctrl + O`, `Enter`, `Ctrl + X`.
+
+### What the nextflow command means
 
 ```bash
-mkdir -p ~/rnaseq_nf_core/job-logs
-sbatch nfcore-rnaseq-test.sh
+nextflow run nf-core/rnaseq \   # Run the nf-core/rnaseq pipeline
+  -r 3.26.0 \                   # Use version 3.26.0 (pin the version for reproducibility)
+  -profile test,unity \          # Use the built-in test dataset AND Unity cluster settings
+  --outdir test_results \        # Put all output in a folder called test_results
+  -resume                        # Resume from cached steps if re-run
 ```
 
-Watch progress with:
+### Submit and monitor the job
+
+```bash
+sbatch ~/rnaseq_nf_core/nfcore-rnaseq-test.sh
+```
+
+You will see something like:
+
+```text
+Submitted batch job 12345678
+```
+
+Note the job ID — you will use it to check status or find your log files.
+
+Check whether the job is running:
 
 ```bash
 squeue --me
 ```
 
-And check the output log once it starts:
+Watch the log file update in real time (replace `12345678` with your job ID):
 
 ```bash
-tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.*.out
+tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq-test.12345678.out
 ```
 
+Press `Ctrl + C` to stop watching.
+
 ::: {.callout-tip}
-The test profile uses a small built-in dataset and finishes in a few hours. If it completes without errors, your environment is ready.
+The test profile uses a small built-in dataset. It can take a few hours because the first run needs to download Apptainer container images. Subsequent runs are faster because the containers are cached.
 :::
 
-## Run with your own samples
+### How to tell if the test succeeded
 
-For a real run you need:
+A successful test run ends with something like:
 
-1. A **samplesheet** CSV listing your samples
-2. A **genome FASTA** and **GTF annotation** file
-3. A **params JSON** file pointing to all of the above
+```text
+-[nf-core/rnaseq] Pipeline completed successfully -
+```
 
-### The samplesheet
+If you see `Pipeline completed with errors`, check the `.err` log file for details.
 
-The samplesheet must have these four columns:
+## Step 2 — Run with your own samples
+
+For a real run you need three things:
+
+1. A **samplesheet** CSV listing your samples and FASTQ file paths
+2. A **genome FASTA** and **GTF annotation** (see [Frog Data Availability](frog-data-availability.qmd))
+3. A **params JSON** file that points to everything
+
+### Create the samplesheet
+
+The samplesheet is a CSV file with one row per sample. Create it with nano:
+
+```bash
+nano /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv
+```
+
+It must have exactly these four columns:
 
 ```text
 sample,fastq_1,fastq_2,strandedness
-C45-1B,/path/to/C45-1B_R1_001.fastq.gz,/path/to/C45-1B_R2_001.fastq.gz,reverse
-C45-1H,/path/to/C45-1H_R1_001.fastq.gz,/path/to/C45-1H_R2_001.fastq.gz,reverse
+C45-1B,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R2_001.fastq.gz,reverse
+C45-1H,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R2_001.fastq.gz,reverse
 ```
 
-Set `strandedness` to `reverse`, `forward`, or `unstranded` to match your library prep kit. If you are unsure, check the kit documentation or use the nf-core/rnaseq `--salmon_quant_libtype A` option to detect it automatically.
+Each column:
 
-### The params file
+| Column | What to put |
+|---|---|
+| `sample` | A short name for the sample, no spaces |
+| `fastq_1` | Full path to the R1 (forward) FASTQ file |
+| `fastq_2` | Full path to the R2 (reverse) FASTQ file |
+| `strandedness` | `reverse`, `forward`, or `unstranded` (use `reverse` for most Illumina RNA kits) |
 
-Rather than putting all options on the command line, save them in a JSON file. Example `params.json`:
+### Create the params file
+
+Rather than putting all options on the command line, save them in a JSON file. Create it with nano:
+
+```bash
+nano /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/params.json
+```
 
 ```json
 {
-  "input": "/path/to/samplesheet.csv",
-  "outdir": "/path/to/results",
-  "fasta": "/path/to/genome.fna",
-  "gtf": "/path/to/annotation.gtf",
+  "input": "/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv",
+  "outdir": "/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/results",
+  "fasta": "/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.fna",
+  "gtf": "/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.gtf",
   "igenomes_ignore": true,
   "aligner": "star_salmon",
   "pseudo_aligner": "salmon",
@@ -116,9 +219,13 @@ Rather than putting all options on the command line, save them in a JSON file. E
 }
 ```
 
-### The SLURM script
+Replace `YOUR_USERNAME` and `YOUR_WORKSPACE` with your actual values.
 
-Save the following as `run-rnaseq.sh`, filling in your paths:
+### Create the SLURM script
+
+```bash
+nano ~/rnaseq_nf_core/run-rnaseq.sh
+```
 
 ```bash
 #!/bin/bash
@@ -161,20 +268,31 @@ nextflow run nf-core/rnaseq \
   -resume
 ```
 
-Submit:
+### Submit
 
 ```bash
-sbatch run-rnaseq.sh
+sbatch ~/rnaseq_nf_core/run-rnaseq.sh
 ```
 
-## Resume an interrupted run
+## Checking on a running job
 
-Add `-resume` to your `nextflow run` command (it is already included in the scripts above). Nextflow caches completed tasks, so resuming picks up from where it stopped without re-running finished steps.
+| Task | Command |
+|---|---|
+| See your jobs in the queue | `squeue --me` |
+| Watch the output log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.out` |
+| Watch the error log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.err` |
+| Cancel a job | `scancel JOBID` |
+
+Replace `JOBID` with the number that `sbatch` printed when you submitted.
+
+## Resuming an interrupted run
+
+If your job ran out of time or failed partway through, fix the problem and resubmit with the same script. The `-resume` flag is already included — Nextflow will skip steps that finished successfully and continue from where it stopped.
 
 ::: {.callout-warning}
-Only resume with the same params file and the same scratch directory. Changing the output path or key parameters will invalidate the cache.
+Only resume using the same scratch directory and the same params file. Changing the output path or key parameters invalidates the cached steps and forces a full restart.
 :::
 
-## Record the exact command
+## Record keeping
 
-Keep a copy of your params file and SLURM script alongside your results. The `pipeline_info/` folder in your output directory also records the exact parameters, software versions, and execution timeline automatically.
+Keep a copy of your params file and SLURM script alongside your final results. The `pipeline_info/` folder inside the results directory also stores exact parameters, software versions, and execution logs automatically.

@@ -4,51 +4,94 @@ title: "Frog Data Availability"
 
 ## Purpose
 
-This page collects links to public data resources used for *Staurois parvus* RNA-seq analysis in the Mangiamele Lab.
+This page collects the data files and repositories used for *Staurois parvus* RNA-seq analysis in the Mangiamele Lab.
 
+## What is SRA, and how does it relate to NCBI?
 
-## Genome Resources
+**NCBI** (National Center for Biotechnology Information) is a US government database that stores biological data — genome sequences, gene records, publications, and more. It is the main public archive for genomics data.
+
+**SRA** (Sequence Read Archive) is the part of NCBI that specifically stores raw sequencing reads — the FASTQ files that come off a sequencer. When a paper publishes RNA-seq data, the raw reads are usually deposited in SRA, and each dataset is given a unique accession number that starts with `SRA`, `SRP`, `SRR`, or `PRJNA`.
+
+To download data from SRA you use a tool called `sra-tools` (specifically the `fasterq-dump` command), which converts SRA format back into FASTQ files.
+
+**GEO** (Gene Expression Omnibus) is a related NCBI database that stores processed expression data — count tables, normalized values, and metadata. GEO records often link back to the raw SRA reads.
+
+In practice: if you see a paper say "data available at GEO accession GSE######", the raw reads for that study are usually also in SRA under a linked accession.
+
+## What you'll most likely need
+
+These are the files you need to run the nf-core/rnaseq pipeline and the downstream DESeq2 analysis.
+
+### RNA-seq reads (flutamide experiment)
+
+Raw paired-end FASTQ files from the flutamide treatment experiment (Kate's thesis).
+
+**On Unity:**
+
+```text
+/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq
+```
+
+**Yale server (external):**
+
+<http://fcb.ycga.yale.edu:3010/fTvjY60iTRcfef5EWgR3HlRd5pz98l0/sample_dir_000020575/>
+
+### Genome assembly (EGAPx)
+
+The *S. parvus* genome assembly annotated with EGAPx. Contains FASTA, GTF, and GFF files.
+
+**On Unity:**
+
+```text
+/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult
+```
+
+Key files in that directory:
+
+| File | What it is |
+|---|---|
+| `complete.genomic.fna` | Genome FASTA (reference sequence) |
+| `complete.genomic.gtf` | Gene annotation in GTF format |
+| `complete.genomic.gff` | Gene annotation in GFF format |
+
+## Some other useful data
+
+These files are not needed for the main RNA-seq pipeline but are useful context for the project.
+
+### HiFi PacBio reads (used to build the EGAPx assembly)
+
+**On Unity:**
+
+```text
+/work/pi_lmangiamele_smith_edu/yale_hifi_03_26
+```
+
+**Yale server (external):**
+
+<http://fcb.ycga.yale.edu:3010/Bcs7fnShP4sYdsw2ZmkH4Fxpcn83c60/20260313_lmangiamele_r84189_20260310_214511/>
+
+### Old CLR PacBio reads
+
+**On Unity:**
+
+```text
+/work/pi_lmangiamele_smith_edu/pacbio_parvus
+```
+
+### Public genome resources
 
 | Resource | Link | Notes | Year |
 |---|---|---|---|
-| Old genome assembly | [NCBI link](https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_951230385.1/) | [Paper](https://academic.oup.com/g3journal/article/13/10/jkad193/7251439) | 2023 | 
-| New Genome assembly | Add link | Add assembly version, accession, or source | 2026 |
-| Genome FASTA | Add link | Add file name and date downloaded |
-| Gene annotation | Add link | Add GTF/GFF source and version |
-| Transcriptome | Add link | Optional |
+| Old genome assembly | [GCA_951230385.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_951230385.1/) | [Paper](https://academic.oup.com/g3journal/article/13/10/jkad193/7251439) | 2023 |
+| New genome assembly | Add link | Add accession once deposited | 2026 |
 
-## RNA-seq Reads
+## Download notes
 
-| Dataset | Repository | Accession or link | Notes |
-|---|---|---|---|
-| RNA-seq reads | NCBI SRA | Add link | Add tissue, treatment, or project notes |
-| RNA-seq reads | GEO | Add link | Optional |
-| RNA-seq reads | ENA | Add link | Optional |
+Whenever you use a dataset, record:
 
-## Sample Metadata
-
-| File or record | Link | Notes |
-|---|---|---|
-| Sample metadata | Add link | Sample IDs, tissue, sex, treatment, collection details |
-| Experimental design | Add link | Group comparisons or design notes |
-
-## Other Useful Data
-
-| Resource | Link | Notes |
-|---|---|---|
-| Related publication | Add link | Paper, preprint, or thesis |
-| Supplementary files | Add link | Tables, scripts, or additional references |
-| Lab notes | Add link | Internal notes if appropriate |
-
-## Download Notes
-
-When adding data links, record:
-
-- Repository name
-- Accession number
+- Where you got it (Unity path or external URL)
 - Date accessed
 - File names downloaded
 - Genome or annotation version
-- Any filtering or processing already performed
 
-This information makes the analysis easier to reproduce later.
+This information makes the analysis reproducible and saves time if you need to re-run anything later.

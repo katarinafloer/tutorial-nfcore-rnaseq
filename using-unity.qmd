@@ -2,17 +2,32 @@
 title: "Using Unity"
 ---
 
-## Why this page matters
+## Unity resources
 
-Unity has different kinds of computing spaces. Some are meant for light work, and others are meant for heavier analysis.
+Bookmark these links — you will use them regularly.
 
-For RNA-seq, it is important to know the difference between:
+| Resource | Link |
+|---|---|
+| Scratch workspaces | <https://docs.unity.rc.umass.edu/documentation/managing-files/hpc-workspace/> |
+| Module explorer (search available software) | <https://ood.unity.rc.umass.edu/pun/sys/module-explorer> |
+| Node specifications | <https://docs.unityhpc.org/documentation/cluster_specs/nodes/> |
 
-- Login nodes
-- Interactive jobs
-- Compute jobs
+## Your username
 
-Using the right place keeps the cluster responsive for everyone and helps your own work run more reliably.
+Throughout this tutorial you will see prompts and paths that contain `kfloer_smith_edu`. That is Kate's Unity username. **Replace it with your own Unity username everywhere you see it.**
+
+For example, if your Unity username is `jsmith_smith_edu`, then:
+
+```text
+/home/kfloer_smith_edu/          →   /home/jsmith_smith_edu/
+/scratch4/workspace/kfloer_smith_edu-demo/   →   /scratch4/workspace/jsmith_smith_edu-demo/
+```
+
+If you are not sure what your username is, run:
+
+```bash
+whoami
+```
 
 ## Login nodes
 
@@ -52,16 +67,14 @@ Interactive jobs are useful for:
 
 In an interactive job, you still type commands yourself, but the commands run on a compute node instead of the login node.
 
-Add the exact Unity command for starting an interactive job here:
-
 ```bash
-# Add Unity interactive job command here
+srun --partition=cpu --cpus-per-task=4 --mem=16G --time=2:00:00 --pty bash
 ```
 
 Example prompt after starting an interactive job:
 
 ```text
-(base) kfloer_smith_edu@compute-node:~$
+(base) kfloer_smith_edu@gpu-node:~$
 ```
 
 ::: {.callout-note}
@@ -80,18 +93,16 @@ Compute jobs are useful for:
 - Analyses that need lots of memory
 - Work that should keep running after you log out
 
-A compute job usually includes:
-
-- Requested time
-- Requested CPUs
-- Requested memory
-- Output log file names
-- Commands to run
-
-Add the exact Unity scheduler example here:
+Submit a job script with `sbatch`:
 
 ```bash
-# Add Unity batch job submission command here
+sbatch my-script.sh
+```
+
+Check on your jobs:
+
+```bash
+squeue --me
 ```
 
 ## Which one should I use?
@@ -106,6 +117,100 @@ Add the exact Unity scheduler example here:
 | Run an nf-core test profile | Interactive job or compute job |
 | Run a full RNA-seq pipeline | Compute job |
 | Run a long analysis overnight | Compute job |
+
+## Project architecture
+
+Before you start running analyses, think about where your files will live. Unity has three main storage areas with different purposes.
+
+| Location | Path pattern | Purpose | Space | Temporary? |
+|---|---|---|---|---|
+| Home directory | `/home/kfloer_smith_edu/` | Scripts, config files, small notes | Limited (~50 GB) | No |
+| Lab shared storage | `/work/pi_lmangiamele_smith_edu/` | Shared data, reference genomes, final results | Large | No |
+| Scratch workspace | `/scratch4/workspace/kfloer_smith_edu-WORKSPACE/` | Pipeline runs, intermediate files | Very large | Yes — 30 days |
+
+**A typical project setup looks like this:**
+
+```text
+/home/kfloer_smith_edu/
+  rnaseq_nf_core/
+    job-logs/          ← SLURM output and error files
+    scripts/           ← Your .sh job scripts
+
+/work/pi_lmangiamele_smith_edu/
+  03_26_flut_yale_rnaseq/     ← Raw FASTQ files (input data)
+  output_tadpole_plus_adult/  ← Reference genome and annotation
+  results_final/              ← Final results you want to keep
+
+/scratch4/workspace/kfloer_smith_edu-rnaseq/
+  samplesheets/        ← Input samplesheet CSV
+  results/             ← nf-core pipeline output (large, temporary)
+  .nextflow-apptainer-cache/  ← Container image cache
+```
+
+::: {.callout-warning}
+Scratch workspaces expire after 30 days. Copy anything you want to keep (final results, count tables, MultiQC reports) to `/work/pi_lmangiamele_smith_edu/` before the workspace expires.
+:::
+
+The scratch workspace is where pipelines run because it is fast and has large capacity. Your home directory and the lab's `/work/` directory are for permanent storage.
+
+## Conda and mamba environments
+
+Conda is a package manager that lets you install software and keep different versions of tools isolated from each other. **Mamba** is a faster drop-in replacement for conda — they use the same commands, mamba just solves environments more quickly.
+
+An **environment** is a self-contained collection of software. You create one environment per project (or per tool) so that different tools with conflicting dependencies do not interfere with each other.
+
+### Check what conda/mamba is available
+
+```bash
+module load miniconda/latest
+conda --version
+```
+
+Or if mamba is available:
+
+```bash
+mamba --version
+```
+
+### Create a new environment
+
+```bash
+mamba create -n rnaseq-env python=3.11
+```
+
+### Activate an environment
+
+```bash
+conda activate rnaseq-env
+```
+
+Your prompt will change to show the environment name:
+
+```text
+(rnaseq-env) kfloer_smith_edu@login1:~$
+```
+
+### Install packages into the active environment
+
+```bash
+mamba install -c bioconda -c conda-forge fastqc multiqc
+```
+
+### Deactivate
+
+```bash
+conda deactivate
+```
+
+### List your environments
+
+```bash
+conda env list
+```
+
+::: {.callout-note}
+For running nf-core pipelines on Unity, you generally do not need a conda environment — the pipeline manages its own software through Apptainer containers. Conda environments are more useful for tools you run separately, like R packages or custom Python scripts.
+:::
 
 ## A useful mental model
 

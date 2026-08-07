@@ -2,49 +2,177 @@
 title: "Interpret Results"
 ---
 
-## Start with MultiQC
+## Did the pipeline succeed?
 
-Open the MultiQC report:
+The first thing to check is whether the pipeline actually finished without errors.
 
-```bash
-open results/rnaseq/multiqc/star_salmon/multiqc_report.html
+In your output log file, a successful run ends with:
+
+```text
+-[nf-core/rnaseq] Pipeline completed successfully -
 ```
 
-On Linux:
+If you see `Pipeline completed with errors` or the log cuts off mid-run, something went wrong. See the [Troubleshooting](troubleshooting.qmd) page.
 
-```bash
-xdg-open results/rnaseq/multiqc/star_salmon/multiqc_report.html
-```
+## What output folders were created?
 
-## What to check first
-
-Focus on:
-
-- Sequencing quality
-- Adapter content
-- Alignment rate
-- Duplication levels
-- Gene body coverage
-- Sample outliers
-
-## Common output folders
+After a successful run, your results directory will contain:
 
 | Folder | What it contains |
 |---|---|
-| `fastqc/` | Per-sample read quality reports |
-| `multiqc/` | Aggregated quality-control report |
-| `star_salmon/` | Alignment and transcript quantification outputs |
-| `pipeline_info/` | Commands, software versions, reports, and provenance |
+| `fastqc/` | Per-sample read quality reports (before and after trimming) |
+| `trimgalore/` | Trimming statistics and reports |
+| `star_salmon/` | Alignment files (BAM), transcript quantification (Salmon), and count tables |
+| `multiqc/` | A single HTML report summarizing quality across all samples |
+| `pipeline_info/` | Software versions, parameters used, execution report |
 
-## Save provenance
+The most important files for you are:
 
-Archive these files with your analysis:
+- `multiqc/star_salmon/multiqc_report.html` — your first stop for QC
+- `star_salmon/salmon.merged.gene_counts.tsv` — the count table you will use for DESeq2
 
-- `pipeline_info/software_versions.yml`
-- `pipeline_info/execution_report.html`
-- `pipeline_info/execution_timeline.html`
-- `pipeline_info/params_*.json`
+## Get the files to your laptop
 
-::: {.callout-tip}
-The `pipeline_info` directory is one of the most useful places to look when you need to reproduce or debug a run later.
+The MultiQC report is an HTML file that you open in a browser. Copy it from Unity to your laptop using `scp`. Run this command **from a terminal on your laptop** (not from Unity):
+
+```bash
+scp kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/multiqc/star_salmon/multiqc_report.html ~/Desktop/
+```
+
+Then open it by double-clicking it, or from the terminal:
+
+```bash
+open ~/Desktop/multiqc_report.html
+```
+
+To copy the entire results folder (for archiving):
+
+```bash
+scp -r kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/ ~/Desktop/rnaseq_results/
+```
+
+## Reading the MultiQC report
+
+MultiQC combines results from many tools into one scrollable HTML page. Here is what to look at and what to look for.
+
+### General statistics table
+
+This is at the top of the report. It gives a quick overview of every sample. Columns to check:
+
+| Column | What it means | What to look for |
+|---|---|---|
+| `% Dups` | Percentage of duplicate reads | Under 50% is typical; very high duplication can indicate over-amplification |
+| `% GC` | GC content of reads | Should be similar across samples; big differences can indicate contamination |
+| `M Reads` | Millions of reads per sample | Check that all samples have comparable read counts; a very low count is a flag |
+
+### FastQC — sequence quality
+
+Look at the **Per Base Sequence Quality** plot. This shows quality scores along the length of each read.
+
+- Quality above 30 (the green zone) across most of the read is good
+- A drop at the ends is normal — Illumina reads often drop in quality toward the 3' end
+- If quality drops early (before position 50), check whether trimming helped
+
+### FastQC — adapter content
+
+Adapter contamination means sequencing read through the end of a fragment and into the Illumina adapter sequence. nf-core/rnaseq trims adapters automatically with Trim Galore, so you should see minimal adapters in the **post-trimming** FastQC plot.
+
+- The post-trimming plot should show adapter content close to 0%
+- If it is still high after trimming, the adapter detection may have failed — check the library prep documentation
+
+### STAR — alignment rate
+
+The **STAR** section shows what percentage of reads mapped to the genome.
+
+| Alignment rate | Interpretation |
+|---|---|
+| 85–95% | Good |
+| 70–85% | Acceptable — check for rRNA contamination or genome completeness |
+| Below 70% | Investigate — possible wrong reference, contamination, or library prep issue |
+
+For *S. parvus*, alignment rates may be lower than for model organisms because the genome assembly is less complete. A rate in the 70–85% range is not unusual.
+
+Also look at:
+
+- **Uniquely mapped** — reads that map to exactly one place in the genome (best for quantification)
+- **Multi-mapped** — reads that map to more than one place (less useful; often from repetitive regions)
+
+### Salmon — quantification
+
+Salmon uses the aligned reads to estimate transcript abundances. The **Salmon** section shows the percentage of reads assigned to genes (mapping rate).
+
+- A Salmon mapping rate similar to the STAR alignment rate is expected
+- If Salmon's rate is much lower than STAR's, check whether the GTF matches the genome FASTA
+
+### Gene body coverage (RSeQC)
+
+This plot shows read coverage across the length of genes, from 5' (left) to 3' (right).
+
+- A flat or slightly 5'-biased curve is ideal
+- A strong 3' bias suggests RNA degradation in the sample — poor RNA quality at time of extraction
+- A strong 5' bias is rarer and may indicate specific library prep issues
+
+### Sample clustering and correlation
+
+MultiQC often shows a sample-to-sample correlation heatmap or PCA from DESeq2. Use this to check:
+
+- Do biological replicates cluster together?
+- Do samples from the same tissue or treatment group cluster together?
+- Is there an obvious outlier sample?
+
+If a sample looks very different from everything else, check its alignment rate, read count, and gene body coverage before including it in downstream analysis.
+
+## Understanding the count table
+
+The key output for downstream analysis is:
+
+```text
+star_salmon/salmon.merged.gene_counts.tsv
+```
+
+This is a tab-separated table where:
+
+- Each **row** is a gene
+- Each **column** is a sample
+- Each **cell** contains the estimated count of reads for that gene in that sample
+
+These counts are what you pass to DESeq2 (or another differential expression tool) to find genes that differ between conditions.
+
+::: {.callout-note}
+The counts are **raw estimated counts**, not normalized values. DESeq2 handles normalization internally. Do not normalize the counts yourself before running DESeq2.
 :::
+
+You can preview the file on Unity:
+
+```bash
+head star_salmon/salmon.merged.gene_counts.tsv
+```
+
+Copy it to your laptop for use in R:
+
+```bash
+# Run on your laptop
+scp kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/star_salmon/salmon.merged.gene_counts.tsv ~/Desktop/
+```
+
+## Save provenance files
+
+Before you clean up the workspace or move on, archive these files — they document exactly what was run and make the analysis reproducible:
+
+- `pipeline_info/software_versions.yml` — every tool version used
+- `pipeline_info/execution_report.html` — a visual timeline of all pipeline steps
+- `pipeline_info/execution_timeline.html` — timing information
+- `pipeline_info/params_*.json` — the exact parameters used
+
+```bash
+# Copy the pipeline_info folder to lab storage
+cp -r results/pipeline_info/ /work/pi_lmangiamele_smith_edu/YOUR_PROJECT_NAME/pipeline_info/
+```
+
+## What to do next
+
+Once you are satisfied with the quality of the run:
+
+1. Copy the count table (`salmon.merged.gene_counts.tsv`) and the `tx2gene` file to a safe location
+2. Copy the MultiQC report and pipeline_info folder for your records
+3. Proceed to [Differential Gene Expression Analysis](DGE.qmd) to run the DESeq2 analysis in R
