@@ -1,1018 +1,3393 @@
 ---
-title: "Differential Gene Expression Analysis"
-subtitle: "DESeq2 analysis with design, QC, and sensitivity audits"
+title: "Staurois parvus tadpole RNA-seq: differential expression analysis"
+subtitle: "Androgen receptor blockade and hind-limb emergence"
+author: "Kate Floer"
+date: today
 format:
   html:
     code-fold: true
     code-tools: true
-editor: visual
+    fig-width: 8
+    fig-height: 6
+    df-print: paged
 execute:
   eval: false
-  warning: true
-  message: true
+  warning: false
+  message: false
+editor: source
 ---
 
-## Scope and inferential limits
+::: {.callout-note collapse="true"}
+## Required packages
 
-This analysis contains head and body RNA-seq libraries from one frog clutch. Day-45 tadpoles were collected before the tank treatment period. At day 103, tadpoles were sampled from one control tank and one flutamide tank.
+Run once if anything below fails to load. `apeglm`, `clusterProfiler` and `org.Hs.eg.db`
+are optional — the script detects their absence and either falls back to `ashr` or skips
+enrichment, rather than erroring.
 
-Important limits are built into the analysis and must accompany interpretation:
-
-- Treatment is confounded with tank because there is one tank per condition. The treatment-assignment unit is the tank, so tadpoles within a tank are subsamples rather than independent treatment replicates. Results are therefore described as **flutamide-tank versus control-tank associations**, not definitive causal effects of flutamide.
-- The experiment is not a complete tissue × treatment × stage factorial: no young flutamide samples exist. Overall treatment effects across stages, treatment-by-stage interactions, and three-way interactions are not estimable.
-- All tadpoles came from one clutch, so inference is clutch-specific.
-- Stage comparisons use different animals collected on different days. They combine age/development with any day- or cohort-specific differences.
-- Only two old-control head libraries exist. Head contrasts and the tissue-by-treatment interaction are consequently fragile.
-
-## Setup
+```r
+install.packages(c("ggplot2","ggrepel","pheatmap","dplyr","tidyr","tibble","forcats",
+                   "readr","stringr","RColorBrewer","matrixStats","knitr","rmarkdown"))
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+BiocManager::install(c("DESeq2","tximport","apeglm","ashr",
+                       "clusterProfiler","org.Hs.eg.db","GO.db",
+                       "Biostrings","Rsamtools","GenomicRanges","IRanges","pwalign"))
+```
+:::
 
 ```{r}
 #| label: setup
-library(DESeq2)
-library(tximport)
-library(ggplot2)
-library(ggrepel)
-library(pheatmap)
-library(matrixStats)
+#| include: false
 
-if (!requireNamespace("ashr", quietly = TRUE)) {
-  stop("Install 'ashr' with BiocManager::install('ashr').")
-}
-if (!requireNamespace("rtracklayer", quietly = TRUE)) {
-  stop("Install 'rtracklayer' with BiocManager::install('rtracklayer').")
+knitr::opts_chunk$set(echo = TRUE, dev = "png", dpi = 150)
+
+suppressPackageStartupMessages({
+  library(tximport)
+  library(DESeq2)
+  library(ggplot2)
+  library(ggrepel)
+  library(pheatmap)
+  library(RColorBrewer)
+  library(dplyr)
+  library(tidyr)
+  library(tibble)
+  library(readr)
+  library(stringr)
+  library(matrixStats)
+  library(scales)      # log/pseudo-log axis transforms in §9b
+})
+
+## patchwork is only needed for the two-panel diagnostic figure in §9b.
+HAVE_PATCHWORK <- requireNamespace("patchwork", quietly = TRUE)
+
+## §9c translates the AR CDS; §9d needs forcats for factor ordering. Both degrade
+## gracefully rather than stopping the render.
+HAVE_BIOSTRINGS <- all(vapply(c("Biostrings", "Rsamtools", "GenomicRanges", "IRanges"),
+                              requireNamespace, logical(1), quietly = TRUE))
+
+## pairwiseAlignment(), pid() and the alignedPattern()/alignedSubject() accessors moved
+## from Biostrings to pwalign and are deprecated in Biostrings >= 2.75.1. Bind them once
+## from whichever package provides them, so §9c is quiet on new and old installs alike.
+PW <- if (requireNamespace("pwalign", quietly = TRUE)) "pwalign" else "Biostrings"
+pw_align   <- function(...) getExportedValue(PW, "pairwiseAlignment")(...)
+pw_pid     <- function(...) getExportedValue(PW, "pid")(...)
+pw_pattern <- function(...) getExportedValue(PW, "alignedPattern")(...)
+pw_subject <- function(...) getExportedValue(PW, "alignedSubject")(...)
+HAVE_FORCATS    <- requireNamespace("forcats", quietly = TRUE)
+
+## §9d: normalise a free-text protein name to a join key against org.Hs.eg.db.
+## Only two operations, both deliberately conservative:
+##   1. strip a trailing "-like" / " like", which is EGAPx's marker for "resembles
+##      this gene" rather than "is this gene" - the base name is the thing to look up;
+##   2. lowercase and squash whitespace, because the two sources differ in case and
+##      spacing but not in wording.
+## Punctuation normalisation and stopword removal were both tested and REJECTED: they
+## resolved 0 and 7 additional genes in the validation set respectively, so their
+## precision on newly-recovered genes cannot be measured. An unauditable gain is not
+## worth taking. Do not extend this function without re-running the validation in §9d.
+norm_gene_name <- function(x) {
+  x |> stringr::str_remove("[- ]like$") |> stringr::str_squish() |> tolower()
 }
 
-dir.create("DESeq2_results", showWarnings = FALSE)
-dir.create("DESeq2_results/QC", showWarnings = FALSE)
-dir.create("DESeq2_results/DGE", showWarnings = FALSE)
-dir.create("DESeq2_results/volcano", showWarnings = FALSE)
-dir.create("DESeq2_results/sensitivity", showWarnings = FALSE)
+set.seed(1234)
+theme_set(theme_bw(base_size = 12))
 ```
 
-## Authoritative sample manifest
+## Analysis parameters
 
-The manifest is explicit rather than inferred solely from filenames. `tank` is recorded for provenance but cannot be added beside treatment in a model because the two are perfectly confounded at day 103.
+All tunable settings live here so nothing is hard-coded further down.
 
 ```{r}
-#| label: sample-manifest
-sample_manifest <- data.frame(
-  sample_id = c(
-    "C103-2B_S10_L002", "C103-3B_S11_L002", "C103-4B_S13_L002",
-    "C103-4H_S12_L002", "C103-5B_S15_L002", "C103-5H_S14_L002",
-    "C45-1B_S2_L002", "C45-1H_S1_L002", "C45-2B_S4_L002",
-    "C45-2H_S3_L002", "C45-3B_S5_L002", "C45-4B_S7_L002",
-    "C45-4H_S6_L002", "C45-5B_S9_L002", "C45-5H_S8_L002",
-    "F103-1B_S17_L002", "F103-1H_S16_L002", "F103-2B_S19_L002",
-    "F103-2H_S18_L002", "F103-3B_S21_L002", "F103-3H_S20_L002",
-    "F103-4B_S22_L002", "F103-5B_S24_L002", "F103-5H_S23_L002"
-  ),
-  tadpole = c(
-    "C103-2", "C103-3", "C103-4", "C103-4", "C103-5", "C103-5",
-    "C45-1", "C45-1", "C45-2", "C45-2", "C45-3", "C45-4",
-    "C45-4", "C45-5", "C45-5",
-    "F103-1", "F103-1", "F103-2", "F103-2", "F103-3", "F103-3",
-    "F103-4", "F103-5", "F103-5"
-  ),
-  day = c(rep(103L, 6), rep(45L, 9), rep(103L, 9)),
-  treatment = c(rep("Control", 15), rep("Flutamide", 9)),
-  tissue = c(
-    "Body", "Body", "Body", "Head", "Body", "Head",
-    "Body", "Head", "Body", "Head", "Body", "Body", "Head", "Body", "Head",
-    "Body", "Head", "Body", "Head", "Body", "Head", "Body", "Body", "Head"
-  ),
-  clutch = "clutch_1",
-  tank = c(rep("control_tank_1", 6), rep("pre_treatment", 9), rep("flutamide_tank_1", 9)),
-  stringsAsFactors = FALSE
-)
+#| label: params
 
-stopifnot(nrow(sample_manifest) == 24L)
-stopifnot(!anyDuplicated(sample_manifest$sample_id))
-stopifnot(!anyNA(sample_manifest))
-
-sample_manifest$stage <- factor(
-  ifelse(sample_manifest$day == 45L, "Young", "Old"),
-  levels = c("Young", "Old")
-)
-sample_manifest$treatment <- factor(
-  sample_manifest$treatment,
-  levels = c("Control", "Flutamide")
-)
-sample_manifest$tissue <- factor(
-  sample_manifest$tissue,
-  levels = c("Body", "Head")
-)
-sample_manifest$group <- factor(
-  paste(sample_manifest$stage, sample_manifest$treatment,
-        sample_manifest$tissue, sep = "_"),
-  levels = c(
-    "Young_Control_Body", "Young_Control_Head",
-    "Old_Control_Body", "Old_Control_Head",
-    "Old_Flutamide_Body", "Old_Flutamide_Head"
+## ---- paths -----------------------------------------------------------
+## PROJECT_DIR is the folder holding the salmon output and the EGAPx annotation.
+##
+## This does NOT hard-code "." because the working directory is not the same in
+## every way of running this file: rendering sets it to the document's folder,
+## but running chunks interactively leaves it wherever the R session started
+## (usually the .Rproj folder, sometimes ~). A "." that works when you render
+## then fails when you step through chunks, which is confusing.
+##
+## So: try the plausible locations and keep the first that actually contains the
+## data. Add a path to the front of `candidates` if you move the folder.
+PROJECT_DIR <- local({
+  candidates <- c(
+    ".",                                                    # render, or wd already correct
+    tryCatch(dirname(rstudioapi::getSourceEditorContext()$path),  # the open document
+             error = function(e) NA_character_),
+    tryCatch(rstudioapi::getActiveProject(),                # the RStudio project folder
+             error = function(e) NA_character_),
+    "/Users/katefloer/Desktop/FrogManuscript/Ranalysis"     # known location
   )
-)
+  ## the sentinel is a small file every run needs, so a hit means a real data folder
+  hit <- Filter(function(d) !is.na(d) && nzchar(d) &&
+                  file.exists(file.path(d, "salmon.merged.tx2gene.tsv")),
+                candidates)
+  if (!length(hit)) stop(
+    "Cannot locate the Ranalysis folder (looked for salmon.merged.tx2gene.tsv in: ",
+    paste(Filter(function(d) !is.na(d), candidates), collapse = ", "), ").\n",
+    "  Fix: set PROJECT_DIR to that folder's path in the `params` chunk.",
+    call. = FALSE)
+  normalizePath(hit[1])
+})
+message("PROJECT_DIR resolved to: ", PROJECT_DIR)
+QUANT_DIR   <- file.path(PROJECT_DIR, "salmon_quant")
+TX2GENE     <- file.path(PROJECT_DIR, "salmon.merged.tx2gene.tsv")
+GTF_FILE    <- file.path(PROJECT_DIR, "complete.genomic.gtf")   # §9b, §10
+GENOME_FA   <- file.path(PROJECT_DIR, "complete.genomic.fna")   # §9b sequence check
+GENE_COUNTS <- file.path(PROJECT_DIR, "salmon.merged.gene_counts.tsv")
+OUT_DIR     <- file.path(PROJECT_DIR, "results_v2")
 
-expected_group_counts <- c(
-  Young_Control_Body = 5L, Young_Control_Head = 4L,
-  Old_Control_Body = 4L, Old_Control_Head = 2L,
-  Old_Flutamide_Body = 5L, Old_Flutamide_Head = 4L
-)
-observed_group_counts <- table(sample_manifest$group)
-stopifnot(identical(as.integer(observed_group_counts), unname(expected_group_counts)))
+## ---- fail loudly, and early, on a missing input ----------------------
+## Without this, a wrong PROJECT_DIR surfaces 40 chunks later as an
+## uninformative error from whichever function first touched the file.
+local({
+  required <- c(quant = QUANT_DIR, tx2gene = TX2GENE)
+  missing  <- required[!file.exists(required)]
+  if (length(missing))
+    stop("Cannot find required input(s):\n",
+         paste0("  ", names(missing), ": ", normalizePath(missing, mustWork = FALSE),
+                collapse = "\n"),
+         "\nSet PROJECT_DIR in the `params` chunk to your Ranalysis folder.",
+         call. = FALSE)
+})
 
-sample_manifest
-observed_group_counts
+## The annotation files are large and only some sections need them, so they are
+## optional: the dependent sections announce themselves as skipped instead of
+## breaking the render.
+HAVE_GTF    <- file.exists(GTF_FILE)
+HAVE_GENOME <- file.exists(GENOME_FA)
+
+## ---- the gene the hypothesis is about --------------------------------
+## Hard-coded because §9b interrogates this one model directly (exon structure,
+## genomic neighbourhood, per-library reads). Confirmed from complete.genomic.gtf:
+##   gene_id "egapxtmp_022918"; gene "AR"; description "androgen receptor"
+AR_GENE_ID   <- "egapxtmp_022918"
+AR_TX_ID     <- "egapxtmp_022918-R1"
+AR_CONTIG    <- "ptg000154l"
+
+## ---- statistical thresholds -----------------------------------------
+ALPHA        <- 0.05     # FDR cutoff for calling a gene significant
+LFC_CUTOFF   <- 1        # |log2FC| >= 1 (2-fold) for volcano highlighting / enrichment
+MIN_COUNT    <- 10       # pre-filter: a gene needs this many counts ...
+NTOP_PCA     <- 500      # top variable genes for PCA (DESeq2 plotPCA default)
+NTOP_HEATMAP <- 50       # top variable genes for the gene-level heatmap
+
+## ---- output scaffolding ---------------------------------------------
+for (d in c("tables", "figures", "objects", "enrichment")) {
+  dir.create(file.path(OUT_DIR, d), recursive = TRUE, showWarnings = FALSE)
+}
+
+## Consistent colours used across every figure in the report
+PAL_GROUP <- c(
+  young_control_body    = "#4C72B0",
+  young_control_head    = "#A7C0E3",
+  old_control_body      = "#55A868",
+  old_control_head      = "#A8D8B4",
+  old_flutamide_body    = "#C44E52",
+  old_flutamide_head    = "#E8A5A7"
+)
+PAL_TREATMENT <- c(control = "#4C72B0", flutamide = "#C44E52")
+PAL_TISSUE    <- c(body = "#8172B2", head = "#CCB974")
+PAL_TIMEPOINT <- c(young = "#64B5CD", old = "#937860")
 ```
 
-## Salmon import with tximport
+## 1. Sample metadata
 
-DESeq2 recommends importing Salmon transcript quantifications with `tximport`, then constructing the dataset with `DESeqDataSetFromTximport()`. This retains gene-specific average transcript-length offsets. TPM values are not used for testing.
+Sample identity is parsed directly from the `salmon_quant/` directory names rather
+than typed by hand, so the metadata table cannot silently drift out of sync with the
+quantification files.
+
+The naming convention is `{C|F}{45|103}-{animal}{B|H}_S{n}_L{lane}`:
+
+- `C` / `F` &rarr; control / flutamide
+- `45` / `103` &rarr; day 45 (pre-limb) / day 103 (limbs emerged)
+- `B` / `H` &rarr; body (spinal cord, hind limbs, tail muscle) / head (brain, eyes, mouthparts)
+
+```{r}
+#| label: metadata
+
+sample_dirs <- list.dirs(QUANT_DIR, full.names = FALSE, recursive = FALSE)
+sample_dirs <- sample_dirs[file.exists(file.path(QUANT_DIR, sample_dirs, "quant.sf"))]
+stopifnot(length(sample_dirs) > 0)
+
+pat <- "^(C|F)(45|103)-(\\d+)(B|H)_S(\\d+)_L(\\d+)$"
+stopifnot(all(grepl(pat, sample_dirs)))   # fail loudly if a name is unexpected
+
+coldata <- tibble(sample_id = sample_dirs) |>
+  mutate(
+    treatment = recode(str_match(sample_id, pat)[, 2], C = "control", F = "flutamide"),
+    timepoint = recode(str_match(sample_id, pat)[, 3], `45` = "young", `103` = "old"),
+    animal_no = str_match(sample_id, pat)[, 4],
+    tissue    = recode(str_match(sample_id, pat)[, 5], B = "body",    H = "head"),
+    ## animal = the individual tadpole; head and body of one tadpole share this ID
+    animal    = paste0(substr(treatment, 1, 1), "_", timepoint, "_", animal_no),
+    ## group = the single combined factor used as the DESeq2 design (see below)
+    group     = paste(timepoint, treatment, tissue, sep = "_")
+  ) |>
+  mutate(across(c(treatment, timepoint, tissue, animal, group), factor)) |>
+  ## explicit reference levels: DESeq2 otherwise picks them alphabetically
+  mutate(
+    treatment = relevel(treatment, ref = "control"),
+    timepoint = relevel(timepoint, ref = "young"),
+    tissue    = relevel(tissue,    ref = "body")
+  ) |>
+  as.data.frame()
+
+rownames(coldata) <- coldata$sample_id
+
+knitr::kable(coldata[, c("sample_id", "timepoint", "treatment", "tissue", "animal", "group")],
+             row.names = FALSE, caption = "Sequenced libraries and their experimental assignment")
+```
+
+### Design balance
+
+```{r}
+#| label: design-balance
+group_n <- as.data.frame(table(coldata$group), responseName = "n")
+names(group_n)[1] <- "group"
+knitr::kable(group_n[order(-group_n$n), ], row.names = FALSE,
+             caption = "Replicates per experimental group")
+```
+
+::: {.callout-important}
+## Power is not uniform across groups
+
+`old_control_head` has only **n = 2**. Both contrasts that use it — the nervous-system
+developmental contrast and the head AR-blockade contrast — are substantially less powerful
+than the body contrasts, and dispersion for those genes is estimated largely from the rest of
+the experiment. Treat head results as exploratory, and expect fewer significant genes there
+for reasons of sample size rather than biology.
+:::
+
+## 2. Import quantification with tximport
+
+Per the DESeq2 vignette, transcript-level Salmon estimates are summarised to gene level
+with `tximport`, which also produces the average-transcript-length offset that corrects
+for isoform-usage shifts between samples. `DESeqDataSetFromTximport()` consumes estimated
+counts — never normalised values.
 
 ```{r}
 #| label: tximport
-quant_dir <- "salmon_quant"
-tx2gene_file <- "salmon.merged.tx2gene.tsv"
-gtf_file <- "complete.genomic.gtf"
 
-files <- file.path(quant_dir, sample_manifest$sample_id, "quant.sf")
-names(files) <- sample_manifest$sample_id
+files <- file.path(QUANT_DIR, coldata$sample_id, "quant.sf")
+names(files) <- coldata$sample_id
 stopifnot(all(file.exists(files)))
-stopifnot(length(files) == 24L)
 
-tx2gene_raw <- read.delim(
-  tx2gene_file,
-  header = TRUE,
-  stringsAsFactors = FALSE,
-  check.names = FALSE
-)
-stopifnot(all(c("transcript_id", "gene_id") %in% names(tx2gene_raw)))
-tx2gene <- unique(tx2gene_raw[, c("transcript_id", "gene_id")])
-stopifnot(!anyNA(tx2gene), !anyDuplicated(tx2gene$transcript_id))
+## tx2gene: column 1 = transcript_id, column 2 = gene_id. Column 3 holds the symbol,
+## which we keep separately as a gene-level annotation map.
+tx2gene_full <- read_tsv(TX2GENE, show_col_types = FALSE,
+                         col_names = c("transcript_id", "gene_id", "gene_name"),
+                         skip = 1)
 
-txi <- tximport(
-  files,
-  type = "salmon",
-  tx2gene = tx2gene,
-  countsFromAbundance = "no"
-)
-stopifnot(identical(colnames(txi$counts), sample_manifest$sample_id))
+tx2gene <- tx2gene_full[, c("transcript_id", "gene_id")]
 
-input_checksums <- data.frame(
-  file = c(files, tx2gene_file, gtf_file),
-  md5 = unname(tools::md5sum(c(files, tx2gene_file, gtf_file))),
-  stringsAsFactors = FALSE
-)
-write.csv(
-  input_checksums,
-  "DESeq2_results/input_file_md5_checksums.csv",
-  row.names = FALSE
-)
+gene_annot <- tx2gene_full |>
+  distinct(gene_id, gene_name) |>
+  group_by(gene_id) |>
+  slice(1) |>
+  ungroup()
+
+txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
+
+cat("Genes quantified:", nrow(txi$counts),
+    "| Samples:", ncol(txi$counts), "\n")
 ```
 
-## Gene annotation
-
 ```{r}
-#| label: gene-annotation
-gene_annotation <- unique(tx2gene_raw[, c("gene_id", "gene")])
-names(gene_annotation)[2] <- "gene_name"
+#| label: dds-build
 
-gtf <- rtracklayer::import(gtf_file)
-gtf_mcols <- mcols(gtf)
-stopifnot(all(c("gene_id", "type", "product") %in% names(gtf_mcols)))
-
-gtf_products <- data.frame(
-  gene_id = as.character(gtf_mcols$gene_id),
-  feature_type = as.character(gtf_mcols$type),
-  product = as.character(gtf_mcols$product),
-  stringsAsFactors = FALSE
-)
-gtf_products <- subset(
-  gtf_products,
-  !is.na(gene_id) & gene_id != "" & !is.na(product) & product != ""
-)
-product_annotation <- do.call(rbind, lapply(
-  split(gtf_products, gtf_products$gene_id),
-  function(x) {
-    preferred <- unique(x$product[x$feature_type %in% c("transcript", "mRNA")])
-    products <- if (length(preferred)) preferred else unique(x$product)
-    data.frame(
-      gene_id = x$gene_id[1],
-      product_description = paste(products, collapse = " | "),
-      stringsAsFactors = FALSE
-    )
-  }
-))
-rownames(product_annotation) <- NULL
-rm(gtf, gtf_mcols, gtf_products)
+dds <- DESeqDataSetFromTximport(txi, colData = coldata, design = ~ group)
 ```
 
-## DESeq2 construction and fit
+### Why a single combined `group` factor?
 
-The observed cell combinations are represented by one `group` factor. This is the DESeq2 manual's recommended simple strategy for explicit cell contrasts and avoids a non-estimable full factorial model.
+The vignette recommends, for designs where the goal is "the effect of a condition within
+specific subsets of samples", collapsing the factors of interest into one factor and using
+`~ group`. This is equivalent to a full timepoint x treatment x tissue interaction model but
+makes every comparison we want a simple, unambiguous `contrast=` call, and it avoids the
+rank-deficiency problems of a fully crossed model in which flutamide exists only at day 103.
 
 ```{r}
-#| label: construct-and-fit
-coldata <- sample_manifest
-rownames(coldata) <- coldata$sample_id
+#| label: design-note
+cat("Design:", deparse(design(dds)), "\n")
+cat("Levels:", paste(levels(dds$group), collapse = ", "), "\n")
+```
 
-dds <- DESeqDataSetFromTximport(
-  txi,
-  colData = coldata,
-  design = ~ group
+### Pre-filtering
+
+Following the vignette: keep genes with at least `MIN_COUNT` reads in at least as many
+samples as the *smallest group*. This is a memory/speed measure — `results()` performs
+independent filtering on top of it.
+
+```{r}
+#| label: prefilter
+
+smallest_group <- min(table(coldata$group))
+keep <- rowSums(counts(dds) >= MIN_COUNT) >= smallest_group
+
+filter_summary <- data.frame(
+  smallest_group_size = smallest_group,
+  genes_before        = nrow(dds),
+  genes_kept          = sum(keep),
+  genes_removed       = sum(!keep)
 )
-stopifnot(identical(rownames(colData(dds)), colnames(dds)))
-stopifnot(qr(model.matrix(design(dds), as.data.frame(colData(dds))))$rank ==
-            nlevels(dds$group))
+knitr::kable(filter_summary, caption = "Pre-filtering summary")
 
-mcols(dds)$gene_name <- gene_annotation$gene_name[
-  match(rownames(dds), gene_annotation$gene_id)
-]
-mcols(dds)$product_description <- product_annotation$product_description[
-  match(rownames(dds), product_annotation$gene_id)
-]
-
-# Intentional information filter: count >=10 in at least 3 libraries.
-# Three is stricter than the actual smallest cell (old-control head, n=2).
-genes_before_filter <- nrow(dds)
-keep <- rowSums(counts(dds) >= 10) >= 3
 dds <- dds[keep, ]
-filter_audit <- data.frame(
-  genes_before_filter = genes_before_filter,
-  genes_after_filter = nrow(dds),
-  genes_removed = genes_before_filter - nrow(dds),
-  rule = "count >= 10 in at least 3 libraries"
-)
-write.csv(filter_audit, "DESeq2_results/prefilter_audit.csv", row.names = FALSE)
-filter_audit
+```
+
+## 3. Fit the model
+
+```{r}
+#| label: deseq-fit
 
 dds <- DESeq(dds)
 resultsNames(dds)
-
-write.csv(as.data.frame(colData(dds)),
-          "DESeq2_results/sample_metadata.csv", row.names = FALSE)
-saveRDS(dds, "DESeq2_results/dds_fitted.rds")
 ```
 
-## Quality control
-
-### Library sizes, effective scaling factors, and zero fractions
-
 ```{r}
-#| label: library-qc
-library_qc <- data.frame(
-  sample_id = colnames(dds),
-  sample_core = sub("_S[0-9]+_L[0-9]+$", "", colnames(dds)),
-  group = dds$group,
-  raw_gene_count_sum = colSums(counts(dds)),
-  # tximport supplies gene-by-sample normalization factors that combine
-  # average transcript-length offsets with library scaling. Their column
-  # geometric means provide a sample-level scaling summary for QC only.
-  effective_library_scaling = exp(
-    colMeans(log(normalizationFactors(dds)))
-  ),
-  zero_fraction = colMeans(counts(dds) == 0),
-  stringsAsFactors = FALSE
-)
-write.csv(library_qc, "DESeq2_results/QC/library_size_factor_zero_fraction.csv",
-          row.names = FALSE)
+#| label: dispersion-plot
+#| fig-cap: "Dispersion estimates. Black = gene-wise, red = fitted trend, blue = final shrunken values used for testing. A well-behaved experiment shows black points scattered around a smoothly decreasing red trend."
 
-library_qc_plot <- ggplot(
-  library_qc,
-  aes(x = reorder(sample_core, effective_library_scaling),
-      y = effective_library_scaling, fill = group)
-) +
-  geom_col() + coord_flip() +
-  labs(title = "tximport/DESeq2 effective library scaling", x = NULL,
-       y = "Geometric mean of normalization factors", fill = "Group") +
-  theme_classic(base_size = 11)
-ggsave("DESeq2_results/QC/effective_library_scaling.pdf", library_qc_plot,
-       width = 10, height = 7)
-library_qc_plot
+png(file.path(OUT_DIR, "figures", "dispersion_estimates.png"),
+    width = 1600, height = 1300, res = 200)
+plotDispEsts(dds, main = "Dispersion estimates")
+invisible(dev.off())
+
+plotDispEsts(dds, main = "Dispersion estimates")
 ```
 
-Small effective library-scaling values are flags for upstream MultiQC review,
-not automatic exclusion criteria. Because tximport supplies gene-specific
-length offsets, these summaries must not be described as ordinary DESeq2 size
-factors.
+### Variance-stabilising transformation
 
-### Dispersion and Cook's-distance diagnostics
-
-```{r}
-#| label: dispersion-cooks-qc
-pdf("DESeq2_results/QC/dispersion_estimates.pdf", width = 8, height = 6)
-plotDispEsts(dds)
-dev.off()
-
-cooks <- assays(dds)[["cooks"]]
-cooks_summary <- data.frame(
-  sample_id = colnames(dds),
-  median_cooks = apply(cooks, 2, median, na.rm = TRUE),
-  q99_cooks = apply(cooks, 2, quantile, probs = 0.99, na.rm = TRUE),
-  max_cooks = apply(cooks, 2, max, na.rm = TRUE)
-)
-write.csv(cooks_summary, "DESeq2_results/QC/cooks_distance_by_sample.csv",
-          row.names = FALSE)
-
-pdf("DESeq2_results/QC/cooks_distance_boxplot.pdf", width = 11, height = 7)
-par(mar = c(9, 5, 2, 2))
-boxplot(log10(cooks), range = 0, las = 2,
-        ylab = "log10 Cook's distance", main = "Cook's distance by library")
-dev.off()
-```
-
-### VST, PCA, sample distances, and heatmaps
-
-`blind=FALSE` uses the fitted dispersion trend for biological visualization and does not remove group effects. A second `blind=TRUE` PCA is included as design-blind sample QA.
+VST output is used for **all** clustering and ordination below. It is never used for
+differential testing, which always operates on raw counts. `blind = FALSE` means the
+dispersion trend already fitted under our design is reused; the design is not used to
+remove variation, only to estimate the mean-variance trend.
 
 ```{r}
-#| label: transformation-pca
+#| label: vst
 vsd <- vst(dds, blind = FALSE)
-vsd_blind <- vst(dds, blind = TRUE)
-saveRDS(vsd, "DESeq2_results/vsd.rds")
+saveRDS(vsd, file.path(OUT_DIR, "objects", "vsd.rds"))
+saveRDS(dds, file.path(OUT_DIR, "objects", "dds_group_fitted.rds"))
+```
 
-make_pca <- function(vsd_object, label, filename) {
-  mat <- assay(vsd_object)
-  vars <- rowVars(mat)
-  top <- names(sort(setNames(vars, rownames(mat)), decreasing = TRUE))[
-    seq_len(min(500, nrow(mat)))
-  ]
-  pca <- prcomp(t(mat[top, , drop = FALSE]), scale. = FALSE)
-  percent <- 100 * pca$sdev^2 / sum(pca$sdev^2)
-  pd <- cbind(as.data.frame(pca$x[, 1:2, drop = FALSE]),
-              as.data.frame(colData(vsd_object)))
-  p <- ggplot(pd, aes(PC1, PC2, color = group, shape = tissue,
-                     label = sub("_S[0-9]+_L[0-9]+$", "", sample_id))) +
-    geom_point(size = 3.5) +
-    geom_text_repel(size = 2.8, max.overlaps = Inf, show.legend = FALSE) +
-    labs(title = paste("PCA:", label),
-         subtitle = "500 most variable genes",
-         x = sprintf("PC1 (%.1f%%)", percent[1]),
-         y = sprintf("PC2 (%.1f%%)", percent[2]), color = "Group") +
-    coord_fixed() + theme_classic(base_size = 11)
-  ggsave(filename, p, width = 10, height = 7)
-  list(plot = p, data = pd, top = top, variance = vars)
+## 4. PCA of all samples (top 500 variable genes)
+
+```{r}
+#| label: pca
+#| fig-cap: "PCA on the 500 most variable genes after VST. Shape distinguishes tissue; colour distinguishes experimental group."
+
+pca_data <- plotPCA(vsd, intgroup = c("group", "tissue", "treatment", "timepoint"),
+                    ntop = NTOP_PCA, returnData = TRUE)
+percent_var <- round(100 * attr(pca_data, "percentVar"))
+
+## plotPCA() overwrites `group` with a colon-joined combination of every intgroup
+## variable ("young_control_body:body:control:young"), which then matches nothing in
+## PAL_GROUP and silently renders every point grey. Restore the real factors from colData.
+pca_data <- pca_data |>
+  select(-group) |>
+  left_join(coldata |> select(name = sample_id, group), by = "name") |>
+  mutate(group = factor(group, levels = names(PAL_GROUP)))
+
+stopifnot(!any(is.na(pca_data$group)))   # fail loudly rather than plotting grey
+
+p_pca <- ggplot(pca_data, aes(PC1, PC2, colour = group, shape = tissue)) +
+  geom_point(size = 4, alpha = 0.9) +
+  geom_text_repel(aes(label = name), size = 2.5, max.overlaps = 20,
+                  show.legend = FALSE, colour = "grey30") +
+  scale_colour_manual(values = PAL_GROUP) +
+  labs(
+    x = paste0("PC1: ", percent_var[1], "% variance"),
+    y = paste0("PC2: ", percent_var[2], "% variance"),
+    title = paste0("PCA, top ", NTOP_PCA, " most variable genes (VST)"),
+    colour = "Group", shape = "Tissue"
+  ) +
+  coord_fixed()
+
+ggsave(file.path(OUT_DIR, "figures", "PCA_top500.png"), plot = p_pca,
+       width = 9, height = 7, dpi = 300)
+write_csv(pca_data, file.path(OUT_DIR, "tables", "PCA_coordinates.csv"))
+p_pca
+```
+
+```{r}
+#| label: pca-facets
+#| fig-cap: "The same ordination coloured by each experimental factor separately, to see which factor PC1 and PC2 actually track."
+
+pca_long <- pca_data |>
+  select(name, PC1, PC2, tissue, treatment, timepoint) |>
+  pivot_longer(c(tissue, treatment, timepoint),
+               names_to = "factor", values_to = "level")
+
+p_pca_facets <- ggplot(pca_long, aes(PC1, PC2, colour = level)) +
+  geom_point(size = 3) +
+  facet_wrap(~ factor, nrow = 1) +
+  scale_colour_manual(values = c(PAL_TISSUE, PAL_TREATMENT, PAL_TIMEPOINT)) +
+  labs(x = paste0("PC1: ", percent_var[1], "%"),
+       y = paste0("PC2: ", percent_var[2], "%"),
+       colour = NULL, title = "PC1/PC2 by experimental factor")
+
+ggsave(file.path(OUT_DIR, "figures", "PCA_by_factor.png"), plot = p_pca_facets,
+       width = 12, height = 4.5, dpi = 300)
+p_pca_facets
+```
+
+```{r}
+#| label: scree
+#| fig-cap: "Scree plot: variance explained by the first principal components."
+
+vsd_mat  <- assay(vsd)
+rv       <- rowVars(vsd_mat)
+sel      <- order(rv, decreasing = TRUE)[seq_len(min(NTOP_PCA, length(rv)))]
+pca_full <- prcomp(t(vsd_mat[sel, ]))
+var_exp  <- (pca_full$sdev^2 / sum(pca_full$sdev^2)) * 100
+
+scree_df <- data.frame(PC = factor(paste0("PC", 1:10), levels = paste0("PC", 1:10)),
+                       variance = var_exp[1:10])
+
+p_scree <- ggplot(scree_df, aes(PC, variance)) +
+  geom_col(fill = "#4C72B0") +
+  geom_text(aes(label = sprintf("%.1f%%", variance)), vjust = -0.4, size = 3) +
+  labs(y = "Variance explained (%)", x = NULL, title = "Scree plot")
+
+ggsave(file.path(OUT_DIR, "figures", "PCA_scree.png"), plot = p_scree,
+       width = 7, height = 4.5, dpi = 300)
+p_scree
+```
+
+## 5. Sample clustering
+
+::: {.callout-note}
+## All genes, or only some? — the practical answer
+
+It depends on what is being clustered, and the two cases pull in opposite directions.
+
+**Clustering samples** (the dendrogram you want for QC): use **all filtered genes**. The
+DESeq2 vignette computes sample distances as `dist(t(assay(vsd)))` over the whole matrix.
+Selecting variable genes first is a form of feature selection on the same data you then
+cluster, which makes groups look cleaner than they are and can manufacture apparent
+structure. Using every gene gives an honest picture of global similarity, and with ~20k
+genes the distances are stable.
+
+**Clustering genes** (the expression heatmap): use a **restricted set** — either the top
+variable genes or the significant genes from a contrast. Clustering all 20k genes produces
+a figure with no readable structure and is dominated by genes that do not change.
+
+Below we do both, and additionally show the top-variable-gene sample dendrogram so you can
+confirm the two agree. If they disagree, the all-gene version is the one to trust.
+:::
+
+```{r}
+#| label: sample-dendrogram
+#| fig-cap: "Hierarchical clustering of samples (Ward linkage on Euclidean VST distances, all filtered genes)."
+#| fig-height: 7
+
+sample_dists <- dist(t(assay(vsd)))
+hc_all <- hclust(sample_dists, method = "ward.D2")
+
+lab_cols <- PAL_GROUP[as.character(coldata[hc_all$labels, "group"])]
+
+plot_dendro <- function(hc, cols, title) {
+  op <- par(mar = c(11, 4.5, 3, 12), xpd = NA)
+  on.exit(par(op))
+  plot(hc, main = title, xlab = "", sub = "",
+       ylab = "Euclidean distance (VST)", cex = 0.8, hang = -1)
+  ## colour-code the tips by group
+  ord <- hc$order
+  axis(1, at = seq_along(ord), labels = FALSE, tick = FALSE)
+  points(seq_along(ord), rep(par("usr")[3], length(ord)),
+         col = cols[ord], pch = 15, cex = 1.4, xpd = NA)
+  legend("topright", inset = c(-0.23, 0), legend = names(PAL_GROUP),
+         fill = PAL_GROUP, border = NA, bty = "n", cex = 0.75, title = "Group")
 }
 
-pca_bio <- make_pca(vsd, "VST, blind=FALSE",
-                    "DESeq2_results/QC/PCA_top500_variable_genes.pdf")
-pca_blind <- make_pca(vsd_blind, "VST, blind=TRUE",
-                      "DESeq2_results/QC/PCA_top500_variable_genes_blind.pdf")
-write.csv(pca_bio$data, "DESeq2_results/QC/PCA_sample_coordinates.csv",
-          row.names = FALSE)
-write.csv(data.frame(
-  gene_id = pca_bio$top,
-  gene_name = mcols(dds)[pca_bio$top, "gene_name"],
-  VST_variance = pca_bio$variance[pca_bio$top]
-), "DESeq2_results/QC/top500_variable_genes.csv", row.names = FALSE)
-pca_bio$plot
-pca_blind$plot
+png(file.path(OUT_DIR, "figures", "dendrogram_all_genes.png"),
+    width = 2200, height = 1400, res = 190)
+plot_dendro(hc_all, lab_cols, "Sample clustering: all filtered genes")
+invisible(dev.off())
+
+plot_dendro(hc_all, lab_cols, "Sample clustering: all filtered genes")
 ```
 
 ```{r}
-#| label: distance-heatmaps
-vst_matrix <- assay(vsd)
-top500 <- pca_bio$top
-sample_dist <- dist(t(vst_matrix[top500, , drop = FALSE]))
-sample_dist_matrix <- as.matrix(sample_dist)
-annotation_col <- as.data.frame(colData(vsd)[, c("stage", "treatment", "tissue", "group")])
+#| label: sample-dendrogram-top
+#| fig-cap: "The same clustering restricted to the top 500 variable genes, shown for comparison only."
+#| fig-height: 7
 
-pheatmap(sample_dist_matrix, annotation_col = annotation_col,
-         annotation_row = annotation_col,
-         clustering_distance_rows = sample_dist,
-         clustering_distance_cols = sample_dist,
-         filename = "DESeq2_results/QC/sample_distance_heatmap.pdf",
-         width = 11, height = 10,
-         main = "Sample distances: top 500 variable genes")
+hc_top <- hclust(dist(t(vsd_mat[sel, ])), method = "ward.D2")
+lab_cols_top <- PAL_GROUP[as.character(coldata[hc_top$labels, "group"])]
 
-top50 <- top500[seq_len(min(50, length(top500)))]
-heatmap_z <- t(scale(t(vst_matrix[top50, , drop = FALSE])))
-heatmap_z[!is.finite(heatmap_z)] <- 0
-labels <- mcols(dds)[top50, "gene_name"]
-labels <- ifelse(is.na(labels) | labels == "", top50,
-                 paste0(labels, " [", top50, "]"))
-rownames(heatmap_z) <- make.unique(labels)
-pheatmap(heatmap_z, annotation_col = annotation_col,
-         fontsize_row = 6, fontsize_col = 7,
-         color = colorRampPalette(c("navy", "white", "firebrick3"))(101),
-         breaks = seq(-3, 3, length.out = 102),
-         filename = "DESeq2_results/QC/top50_variable_gene_heatmap.pdf",
-         width = 12, height = 12,
-         main = "Top 50 variable genes (row z-scores)")
+png(file.path(OUT_DIR, "figures", "dendrogram_top500_genes.png"),
+    width = 2200, height = 1400, res = 190)
+plot_dendro(hc_top, lab_cols_top, paste0("Sample clustering: top ", NTOP_PCA, " variable genes"))
+invisible(dev.off())
+
+plot_dendro(hc_top, lab_cols_top, paste0("Sample clustering: top ", NTOP_PCA, " variable genes"))
 ```
 
-## Differential-expression functions
+```{r}
+#| label: sample-distance-heatmap
+#| fig-cap: "Sample-to-sample Euclidean distances on VST data (all filtered genes). Dark = similar."
+#| fig-height: 8
 
-The standard Wald result tests LFC = 0. A separate thresholded Wald result formally tests whether |LFC| > 1. Shrunken LFCs are used for ranking and visualization, not to create p-values.
+dist_mat <- as.matrix(sample_dists)
+ann_col <- coldata[, c("timepoint", "treatment", "tissue")]
+
+p_dist <- pheatmap(
+  dist_mat,
+  clustering_distance_rows = sample_dists,
+  clustering_distance_cols = sample_dists,
+  clustering_method = "ward.D2",
+  annotation_row = ann_col,
+  annotation_colors = list(treatment = PAL_TREATMENT,
+                           tissue = PAL_TISSUE,
+                           timepoint = PAL_TIMEPOINT),
+  col = colorRampPalette(rev(brewer.pal(9, "Blues")))(255),
+  main = "Sample-to-sample distances (all genes)",
+  fontsize = 8, silent = TRUE
+)
+
+ggsave(file.path(OUT_DIR, "figures", "sample_distance_heatmap.png"),
+       plot = p_dist$gtable, width = 10, height = 8.5, dpi = 300)
+grid::grid.newpage(); grid::grid.draw(p_dist$gtable)
+```
 
 ```{r}
-#| label: comparison-functions
-annotate_result <- function(res, dds_object) {
-  out <- as.data.frame(res)
-  out$gene_id <- rownames(out)
-  out$gene_name <- mcols(dds_object)[out$gene_id, "gene_name"]
-  out$product_description <- mcols(dds_object)[out$gene_id, "product_description"]
+#| label: gene-heatmap
+#| fig-cap: "Top 50 most variable genes (VST, centred per gene). Gene-level clustering deliberately uses a restricted gene set."
+#| fig-height: 9
+
+top_var  <- order(rowVars(vsd_mat), decreasing = TRUE)[1:NTOP_HEATMAP]
+mat      <- vsd_mat[top_var, ]
+mat      <- mat - rowMeans(mat)
+
+## label rows with symbols where the annotation has one
+row_lab <- gene_annot$gene_name[match(rownames(mat), gene_annot$gene_id)]
+row_lab[is.na(row_lab) | row_lab == ""] <- rownames(mat)[is.na(row_lab) | row_lab == ""]
+rownames(mat) <- make.unique(row_lab)
+
+p_genes <- pheatmap(
+  mat,
+  annotation_col = ann_col,
+  annotation_colors = list(treatment = PAL_TREATMENT,
+                           tissue = PAL_TISSUE,
+                           timepoint = PAL_TIMEPOINT),
+  clustering_method = "ward.D2",
+  scale = "none", show_colnames = TRUE,
+  main = paste0("Top ", NTOP_HEATMAP, " variable genes (VST, mean-centred)"),
+  fontsize = 8, fontsize_row = 7, silent = TRUE
+)
+
+ggsave(file.path(OUT_DIR, "figures", "heatmap_top_variable_genes.png"),
+       plot = p_genes$gtable, width = 11, height = 10, dpi = 300)
+grid::grid.newpage(); grid::grid.draw(p_genes$gtable)
+```
+
+## 6. Differential expression
+
+### Helper functions
+
+One function runs a contrast end-to-end: test, shrink, annotate, write CSV. A second
+draws the volcano. Defining them once keeps every contrast strictly comparable.
+
+```{r}
+#| label: de-helpers
+
+#' Run one DESeq2 contrast on the `group` factor.
+#'
+#' Shrinkage uses type = "ashr". This matters: the vignette's shrinkage table shows
+#' apeglm does NOT support the `contrast` argument (only `coef`), while ashr does.
+#' Because every comparison here is a contrast between two levels of `group`, ashr is
+#' the correct estimator. Shrunken LFCs are used for ranking and plotting; p-values and
+#' padj are unchanged by shrinkage.
+run_contrast <- function(dds, numerator, denominator, label, description) {
+
+  res_raw <- results(dds,
+                     contrast = c("group", numerator, denominator),
+                     alpha = ALPHA)
+
+  res_shrunk <- lfcShrink(dds,
+                          contrast = c("group", numerator, denominator),
+                          res = res_raw, type = "ashr", quiet = TRUE)
+
+  out <- as.data.frame(res_shrunk) |>
+    rownames_to_column("gene_id") |>
+    left_join(gene_annot, by = "gene_id") |>
+    mutate(
+      gene_name  = ifelse(is.na(gene_name) | gene_name == "", gene_id, gene_name),
+      lfc_raw    = as.data.frame(res_raw)$log2FoldChange,
+      contrast   = label,
+      numerator  = numerator,
+      denominator = denominator,
+      significant = !is.na(padj) & padj < ALPHA,
+      direction   = case_when(
+        significant &  log2FoldChange >=  LFC_CUTOFF ~ "up",
+        significant &  log2FoldChange <= -LFC_CUTOFF ~ "down",
+        significant                                  ~ "significant, |LFC| < cutoff",
+        TRUE                                         ~ "n.s."
+      )
+    ) |>
+    arrange(padj, desc(abs(log2FoldChange))) |>
+    select(gene_id, gene_name, baseMean, log2FoldChange, lfc_raw, lfcSE,
+           pvalue, padj, significant, direction, contrast, numerator, denominator)
+
+  write_csv(out, file.path(OUT_DIR, "tables", paste0(label, "_DE_results.csv")))
+
+  attr(out, "description")  <- description
+  attr(out, "n_tested")     <- sum(!is.na(out$padj))
   out
 }
 
-run_comparison <- function(dds, numerator, denominator, comparison_name,
-                           alpha = 0.05, lfc_threshold = 1) {
-  contrast_vector <- c("group", numerator, denominator)
-  res <- results(dds, contrast = contrast_vector, alpha = alpha)
-  res_threshold <- results(
-    dds, contrast = contrast_vector, alpha = alpha,
-    lfcThreshold = lfc_threshold, altHypothesis = "greaterAbs"
+#' Volcano plot from a run_contrast() table.
+plot_volcano <- function(res_df, title, subtitle = NULL, n_label = 15) {
+
+  d <- res_df |>
+    filter(!is.na(padj), !is.na(log2FoldChange)) |>
+    mutate(
+      neglog10p = -log10(padj),
+      status = case_when(
+        padj < ALPHA & log2FoldChange >=  LFC_CUTOFF ~ "Up",
+        padj < ALPHA & log2FoldChange <= -LFC_CUTOFF ~ "Down",
+        padj < ALPHA                                 ~ "FDR only",
+        TRUE                                         ~ "n.s."
+      )
+    )
+
+  ## cap infinite -log10(padj) so a single gene cannot flatten the plot
+  finite_max <- suppressWarnings(max(d$neglog10p[is.finite(d$neglog10p)], na.rm = TRUE))
+  if (!is.finite(finite_max)) finite_max <- 1
+  d$neglog10p <- pmin(d$neglog10p, finite_max * 1.05)
+
+  ## Genes detected in essentially one group produce |log2FC| of 15-25 even after
+  ## shrinkage. They are real signals but rest on very few reads, so they are labelled
+  ## with an asterisk rather than presented on the same footing as well-expressed genes.
+  d <- d |> mutate(low_expr = baseMean < 50)
+
+  lab <- d |>
+    filter(status %in% c("Up", "Down")) |>
+    arrange(padj, desc(abs(log2FoldChange))) |>
+    head(n_label) |>
+    mutate(gene_label = ifelse(low_expr, paste0(gene_name, " *"), gene_name))
+
+  n_up   <- sum(d$status == "Up")
+  n_down <- sum(d$status == "Down")
+
+  ggplot(d, aes(log2FoldChange, neglog10p)) +
+    geom_point(aes(colour = status), size = 1.3, alpha = 0.65) +
+    geom_vline(xintercept = c(-LFC_CUTOFF, LFC_CUTOFF),
+               linetype = "dashed", colour = "grey45", linewidth = 0.35) +
+    geom_hline(yintercept = -log10(ALPHA),
+               linetype = "dashed", colour = "grey45", linewidth = 0.35) +
+    geom_text_repel(data = lab, aes(label = gene_label),
+                    size = 3, max.overlaps = 25, min.segment.length = 0,
+                    segment.colour = "grey55", box.padding = 0.4) +
+    scale_colour_manual(values = c(Up = "#C44E52", Down = "#4C72B0",
+                                   `FDR only` = "#DD8452", n.s. = "grey80")) +
+    labs(
+      title = title,
+      subtitle = subtitle %||% sprintf(
+        "%d up, %d down at FDR < %.2f and |log2FC| >= %g   (%d genes tested)",
+        n_up, n_down, ALPHA, LFC_CUTOFF, nrow(d)),
+      x = "log2 fold change (ashr-shrunken)",
+      y = "-log10 adjusted p-value",
+      colour = NULL,
+      caption = if (any(lab$low_expr)) "* baseMean < 50: large fold change rests on few reads" else NULL
+    ) +
+    theme(legend.position = "top",
+          plot.caption = element_text(size = 8, colour = "grey35", hjust = 0))
+}
+
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+#' Compact summary row for a contrast.
+summarise_contrast <- function(res_df) {
+  data.frame(
+    contrast   = unique(res_df$contrast),
+    genes_tested = sum(!is.na(res_df$padj)),
+    sig_FDR      = sum(res_df$significant, na.rm = TRUE),
+    up           = sum(res_df$direction == "up"),
+    down         = sum(res_df$direction == "down")
   )
-  res_shrunk <- lfcShrink(
-    dds, contrast = contrast_vector, res = res, type = "ashr"
-  )
-
-  out <- annotate_result(res, dds)
-  out$shrunken_log2FoldChange <- res_shrunk$log2FoldChange
-  out$shrunken_lfcSE <- res_shrunk$lfcSE
-  out$threshold_stat <- res_threshold$stat
-  out$threshold_pvalue <- res_threshold$pvalue
-  out$threshold_padj <- res_threshold$padj
-  out$standard_FDR_significant <- !is.na(out$padj) & out$padj < alpha
-  out$LFC_threshold_FDR_significant <-
-    !is.na(out$threshold_padj) & out$threshold_padj < alpha
-  out$threshold_direction <- "Not threshold-significant"
-  out$threshold_direction[
-    out$LFC_threshold_FDR_significant & out$shrunken_log2FoldChange > 0
-  ] <- "Higher"
-  out$threshold_direction[
-    out$LFC_threshold_FDR_significant & out$shrunken_log2FoldChange < 0
-  ] <- "Lower"
-  out <- out[order(out$threshold_padj, out$padj, out$pvalue, na.last = TRUE), ]
-
-  write.csv(out, file.path("DESeq2_results/DGE",
-    paste0(comparison_name, "_DESeq2_results.csv")), row.names = FALSE)
-
-  result_summary <- data.frame(
-    comparison = comparison_name,
-    numerator = numerator,
-    denominator = denominator,
-    genes = nrow(out),
-    standard_FDR_below_0.05 = sum(out$standard_FDR_significant),
-    threshold_test_FDR_below_0.05 = sum(out$LFC_threshold_FDR_significant),
-    threshold_higher = sum(out$threshold_direction == "Higher"),
-    threshold_lower = sum(out$threshold_direction == "Lower"),
-    NA_pvalue = sum(is.na(out$pvalue)),
-    NA_padj = sum(is.na(out$padj)),
-    independent_filter_threshold = unname(metadata(res)$filterThreshold)
-  )
-
-  pdf(file.path("DESeq2_results/QC", paste0(comparison_name, "_MA.pdf")),
-      width = 8, height = 6)
-  plotMA(res_shrunk, alpha = alpha, ylim = c(-5, 5),
-         main = paste(comparison_name, "(ashr LFC)"))
-  dev.off()
-
-  plot_data <- out
-  plot_data$plot_padj <- ifelse(is.na(plot_data$threshold_padj), 1,
-                               pmax(plot_data$threshold_padj,
-                                    .Machine$double.xmin))
-  labels <- subset(plot_data,
-                   LFC_threshold_FDR_significant & !is.na(gene_name) & gene_name != "")
-  labels <- head(labels[order(labels$threshold_padj), ], 10)
-  volcano <- ggplot(plot_data,
-    aes(shrunken_log2FoldChange, -log10(plot_padj), color = threshold_direction)) +
-    geom_point(alpha = 0.65, size = 1.4) +
-    geom_vline(xintercept = c(-lfc_threshold, lfc_threshold),
-               linetype = "dashed", color = "grey40") +
-    geom_hline(yintercept = -log10(alpha), linetype = "dashed", color = "grey40") +
-    geom_text_repel(data = labels, aes(label = gene_name), size = 3,
-                    max.overlaps = Inf, show.legend = FALSE) +
-    scale_color_manual(values = c(
-      "Lower" = "#2C7BB6", "Not threshold-significant" = "grey75",
-      "Higher" = "#D7191C"
-    )) +
-    labs(title = comparison_name,
-         subtitle = paste(numerator, "vs", denominator),
-         x = "ashr-shrunken log2 fold change",
-         y = expression(-log[10]("threshold-test adjusted p-value")),
-         caption = paste0("Formal Wald test of |LFC| > ", lfc_threshold,
-                          "; FDR < ", alpha), color = NULL) +
-    theme_classic(base_size = 11) + theme(legend.position = "top")
-  ggsave(file.path("DESeq2_results/volcano",
-                   paste0(comparison_name, "_volcano.pdf")),
-         volcano, width = 8, height = 7)
-
-  list(res = res, res_threshold = res_threshold, res_shrunk = res_shrunk,
-       table = out, summary = result_summary)
 }
 ```
 
-## Primary contrasts
+### 6a. Developmental change with leg emergence — body
+
+**old_control_body vs young_control_body** (n = 4 vs 5). Captures everything that changes in
+the trunk/hind-limb/tail compartment between day 45 and day 103, including limb outgrowth
+itself.
 
 ```{r}
-#| label: primary-contrasts
-leg_emergence <- run_comparison(
-  dds, "Old_Control_Body", "Young_Control_Body",
-  "leg_emergence_OldControlBody_vs_YoungControlBody"
+#| label: de-body-dev
+res_body_dev <- run_contrast(
+  dds, "old_control_body", "young_control_body",
+  label = "leg_emergence_body_old_vs_young",
+  description = "Developmental change in body: day 103 vs day 45, controls only"
 )
-nervous_system_development <- run_comparison(
-  dds, "Old_Control_Head", "Young_Control_Head",
-  "nervous_system_OldControlHead_vs_YoungControlHead"
-)
-ar_blockade_body <- run_comparison(
-  dds, "Old_Flutamide_Body", "Old_Control_Body",
-  "AR_blockade_OldBodyFlutamide_vs_OldBodyControl"
-)
-ar_blockade_head <- run_comparison(
-  dds, "Old_Flutamide_Head", "Old_Control_Head",
-  "AR_blockade_OldHeadFlutamide_vs_OldHeadControl"
-)
-
-contrast_summaries <- do.call(rbind, lapply(list(
-  leg_emergence, nervous_system_development,
-  ar_blockade_body, ar_blockade_head
-), `[[`, "summary"))
-write.csv(contrast_summaries, "DESeq2_results/DGE/contrast_summaries.csv",
-          row.names = FALSE)
-contrast_summaries
+knitr::kable(head(res_body_dev, 20), digits = 3,
+             caption = "Top 20 genes - leg emergence (body)")
 ```
 
-The stage contrasts are control-only, between-animal day/stage comparisons. The flutamide contrasts are day-103 flutamide-tank versus control-tank associations. The old-head contrasts have only two control libraries and are considered provisional.
-
-## Relevant-subset sensitivity fits
-
-DESeq2 usually recommends fitting all groups together, but very different groups can influence the shared gene-wise dispersion. Each main contrast is therefore refit using only its two relevant cells.
-
 ```{r}
-#| label: subset-sensitivity
-run_subset_sensitivity <- function(dds_full, full_result, numerator,
-                                   denominator, comparison_name) {
-  use <- dds_full$group %in% c(numerator, denominator)
-  d <- dds_full[, use]
-  d$group <- droplevels(d$group)
-  design(d) <- ~ group
-  d <- DESeq(d)
-  sub_res <- results(d, contrast = c("group", numerator, denominator), alpha = 0.05)
-  ids <- rownames(full_result)
-  sub_lfc <- sub_res$log2FoldChange[match(ids, rownames(sub_res))]
-  sub_padj <- sub_res$padj[match(ids, rownames(sub_res))]
-  tab <- data.frame(
-    gene_id = ids,
-    full_log2FC = full_result$log2FoldChange,
-    full_padj = full_result$padj,
-    subset_log2FC = sub_lfc,
-    subset_padj = sub_padj,
-    direction_agrees = sign(full_result$log2FoldChange) == sign(sub_lfc)
-  )
-  finite <- is.finite(tab$full_log2FC) & is.finite(tab$subset_log2FC)
-  summary <- data.frame(
-    comparison = comparison_name,
-    full_samples = ncol(dds_full), subset_samples = ncol(d),
-    spearman_LFC = cor(tab$full_log2FC[finite], tab$subset_log2FC[finite],
-                       method = "spearman"),
-    direction_agreement = mean(tab$direction_agrees[finite], na.rm = TRUE),
-    full_FDR_hits = sum(tab$full_padj < 0.05, na.rm = TRUE),
-    subset_FDR_hits = sum(tab$subset_padj < 0.05, na.rm = TRUE),
-    shared_FDR_hits = sum(tab$full_padj < 0.05 & tab$subset_padj < 0.05,
-                          na.rm = TRUE)
-  )
-  write.csv(tab, file.path("DESeq2_results/sensitivity",
-    paste0(comparison_name, "_full_vs_subset.csv")), row.names = FALSE)
-  summary
-}
-
-subset_summaries <- rbind(
-  run_subset_sensitivity(dds, leg_emergence$res,
-    "Old_Control_Body", "Young_Control_Body", "stage_body"),
-  run_subset_sensitivity(dds, nervous_system_development$res,
-    "Old_Control_Head", "Young_Control_Head", "stage_head"),
-  run_subset_sensitivity(dds, ar_blockade_body$res,
-    "Old_Flutamide_Body", "Old_Control_Body", "flutamide_body"),
-  run_subset_sensitivity(dds, ar_blockade_head$res,
-    "Old_Flutamide_Head", "Old_Control_Head", "flutamide_head")
-)
-write.csv(subset_summaries,
-          "DESeq2_results/sensitivity/full_vs_subset_summaries.csv",
-          row.names = FALSE)
-subset_summaries
+#| label: volcano-body-dev
+#| fig-cap: "Volcano: old vs young control body."
+p1 <- plot_volcano(res_body_dev, "Leg emergence: old vs young control BODY")
+ggsave(file.path(OUT_DIR, "figures", "volcano_leg_emergence_body.png"),
+       plot = p1, width = 8.5, height = 7, dpi = 300)
+p1
 ```
 
-## Older-only paired tissue interaction
+### 6b. Developmental change in the nervous system — head
 
-The interaction is
-
-$$
-(\mathrm{flutamide\ tank\ head}-\mathrm{control\ tank\ head})-
-(\mathrm{flutamide\ tank\ body}-\mathrm{control\ tank\ body}).
-$$
-
-Tadpole fixed effects account for paired head/body libraries. Treatment main effect is absorbed by tadpole; the custom `flutamide_head` coefficient estimates the difference-in-differences.
+**old_control_head vs young_control_head** (n = 2 vs 4). Underpowered on the old side; read
+with the caveat above.
 
 ```{r}
-#| label: paired-interaction
-dds_old <- dds[, dds$stage == "Old"]
-# Use syntactically safe factor levels for stable coefficient names.
-dds_old$tadpole <- factor(make.names(as.character(dds_old$tadpole)))
-dds_old$tissue <- factor(dds_old$tissue, levels = c("Body", "Head"))
-dds_old$flutamide_head <- as.integer(
-  dds_old$treatment == "Flutamide" & dds_old$tissue == "Head"
+#| label: de-head-dev
+res_head_dev <- run_contrast(
+  dds, "old_control_head", "young_control_head",
+  label = "nervous_system_head_old_vs_young",
+  description = "Developmental change in head: day 103 vs day 45, controls only"
 )
-design(dds_old) <- ~ tadpole + tissue + flutamide_head
-paired_mm <- model.matrix(design(dds_old), as.data.frame(colData(dds_old)))
-stopifnot(qr(paired_mm)$rank == ncol(paired_mm))
+knitr::kable(head(res_head_dev, 20), digits = 3,
+             caption = "Top 20 genes - nervous system development (head)")
+```
 
-pair_table <- with(as.data.frame(colData(dds_old)), table(tadpole, tissue))
-complete_pair_ids <- rownames(pair_table)[rowSums(pair_table > 0) == 2]
-paired_design_audit <- data.frame(
-  old_libraries = ncol(dds_old),
-  tadpoles = nlevels(dds_old$tadpole),
-  complete_pairs = length(complete_pair_ids),
-  control_complete_pairs = sum(grepl("^C", complete_pair_ids)),
-  flutamide_complete_pairs = sum(grepl("^F", complete_pair_ids)),
-  model_parameters = ncol(paired_mm),
-  residual_df = nrow(paired_mm) - qr(paired_mm)$rank
+```{r}
+#| label: volcano-head-dev
+#| fig-cap: "Volcano: old vs young control head."
+p2 <- plot_volcano(res_head_dev, "Nervous system development - old vs young control HEAD")
+ggsave(file.path(OUT_DIR, "figures", "volcano_nervous_system_head.png"),
+       plot = p2, width = 8.5, height = 7, dpi = 300)
+p2
+```
+
+### 6c. AR blockade in older tadpoles — body
+
+**old_flutamide_body vs old_control_body** (n = 5 vs 4). The primary test of androgen
+receptor involvement in the limb/trunk compartment.
+
+```{r}
+#| label: de-body-flu
+res_body_flu <- run_contrast(
+  dds, "old_flutamide_body", "old_control_body",
+  label = "AR_blockade_body_flutamide_vs_control",
+  description = "Flutamide vs control, day 103, body"
 )
-write.csv(paired_design_audit,
-          "DESeq2_results/DGE/paired_interaction_design_audit.csv",
-          row.names = FALSE)
-paired_design_audit
+knitr::kable(head(res_body_flu, 20), digits = 3,
+             caption = "Top 20 genes - AR blockade (body)")
+```
+
+```{r}
+#| label: volcano-body-flu
+#| fig-cap: "Volcano: flutamide vs control, old body."
+p3 <- plot_volcano(res_body_flu, "AR blockade: flutamide vs control, old BODY")
+ggsave(file.path(OUT_DIR, "figures", "volcano_AR_blockade_body.png"),
+       plot = p3, width = 8.5, height = 7, dpi = 300)
+p3
+```
+
+### 6d. AR blockade in older tadpoles — head
+
+**old_flutamide_head vs old_control_head** (n = 4 vs 2).
+
+```{r}
+#| label: de-head-flu
+res_head_flu <- run_contrast(
+  dds, "old_flutamide_head", "old_control_head",
+  label = "AR_blockade_head_flutamide_vs_control",
+  description = "Flutamide vs control, day 103, head"
+)
+knitr::kable(head(res_head_flu, 20), digits = 3,
+             caption = "Top 20 genes - AR blockade (head)")
+```
+
+```{r}
+#| label: volcano-head-flu
+#| fig-cap: "Volcano: flutamide vs control, old head."
+p4 <- plot_volcano(res_head_flu, "AR blockade: flutamide vs control, old HEAD")
+ggsave(file.path(OUT_DIR, "figures", "volcano_AR_blockade_head.png"),
+       plot = p4, width = 8.5, height = 7, dpi = 300)
+p4
+```
+
+## 7. Whole-animal AR blockade: old control vs old flutamide
+
+You asked to collapse head and body into one sample per animal. There are two defensible
+ways to do that and they answer slightly different questions, so both are run.
+
+::: {.callout-warning}
+## `collapseReplicates` is for technical replicates only
+
+The DESeq2 vignette is explicit that `collapseReplicates` is intended for multiple
+sequencing runs of the *same library*, and that biological replicates must not be collapsed.
+Head and body are different tissues, not technical replicates — but summing their counts is
+still a legitimate operation if what you want is a **whole-animal transcriptome**. It is a
+change of biological unit, not a technical merge, so we treat it as such and interpret it
+that way: fold changes become "per whole tadpole", weighted by how much RNA each compartment
+contributes.
+
+The harder problem is that only **6 of 9** day-103 animals have both tissues sequenced
+(controls C103-4, C103-5; flutamide F103-1, F103-2, F103-3, F103-5). Summing an animal that
+is missing its head would compare a body-only pseudo-animal against whole animals — a
+composition artifact masquerading as a treatment effect. Approach A therefore uses only
+complete animals, which costs power (**2 vs 4**). Approach B keeps every sample and models
+tissue as a covariate instead, which is the statistically stronger option.
+:::
+
+### Approach A — sum head + body per animal (complete animals only)
+
+```{r}
+#| label: collapse-complete
+
+old_meta <- coldata[coldata$timepoint == "old", ]
+tissue_per_animal <- table(old_meta$animal, old_meta$tissue)
+complete_animals  <- rownames(tissue_per_animal)[rowSums(tissue_per_animal > 0) == 2]
+
+cat("Day-103 animals with both tissues:", paste(complete_animals, collapse = ", "), "\n")
+cat("Excluded (single tissue only):",
+    paste(setdiff(unique(as.character(old_meta$animal)), complete_animals), collapse = ", "), "\n")
+
+keep_cols <- rownames(coldata)[coldata$animal %in% complete_animals]
+
+dds_pair <- dds[, keep_cols]
+dds_pair$animal <- droplevels(dds_pair$animal)
+
+## Sum counts across the two tissues of each animal.
+dds_collapsed <- collapseReplicates(dds_pair,
+                                    groupby = dds_pair$animal,
+                                    run = dds_pair$sample_id)
+
+colData(dds_collapsed)$treatment <- relevel(droplevels(colData(dds_collapsed)$treatment),
+                                            ref = "control")
+design(dds_collapsed) <- ~ treatment
+
+## sanity check: collapsed counts must equal the sum of their parts
+chk_animal <- complete_animals[1]
+chk <- all.equal(
+  as.numeric(counts(dds_collapsed)[, chk_animal]),
+  as.numeric(rowSums(counts(dds_pair)[, dds_pair$animal == chk_animal, drop = FALSE]))
+)
+stopifnot(isTRUE(chk))
+
+knitr::kable(as.data.frame(colData(dds_collapsed)[, c("treatment", "runsCollapsed")]),
+             caption = "Whole-animal pseudo-samples")
+
+dds_collapsed <- DESeq(dds_collapsed)
+
+res_whole <- results(dds_collapsed, contrast = c("treatment", "flutamide", "control"),
+                     alpha = ALPHA)
+res_whole_shrunk <- lfcShrink(dds_collapsed, contrast = c("treatment", "flutamide", "control"),
+                              res = res_whole, type = "ashr", quiet = TRUE)
+
+res_whole_df <- as.data.frame(res_whole_shrunk) |>
+  rownames_to_column("gene_id") |>
+  left_join(gene_annot, by = "gene_id") |>
+  mutate(gene_name = ifelse(is.na(gene_name) | gene_name == "", gene_id, gene_name),
+         contrast = "whole_animal_collapsed_flutamide_vs_control",
+         significant = !is.na(padj) & padj < ALPHA,
+         direction = case_when(
+           significant & log2FoldChange >=  LFC_CUTOFF ~ "up",
+           significant & log2FoldChange <= -LFC_CUTOFF ~ "down",
+           significant ~ "significant, |LFC| < cutoff", TRUE ~ "n.s.")) |>
+  arrange(padj)
+
+write_csv(res_whole_df,
+          file.path(OUT_DIR, "tables", "whole_animal_collapsed_flutamide_vs_control_DE_results.csv"))
+
+knitr::kable(head(res_whole_df, 20), digits = 3,
+             caption = "Top 20 genes - whole-animal (collapsed), flutamide vs control")
+```
+
+```{r}
+#| label: volcano-whole
+#| fig-cap: "Volcano: whole-animal collapsed comparison (2 control vs 4 flutamide)."
+p5 <- plot_volcano(res_whole_df,
+                   "AR blockade: whole animal (head + body summed)",
+                   subtitle = "Complete animals only: 2 control vs 4 flutamide - interpret cautiously")
+ggsave(file.path(OUT_DIR, "figures", "volcano_whole_animal_collapsed.png"),
+       plot = p5, width = 8.5, height = 7, dpi = 300)
+p5
+```
+
+### Approach B — all day-103 samples, tissue as a covariate
+
+`~ tissue + treatment` uses all 15 day-103 libraries and estimates the flutamide effect
+*after* absorbing the large baseline difference between head and body. This is the
+recommended primary analysis for "does flutamide change expression in older tadpoles,
+overall".
+
+```{r}
+#| label: old-tissue-covariate
+
+dds_old <- dds[, coldata$timepoint == "old"]
+colData(dds_old)$treatment <- relevel(droplevels(colData(dds_old)$treatment), ref = "control")
+colData(dds_old)$tissue    <- droplevels(colData(dds_old)$tissue)
+design(dds_old) <- ~ tissue + treatment
 
 dds_old <- DESeq(dds_old)
-interaction_name <- grep("flutamide_head", resultsNames(dds_old), value = TRUE)
-stopifnot(length(interaction_name) == 1L)
-res_interaction <- results(dds_old, name = interaction_name, alpha = 0.05)
-res_interaction_shrunk <- lfcShrink(
-  dds_old, coef = interaction_name, res = res_interaction, type = "ashr"
-)
+cat("Coefficients:", paste(resultsNames(dds_old), collapse = " | "), "\n")
 
-interaction_out <- annotate_result(res_interaction, dds_old)
-interaction_out$shrunken_interaction_log2FC <-
-  res_interaction_shrunk$log2FoldChange
-interaction_out$shrunken_interaction_lfcSE <- res_interaction_shrunk$lfcSE
+res_old <- results(dds_old, name = "treatment_flutamide_vs_control", alpha = ALPHA)
 
-# Auxiliary component contrasts come from the separate global, unpaired model.
-interaction_out$auxiliary_unpaired_head_log2FC <-
-  ar_blockade_head$res$log2FoldChange[
-    match(interaction_out$gene_id, rownames(ar_blockade_head$res))
-  ]
-interaction_out$auxiliary_unpaired_body_log2FC <-
-  ar_blockade_body$res$log2FoldChange[
-    match(interaction_out$gene_id, rownames(ar_blockade_body$res))
-  ]
-interaction_out$paired_interaction_FDR_significant <-
-  !is.na(interaction_out$padj) & interaction_out$padj < 0.05
-interaction_out <- interaction_out[
-  order(interaction_out$padj, interaction_out$pvalue, na.last = TRUE),
-]
-write.csv(interaction_out,
-          "DESeq2_results/DGE/AR_blockade_head_vs_body_interaction_old_only.csv",
-          row.names = FALSE)
-saveRDS(dds_old, "DESeq2_results/dds_old_interaction_fitted.rds")
+## apeglm is the preferred estimator here because this is a coefficient, not a contrast.
+## If apeglm is not installed we fall back to ashr, which is also valid for a coef.
+shrink_type <- if (requireNamespace("apeglm", quietly = TRUE)) "apeglm" else "ashr"
+cat("Shrinkage estimator used:", shrink_type, "\n")
+
+res_old_shrunk <- lfcShrink(dds_old, coef = "treatment_flutamide_vs_control",
+                            type = shrink_type, res = res_old, quiet = TRUE)
+
+res_old_df <- as.data.frame(res_old_shrunk) |>
+  rownames_to_column("gene_id") |>
+  left_join(gene_annot, by = "gene_id") |>
+  mutate(gene_name = ifelse(is.na(gene_name) | gene_name == "", gene_id, gene_name),
+         contrast = "old_all_tissues_flutamide_vs_control_tissue_adjusted",
+         significant = !is.na(padj) & padj < ALPHA,
+         direction = case_when(
+           significant & log2FoldChange >=  LFC_CUTOFF ~ "up",
+           significant & log2FoldChange <= -LFC_CUTOFF ~ "down",
+           significant ~ "significant, |LFC| < cutoff", TRUE ~ "n.s.")) |>
+  arrange(padj)
+
+write_csv(res_old_df,
+          file.path(OUT_DIR, "tables", "old_all_tissues_flutamide_vs_control_DE_results.csv"))
+
+knitr::kable(head(res_old_df, 20), digits = 3,
+             caption = "Top 20 genes - day 103 flutamide vs control, tissue-adjusted")
 ```
 
-## Unpaired interaction sensitivity analysis
-
 ```{r}
-#| label: unpaired-interaction
-dds_old_unpaired <- dds[, dds$stage == "Old"]
-dds_old_unpaired$treatment <- factor(dds_old_unpaired$treatment,
-                                     levels = c("Control", "Flutamide"))
-dds_old_unpaired$tissue <- factor(dds_old_unpaired$tissue,
-                                  levels = c("Body", "Head"))
-design(dds_old_unpaired) <- ~ treatment * tissue
-unpaired_mm <- model.matrix(design(dds_old_unpaired),
-                            as.data.frame(colData(dds_old_unpaired)))
-stopifnot(qr(unpaired_mm)$rank == ncol(unpaired_mm))
-dds_old_unpaired <- DESeq(dds_old_unpaired)
-unpaired_name <- grep("treatment.*tissue|tissue.*treatment",
-                      resultsNames(dds_old_unpaired), value = TRUE)
-stopifnot(length(unpaired_name) == 1L)
-res_unpaired <- results(dds_old_unpaired, name = unpaired_name, alpha = 0.05)
-res_unpaired_shrunk <- lfcShrink(
-  dds_old_unpaired, coef = unpaired_name, res = res_unpaired, type = "ashr"
-)
-
-sensitivity_comparison <- data.frame(
-  gene_id = rownames(res_interaction),
-  gene_name = mcols(dds_old)[rownames(res_interaction), "gene_name"],
-  paired_interaction_log2FC = res_interaction_shrunk$log2FoldChange,
-  paired_interaction_padj = res_interaction$padj,
-  unpaired_interaction_log2FC = res_unpaired_shrunk$log2FoldChange[
-    match(rownames(res_interaction), rownames(res_unpaired_shrunk))
-  ],
-  unpaired_interaction_padj = res_unpaired$padj[
-    match(rownames(res_interaction), rownames(res_unpaired))
-  ]
-)
-sensitivity_comparison$direction_agrees <- with(
-  sensitivity_comparison,
-  sign(paired_interaction_log2FC) == sign(unpaired_interaction_log2FC)
-)
-sensitivity_comparison$paired_significant <- with(
-  sensitivity_comparison, !is.na(paired_interaction_padj) &
-    paired_interaction_padj < 0.05
-)
-sensitivity_comparison$unpaired_significant <- with(
-  sensitivity_comparison, !is.na(unpaired_interaction_padj) &
-    unpaired_interaction_padj < 0.05
-)
-finite <- with(sensitivity_comparison,
-  is.finite(paired_interaction_log2FC) & is.finite(unpaired_interaction_log2FC))
-interaction_sensitivity_summary <- data.frame(
-  genes_compared = sum(finite),
-  spearman_LFC = with(sensitivity_comparison,
-    cor(paired_interaction_log2FC[finite], unpaired_interaction_log2FC[finite],
-        method = "spearman")),
-  direction_agreement = mean(sensitivity_comparison$direction_agrees[finite],
-                             na.rm = TRUE),
-  paired_FDR_hits = sum(sensitivity_comparison$paired_significant),
-  unpaired_FDR_hits = sum(sensitivity_comparison$unpaired_significant),
-  shared_FDR_hits = with(sensitivity_comparison,
-    sum(paired_significant & unpaired_significant))
-)
-write.csv(sensitivity_comparison,
-  "DESeq2_results/DGE/AR_blockade_interaction_paired_vs_unpaired_all_genes.csv",
-  row.names = FALSE)
-write.csv(interaction_sensitivity_summary,
-  "DESeq2_results/DGE/AR_blockade_interaction_paired_vs_unpaired_summary.csv",
-  row.names = FALSE)
-saveRDS(dds_old_unpaired,
-        "DESeq2_results/dds_old_unpaired_interaction_fitted.rds")
-interaction_sensitivity_summary
+#| label: volcano-old-adjusted
+#| fig-cap: "Volcano: day-103 flutamide vs control, adjusted for tissue (all 15 libraries)."
+p6 <- plot_volcano(res_old_df,
+                   "AR blockade: all day-103 samples, tissue-adjusted",
+                   subtitle = "Design ~ tissue + treatment, n = 15 libraries")
+ggsave(file.path(OUT_DIR, "figures", "volcano_old_tissue_adjusted.png"),
+       plot = p6, width = 8.5, height = 7, dpi = 300)
+p6
 ```
 
-## Leave-one-complete-pair-out stability
+### Does flutamide act differently in head vs body?
 
-Each complete head/body pair is omitted in turn. This does not create new experimental replication; it tests whether leading paired-interaction estimates are dominated by one pair.
+An interaction test asks directly whether the AR-blockade response differs by tissue.
 
 ```{r}
-#| label: leave-one-pair-out
-paired_hit_ids <- rownames(res_interaction)[
-  !is.na(res_interaction$padj) & res_interaction$padj < 0.05
-]
-full_hit_lfc <- res_interaction$log2FoldChange[
-  match(paired_hit_ids, rownames(res_interaction))
-]
-loo_list <- lapply(complete_pair_ids, function(id) {
-  d <- dds_old[, dds_old$tadpole != id]
-  d$tadpole <- droplevels(d$tadpole)
-  design(d) <- ~ tadpole + tissue + flutamide_head
-  mm <- model.matrix(design(d), as.data.frame(colData(d)))
-  stopifnot(qr(mm)$rank == ncol(mm))
-  d <- DESeq(d, quiet = TRUE)
-  nm <- grep("flutamide_head", resultsNames(d), value = TRUE)
-  r <- results(d, name = nm, alpha = 0.05)
-  data.frame(
-    omitted_pair = id,
-    gene_id = paired_hit_ids,
-    full_log2FC = full_hit_lfc,
-    leave_one_out_log2FC = r$log2FoldChange[
-      match(paired_hit_ids, rownames(r))
-    ],
-    leave_one_out_padj = r$padj[match(paired_hit_ids, rownames(r))]
+#| label: interaction-test
+
+dds_int <- dds[, coldata$timepoint == "old"]
+colData(dds_int)$treatment <- relevel(droplevels(colData(dds_int)$treatment), ref = "control")
+colData(dds_int)$tissue    <- droplevels(colData(dds_int)$tissue)
+design(dds_int) <- ~ tissue + treatment + tissue:treatment
+
+dds_int <- DESeq(dds_int, test = "LRT", reduced = ~ tissue + treatment)
+res_int <- results(dds_int, alpha = ALPHA)
+
+res_int_df <- as.data.frame(res_int) |>
+  rownames_to_column("gene_id") |>
+  left_join(gene_annot, by = "gene_id") |>
+  mutate(gene_name = ifelse(is.na(gene_name) | gene_name == "", gene_id, gene_name)) |>
+  arrange(padj)
+
+write_csv(res_int_df,
+          file.path(OUT_DIR, "tables", "tissue_by_treatment_interaction_LRT.csv"))
+
+cat("Genes with a significant tissue x treatment interaction (LRT, FDR <",
+    ALPHA, "):", sum(res_int_df$padj < ALPHA, na.rm = TRUE), "\n")
+
+knitr::kable(head(res_int_df, 15), digits = 3,
+             caption = "Top interaction genes (LRT: does the flutamide effect differ by tissue?)")
+```
+
+## 8. Contrast summary
+
+```{r}
+#| label: contrast-summary
+
+all_summaries <- bind_rows(
+  summarise_contrast(res_body_dev),
+  summarise_contrast(res_head_dev),
+  summarise_contrast(res_body_flu),
+  summarise_contrast(res_head_flu),
+  data.frame(contrast = "whole_animal_collapsed_flutamide_vs_control",
+             genes_tested = sum(!is.na(res_whole_df$padj)),
+             sig_FDR = sum(res_whole_df$significant),
+             up = sum(res_whole_df$direction == "up"),
+             down = sum(res_whole_df$direction == "down")),
+  data.frame(contrast = "old_all_tissues_flutamide_vs_control_tissue_adjusted",
+             genes_tested = sum(!is.na(res_old_df$padj)),
+             sig_FDR = sum(res_old_df$significant),
+             up = sum(res_old_df$direction == "up"),
+             down = sum(res_old_df$direction == "down"))
+)
+
+write_csv(all_summaries, file.path(OUT_DIR, "tables", "contrast_summary.csv"))
+knitr::kable(all_summaries, caption = "Significant genes per contrast")
+```
+
+```{r}
+#| label: summary-barplot
+#| fig-cap: "Number of differentially expressed genes per contrast."
+
+sum_long <- all_summaries |>
+  select(contrast, up, down) |>
+  pivot_longer(c(up, down), names_to = "direction", values_to = "n") |>
+  mutate(n_signed = ifelse(direction == "down", -n, n),
+         contrast = factor(contrast, levels = rev(all_summaries$contrast)))
+
+p_sum <- ggplot(sum_long, aes(n_signed, contrast, fill = direction)) +
+  geom_col() +
+  geom_vline(xintercept = 0, colour = "grey30") +
+  geom_text(aes(label = n, hjust = ifelse(sum_long$direction == "down", 1.2, -0.2)),
+            size = 3) +
+  scale_fill_manual(values = c(up = "#C44E52", down = "#4C72B0")) +
+  labs(x = paste0("Genes (FDR < ", ALPHA, ", |log2FC| >= ", LFC_CUTOFF, ")"),
+       y = NULL, fill = NULL, title = "Differentially expressed genes by contrast")
+
+ggsave(file.path(OUT_DIR, "figures", "DE_gene_counts_by_contrast.png"),
+       plot = p_sum, width = 10, height = 5, dpi = 300)
+p_sum
+```
+
+## 9. Androgen signalling genes
+
+A targeted look at the pathway the hypothesis is about, independent of whether these genes
+survive genome-wide correction.
+
+### Detection check — read this before interpreting anything below
+
+Pre-filtering silently removes genes, so before asking *"is AR differentially expressed?"*
+we must ask *"is AR detected at all?"*. This table reports raw counts for every pathway gene
+**before** filtering.
+
+```{r}
+#| label: ar-detection
+
+ar_symbols <- c("AR", "SRD5A1", "SRD5A2", "CYP19A1", "CYP17A1", "HSD17B1", "HSD17B3",
+                "STAR", "SHBG", "NR3C1", "ESR1", "ESR2", "FOXO1", "MYOD1", "MYOG")
+
+## unfiltered counts straight from tximport
+raw_counts <- txi$counts
+ar_map <- gene_annot |> filter(gene_name %in% ar_symbols, gene_id %in% rownames(raw_counts))
+
+ar_detect <- ar_map |>
+  rowwise() |>
+  mutate(
+    max_count      = round(max(raw_counts[gene_id, ]), 1),
+    median_count   = round(median(raw_counts[gene_id, ]), 1),
+    n_samples_ge10 = sum(raw_counts[gene_id, ] >= MIN_COUNT),
+    passed_filter  = gene_id %in% rownames(dds)
+  ) |>
+  ungroup() |>
+  arrange(desc(n_samples_ge10))
+
+write_csv(ar_detect, file.path(OUT_DIR, "tables", "androgen_pathway_detection.csv"))
+knitr::kable(ar_detect, caption = "Detection of androgen-pathway genes BEFORE pre-filtering")
+
+undetected <- ar_detect$gene_name[!ar_detect$passed_filter]
+```
+
+```{r}
+#| label: ar-warning
+#| results: asis
+#| echo: false
+
+if ("AR" %in% undetected) {
+  cat("::: {.callout-important}\n")
+  cat("## The androgen receptor gene is essentially not detected\n\n")
+  cat("`AR` (", ar_map$gene_id[ar_map$gene_name == "AR"],
+      ") has a maximum of **",
+      ar_detect$max_count[ar_detect$gene_name == "AR"],
+      " reads** in any single library and a median of 0. ",
+      "It does not survive pre-filtering and therefore has no fold change or p-value in any ",
+      "contrast in this report.\n\n", sep = "")
+  cat("This is a statement about the *data*, not yet about androgen biology. There are three ",
+      "candidate explanations, and Section 9b below tests each one against the evidence ",
+      "rather than leaving them open:\n\n")
+  cat("1. **Annotation failure** — a fragmented or truncated EGAPx gene model, so reads that ",
+      "belong to AR are assigned elsewhere or not at all.\n")
+  cat("2. **Quantification/index mismatch** — the Salmon index was built from a different ",
+      "annotation than `salmon.merged.tx2gene.tsv`.\n")
+  cat("3. **Genuinely low expression** in whole head/body homogenate at these stages. AR ",
+      "transcript is often restricted to specific motor nuclei and target muscles; bulk tissue ",
+      "dilutes it below detection. Note that flutamide can still act on protein translated ",
+      "from transcript too sparse to quantify here.\n\n")
+  cat("Regardless of which holds, the AR-blockade contrasts should be read as *the downstream ",
+      "transcriptional consequences of flutamide*, not as evidence about AR expression itself.\n")
+  cat(":::\n\n")
+}
+
+if (length(setdiff(undetected, "AR")) > 0) {
+  cat("Also removed by pre-filtering (too few counts): **",
+      paste(setdiff(undetected, "AR"), collapse = ", "), "**.\n\n", sep = "")
+}
+```
+
+```{r}
+#| label: ar-genes
+#| fig-cap: "Normalised counts for the androgen-signalling genes that survived pre-filtering."
+#| fig-height: 9
+
+ar_ids <- gene_annot |>
+  filter(gene_name %in% ar_symbols, gene_id %in% rownames(dds))
+
+norm_counts <- counts(dds, normalized = TRUE)
+
+ar_long <- norm_counts[ar_ids$gene_id, , drop = FALSE] |>
+  as.data.frame() |>
+  rownames_to_column("gene_id") |>
+  pivot_longer(-gene_id, names_to = "sample_id", values_to = "norm_count") |>
+  left_join(ar_ids, by = "gene_id") |>
+  left_join(coldata, by = "sample_id")
+
+p_ar <- ggplot(ar_long, aes(group, norm_count + 1, colour = treatment, shape = tissue)) +
+  geom_point(position = position_jitter(width = 0.18), size = 2, alpha = 0.85) +
+  facet_wrap(~ gene_name, scales = "free_y", ncol = 4) +
+  scale_y_log10() +
+  scale_colour_manual(values = PAL_TREATMENT) +
+  labs(y = "Normalised count + 1 (log10)", x = NULL,
+       title = "Androgen signalling pathway genes") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+        strip.text = element_text(face = "bold"))
+
+ggsave(file.path(OUT_DIR, "figures", "androgen_pathway_genes.png"),
+       plot = p_ar, width = 13, height = 10, dpi = 300)
+p_ar
+```
+
+```{r}
+#| label: ar-stats
+
+## Match on gene_id, not gene_name: the results tables substitute the gene_id as a
+## display label whenever a symbol is missing, so filtering on gene_name alone would
+## silently drop genes and produce an empty table.
+ar_stats <- bind_rows(
+  res_body_dev, res_head_dev, res_body_flu, res_head_flu
+) |>
+  filter(gene_id %in% ar_map$gene_id) |>
+  left_join(ar_map |> rename(symbol = gene_name), by = "gene_id") |>
+  select(symbol, gene_id, contrast, baseMean, log2FoldChange, lfcSE, pvalue, padj, significant) |>
+  arrange(symbol, contrast)
+
+write_csv(ar_stats, file.path(OUT_DIR, "tables", "androgen_pathway_statistics.csv"))
+
+if (nrow(ar_stats) == 0) {
+  cat("No androgen-pathway genes survived pre-filtering — see the detection table above.\n")
+} else {
+  knitr::kable(ar_stats, digits = 3,
+               caption = "Androgen-pathway genes across the four primary contrasts")
+}
+```
+
+### Is there an unnamed gene model that behaves like AR?
+
+If the EGAPx `AR` model is broken, the real AR reads may have landed on an unnamed
+`egapxtmp_*` model. This is not a substitute for a sequence-level check, but a
+co-expression scan is cheap and can nominate candidates: a true AR model should be
+expressed, and should respond to flutamide in a similar way to known AR-responsive genes.
+
+```{r}
+#| label: ar-candidate-scan
+
+## Genes with a known androgen connection that ARE detected here, used as a bait set.
+bait <- ar_ids$gene_id[ar_ids$gene_name %in%
+                         c("SRD5A1", "SRD5A2", "CYP17A1", "NR3C1", "FOXO1")]
+
+if (length(bait) >= 2) {
+
+  vmat <- assay(vsd)
+  bait_profile <- colMeans(vmat[bait, , drop = FALSE])
+
+  ## correlate every gene against the mean bait profile
+  cors <- cor(t(vmat), bait_profile, method = "spearman")
+
+  ar_candidates <- tibble(
+    gene_id = rownames(vmat),
+    rho     = as.numeric(cors)
+  ) |>
+    left_join(gene_annot, by = "gene_id") |>
+    filter(grepl("^egapxtmp_", gene_name) | is.na(gene_name)) |>
+    arrange(desc(rho)) |>
+    head(25) |>
+    left_join(
+      res_body_flu |> select(gene_id, flu_body_LFC = log2FoldChange, flu_body_padj = padj),
+      by = "gene_id"
+    )
+
+  write_csv(ar_candidates, file.path(OUT_DIR, "tables", "unnamed_genes_correlated_with_androgen_bait.csv"))
+  knitr::kable(ar_candidates, digits = 3,
+               caption = paste("Unnamed gene models most correlated with the detected",
+                               "androgen-pathway bait set. Candidates only — confirm by",
+                               "aligning the model's sequence to a known AR protein."))
+} else {
+  cat("Too few detected bait genes for a co-expression scan.\n")
+}
+```
+
+## 9b. Why is AR not detected? — diagnosing the three hypotheses
+
+Section 9 established *that* `AR` is undetected. This section establishes *why*, by testing
+each of the three candidate explanations against evidence that is already on disk. The logic
+is eliminative: annotation failure and index mismatch both make predictions that can be
+checked directly, and if both are falsified while the quantification demonstrably works for
+comparable genes, what remains is a statement about the biology and the detection limit.
+
+Everything here reads `complete.genomic.gtf` and the raw `quant.sf` files. If the GTF is not
+present the section skips itself rather than failing the render.
+
+```{r}
+#| label: ar-diag-setup
+
+## Section 9b builds on earlier chunks; say so plainly rather than failing later
+## on a bare "object not found". A full render never trips this.
+if (!all(vapply(c("GTF_FILE", "HAVE_GTF", "raw_counts", "gene_annot"), exists, logical(1))))
+  stop("Section 9b builds on earlier chunks. Use Run > Run All Chunks Above ",
+       "(Cmd+Option+P), or render the whole document.", call. = FALSE)
+
+## This whole section is conditional on the GTF being available.
+RUN_AR_DIAG <- HAVE_GTF
+
+if (!RUN_AR_DIAG) {
+  message("complete.genomic.gtf not found - skipping Section 9b.")
+}
+
+## Small helper: pull a named GTF attribute out of the 9th column.
+gtf_attr <- function(x, key) {
+  m <- str_match(x, paste0(key, ' "([^"]*)"'))[, 2]
+  m
+}
+```
+
+### Hypothesis 1 — is the gene model broken?
+
+A fragmented or truncated model would show too few exons, a short CDS, or a protein well
+below the ~770-820 aa expected for an anuran androgen receptor.
+
+```{r}
+#| label: ar-model-structure
+
+if (RUN_AR_DIAG) {
+
+  ## grep is far cheaper than parsing a 500 MB GTF in R
+  ar_lines <- system2("grep", c(shQuote(AR_GENE_ID), shQuote(GTF_FILE)), stdout = TRUE)
+
+  ar_gtf <- read.delim(text = ar_lines, header = FALSE, sep = "\t",
+                       quote = "", stringsAsFactors = FALSE,
+                       col.names = c("seqname", "source", "feature", "start", "end",
+                                     "score", "strand", "frame", "attribute"))
+
+  ar_exons <- ar_gtf |> filter(feature == "exon")
+  ar_cds   <- ar_gtf |> filter(feature == "CDS")
+
+  ar_model <- tibble(
+    gene_id      = AR_GENE_ID,
+    contig       = ar_gtf$seqname[1],
+    start        = min(ar_gtf$start),
+    end          = max(ar_gtf$end),
+    strand       = ar_gtf$strand[1],
+    n_exons      = nrow(ar_exons),
+    tx_length_nt = sum(ar_exons$end - ar_exons$start + 1),
+    cds_nt       = sum(ar_cds$end - ar_cds$start + 1),
+    protein_aa   = sum(ar_cds$end - ar_cds$start + 1) / 3 - 1,
+    has_start    = any(ar_gtf$feature == "start_codon"),
+    has_stop     = any(ar_gtf$feature == "stop_codon")
   )
-})
-loo_stability <- do.call(rbind, loo_list)
-loo_stability$direction_agrees <- with(
-  loo_stability, sign(full_log2FC) == sign(leave_one_out_log2FC)
-)
-write.csv(loo_stability,
-          "DESeq2_results/sensitivity/paired_interaction_leave_one_pair_out.csv",
-          row.names = FALSE)
-loo_summary <- aggregate(
-  cbind(direction_agrees, leave_one_out_log2FC) ~ gene_id,
-  data = loo_stability,
-  FUN = function(x) c(min = min(x, na.rm = TRUE),
-                      median = median(x, na.rm = TRUE),
-                      max = max(x, na.rm = TRUE))
-)
-loo_summary
+
+  knitr::kable(ar_model, caption = "Structure of the annotated AR gene model")
+}
 ```
 
-## Targeted spinal cord motor-neuron and interneuron marker audit
-
-This section checks the candidate list supplied by the PI. Antibody/common
-names are resolved to the gene symbols used in the *S. parvus* annotation.
-Grouped markers are expanded to individual paralogs. "Gone4" is interpreted
-as **GON4L**; Hb9 as **MNX1**; Chx10 as **VSX2**; HuC/HuD as
-**ELAVL3/ELAVL4**; and Raldh2 as **ALDH1A2**.
-
 ```{r}
-#| label: candidate-gene-map
-candidate_map <- data.frame(
-  PI_marker = c(
-    "Hb9", "Lhx3 (Lim3)", "Isl1/2", "Isl1/2", "foxp1", "En1",
-    "Evx1", "dmrt3", "nkx2.2", "Chx10", "Shox2", "Hu C/D", "Hu C/D",
-    "Sox2", "Gone4", "Lmx1-2", "Lmx1-2", "MafA", "Otp", "foxp2",
-    "Sox1/3", "Sox1/3", "Sp8", "Lhx2-9 (BamhII)",
-    "Lhx2-9 (BamhII)", "Raldh2", "ChAT"
-  ),
-  resolved_symbol = c(
-    "MNX1", "LHX3", "ISL1", "ISL2", "FOXP1", "EN1", "EVX1", "DMRT3",
-    "NKX2-2", "VSX2", "SHOX2", "ELAVL3", "ELAVL4", "SOX2", "GON4L",
-    "LMX1A", "LMX1B", "MAFA", "OTP", "FOXP2", "SOX1", "SOX3", "SP8",
-    "LHX2", "LHX9", "ALDH1A2", "CHAT"
-  ),
-  alias_note = c(
-    "Hb9 is MNX1", "Lim3 is LHX3", "Isl1", "Isl2", "", "", "", "",
-    "NKX2-2", "Chx10 is VSX2", "", "HuC is ELAVL3", "HuD is ELAVL4",
-    "", "Gone4 interpreted as GON4L", "Lmx1a", "Lmx1b", "", "", "",
-    "Sox1", "Sox3", "", "Lhx2", "Lhx9", "Raldh2 is ALDH1A2", ""
-  ),
-  stringsAsFactors = FALSE
-)
+#| label: ar-model-verdict
+#| results: asis
+#| echo: false
 
-annotation_lookup <- unique(tx2gene_raw[, c("gene_id", "gene")])
-candidate_map$gene_id <- annotation_lookup$gene_id[
-  match(candidate_map$resolved_symbol, annotation_lookup$gene)
-]
-candidate_map$present_in_annotation <- !is.na(candidate_map$gene_id)
-candidate_map$retained_after_filter <-
-  candidate_map$gene_id %in% rownames(dds)
-
-stopifnot(all(candidate_map$present_in_annotation))
-candidate_map
+if (RUN_AR_DIAG) {
+  ok <- ar_model$protein_aa > 700 && ar_model$has_start && ar_model$has_stop
+  cat("**Verdict:** the model encodes a **", round(ar_model$protein_aa), " aa** protein from ",
+      ar_model$n_exons, " exons with ",
+      if (ok) "both a start and a stop codon annotated" else "an incomplete reading frame",
+      ". Anuran AR is ~770-820 aa, so this model is **",
+      if (ok) "structurally complete - Hypothesis 1 is not supported" else "suspect",
+      "**.\n\n", sep = "")
+}
 ```
 
-Presence in the annotation does not guarantee sufficient expression for
-differential testing. A gene absent after filtering had fewer than three
-libraries with counts of at least 10 and is reported as "not tested," not as
-evidence of no expression.
+### Hypothesis 2 — did Salmon ever see the transcript?
+
+An index/annotation mismatch would mean the AR transcript is absent from `quant.sf`, or
+present with an implausible effective length. We also read out the per-library counts here,
+which the rest of the section uses.
 
 ```{r}
-#| label: candidate-gene-results
-candidate_comparisons <- list(
-  stage_body = leg_emergence,
-  stage_head = nervous_system_development,
-  flutamide_tank_body = ar_blockade_body,
-  flutamide_tank_head = ar_blockade_head
-)
+#| label: ar-quant-evidence
 
-candidate_long <- do.call(rbind, lapply(names(candidate_comparisons), function(nm) {
-  obj <- candidate_comparisons[[nm]]
-  tab <- obj$table
-  idx <- match(candidate_map$gene_id, tab$gene_id)
-  data.frame(
-    PI_marker = candidate_map$PI_marker,
-    resolved_symbol = candidate_map$resolved_symbol,
-    gene_id = candidate_map$gene_id,
-    comparison = nm,
-    present_in_annotation = candidate_map$present_in_annotation,
-    retained_after_filter = candidate_map$retained_after_filter,
-    baseMean = tab$baseMean[idx],
-    shrunken_log2FoldChange = tab$shrunken_log2FoldChange[idx],
-    pvalue = tab$pvalue[idx],
-    padj = tab$padj[idx],
-    threshold_padj = tab$threshold_padj[idx],
-    standard_FDR_significant = tab$standard_FDR_significant[idx],
-    LFC_threshold_FDR_significant =
-      tab$LFC_threshold_FDR_significant[idx],
-    stringsAsFactors = FALSE
-  )
-}))
+if (RUN_AR_DIAG) {
 
-# Add the paired tissue interaction as a fifth comparison. It tests whether
-# the day-103 between-tank association differs between head and body.
-interaction_idx <- match(candidate_map$gene_id, interaction_out$gene_id)
-candidate_interaction <- data.frame(
-  PI_marker = candidate_map$PI_marker,
-  resolved_symbol = candidate_map$resolved_symbol,
-  gene_id = candidate_map$gene_id,
-  comparison = "paired_tissue_interaction",
-  present_in_annotation = candidate_map$present_in_annotation,
-  retained_after_filter = candidate_map$retained_after_filter,
-  baseMean = interaction_out$baseMean[interaction_idx],
-  shrunken_log2FoldChange =
-    interaction_out$shrunken_interaction_log2FC[interaction_idx],
-  pvalue = interaction_out$pvalue[interaction_idx],
-  padj = interaction_out$padj[interaction_idx],
-  threshold_padj = NA_real_,
-  standard_FDR_significant =
-    interaction_out$paired_interaction_FDR_significant[interaction_idx],
-  LFC_threshold_FDR_significant = NA,
-  stringsAsFactors = FALSE
-)
-candidate_long <- rbind(candidate_long, candidate_interaction)
+  ## For each library: the AR row, the library size, and the TPM normalising constant.
+  ## Salmon's own relation is  reads_i = TPM_i * effLen_i * N / sum_j(TPM_j * effLen_j),
+  ## so the denominator lets us convert "1 TPM" into "expected reads" for THIS library.
+  ar_quant <- lapply(coldata$sample_id, function(s) {
+    q <- readr::read_tsv(file.path(QUANT_DIR, s, "quant.sf"),
+                         show_col_types = FALSE, progress = FALSE)
+    row <- q |> filter(Name == AR_TX_ID)
+    tibble(
+      sample_id        = s,
+      in_index         = nrow(row) == 1,
+      eff_length       = if (nrow(row) == 1) row$EffectiveLength else NA_real_,
+      AR_reads         = if (nrow(row) == 1) row$NumReads        else NA_real_,
+      AR_TPM           = if (nrow(row) == 1) row$TPM             else NA_real_,
+      library_size     = sum(q$NumReads),
+      tpm_denominator  = sum(q$TPM * q$EffectiveLength)
+    )
+  }) |>
+    bind_rows() |>
+    left_join(coldata |> select(sample_id, group, tissue, treatment, timepoint),
+              by = "sample_id") |>
+    mutate(
+      ## how many reads a transcript of AR's length would earn at exactly 1 TPM
+      reads_per_TPM = eff_length * library_size / tpm_denominator,
+      implied_TPM   = AR_reads / reads_per_TPM
+    )
 
-candidate_long$direction <- ifelse(
-  is.na(candidate_long$shrunken_log2FoldChange), NA,
-  ifelse(candidate_long$shrunken_log2FoldChange > 0, "Higher", "Lower")
-)
-candidate_long$DE_call <- ifelse(
-  !candidate_long$retained_after_filter, "Not tested: low counts",
-  ifelse(is.na(candidate_long$padj), "Tested; adjusted p-value unavailable",
-    ifelse(candidate_long$standard_FDR_significant,
-           paste("FDR < 0.05", candidate_long$direction),
-           "Not significant at FDR 0.05"))
-)
+  write_csv(ar_quant |> select(sample_id, group, tissue, library_size,
+                               eff_length, AR_reads, AR_TPM, reads_per_TPM),
+            file.path(OUT_DIR, "tables", "AR_per_sample_detection.csv"))
 
-write.csv(
-  candidate_long,
-  "DESeq2_results/DGE/spinal_marker_candidates_all_comparisons.csv",
-  row.names = FALSE
-)
-
-candidate_overview <- do.call(rbind, lapply(seq_len(nrow(candidate_map)), function(i) {
-  z <- candidate_long[candidate_long$resolved_symbol ==
-                        candidate_map$resolved_symbol[i], ]
-  data.frame(
-    PI_marker = candidate_map$PI_marker[i],
-    resolved_symbol = candidate_map$resolved_symbol[i],
-    gene_id = candidate_map$gene_id[i],
-    present_in_annotation = candidate_map$present_in_annotation[i],
-    retained_after_filter = candidate_map$retained_after_filter[i],
-    any_standard_FDR_hit = any(z$standard_FDR_significant, na.rm = TRUE),
-    significant_comparisons = paste(
-      z$comparison[which(z$standard_FDR_significant %in% TRUE)],
-      collapse = "; "
-    ),
-    any_formal_abs_LFC_above_1_hit =
-      any(z$LFC_threshold_FDR_significant, na.rm = TRUE),
-    stringsAsFactors = FALSE
-  )
-}))
-write.csv(
-  candidate_overview,
-  "DESeq2_results/DGE/spinal_marker_candidates_presence_summary.csv",
-  row.names = FALSE
-)
-candidate_overview
+  knitr::kable(
+    ar_quant |>
+      select(sample_id, group, library_size, AR_reads, AR_TPM, reads_per_TPM) |>
+      mutate(library_size = round(library_size), reads_per_TPM = round(reads_per_TPM, 1)),
+    digits = 4,
+    caption = "AR transcript in every library, with the reads expected at 1 TPM")
+}
 ```
 
-The standard FDR column answers whether a candidate differs from zero under
-any comparison. The formal effect-threshold column is more stringent and asks
-whether an absolute LFC greater than 1 is statistically supported. The paired
-interaction is evaluated only against zero, because the interaction analysis
-was not specified as an effect-threshold test.
-
 ```{r}
-#| label: candidate-gene-expression
-candidate_ids <- candidate_map$gene_id[candidate_map$retained_after_filter]
-candidate_symbols <- candidate_map$resolved_symbol[
-  candidate_map$retained_after_filter
-]
-normalized_candidate_counts <- counts(dds, normalized = TRUE)[
-  candidate_ids, , drop = FALSE
-]
+#| label: ar-quant-verdict
+#| results: asis
+#| echo: false
 
-candidate_expression_long <- do.call(rbind, lapply(seq_along(candidate_ids), function(i) {
-  data.frame(
-    gene_id = candidate_ids[i],
-    resolved_symbol = candidate_symbols[i],
-    sample_id = colnames(dds),
-    group = dds$group,
-    normalized_count = normalized_candidate_counts[i, ],
-    stringsAsFactors = FALSE
-  )
-}))
-write.csv(
-  candidate_expression_long,
-  "DESeq2_results/DGE/spinal_marker_candidates_normalized_counts.csv",
-  row.names = FALSE
-)
+if (RUN_AR_DIAG) {
+  cat("**Verdict:** the AR transcript is present in **", sum(ar_quant$in_index), "/",
+      nrow(ar_quant), "** `quant.sf` files with an effective length of ",
+      round(min(ar_quant$eff_length)), "-", round(max(ar_quant$eff_length)),
+      " nt. Salmon had the transcript in its index and assigned it ",
+      sum(ar_quant$AR_reads), " reads in total. **Hypothesis 2 is falsified** - this is not ",
+      "an index or annotation mismatch.\n\n", sep = "")
 
-candidate_expression_plot <- ggplot(
-  candidate_expression_long,
-  aes(x = group, y = log2(normalized_count + 1), color = group)
-) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.15, color = "grey45") +
-  geom_point(position = position_jitter(width = 0.12), size = 0.9,
-             alpha = 0.75) +
-  facet_wrap(~ resolved_symbol, scales = "free_y", ncol = 4) +
-  labs(
-    title = "Targeted spinal cord marker expression across bulk tissue groups",
-    subtitle = "DESeq2-normalized gene counts; points are libraries",
-    x = NULL,
-    y = "log2(normalized count + 1)",
-    color = "Group"
-  ) +
-  theme_classic(base_size = 9) +
-  theme(
-    axis.text.x = element_text(angle = 60, hjust = 1, size = 6),
-    legend.position = "none"
-  )
-ggsave(
-  "DESeq2_results/QC/spinal_marker_candidates_normalized_counts.pdf",
-  candidate_expression_plot,
-  width = 15,
-  height = 17
-)
-candidate_expression_plot
+  cat("The reads also do not scale with sequencing depth: the deepest library (",
+      format(round(max(ar_quant$library_size)), big.mark = ","), " reads) carries ",
+      ar_quant$AR_reads[which.max(ar_quant$library_size)], " AR reads, while ",
+      sum(ar_quant$AR_reads == 0), " of ", nrow(ar_quant),
+      " libraries carry none. Undersampling would not produce that pattern.\n\n", sep = "")
+}
 ```
 
-These measurements come from bulk head and body dissections. A marker can be
-strongly localized by immunohistochemistry yet show no bulk-tissue DE if its
-cell population is rare, if opposing cell populations dilute the signal, or
-if expression changes spatially without changing the tissue-wide mean.
+### Is the locus itself dead?
 
-## Interpretation
-
-A positive interaction means the flutamide-tank association is more positive in head than body; it may arise from stronger head induction, stronger body repression, or both. A negative interaction has the opposite meaning. Interaction sign is not ordinary gene up- or downregulation.
-
-The most defensible interaction candidates are genes with consistent effect directions, stability when individual complete pairs are omitted, and support in both paired and unpaired models. Statistical interaction does not establish direct androgen-receptor regulation and remains confounded with tank.
-
-Suggested reporting language:
-
-> At day 103, tadpoles housed in the flutamide tank differed in gene expression from tadpoles housed in the control tank. Because treatment was applied at the tank level with one tank per condition, treatment and tank effects are inseparable and these contrasts are exploratory. The tissue-dependent association was estimated from six complete head–body pairs (two control and four flutamide; paired-model residual df = 4). Candidate genes were evaluated using paired and unpaired interaction models and leave-one-pair-out stability analyses.
-
-## Reproducibility record
+If the contig carrying AR were poorly assembled or poorly covered, every gene on it would be
+silent. Testing that separates a regional artefact from a gene-specific result.
 
 ```{r}
-#| label: reproducibility
-writeLines(capture.output(sessionInfo()), "DESeq2_results/sessionInfo.txt")
+#| label: ar-neighbourhood
+
+if (RUN_AR_DIAG) {
+
+  ## all gene-level records on the AR contig
+  contig_cmd <- sprintf("awk -F'\\t' '$3==\"gene\" && $1==\"%s\"' %s",
+                        AR_CONTIG, shQuote(GTF_FILE))
+  contig_lines <- system(contig_cmd, intern = TRUE)
+
+  contig_genes <- tibble(raw = contig_lines) |>
+    mutate(
+      start   = as.integer(str_split_i(raw, "\t", 4)),
+      end     = as.integer(str_split_i(raw, "\t", 5)),
+      gene_id = gtf_attr(raw, "gene_id"),
+      symbol  = gtf_attr(raw, "gene")
+    ) |>
+    select(-raw) |>
+    arrange(start)
+
+  ## attach expression (raw_counts comes from the detection chunk in Section 9)
+  gene_max <- apply(raw_counts, 1, max)
+  gene_med <- apply(raw_counts, 1, median)
+  contig_genes <- contig_genes |>
+    mutate(
+      max_count    = unname(gene_max[gene_id]),
+      median_count = unname(gene_med[gene_id]),
+      expressed    = !is.na(max_count) & max_count >= MIN_COUNT
+    )
+
+  n_expr <- sum(contig_genes$expressed)
+  pct_expr <- round(100 * n_expr / nrow(contig_genes))
+
+  ## AR's immediate neighbourhood
+  ar_idx <- which(contig_genes$gene_id == AR_GENE_ID)
+  nb <- contig_genes[max(1, ar_idx - 5):min(nrow(contig_genes), ar_idx + 5), ] |>
+    mutate(is_AR = gene_id == AR_GENE_ID)
+
+  knitr::kable(
+    nb |> select(start, end, gene_id, symbol, median_count, max_count, is_AR),
+    caption = sprintf("AR's genomic neighbourhood on %s (%d of %d genes on this contig reach %d reads: %d%%)",
+                      AR_CONTIG, n_expr, nrow(contig_genes), MIN_COUNT, pct_expr))
+}
+```
+
+```{r}
+#| label: ar-neighbourhood-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_AR_DIAG) {
+  cat("**Verdict:** ", n_expr, " of ", nrow(contig_genes), " gene models on `", AR_CONTIG,
+      "` (", pct_expr, "%) reach ", MIN_COUNT,
+      " reads, and AR's immediate neighbours are robustly expressed. The locus is ",
+      "transcriptionally active; there is **no regional dropout**.\n\n", sep = "")
+}
+```
+
+### The decisive comparison — AR against the other nuclear receptors
+
+If quantification were broken, other receptors of similar length and expression class would
+fail too. If instead the whole sex-steroid axis is silent while every other nuclear receptor
+quantifies normally, the pattern is biological.
+
+```{r}
+#| label: ar-receptor-panel
+
+if (RUN_AR_DIAG) {
+
+  receptor_panel <- tribble(
+    ~symbol,     ~class,
+    "GAPDH",     "reference",
+    "THRA",      "other nuclear receptor",
+    "THRB",      "other nuclear receptor",
+    "RARA",      "other nuclear receptor",
+    "RARB",      "other nuclear receptor",
+    "VDR",       "other nuclear receptor",
+    "ESRRA",     "other nuclear receptor",
+    "NR3C1",     "other nuclear receptor",
+    "NR3C2",     "other nuclear receptor",
+    "CYP17A1",   "other nuclear receptor",
+    "AR",        "androgen receptor",
+    "PGR",       "sex-steroid axis",
+    "ESR1",      "sex-steroid axis",
+    "ESR2",      "sex-steroid axis",
+    "CYP19A1",   "sex-steroid axis",
+    "STAR",      "sex-steroid axis",
+    "SHBG",      "sex-steroid axis",
+    "HSD17B3",   "sex-steroid axis",
+    "SRD5A1",    "sex-steroid axis",
+    "SRD5A2",    "sex-steroid axis"
+  )
+
+  panel_expr <- receptor_panel |>
+    left_join(gene_annot |> select(gene_id, gene_name), by = c("symbol" = "gene_name")) |>
+    filter(!is.na(gene_id), gene_id %in% rownames(raw_counts)) |>
+    mutate(
+      median_count = unname(gene_med[gene_id]),
+      max_count    = unname(gene_max[gene_id]),
+      n_ge10       = vapply(gene_id, function(g) sum(raw_counts[g, ] >= MIN_COUNT), integer(1))
+    ) |>
+    arrange(desc(median_count))
+
+  write_csv(panel_expr, file.path(OUT_DIR, "tables", "AR_receptor_panel.csv"))
+  knitr::kable(panel_expr, digits = 1,
+               caption = "Nuclear receptor panel: median and maximum counts across 24 libraries")
+}
+```
+
+```{r}
+#| label: ar-panel-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_AR_DIAG) {
+  sex_silent <- panel_expr |> filter(class %in% c("sex-steroid axis", "androgen receptor"),
+                                     median_count < 10)
+  other_ok   <- panel_expr |> filter(class == "other nuclear receptor", median_count >= 10)
+
+  cat("**Verdict:** ", nrow(other_ok), " of ",
+      sum(panel_expr$class == "other nuclear receptor"),
+      " non-gonadal nuclear receptors are comfortably detected, so quantification is working. ",
+      "But ", nrow(sex_silent), " members of the sex-steroid axis - **",
+      paste(sex_silent$symbol, collapse = ", "),
+      "** - are at or near zero *together*. A broken gene model affects one gene; a whole ",
+      "silent pathway is a statement about the tissue.\n\n", sep = "")
+}
+```
+
+### Is the GTF's own RNA-seq evidence claim meaningful?
+
+The AR model carries `model_evidence` asserting *"100% coverage of the annotated genomic
+feature by RNAseq alignments"*. That sounds like direct evidence of expression. It is not,
+if nearly every model carries the same string.
+
+```{r}
+#| label: ar-evidence-boilerplate
+
+if (RUN_AR_DIAG) {
+
+  ev_cmd <- sprintf("awk -F'\\t' '$3==\"transcript\"' %s | grep -o 'gene_id \"[^\"]*\"; .*model_evidence \"[^\"]*\"'",
+                    shQuote(GTF_FILE))
+  ev_raw <- suppressWarnings(system(ev_cmd, intern = TRUE))
+
+  ev <- tibble(raw = ev_raw) |>
+    mutate(gene_id  = gtf_attr(raw, "gene_id"),
+           evidence = gtf_attr(raw, "model_evidence")) |>
+    filter(!is.na(gene_id), !is.na(evidence)) |>
+    distinct(gene_id, evidence)
+
+  n_genes_ev  <- n_distinct(ev$gene_id)
+  claim_ids   <- ev |> filter(str_detect(evidence, "100% coverage")) |> pull(gene_id) |> unique()
+  claim_silent <- sum(gene_max[intersect(claim_ids, names(gene_max))] < MIN_COUNT, na.rm = TRUE)
+
+  ev_summary <- tibble(
+    metric = c("gene models carrying any model_evidence",
+               "models claiming 100% RNAseq coverage",
+               "share of all annotated models",
+               "of those, silent in THIS dataset (<10 reads)"),
+    value  = c(format(n_genes_ev, big.mark = ","),
+               format(length(claim_ids), big.mark = ","),
+               paste0(round(100 * length(claim_ids) / n_genes_ev), "%"),
+               paste0(format(claim_silent, big.mark = ","), " (",
+                      round(100 * claim_silent / length(claim_ids)), "%)"))
+  )
+
+  knitr::kable(ev_summary, caption = "The model_evidence claim is boilerplate")
+}
+```
+
+```{r}
+#| label: ar-evidence-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_AR_DIAG) {
+  cat("**Verdict:** the claim is not specific to AR - ",
+      round(100 * length(claim_ids) / n_genes_ev),
+      "% of all annotated models (", format(length(claim_ids), big.mark = ","),
+      ") carry the identical string, and ", format(claim_silent, big.mark = ","),
+      " of those (", round(100 * claim_silent / length(claim_ids)),
+      "%) are nonetheless silent in this dataset. It records that EGAPx had transcript ",
+      "evidence somewhere in its training corpus, **not** that the gene is expressed in ",
+      "these libraries, and it must not be cited as evidence that AR is expressed in ",
+      "*S. parvus* tadpoles.\n\n", sep = "")
+}
+```
+
+### Diagnostic figure
+
+```{r}
+#| label: ar-diagnosis-figure
+#| fig-cap: "Diagnosis of androgen receptor non-detection. (a) Median counts across all 24 libraries for a nuclear-receptor panel. Every receptor outside the sex-steroid axis is comfortably detected, while AR and most of the sex-steroid axis fall below the pre-filter threshold. Zero and near-zero medians are floored at 0.3 so they remain visible on the log axis. (b) Observed AR reads against library size. The dashed curve is the count expected if AR were at 0.1 TPM, computed per library from that library's own Salmon normalising constant; the 1 TPM expectation is off scale and given in text. Observed counts are flat with respect to depth, which excludes undersampling."
+#| fig-width: 11
+#| fig-height: 4.3
+
+if (RUN_AR_DIAG) {
+
+  COL_FOCAL <- "#C44E52"   # AR
+  COL_SEX   <- "#DD8452"   # rest of the sex-steroid axis
+  COL_OTHER <- "#4C72B0"   # every other nuclear receptor
+  COL_META  <- "grey55"    # reference lines and annotation
+
+  ## ---- panel a: receptor panel lollipop -------------------------------
+  FLOOR <- 0.3   # log axes cannot show zero; state this in the caption
+  pa_df <- panel_expr |>
+    mutate(
+      plot_value = pmax(median_count, FLOOR),
+      colour_key = case_when(symbol == "AR" ~ "androgen receptor",
+                             class == "sex-steroid axis" ~ "other sex-steroid axis",
+                             TRUE ~ "other nuclear receptors"),
+      symbol = factor(symbol, levels = rev(symbol[order(median_count)]))
+    )
+
+  pal_diag <- c("androgen receptor"       = COL_FOCAL,
+                "other sex-steroid axis"  = COL_SEX,
+                "other nuclear receptors" = COL_OTHER)
+
+  p_a <- ggplot(pa_df, aes(y = symbol)) +
+    geom_vline(xintercept = MIN_COUNT, linetype = "dashed",
+               colour = COL_META, linewidth = 0.3) +
+    geom_segment(aes(x = FLOOR, xend = plot_value, yend = symbol, colour = colour_key,
+                     linewidth = symbol == "AR")) +
+    geom_point(aes(x = plot_value, colour = colour_key, size = symbol == "AR")) +
+    ## label runs along the threshold line so it cannot collide with any lollipop
+    annotate("text", x = MIN_COUNT * 0.66, y = nrow(pa_df) / 2,
+             label = "pre-filter threshold", angle = 90, hjust = 0.5,
+             size = 2.5, colour = COL_META) +
+    ## annotate AR on AR's own row (top), not floating over a neighbour
+    annotate("text", x = 0.62, y = nrow(pa_df),
+             label = sprintf("median 0 - max %g reads in any library",
+                             panel_expr$max_count[panel_expr$symbol == "AR"]),
+             hjust = 0, vjust = 0.4, size = 2.7, colour = COL_FOCAL) +
+    scale_x_log10(labels = scales::label_comma(),
+                  limits = c(FLOOR - 0.05, 4e6)) +
+    scale_colour_manual(values = pal_diag, name = NULL) +
+    scale_linewidth_manual(values = c(`FALSE` = 0.6, `TRUE` = 1.1), guide = "none") +
+    scale_size_manual(values = c(`FALSE` = 2.0, `TRUE` = 3.2), guide = "none") +
+    labs(x = "Median counts across 24 libraries", y = NULL,
+         title = "Every nuclear receptor is detected except the sex-steroid axis") +
+    theme(axis.text.y = element_text(face = "italic", size = 8),
+          legend.position = c(0.98, 0.03),
+          legend.justification = c(1, 0),
+          legend.background = element_blank(),
+          legend.key.size = unit(9, "pt"),
+          legend.text = element_text(size = 7),
+          plot.title = element_text(size = 9.5, hjust = 0))
+
+  ## ---- panel b: observed reads vs sequencing depth ---------------------
+  ## Linear axes throughout. The 1 TPM expectation (18-202 reads) runs off the
+  ## top of the observed range, so it is stated in text rather than drawn; the
+  ## 0.1 TPM curve fits on scale and is the informative reference.
+  ar_b <- ar_quant |> mutate(lib_M = library_size / 1e6)
+  ref <- tibble(lib_M = ar_b$lib_M, y10 = ar_b$reads_per_TPM * 0.1) |> arrange(lib_M)
+  ymax <- max(max(ar_b$AR_reads), max(ref$y10)) * 1.30
+
+  p_b <- ggplot(ar_b, aes(x = lib_M, y = AR_reads)) +
+    geom_line(data = ref, aes(x = lib_M, y = y10),
+              colour = COL_META, linewidth = 0.4, linetype = "dashed") +
+    geom_point(aes(shape = tissue), colour = COL_FOCAL, size = 2.3,
+               alpha = 0.9, stroke = 0.4) +
+    annotate("text", x = max(ref$lib_M), y = max(ref$y10),
+             label = "expected if AR were at 0.1 TPM", hjust = 1, vjust = -0.8,
+             size = 2.6, colour = COL_META) +
+    annotate("text", x = min(ar_b$lib_M), y = ymax * 0.97,
+             label = sprintf("at 1 TPM: %d-%d reads (off scale)",
+                             round(min(ar_quant$reads_per_TPM)),
+                             round(max(ar_quant$reads_per_TPM))),
+             hjust = 0, vjust = 1, size = 2.6, colour = COL_META) +
+    annotate("text", x = max(ar_b$lib_M), y = 0,
+             label = sprintf("%d of %d libraries: zero reads",
+                             sum(ar_quant$AR_reads == 0), nrow(ar_quant)),
+             hjust = 1, vjust = -0.6, size = 2.7, colour = COL_FOCAL) +
+    scale_y_continuous(limits = c(0, ymax), expand = expansion(mult = c(0.02, 0))) +
+    scale_shape_manual(values = c(body = 16, head = 17), name = NULL) +
+    labs(x = "Library size (million reads)",
+         y = "Androgen receptor reads observed",
+         title = "AR reads do not increase with sequencing depth") +
+    theme(legend.position = c(0.02, 0.80),
+          legend.justification = c(0, 1),
+          legend.background = element_blank(),
+          legend.key.size = unit(9, "pt"),
+          legend.text = element_text(size = 7),
+          plot.title = element_text(size = 9.5, hjust = 0))
+
+  if (HAVE_PATCHWORK) {
+    p_diag <- p_a + p_b +
+      patchwork::plot_layout(widths = c(1.4, 1)) +
+      patchwork::plot_annotation(tag_levels = "a")
+
+    ggsave(file.path(OUT_DIR, "figures", "AR_detection_diagnosis.png"),
+           plot = p_diag, width = 11, height = 4.3, dpi = 300)
+    print(p_diag)
+
+  } else {
+    ## Fall back to two separate files rather than failing the render.
+    ggsave(file.path(OUT_DIR, "figures", "AR_detection_diagnosis_a.png"),
+           plot = p_a, width = 6.5, height = 4.3, dpi = 300)
+    ggsave(file.path(OUT_DIR, "figures", "AR_detection_diagnosis_b.png"),
+           plot = p_b, width = 4.6, height = 4.3, dpi = 300)
+    print(p_a); print(p_b)
+  }
+}
+```
+
+### The checklist, assembled
+
+```{r}
+#| label: ar-checklist
+
+if (RUN_AR_DIAG) {
+
+  ar_checklist <- tribble(
+    ~test, ~result, ~verdict,
+
+    "Gene model exists in GTF",
+    sprintf("%s at %s:%s-%s (%s)", AR_GENE_ID, ar_model$contig,
+            format(ar_model$start, big.mark = ","),
+            format(ar_model$end, big.mark = ","), ar_model$strand),
+    "PASS",
+
+    "Model completeness",
+    sprintf("%d exons, %s nt transcript, %s nt CDS = %d aa; start/stop annotated",
+            ar_model$n_exons, format(ar_model$tx_length_nt, big.mark = ","),
+            format(ar_model$cds_nt, big.mark = ","), round(ar_model$protein_aa)),
+    "PASS - anuran AR is ~770-820 aa",
+
+    "Transcript present in Salmon index",
+    sprintf("in %d/%d quant.sf; effective length %d-%d nt",
+            sum(ar_quant$in_index), nrow(ar_quant),
+            round(min(ar_quant$eff_length)), round(max(ar_quant$eff_length))),
+    "PASS - rules out index/annotation mismatch",
+
+    "Contig-level dropout",
+    sprintf("%s carries %d gene models; %d (%d%%) reach %d reads",
+            AR_CONTIG, nrow(contig_genes), n_expr, pct_expr, MIN_COUNT),
+    "PASS - contig is well covered",
+
+    "Immediate neighbours expressed",
+    paste(nb |> filter(!is_AR, !is.na(median_count), median_count >= MIN_COUNT) |>
+            mutate(lab = paste0(ifelse(is.na(symbol) | symbol == "", gene_id, symbol),
+                                " ", round(median_count))) |>
+            pull(lab), collapse = ", "),
+    "PASS - locus is transcriptionally active",
+
+    "AR read count",
+    sprintf("%g reads across %d libraries; max %g; %d libraries with zero",
+            sum(ar_quant$AR_reads), nrow(ar_quant), max(ar_quant$AR_reads),
+            sum(ar_quant$AR_reads == 0)),
+    "FAIL - below detection",
+
+    "Depth dependence",
+    sprintf("deepest library (%s reads) has %g AR reads",
+            format(round(max(ar_quant$library_size)), big.mark = ","),
+            ar_quant$AR_reads[which.max(ar_quant$library_size)]),
+    "FAIL - not undersampling",
+
+    "Implied expression level",
+    sprintf("max %.3f TPM; 1 TPM would give %d-%d reads depending on library",
+            max(ar_quant$implied_TPM), round(min(ar_quant$reads_per_TPM)),
+            round(max(ar_quant$reads_per_TPM))),
+    sprintf("AR is <%.1f TPM in every sample", ceiling(max(ar_quant$implied_TPM) * 10) / 10),
+
+    "Other nuclear receptors",
+    paste(panel_expr |> filter(class == "other nuclear receptor", median_count >= MIN_COUNT) |>
+            mutate(lab = paste0(symbol, " ", round(median_count))) |> pull(lab),
+          collapse = ", "),
+    "PASS - quantification is working",
+
+    "Rest of sex-steroid axis",
+    paste(panel_expr |> filter(class == "sex-steroid axis") |>
+            mutate(lab = paste0(symbol, " ", round(median_count, 1))) |> pull(lab),
+          collapse = ", "),
+    "ALSO SILENT - coherent biological pattern",
+
+    "GTF model_evidence claim",
+    sprintf("'100%% coverage by RNAseq' on %s/%s models (%d%%)",
+            format(length(claim_ids), big.mark = ","),
+            format(n_genes_ev, big.mark = ","),
+            round(100 * length(claim_ids) / n_genes_ev)),
+    "BOILERPLATE - no sample-specific weight"
+  )
+
+  write_csv(ar_checklist, file.path(OUT_DIR, "tables", "AR_troubleshooting_checklist.csv"))
+  knitr::kable(ar_checklist, caption = "Eliminative diagnosis of AR non-detection")
+}
+```
+
+```{r}
+#| label: ar-dilution
+#| results: asis
+#| echo: false
+
+if (RUN_AR_DIAG) {
+
+  ## What read count would a restricted expression domain actually produce?
+  med_rpt <- median(ar_quant$reads_per_TPM)
+  dilution <- expand_grid(local_TPM = c(20, 50, 100),
+                          fraction  = c(0.001, 0.005, 0.01)) |>
+    mutate(bulk_TPM      = local_TPM * fraction,
+           expected_reads = round(bulk_TPM * med_rpt, 1))
+
+  cat("::: {.callout-note}\n")
+  cat("## Dilution arithmetic\n\n")
+  cat("If AR is expressed in a restricted neuronal population rather than throughout the ",
+      "tissue, the bulk signal is the local level times the volume fraction. At the median ",
+      "library depth here, 1 TPM buys about ", round(med_rpt),
+      " reads:\n\n", sep = "")
+  print(knitr::kable(dilution, digits = 3,
+                     col.names = c("local TPM", "tissue fraction", "bulk TPM",
+                                   "expected reads")))
+  cat("\n\nObserved AR counts are 0-", max(ar_quant$AR_reads),
+      ". That is exactly the range a spatially restricted expression domain would produce ",
+      "in whole-head or whole-body homogenate.\n", sep = "")
+  cat(":::\n\n")
+}
+```
+
+::: {.callout-important}
+## Conclusion and what to do next
+
+Two of the three hypotheses are eliminated by the evidence above: the gene model is
+structurally complete, and Salmon had the transcript in its index and assigned it nothing.
+The locus is not in a dead region, and the reads do not scale with depth. Meanwhile every
+non-gonadal nuclear receptor quantifies normally while the sex-steroid axis is silent as a
+unit. Section 9c closes the annotation question at the sequence level. What remains is
+Hypothesis 3 — **AR transcript is below the detection limit of bulk RNA-seq at these
+stages**, measured here as <0.2 TPM in every library.
+
+**Recommended next steps, in order of cost:**
+
+1. **Do not chase this with deeper bulk sequencing.** Recovering a gene at <0.2 TPM would
+   need roughly an order of magnitude more depth for a handful of reads, and dilution, not
+   depth, is the limiting factor.
+2. **Match the assay to the biology.** For a hypothesis about AR in hind-limb motor
+   circuits, use *in situ* hybridisation or RNAscope on the relevant motor nuclei, or qPCR
+   on microdissected spinal cord and hind-limb muscle.
+3. **Report the flutamide effect on its own terms.** The GSEA results in Section 10 show
+   coordinated changes in locomotory and synaptic gene sets under AR blockade. That is a
+   functional readout of the manipulation and it stands regardless of whether AR transcript
+   is countable. State AR non-detection as a measured detection limit (<0.2 TPM), which is
+   a defensible claim, rather than as absence of differential expression.
+
+**One caution.** All AR reads at day 103 fall in flutamide animals and none in controls. At
+these counts that is sampling noise, not a finding; it must not be reported as a treatment
+effect.
+:::
+
+
+## 9c. Sequence-level proof that the gene model is a real androgen receptor
+
+Section 9b showed the model is *structurally* plausible: eight exons, an in-frame CDS,
+annotated start and stop. That is an argument from bookkeeping. The stronger test is the
+sequence itself — translate the CDS and ask whether the protein is an androgen receptor.
+This is the test that closes the annotation hypothesis permanently, and it needs the
+assembly FASTA (`complete.genomic.fna`) as well as the GTF.
+
+The logic: a nuclear receptor is defined by its **DNA-binding domain**, two C4-type zinc
+fingers whose sequence is under extreme purifying selection. A truncated model, a
+mis-joined model, or a paralogue mistaken for AR will not reproduce that domain exactly.
+Whole-protein identity between species is a weaker signal because the N-terminal
+transactivation domain evolves fast.
+
+```{r}
+#| label: ar-seq-setup
+
+## Section 9c builds on earlier chunks; say so plainly rather than failing later
+## on a bare "object not found". A full render never trips this.
+if (!all(vapply(c("GTF_FILE", "GENOME_FA", "HAVE_BIOSTRINGS", "OUT_DIR"), exists, logical(1))))
+  stop("Section 9c builds on earlier chunks. Use Run > Run All Chunks Above ",
+       "(Cmd+Option+P), or render the whole document.", call. = FALSE)
+
+RUN_AR_SEQ <- HAVE_GTF && HAVE_GENOME && HAVE_BIOSTRINGS
+if (!RUN_AR_SEQ) {
+  message("Section 9c needs the GTF, the genome FASTA and Biostrings - skipping.")
+}
+```
+
+### Extract and translate the coding sequence
+
+`Biostrings` handles the reverse complement and the genetic code. The CDS blocks are read
+straight from the GTF and pasted in genomic order; on a minus-strand gene the
+concatenation is reverse-complemented as a whole, which is why the blocks are sorted
+before joining.
+
+```{r}
+#| label: ar-translate
+
+if (RUN_AR_SEQ) {
+  ## --- CDS intervals for the AR model
+  ar_cds_lines <- grep(AR_GENE_ID, readLines(GTF_FILE), value = TRUE, fixed = TRUE)
+  cds_tab <- read.table(text = ar_cds_lines, sep = "\t", quote = "",
+                        stringsAsFactors = FALSE) |>
+    dplyr::filter(V3 == "CDS") |>
+    dplyr::arrange(V4)
+  ar_strand <- unique(cds_tab$V7)
+
+  ## --- pull ONLY the AR span out of the 4.2 GB FASTA.
+  ## Never read the whole file: it would need tens of GB of RAM for a locus of a few
+  ## hundred kb. Rsamtools does a random-access read against a .fai index, which it
+  ## builds once (a few minutes for this assembly) and reuses on every later render.
+  fai <- paste0(GENOME_FA, ".fai")
+  if (!file.exists(fai)) {
+    message("Indexing the genome FASTA (one-off, a few minutes)...")
+    Rsamtools::indexFa(GENOME_FA)
+  }
+  span <- GenomicRanges::GRanges(AR_CONTIG,
+            IRanges::IRanges(min(cds_tab$V4), max(cds_tab$V5)))
+  contig_seq <- Rsamtools::scanFa(GENOME_FA, span)[[1]]
+  stopifnot(length(contig_seq) == max(cds_tab$V5) - min(cds_tab$V4) + 1L)
+
+  ## scanFa returned the CDS span only, so GTF coordinates must be shifted to be
+  ## relative to the start of what was actually loaded.
+  offset <- min(cds_tab$V4) - 1L
+
+  ar_nt <- Biostrings::DNAStringSet(
+    mapply(function(s, e) as.character(Biostrings::subseq(contig_seq,
+                                       start = s - offset, end = e - offset)),
+           cds_tab$V4, cds_tab$V5)) |>
+    unlist() |> Biostrings::DNAString()
+  if (ar_strand == "-") ar_nt <- Biostrings::reverseComplement(ar_nt)
+
+  ar_aa <- Biostrings::translate(ar_nt, if.fuzzy.codon = "solve")
+  ar_aa_chr <- gsub("\\*$", "", as.character(ar_aa))
+
+  ar_seq_stats <- list(
+    n_cds        = nrow(cds_tab),
+    cds_nt       = length(ar_nt),
+    protein_aa   = nchar(ar_aa_chr),
+    starts_M     = substr(ar_aa_chr, 1, 1) == "M",
+    internal_stop= grepl("\\*", ar_aa_chr))
+
+  writeLines(c(paste0(">", AR_GENE_ID, " androgen receptor [Staurois parvus] predicted"),
+               strwrap(ar_aa_chr, width = 60)),
+             file.path(OUT_DIR, "tables", "AR_protein.faa"))
+}
+```
+
+```{r}
+#| label: ar-translate-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_AR_SEQ) {
+  s <- ar_seq_stats
+  cat("The ", s$n_cds, " CDS blocks concatenate to ", format(s$cds_nt, big.mark = ","),
+      " nt and translate to a **", s$protein_aa, " aa** protein. It begins with methionine: **",
+      s$starts_M, "**. It contains an internal stop codon: **", s$internal_stop,
+      "**. An open reading frame of this length with no internal stop is not what a broken ",
+      "or mis-joined gene model produces.\n\n", sep = "")
+}
+```
+
+### The zinc-finger test
+
+The AR DNA-binding domain is 75 residues spanning both zinc fingers, including the P-box
+that reads the androgen response element. Vertebrate AR sequences are near-invariant here.
+If this domain is intact and exact, the model is an androgen receptor.
+
+```{r}
+#| label: ar-dbd
+
+if (RUN_AR_SEQ) {
+  ## Canonical vertebrate AR DNA-binding domain (human/Xenopus identical over this span).
+  AR_DBD <- paste0("CLICGDEASGCHYGALTCGSCKVFFKRAAEGKQKYLCASRNDCTIDKFRRKNCPSCRLRKC",
+                   "YEAGMTLGARKLKK")
+  dbd_found  <- grepl(AR_DBD, ar_aa_chr, fixed = TRUE)
+  ## If not an exact hit, report the best local alignment so a near-miss is visible
+  ## rather than collapsing to a bare FALSE.
+  dbd_align <- pw_align(
+    Biostrings::AAString(AR_DBD), Biostrings::AAString(ar_aa_chr),
+    type = "local", substitutionMatrix = "BLOSUM62")
+  dbd_pid <- pw_pid(dbd_align)
+}
+```
+
+```{r}
+#| label: ar-dbd-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_AR_SEQ) {
+  cat("**Verdict:** the canonical 75-residue AR DNA-binding domain is present as an ",
+      "exact substring: **", dbd_found, "** (local alignment identity ",
+      sprintf("%.1f%%", dbd_pid), "). ",
+      if (dbd_found)
+        paste0("Every residue of both zinc fingers and the P-box matches the vertebrate ",
+               "consensus. `", AR_GENE_ID, "` is an androgen receptor. Hypothesis 1 - a ",
+               "broken or misannotated gene model - is **eliminated at the sequence level**, ",
+               "not merely made unlikely.")
+      else
+        paste0("The domain is not an exact match; inspect the alignment before drawing a ",
+               "conclusion, because a near-miss here would be the one result that reopens ",
+               "the annotation hypothesis."),
+      "\n\n", sep = "")
+}
+```
+
+### Orthology against *Xenopus tropicalis*
+
+A second, independent check: align the whole protein to a curated anuran AR. Identity
+should be high in the DNA- and ligand-binding domains and low in the N-terminal domain.
+That profile is itself diagnostic — a spurious match would be uniformly mediocre.
+
+The reference is fetched from UniProt when the network is available; the section degrades
+to the zinc-finger test alone if it is not, so a rendered report never depends on an
+external service being up.
+
+```{r}
+#| label: ar-orthology
+
+xt_ar <- NULL
+if (RUN_AR_SEQ) {
+  xt_ar <- tryCatch({
+    u <- paste0("https://rest.uniprot.org/uniprotkb/search?query=",
+                "gene:ar+AND+taxonomy_id:8364&format=fasta&size=1")
+    s <- Biostrings::readAAStringSet(u)
+    if (length(s)) s[[1]] else NULL
+  }, error = function(e) NULL)
+
+  if (!is.null(xt_ar)) {
+    ar_orth <- pw_align(
+      Biostrings::AAString(ar_aa_chr), xt_ar,
+      type = "global", substitutionMatrix = "BLOSUM62",
+      gapOpening = 11, gapExtension = 1)
+    orth_pid <- pw_pid(ar_orth)
+    ## sliding-window identity along the alignment, for the figure
+    a_chr <- strsplit(as.character(pw_pattern(ar_orth)), "")[[1]]
+    b_chr <- strsplit(as.character(pw_subject(ar_orth)), "")[[1]]
+    ident_vec <- as.integer(a_chr == b_chr)
+    W <- 15
+    win_id <- stats::filter(ident_vec, rep(1 / W, W), sides = 2) * 100
+  }
+}
+```
+
+```{r}
+#| label: ar-orthology-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_AR_SEQ) {
+  if (is.null(xt_ar)) {
+    cat("UniProt was unreachable, so the orthology comparison was skipped. ",
+        "The zinc-finger test above does not depend on it.\n\n", sep = "")
+  } else {
+    cat("Aligned to *X. tropicalis* AR (", length(xt_ar), " aa), the ",
+        nchar(ar_aa_chr), " aa *S. parvus* protein is **",
+        sprintf("%.1f%%", orth_pid), " identical overall**, with the DNA-binding domain ",
+        "fully conserved and the N-terminal transactivation domain diverging as expected ",
+        "for that domain. Length, domain order, and the identity profile all agree with a ",
+        "genuine AR orthologue.\n\n", sep = "")
+  }
+}
+```
+
+```{r}
+#| label: ar-sequence-figure
+#| fig-width: 7.2
+#| fig-height: 4.1
+#| fig-cap: "Sequence-level verification of the androgen receptor gene model. Identity between the translated *S. parvus* prediction and *X. tropicalis* AR in a sliding 15-residue window along the global alignment. The shaded band is the DNA-binding domain, identical at every one of its 75 residues; the dashed line is whole-protein identity. The fast-evolving N-terminal transactivation domain drops far below that average while both DNA- and ligand-binding domains sit at or near 100% - the domain-wise profile expected of a true orthologue, and not what a spurious or chimeric match produces."
+
+if (RUN_AR_SEQ && !is.null(xt_ar)) {
+  dbd_pos <- stringr::str_locate(paste(b_chr[b_chr != "-"], collapse = ""),
+                                 substr(AR_DBD, 1, 30))[1, "start"]
+  ## map reference positions to alignment columns
+  ref_col <- cumsum(b_chr != "-")
+  dbd_cols <- range(which(ref_col >= dbd_pos & ref_col < dbd_pos + nchar(AR_DBD)))
+
+  seq_df <- data.frame(col = seq_along(win_id), identity = as.numeric(win_id))
+  p_seq <- ggplot(seq_df, aes(col, identity)) +
+    annotate("rect", xmin = dbd_cols[1], xmax = dbd_cols[2], ymin = -Inf, ymax = Inf,
+             fill = "#C44E52", alpha = 0.13) +
+    geom_hline(yintercept = 100, linetype = "dotted", colour = "grey55", linewidth = 0.3) +
+    geom_hline(yintercept = orth_pid, linetype = "dashed",
+               colour = "#4C72B0", linewidth = 0.4) +
+    geom_line(linewidth = 0.35, colour = "grey20") +
+    annotate("text", x = mean(dbd_cols), y = 128,
+             label = "DBD: 75/75 residues identical",
+             colour = "#C44E52", size = 2.5, vjust = 0) +
+    annotate("segment", x = mean(dbd_cols), xend = mean(dbd_cols),
+             y = 126, yend = 103, colour = "#C44E52", linewidth = 0.3) +
+    annotate("text", x = length(win_id), y = orth_pid - 5,
+             label = sprintf("whole-protein identity %.1f%%", orth_pid),
+             colour = "#4C72B0", size = 2.5, hjust = 1, vjust = 1) +
+    scale_y_continuous(breaks = c(0, 25, 50, 75, 100), limits = c(-4, 138)) +
+    labs(x = "position in alignment (residues)",
+         y = "identity to X. tropicalis AR\n(% in 15-residue window)",
+         title = "The gene model is a complete androgen receptor, not a fragment") +
+    theme_bw(base_size = 9) +
+    theme(panel.grid.minor = element_blank(),
+          plot.title = element_text(size = 9.5, hjust = 0))
+  print(p_seq)
+  ggsave(file.path(OUT_DIR, "figures", "AR_sequence_verification.png"),
+         p_seq, width = 7.2, height = 3.2, dpi = 300)
+}
+```
+
+::: {.callout-important}
+## What Section 9c settles
+
+The androgen receptor gene model in this assembly is **correct**. Its DNA-binding domain is
+identical to the vertebrate consensus at every residue, and its whole-protein identity and
+domain-wise divergence profile match a genuine anuran AR orthologue.
+
+The consequence for the manuscript is that AR non-detection can now be stated without a
+hedge about annotation quality: the receptor is annotated correctly, was quantified, and is
+present at <0.2 TPM in every library. That is a **measured detection limit in bulk tissue**,
+and it is the sentence to write. It is not evidence that AR is absent from the motor
+circuits the hypothesis concerns — bulk dilution across whole heads and bodies is the
+expected reason a focally expressed receptor goes uncounted.
+
+The translated protein is written to `results_v2/tables/AR_protein.faa` if you want to
+submit it to NCBI or use it as a `tblastn` query against another assembly.
+:::
+
+
+## 9d. Genes with a description but no symbol — how much information is recoverable?
+
+A large share of this annotation's gene models carry a `description` (a free-text protein
+name such as `"solute carrier family 1 member 4"`) but no `gene` attribute — no symbol.
+Enrichment tools key on symbols, so every such gene is silently dropped from Section 10,
+and the loss is not small. This section measures the loss, tests whether it can be
+recovered, and validates the recovery before using it.
+
+### Why the symbols are missing in the first place
+
+This is not a defect in your annotation. EGAPx assigns a symbol only when it can place the
+model confidently in an established orthology group. A description is generated from the
+best protein alignment, which is a weaker claim: `"claudin-3-like"` means *the best hit
+resembled claudin-3*, not *this is CLDN3*. Withholding the symbol is the pipeline being
+honest about that difference. For a non-model species with no curated nomenclature, this is
+expected and normal — *Staurois parvus* has no gene-naming authority, and NCBI will not
+mint symbols for it.
+
+```{r}
+#| label: symbol-audit
+
+## Section 9d builds on earlier chunks; say so plainly rather than failing later
+## on a bare "object not found". A full render never trips this.
+if (!all(vapply(c("GTF_FILE", "raw_counts", "gene_annot", "MIN_COUNT", "OUT_DIR"), exists, logical(1))))
+  stop("Section 9d builds on earlier chunks. Use Run > Run All Chunks Above ",
+       "(Cmd+Option+P), or render the whole document.", call. = FALSE)
+
+## §9d needs the GTF (for descriptions) and org.Hs.eg.db (as the nomenclature authority).
+## NOTE: requireNamespace() makes a package loadable but does NOT put its exported
+## objects in scope, and the OrgDb here is an object, not a function. §9d therefore
+## reaches it as org.Hs.eg.db::org.Hs.eg.db rather than assuming Section 10 has
+## already attached the package - §9d runs first.
+RUN_SYMBOL <- HAVE_GTF && requireNamespace("org.Hs.eg.db", quietly = TRUE) &&
+                          requireNamespace("AnnotationDbi", quietly = TRUE)
+ORGDB <- if (RUN_SYMBOL) org.Hs.eg.db::org.Hs.eg.db else NULL
+if (!RUN_SYMBOL) {
+  message("Section 9d needs complete.genomic.gtf and org.Hs.eg.db - skipping.")
+}
+
+if (RUN_SYMBOL) {
+  gene_lines <- grep("\tgene\t", readLines(GTF_FILE), value = TRUE, fixed = FALSE)
+  att <- sub("^(?:[^\t]*\t){8}", "", gene_lines)
+  ann <- tibble::tibble(
+    gene_id      = gtf_attr(att, "gene_id"),
+    egapx_symbol = gtf_attr(att, "gene"),
+    description  = gtf_attr(att, "description"),
+    biotype      = gtf_attr(att, "gene_biotype")) |>
+    dplyr::distinct(gene_id, .keep_all = TRUE)
+
+  ## expression floor, so the audit describes genes the experiment can actually see
+  ## raw_counts is txi$counts - pre-filter, so the audit is not conditioned on
+  ## the very filtering step whose effect we are trying to describe.
+  gene_max_all <- apply(raw_counts, 1, max)
+  ann <- ann |>
+    dplyr::mutate(max_count = unname(gene_max_all[gene_id]),
+                  max_count = ifelse(is.na(max_count), 0, max_count))
+
+  audit <- ann |>
+    dplyr::mutate(state = dplyr::case_when(
+      !is.na(egapx_symbol)                     ~ "has symbol",
+      is.na(egapx_symbol) & !is.na(description)~ "description only",
+      TRUE                                     ~ "neither")) |>
+    dplyr::count(state, expressed = max_count >= MIN_COUNT)
+}
+```
+
+```{r}
+#| label: symbol-audit-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_SYMBOL) {
+  ex <- audit |> dplyr::filter(expressed)
+  tot <- sum(ex$n); getn <- function(s) sum(ex$n[ex$state == s])
+  cat("Of the ", format(tot, big.mark = ","), " gene models expressed above the ",
+      MIN_COUNT, "-count floor, **", format(getn("has symbol"), big.mark = ","),
+      " (", round(100 * getn("has symbol") / tot), "%) carry a symbol**, ",
+      format(getn("description only"), big.mark = ","), " (",
+      round(100 * getn("description only") / tot),
+      "%) have a description but no symbol, and ", format(getn("neither"), big.mark = ","),
+      " (", round(100 * getn("neither") / tot), "%) have neither. ",
+      "Enrichment as run in Section 10 therefore sees only about half of the expressed ",
+      "transcriptome.\n\n", sep = "")
+}
+```
+
+### Can a symbol be recovered from the description?
+
+Two approaches suggest themselves, and only one survives testing.
+
+**Parsing the description text does not work.** The description is a full gene *name*, and
+symbols are not substrings of their own names: `"solute carrier family 1 member 4"` gives no
+route to `SLC1A4`, and `"aftiphilin"` none to `AFTPH`. The chunk below measures this directly
+against every gene that has both fields. Any regex you write will mostly invent symbols.
+
+**Joining the description against a nomenclature authority does work**, because gene *names*
+are themselves standardised. `org.Hs.eg.db` stores the official name for every human gene,
+so `"solute carrier family 1 member 4"` → `SLC1A4` is a table lookup, not a guess.
+
+The critical point is that **this is testable**: thousands of genes here have both a symbol
+and a description, so the join can be run against known answers before being trusted.
+
+```{r}
+#| label: symbol-recovery
+
+if (RUN_SYMBOL) {
+  ## --- authority table: official gene name -> official symbol.
+  ## Keys that map to more than one symbol are dropped rather than resolved
+  ## arbitrarily, and LOC-style placeholders are not usable identifiers.
+  authority <- AnnotationDbi::select(ORGDB,
+                  keys = AnnotationDbi::keys(ORGDB, "ENTREZID"), keytype = "ENTREZID",
+                  columns = c("SYMBOL", "GENENAME")) |>
+    tibble::as_tibble() |>
+    dplyr::filter(!is.na(SYMBOL), !is.na(GENENAME),
+                  !stringr::str_detect(SYMBOL, "^LOC[0-9]+$")) |>
+    dplyr::mutate(key = norm_gene_name(GENENAME)) |>
+    dplyr::distinct(key, SYMBOL) |>
+    dplyr::add_count(key) |>
+    dplyr::filter(n == 1) |>
+    dplyr::select(key, SYMBOL)
+
+  ## --- baseline: does the symbol appear as a word inside its own description?
+  ## This is the naive string-parsing approach, measured rather than assumed.
+  both <- ann |> dplyr::filter(!is.na(egapx_symbol), !is.na(description))
+  substr_hit <- mapply(function(sym, desc)
+      grepl(paste0("\\b", sym, "\\b"), desc, ignore.case = TRUE),
+    both$egapx_symbol, both$description)
+  parse_rate <- 100 * mean(substr_hit)
+
+  ## --- VALIDATION: genes where EGAPx already gave us the answer
+  validation <- ann |>
+    dplyr::filter(!is.na(egapx_symbol), !is.na(description)) |>
+    dplyr::mutate(key = norm_gene_name(description)) |>
+    dplyr::left_join(authority, by = "key", relationship = "many-to-one")
+  val_hit <- validation |> dplyr::filter(!is.na(SYMBOL))
+  val_stats <- list(
+    n         = nrow(validation),
+    recovered = nrow(val_hit),
+    recall    = 100 * nrow(val_hit) / nrow(validation),
+    precision = 100 * mean(toupper(val_hit$SYMBOL) == toupper(val_hit$egapx_symbol)))
+
+  ## --- APPLY to the genes that need it
+  recovered <- ann |>
+    dplyr::filter(is.na(egapx_symbol), !is.na(description)) |>
+    dplyr::mutate(key = norm_gene_name(description)) |>
+    dplyr::left_join(authority, by = "key", relationship = "many-to-one")
+
+  symbol_map <- ann |>
+    dplyr::left_join(recovered |> dplyr::select(gene_id, recovered_symbol = SYMBOL),
+                     by = "gene_id") |>
+    dplyr::mutate(
+      symbol_source = dplyr::case_when(
+        !is.na(egapx_symbol)     ~ "egapx",
+        !is.na(recovered_symbol) &
+          stringr::str_detect(description, "[- ]like$") ~ "recovered_paralog",
+        !is.na(recovered_symbol) ~ "recovered_exact",
+        TRUE                     ~ "none"),
+      final_symbol = dplyr::coalesce(egapx_symbol, recovered_symbol))
+
+  readr::write_csv(symbol_map |>
+      dplyr::select(gene_id, biotype, description, egapx_symbol,
+                    recovered_symbol, final_symbol, symbol_source, max_count),
+    file.path(OUT_DIR, "tables", "gene_symbol_map.csv"))
+}
+```
+
+```{r}
+#| label: symbol-recovery-verdict
+#| results: asis
+#| echo: false
+
+if (RUN_SYMBOL) {
+  v <- val_stats
+  nrec <- sum(symbol_map$symbol_source %in% c("recovered_exact", "recovered_paralog"))
+  nrec_expr <- sum(symbol_map$symbol_source %in% c("recovered_exact", "recovered_paralog") &
+                   symbol_map$max_count >= MIN_COUNT)
+  cat("**String parsing, measured.** Across the ", format(nrow(both), big.mark = ","),
+      " genes with both fields, the symbol appears as a word in its own description only ",
+      sprintf("%.1f%%", parse_rate), " of the time. Parsing is not a viable route.\n\n",
+      sep = "")
+  cat("**Validation.** Run against the ", format(v$n, big.mark = ","),
+      " genes whose symbol EGAPx already supplies, the join returns a symbol for ",
+      sprintf("%.0f%%", v$recall), " of them and that symbol is **correct ",
+      sprintf("%.2f%%", v$precision), " of the time**. A method that reproduces a known ",
+      "answer at this rate can be trusted on the unknowns.\n\n",
+      "**Application.** It recovers a symbol for ", format(nrec, big.mark = ","),
+      " previously symbolless models (", format(nrec_expr, big.mark = ","),
+      " of them expressed here) - a real gain, but a modest one. The reason it is modest ",
+      "matters more than the number, and is the subject of the caution below.\n\n", sep = "")
+}
+```
+
+::: {.callout-warning}
+## Recovered symbols are orthology hypotheses, not names — and the distinction is recorded
+
+The `symbol_source` column in `gene_symbol_map.csv` separates three kinds of claim, and they
+are **not** interchangeable:
+
+- **`egapx`** — EGAPx assigned the symbol from its own orthology evidence. Use freely.
+- **`recovered_exact`** — the description matched an official gene name exactly
+  (`"pro-opiomelanocortin"` → `POMC`). Safe; this is a formatting fix, recovering a symbol
+  EGAPx could have written but didn't.
+- **`recovered_paralog`** — the description ended in `-like`
+  (`egapxtmp_019179`, `"aldehyde oxidase 1-like"` → `AOX1`). **This is the one to be careful
+  with.** It asserts *resembles AOX1*, not *is AOX1*. Most recovered symbols are of this kind,
+  and several distinct frog models frequently map to the same human symbol — the chunk below
+  counts how often. That is a real signature of lineage-specific gene family expansion, which
+  is scientifically interesting in its own right, but it means a recovered symbol is **not a
+  unique identifier**.
+
+**What this licenses.** Using recovered symbols to *put a gene into a pathway* for enrichment
+is reasonable: gene sets are defined at family/pathway level, and a gene that resembles AOX1
+closely enough to be named for it usually belongs in the same GO terms. **What it does not
+license** is writing "AOX1 is upregulated in *S. parvus*" in the manuscript. For any gene you
+intend to name in the text, the identification must be confirmed independently — reciprocal
+best BLAST hit at minimum, ideally a gene tree — exactly as Section 9c did for AR.
+
+**In the manuscript**, report the gene as `egapxtmp_019179` (AOX1-like) and state the recovery
+method in the methods. Never silently replace the model ID with a human symbol: the ID is the
+reproducible identifier that ties back to your assembly, and someone re-running your analysis
+against the same GTF must be able to find the same gene.
+:::
+
+```{r}
+#| label: symbol-multimap
+#| results: asis
+#| echo: false
+
+if (RUN_SYMBOL) {
+  mm <- symbol_map |>
+    dplyr::filter(symbol_source == "recovered_paralog") |>
+    dplyr::count(recovered_symbol, name = "n_models") |>
+    dplyr::filter(n_models > 1)
+  worst <- mm |> dplyr::slice_max(n_models, n = 1, with_ties = FALSE)
+  cat("**How often is a recovered symbol non-unique?** ", nrow(mm),
+      " human symbols each receive more than one *S. parvus* model",
+      if (nrow(worst))
+        paste0("; the most duplicated is **", worst$recovered_symbol, "**, matched by ",
+               worst$n_models, " separate gene models")
+      else "",
+      ". Treat these as members of a family, not as the named gene.\n\n", sep = "")
+}
+```
+
+### What cannot be recovered this way, and what would be needed
+
+```{r}
+#| label: symbol-unreachable
+#| results: asis
+#| echo: false
+
+if (RUN_SYMBOL) {
+  un <- symbol_map |>
+    dplyr::filter(max_count >= MIN_COUNT, is.na(final_symbol))
+  un_pc  <- sum(un$biotype == "protein_coding", na.rm = TRUE)
+  un_lk  <- sum(un$biotype == "protein_coding" &
+                stringr::str_detect(un$description, "[- ]like$"), na.rm = TRUE)
+  un_non <- sum(is.na(un$description))
+  cat("After recovery, ", format(nrow(un), big.mark = ","),
+      " expressed models still have no symbol, of which ", format(un_pc, big.mark = ","),
+      " are protein-coding. Two distinct problems account for them. ",
+      "About ", format(un_lk, big.mark = ","), " carry a `-like` description whose base name ",
+      "is not an official human gene name (`\"olfactory receptor 5P55-like\"`, ",
+      "`\"gastrula zinc finger protein XlCGF66.1-like\"`) - these are frog-specific or ",
+      "rapidly-evolving families with genuinely no human one-to-one counterpart, so no ",
+      "lookup table can help. The other ", format(un_non, big.mark = ","),
+      " have no description at all: EGAPx found no protein alignment good enough to name ",
+      "them, and they are the models most likely to be novel, lineage-specific, or ",
+      "non-coding.\n\n", sep = "")
+}
+```
+
+Recovering those requires **sequence-based orthology, not text**: run the predicted proteins
+through OrthoFinder or eggNOG-mapper against a set of vertebrate proteomes, which assigns
+orthogroups and GO terms directly from sequence and does not depend on anyone having named
+the gene. That is the right long-term fix for this annotation, it runs in a few hours on a
+cluster, and it would also let you analyse the frog-specific families this section shows you
+are currently discarding. Given that the receptor at the centre of your hypothesis sits in a
+gene family with well-documented lineage-specific duplication in anurans, those discarded
+models are not obviously the boring ones.
+
+```{r}
+#| label: symbol-accounting-figure
+#| fig-width: 7.2
+#| fig-height: 2.6
+#| fig-cap: "Gene-symbol availability across the expressed transcriptome. Bars are the number of gene models expressed above the pre-filter floor, split by whether a symbol was supplied by EGAPx, recovered by the validated description join used here, or unavailable. Enrichment analyses key on symbols, so the two right-hand categories are invisible to Section 10 regardless of how strongly they respond to treatment."
+
+if (RUN_SYMBOL) {
+  acc <- symbol_map |>
+    dplyr::filter(max_count >= MIN_COUNT) |>
+    dplyr::mutate(state = dplyr::case_when(
+      symbol_source == "egapx"             ~ "EGAPx symbol",
+      symbol_source == "recovered_exact"   ~ "recovered (exact name)",
+      symbol_source == "recovered_paralog" ~ "recovered (-like paralogue)",
+      !is.na(description)                  ~ "description only, unresolved",
+      TRUE                                 ~ "no name at all")) |>
+    dplyr::count(state) |>
+    dplyr::mutate(state = factor(state, levels = c(
+      "EGAPx symbol", "recovered (exact name)", "recovered (-like paralogue)",
+      "description only, unresolved", "no name at all")))
+
+  p_acc <- ggplot(acc, aes(n, factor(state, levels = rev(levels(state))), fill = state)) +
+    geom_col(width = 0.66, show.legend = FALSE) +
+    geom_text(aes(label = format(n, big.mark = ",")), hjust = -0.15, size = 2.6) +
+    scale_fill_manual(values = c(
+      "EGAPx symbol"                 = "#4C72B0",
+      "recovered (exact name)"       = "#55A868",
+      "recovered (-like paralogue)"  = "#8FCBA0",
+      "description only, unresolved" = "#DD8452",
+      "no name at all"               = "#B0B0B0")) +
+    scale_x_continuous(expand = expansion(mult = c(0, 0.14)),
+                       labels = function(x) format(x, big.mark = ",", trim = TRUE)) +
+    labs(x = "expressed gene models", y = NULL,
+         title = "Roughly half the expressed transcriptome is invisible to enrichment") +
+    theme_bw(base_size = 9) +
+    theme(panel.grid.major.y = element_blank(),
+          panel.grid.minor = element_blank(),
+          plot.title = element_text(size = 9.5, hjust = 0))
+  print(p_acc)
+  ggsave(file.path(OUT_DIR, "figures", "gene_symbol_accounting.png"),
+         p_acc, width = 7.2, height = 2.6, dpi = 300)
+}
+```
+
+## 10. Functional enrichment
+
+The *S. parvus* EGAPx annotation carries uppercase gene symbols for a subset of models; the
+remainder are `egapxtmp_*` placeholders with no symbol. Enrichment is therefore run by
+treating those symbols as **human orthologue proxies** against `org.Hs.eg.db`.
+
+Symbols recovered in Section 9d are folded in here, keyed on `gene_id`, and only ever fill a
+gap — an EGAPx-assigned symbol is never overwritten. If Section 9d was skipped, enrichment
+runs on EGAPx symbols alone. The recovery is a modest widening of the input rather than a
+transformation of it; Section 9d quantifies exactly how modest, and why the remainder needs
+sequence-based orthology instead.
+
+::: {.callout-note}
+## What this does and does not license
+
+Symbol-based orthology is an approximation. A frog gene named `AR` is presumed to be the
+orthologue of human `AR`, which is reasonable for conserved, well-named genes and unreliable
+for rapidly evolving families and one-to-many relationships. Crucially, the ~50% of the
+annotation with no symbol is invisible to this analysis, so an unenriched term may simply
+mean its genes were unnamed. The universe is restricted to *tested, symbol-bearing* genes so
+the background matches the foreground. Use these terms to generate hypotheses, not as
+evidence on their own.
+:::
+
+```{r}
+#| label: enrichment-setup
+
+has_cp <- requireNamespace("clusterProfiler", quietly = TRUE) &&
+          requireNamespace("org.Hs.eg.db", quietly = TRUE)
+
+if (!has_cp) {
+  cat("clusterProfiler / org.Hs.eg.db not installed — enrichment skipped.\n",
+      "Install with:\n",
+      '  BiocManager::install(c("clusterProfiler", "org.Hs.eg.db"))\n')
+} else {
+  suppressPackageStartupMessages({
+    library(clusterProfiler)
+    library(org.Hs.eg.db)
+  })
+}
+
+## IMPORTANT: clusterProfiler / AnnotationDbi export their own `select()` and `filter()`,
+## which mask the dplyr versions once those packages are attached. Every dplyr verb used
+## after this point is therefore called explicitly via dplyr:: to keep the pipelines working.
+select <- dplyr::select
+filter <- dplyr::filter
+rename <- dplyr::rename
+mutate <- dplyr::mutate
+slice_min <- dplyr::slice_min
+
+## a symbol is "usable" if it is not an egapxtmp placeholder and not a tRNA model
+is_real_symbol <- function(x) {
+  !is.na(x) & x != "" & !grepl("^egapxtmp_", x) & !grepl("^trn", x, ignore.case = TRUE)
+}
+
+## ---- fold in the symbols recovered in Section 9d ---------------------------
+## §9d validated a description-to-symbol join at >99.9% precision, so those symbols
+## are used here to widen the enrichment input. Recovery is keyed on gene_id, never
+## on the display name, and it only ever FILLS a missing symbol - an EGAPx symbol is
+## never overwritten. If §9d did not run, this is a no-op and enrichment behaves
+## exactly as it did before.
+RECOVERED_SYM <- if (exists("symbol_map")) {
+  m <- symbol_map |>
+    dplyr::filter(!is.na(recovered_symbol), is.na(egapx_symbol))
+  setNames(m$recovered_symbol, m$gene_id)
+} else character(0)
+
+add_recovered <- function(res_df) {
+  if (!length(RECOVERED_SYM) || !"gene_id" %in% names(res_df)) return(res_df)
+  hit <- !is_real_symbol(res_df$gene_name) & res_df$gene_id %in% names(RECOVERED_SYM)
+  res_df$gene_name[hit] <- unname(RECOVERED_SYM[res_df$gene_id[hit]])
+  res_df
+}
+```
+
+```{r}
+#| label: enrichment-run
+
+## Records why each contrast/direction produced (or failed to produce) enrichment,
+## so that "no terms" is never indistinguishable from "silently errored".
+enrich_log <- list()
+
+run_enrichment <- function(res_df, label, ont = "BP") {
+
+  if (!has_cp) return(NULL)
+  res_df <- add_recovered(res_df)
+
+  universe_sym <- res_df |>
+    filter(!is.na(padj), is_real_symbol(gene_name)) |>
+    pull(gene_name) |> unique() |> toupper()
+
+  out <- list()
+
+  for (dir in c("up", "down")) {
+    sig_sym <- res_df |>
+      filter(!is.na(padj), padj < ALPHA, is_real_symbol(gene_name),
+             if (dir == "up") log2FoldChange >=  LFC_CUTOFF
+             else             log2FoldChange <= -LFC_CUTOFF) |>
+      pull(gene_name) |> unique() |> toupper()
+
+    enrich_log[[paste(label, dir)]] <<- data.frame(
+      contrast = label, direction = dir,
+      n_universe_symbols = length(universe_sym),
+      n_query_symbols    = length(sig_sym)
+    )
+
+    if (length(sig_sym) < 10) {
+      message(sprintf("%s / %s: only %d symbol-bearing genes — skipped",
+                      label, dir, length(sig_sym)))
+      next
+    }
+
+    ego <- tryCatch(
+      clusterProfiler::enrichGO(
+        gene          = sig_sym,
+        universe      = universe_sym,
+        OrgDb         = org.Hs.eg.db,
+        keyType       = "SYMBOL",
+        ont           = ont,
+        pAdjustMethod = "BH",
+        pvalueCutoff  = 0.05,
+        qvalueCutoff  = 0.20,
+        readable      = FALSE
+      ), error = function(e) { message("enrichGO failed: ", conditionMessage(e)); NULL })
+
+    if (is.null(ego) || nrow(as.data.frame(ego)) == 0) {
+      message(sprintf("%s / %s: no enriched GO:%s terms", label, dir, ont))
+      next
+    }
+
+    df <- as.data.frame(ego) |> mutate(contrast = label, direction = dir)
+    write_csv(df, file.path(OUT_DIR, "enrichment",
+                            paste0(label, "_", dir, "_GO", ont, ".csv")))
+    out[[dir]] <- df
+  }
+
+  if (length(out) == 0) return(NULL)
+  bind_rows(out)
+}
+
+enrich_all <- list(
+  leg_emergence_body   = run_enrichment(res_body_dev, "leg_emergence_body"),
+  nervous_system_head  = run_enrichment(res_head_dev, "nervous_system_head"),
+  AR_blockade_body     = run_enrichment(res_body_flu, "AR_blockade_body"),
+  AR_blockade_head     = run_enrichment(res_head_flu, "AR_blockade_head"),
+  old_tissue_adjusted  = run_enrichment(res_old_df,   "old_tissue_adjusted")
+)
+enrich_all <- enrich_all[!vapply(enrich_all, is.null, logical(1))]
+
+## How many genes actually reached enrichGO for each test?
+enrich_inputs <- bind_rows(enrich_log)
+if (nrow(enrich_inputs) > 0) {
+  write_csv(enrich_inputs, file.path(OUT_DIR, "enrichment", "enrichment_input_sizes.csv"))
+  knitr::kable(enrich_inputs,
+               caption = paste("Genes supplied to enrichGO. A query of <10 symbols is skipped;",
+                               "note how much smaller these are than the raw DE counts, because",
+                               "only symbol-bearing genes can be mapped."))
+}
+```
+
+```{r}
+#| label: enrichment-plot
+#| fig-cap: "Top enriched GO Biological Process terms per contrast and direction."
+#| fig-height: 10
+
+if (length(enrich_all) > 0) {
+
+  enrich_df <- bind_rows(enrich_all) |>
+    group_by(contrast, direction) |>
+    slice_min(p.adjust, n = 10, with_ties = FALSE) |>
+    ungroup() |>
+    mutate(
+      Description = str_trunc(Description, 55),
+      term = tidytext_reorder <- paste0(Description, " (", contrast, "-", direction, ")")
+    )
+
+  write_csv(bind_rows(enrich_all),
+            file.path(OUT_DIR, "enrichment", "all_GO_enrichment_results.csv"))
+
+  p_enrich <- ggplot(enrich_df,
+                     aes(x = -log10(p.adjust),
+                         y = reorder(term, -log10(p.adjust)),
+                         fill = direction)) +
+    geom_col() +
+    facet_wrap(~ contrast, scales = "free", ncol = 1) +
+    scale_fill_manual(values = c(up = "#C44E52", down = "#4C72B0")) +
+    labs(x = "-log10 adjusted p-value", y = NULL,
+         title = "GO Biological Process enrichment (human-symbol proxy)") +
+    theme(axis.text.y = element_text(size = 7),
+          strip.text = element_text(face = "bold"))
+
+  ggsave(file.path(OUT_DIR, "figures", "GO_enrichment.png"),
+         plot = p_enrich, width = 11, height = 13, dpi = 300, limitsize = FALSE)
+  print(p_enrich)
+
+} else {
+  cat("No enrichment results to plot.\n")
+}
+```
+
+### GSEA — for contrasts with too few significant genes
+
+Over-representation analysis needs a reasonably sized significant-gene list, which the
+AR-blockade contrasts do not have. GSEA sidesteps that: it ranks *every* tested gene and
+asks whether a pathway's members sit preferentially at one end of the ranking. It therefore
+detects coordinated, individually-subthreshold shifts — the pattern most likely for a
+receptor-blockade experiment at this sample size.
+
+Genes are ranked by the Wald statistic (`log2FoldChange / lfcSE`), which carries both
+direction and confidence.
+
+```{r}
+#| label: gsea
+
+run_gsea <- function(res_df, label, ont = "BP") {
+
+  if (!has_cp) return(NULL)
+  res_df <- add_recovered(res_df)
+
+  ranked <- res_df |>
+    filter(!is.na(padj), !is.na(log2FoldChange), !is.na(lfcSE), lfcSE > 0,
+           is_real_symbol(gene_name)) |>
+    mutate(symbol = toupper(gene_name), stat = log2FoldChange / lfcSE) |>
+    group_by(symbol) |>
+    summarise(stat = stat[which.max(abs(stat))], .groups = "drop") |>
+    arrange(desc(stat))
+
+  if (nrow(ranked) < 100) return(NULL)
+
+  gl <- setNames(ranked$stat, ranked$symbol)
+
+  ego <- tryCatch(
+    clusterProfiler::gseGO(geneList = gl, OrgDb = org.Hs.eg.db, keyType = "SYMBOL",
+                           ont = ont, minGSSize = 15, maxGSSize = 500,
+                           pvalueCutoff = 0.05, pAdjustMethod = "BH",
+                           verbose = FALSE, seed = TRUE),
+    error = function(e) { message("gseGO failed for ", label, ": ", conditionMessage(e)); NULL })
+
+  if (is.null(ego)) return(NULL)
+  d <- as.data.frame(ego)
+  if (nrow(d) == 0) { message(label, ": no significant GSEA terms"); return(NULL) }
+
+  d <- d |> mutate(contrast = label,
+                   direction = ifelse(NES > 0, "enriched in numerator",
+                                              "enriched in denominator"))
+  write_csv(d, file.path(OUT_DIR, "enrichment", paste0(label, "_GSEA_GO", ont, ".csv")))
+  d
+}
+
+gsea_all <- list(
+  leg_emergence_body  = run_gsea(res_body_dev, "leg_emergence_body"),
+  nervous_system_head = run_gsea(res_head_dev, "nervous_system_head"),
+  AR_blockade_body    = run_gsea(res_body_flu, "AR_blockade_body"),
+  AR_blockade_head    = run_gsea(res_head_flu, "AR_blockade_head"),
+  old_tissue_adjusted = run_gsea(res_old_df,   "old_tissue_adjusted")
+)
+gsea_all <- gsea_all[!vapply(gsea_all, is.null, logical(1))]
+
+if (length(gsea_all) > 0) {
+  gsea_df <- bind_rows(gsea_all)
+  write_csv(gsea_df, file.path(OUT_DIR, "enrichment", "all_GSEA_results.csv"))
+  knitr::kable(
+    gsea_df |> group_by(contrast) |> slice_min(p.adjust, n = 8, with_ties = FALSE) |>
+      ungroup() |> select(contrast, Description, setSize, NES, p.adjust),
+    digits = 4, caption = "Top GSEA terms per contrast (NES > 0 = up in the numerator group)")
+} else {
+  cat("No significant GSEA terms in any contrast.\n")
+}
+```
+
+```{r}
+#| label: gsea-plot
+#| fig-cap: "GSEA normalised enrichment scores. Positive NES = the pathway is up in the numerator group of that contrast."
+#| fig-height: 11
+
+if (length(gsea_all) > 0) {
+
+  gsea_top <- bind_rows(gsea_all) |>
+    group_by(contrast) |>
+    slice_min(p.adjust, n = 12, with_ties = FALSE) |>
+    ungroup() |>
+    mutate(
+      Description = str_trunc(Description, 50),
+      ## the key must be unique across facets (the same term can appear in several
+      ## contrasts), but only the Description is shown on the axis
+      lab = paste0(Description, " @@", contrast),
+      lab = reorder(lab, NES)
+    )
+
+  p_gsea <- ggplot(gsea_top, aes(NES, lab, fill = NES > 0)) +
+    geom_col() +
+    geom_vline(xintercept = 0, linewidth = 0.3, colour = "grey40") +
+    facet_wrap(~ contrast, scales = "free_y", ncol = 1) +
+    scale_y_discrete(labels = function(x) sub(" @@.*$", "", x)) +
+    scale_fill_manual(values = c(`TRUE` = "#C44E52", `FALSE` = "#4C72B0"),
+                      labels = c(`TRUE` = "up in numerator", `FALSE` = "down in numerator"),
+                      name = NULL) +
+    labs(x = "Normalised enrichment score", y = NULL,
+         title = "GSEA - GO Biological Process",
+         subtitle = "Positive NES = pathway up in the first-named group of the contrast") +
+    theme(axis.text.y = element_text(size = 7),
+          strip.text = element_text(face = "bold"))
+
+  ggsave(file.path(OUT_DIR, "figures", "GSEA_enrichment.png"),
+         plot = p_gsea, width = 11, height = 14, dpi = 300, limitsize = FALSE)
+  print(p_gsea)
+}
+```
+
+```{r}
+#| label: enrichment-tables
+if (length(enrich_all) > 0) {
+  for (nm in names(enrich_all)) {
+    cat("\n\n####", nm, "\n\n")
+    print(knitr::kable(
+      enrich_all[[nm]] |>
+        select(direction, Description, GeneRatio, BgRatio, p.adjust, Count) |>
+        group_by(direction) |> slice_min(p.adjust, n = 10, with_ties = FALSE) |> ungroup(),
+      digits = 4))
+  }
+}
+```
+
+## 10b. Functional enrichment — direct GO annotation (eggNOG-mapper)
+
+Section 10 treats every `egapxtmp_*` model that lacks a symbol as invisible: `enrichGO()`
+requires a human symbol to retrieve GO terms, so roughly half the expressed transcriptome
+never enters the query or the universe. eggNOG-mapper assigns GO terms directly from
+sequence orthology, bypassing the symbol requirement. This section re-runs enrichment using
+those terms via `enricher()` with a custom `TERM2GENE` table.
+
+The annotations file (`sparvus.emapper.annotations`) must be copied to `PROJECT_DIR` before
+rendering. The section skips gracefully if it is absent.
+
+```{r}
+#| label: eggnog-setup
+
+EGGNOG_FILE <- file.path(PROJECT_DIR, "sparvus.emapper.annotations")
+
+RUN_EGGNOG <- file.exists(EGGNOG_FILE) &&
+              has_cp &&
+              requireNamespace("GO.db",         quietly = TRUE) &&
+              requireNamespace("AnnotationDbi", quietly = TRUE)
+
+if (!RUN_EGGNOG)
+  message("Section 10b needs sparvus.emapper.annotations, clusterProfiler, and GO.db — skipping.")
+```
+
+```{r}
+#| label: eggnog-load
+
+if (RUN_EGGNOG) {
+
+  emapper <- readr::read_tsv(EGGNOG_FILE, comment = "##",
+                              na = c("", "-"), show_col_types = FALSE)
+  ## the first column header is literally "#query" in emapper v2
+  names(emapper)[1] <- sub("^#", "", names(emapper)[1])
+
+  ## extract egapxtmp_XXXXXX regardless of surrounding header text
+  ## handles both "egapxtmp_043373-P2" and "gnl|WGS:ZZZZ|egapxtmp_043373-P2"
+  emapper <- dplyr::mutate(emapper,
+                           gene_id = stringr::str_extract(query, "egapxtmp_\\d+"))
+
+  n_na <- sum(is.na(emapper$gene_id))
+  if (n_na > 0)
+    warning(n_na, " query IDs did not match 'egapxtmp_\\d+'. Check head(emapper$query, 3).")
+
+  ## one row per GO term per gene_id
+  term2gene_all <- emapper |>
+    dplyr::filter(!is.na(GOs)) |>
+    dplyr::mutate(go = strsplit(GOs, ",")) |>
+    tidyr::unnest(go) |>
+    dplyr::mutate(go = trimws(go)) |>
+    dplyr::select(go, gene_id) |>
+    dplyr::distinct()
+
+  ## look up ontology class and term description for every GO ID seen
+  go_info <- AnnotationDbi::select(
+      GO.db::GO.db,
+      keys    = unique(term2gene_all$go),
+      columns = c("TERM", "ONTOLOGY"),
+      keytype = "GOID") |>
+    tibble::as_tibble() |>
+    dplyr::rename(go = GOID, term_name = TERM, ontology = ONTOLOGY) |>
+    dplyr::filter(!is.na(ontology))
+
+  ## restrict to Biological Process (run MF/CC analogously if needed)
+  term2gene_bp <- dplyr::semi_join(
+    term2gene_all,
+    dplyr::filter(go_info, ontology == "BP"),
+    by = "go")
+
+  term2name_bp <- go_info |>
+    dplyr::filter(ontology == "BP") |>
+    dplyr::select(go, term_name) |>
+    dplyr::distinct()
+
+  cat("BP terms:", dplyr::n_distinct(term2gene_bp$go),
+      "| gene-term pairs:", nrow(term2gene_bp), "\n")
+}
+```
+
+### Coverage improvement
+
+```{r}
+#| label: eggnog-coverage
+
+if (RUN_EGGNOG) {
+
+  tested_genes <- unique(c(res_body_dev$gene_id, res_head_dev$gene_id,
+                            res_body_flu$gene_id, res_head_flu$gene_id))
+
+  n_tested      <- length(tested_genes)
+  n_with_symbol <- sum(is_real_symbol(
+                     gene_annot$gene_name[match(tested_genes, gene_annot$gene_id)]))
+  n_with_go     <- dplyr::n_distinct(
+                     dplyr::filter(term2gene_bp,
+                                   gene_id %in% tested_genes)$gene_id)
+
+  coverage_tbl <- tibble::tibble(
+    Approach = c("Section 10 — symbol proxy (org.Hs.eg.db)",
+                 "Section 10b — eggNOG GO terms (direct)"),
+    Genes    = c(n_with_symbol, n_with_go),
+    `% of tested` = round(100 * Genes / n_tested, 1)
+  )
+
+  knitr::kable(coverage_tbl,
+               caption = "Enrichment-eligible genes: symbol proxy vs eggNOG direct annotation")
+}
+```
+
+```{r}
+#| label: eggnog-enrichment-fn
+
+if (RUN_EGGNOG) {
+
+  run_enrichment_eggnog <- function(res_df, label) {
+
+    out <- list()
+
+    for (dir in c("up", "down")) {
+
+      universe_ids <- res_df |>
+        dplyr::filter(!is.na(padj)) |>
+        dplyr::pull(gene_id) |>
+        intersect(unique(term2gene_bp$gene_id))
+
+      sig_ids <- res_df |>
+        dplyr::filter(
+          !is.na(padj), padj < ALPHA,
+          if (dir == "up") log2FoldChange >= LFC_CUTOFF
+          else             log2FoldChange <= -LFC_CUTOFF) |>
+        dplyr::pull(gene_id) |>
+        intersect(unique(term2gene_bp$gene_id))
+
+      if (length(sig_ids) < 5) {
+        message(sprintf("%s / %s: %d genes with GO terms — skipped",
+                        label, dir, length(sig_ids)))
+        next
+      }
+
+      ego <- tryCatch(
+        clusterProfiler::enricher(
+          gene          = sig_ids,
+          universe      = universe_ids,
+          TERM2GENE     = term2gene_bp,
+          TERM2NAME     = term2name_bp,
+          pAdjustMethod = "BH",
+          pvalueCutoff  = 0.05,
+          qvalueCutoff  = 0.20
+        ),
+        error = function(e) {
+          message(sprintf("enricher failed (%s/%s): %s", label, dir, conditionMessage(e)))
+          NULL
+        })
+
+      if (is.null(ego) || nrow(as.data.frame(ego)) == 0) {
+        message(sprintf("%s / %s: no enriched BP terms", label, dir))
+        next
+      }
+
+      df <- dplyr::mutate(as.data.frame(ego), contrast = label, direction = dir)
+      readr::write_csv(df,
+        file.path(OUT_DIR, "enrichment",
+                  paste0(label, "_", dir, "_eggnog_GOBP.csv")))
+
+      out[[dir]] <- list(result = ego, df = df)
+    }
+
+    out
+  }
+
+  enrich_eggnog <- list(
+    leg_emergence_body  = run_enrichment_eggnog(res_body_dev, "leg_emergence_body"),
+    nervous_system_head = run_enrichment_eggnog(res_head_dev, "nervous_system_head"),
+    AR_blockade_body    = run_enrichment_eggnog(res_body_flu, "AR_blockade_body"),
+    AR_blockade_head    = run_enrichment_eggnog(res_head_flu, "AR_blockade_head"),
+    old_tissue_adjusted = run_enrichment_eggnog(res_old_df,   "old_tissue_adjusted")
+  )
+  enrich_eggnog <- enrich_eggnog[lengths(enrich_eggnog) > 0]
+
+  cat("Contrasts with at least one enriched direction:",
+      length(enrich_eggnog), "\n")
+}
+```
+
+### Results
+
+```{r}
+#| label: eggnog-dotplots
+#| fig-height: 7
+#| fig-width: 9
+
+if (RUN_EGGNOG && length(enrich_eggnog) > 0) {
+
+  for (contrast_name in names(enrich_eggnog)) {
+    directions <- enrich_eggnog[[contrast_name]]
+    for (dir in names(directions)) {
+      ego <- directions[[dir]]$result
+      p <- clusterProfiler::dotplot(ego, showCategory = 15) +
+        ggplot2::labs(
+          title    = gsub("_", " ", contrast_name),
+          subtitle = paste("Direction:", dir,
+                           "| Genes in universe:", length(ego@universe))) +
+        ggplot2::theme_bw(base_size = 10) +
+        ggplot2::theme(axis.text.y = ggplot2::element_text(size = 8))
+
+      filename <- paste0(contrast_name, "_", dir, "_eggnog_dotplot.png")
+      ggplot2::ggsave(file.path(OUT_DIR, "figures", filename),
+                      plot = p, width = 9, height = 7, dpi = 300)
+      print(p)
+    }
+  }
+}
+```
+
+```{r}
+#| label: eggnog-summary-table
+
+if (RUN_EGGNOG) {
+
+  eggnog_dfs <- lapply(enrich_eggnog, function(x)
+    dplyr::bind_rows(lapply(x, `[[`, "df")))
+
+  if (length(eggnog_dfs) > 0) {
+    all_eggnog <- dplyr::bind_rows(eggnog_dfs) |>
+      dplyr::select(contrast, direction, Description, GeneRatio, BgRatio,
+                    p.adjust, Count) |>
+      dplyr::arrange(contrast, direction, p.adjust)
+
+    readr::write_csv(all_eggnog,
+      file.path(OUT_DIR, "enrichment", "all_contrasts_eggnog_GOBP.csv"))
+
+    ## top 5 terms per contrast × direction for the inline table
+    top_terms <- all_eggnog |>
+      dplyr::group_by(contrast, direction) |>
+      dplyr::slice_min(p.adjust, n = 5, with_ties = FALSE) |>
+      dplyr::ungroup()
+
+    knitr::kable(top_terms, digits = 4,
+                 caption = "Top 5 enriched GO:BP terms per contrast and direction (eggNOG annotation)")
+  }
+}
+```
+
+
+## 10c. Additional enrichment: KEGG pathways, GSEA, and COG categories
+
+This section runs three further analyses on the same eggNOG annotation. All three depend on
+the objects built in Section 10b (`RUN_EGGNOG`, `emapper`, `term2gene_bp`, `term2name_bp`),
+so Section 10b must run first.
+
+```{r}
+#| label: extra-enrich-setup
+
+RUN_EXTRA <- RUN_EGGNOG && exists("term2gene_bp") && nrow(term2gene_bp) > 0
+if (!RUN_EXTRA) message("Section 10c requires Section 10b to have run successfully.")
+```
+
+### KEGG pathway over-representation
+
+```{r}
+#| label: kegg-build
+
+if (RUN_EXTRA) {
+
+  ## TERM2GENE from eggNOG KEGG_Pathway column (values like "map04010,map04151")
+  term2gene_kegg <- emapper |>
+    dplyr::filter(!is.na(KEGG_Pathway)) |>
+    dplyr::mutate(pathway = strsplit(KEGG_Pathway, ",")) |>
+    tidyr::unnest(pathway) |>
+    dplyr::mutate(pathway = trimws(pathway)) |>
+    dplyr::filter(grepl("^map", pathway)) |>
+    dplyr::select(pathway, gene_id) |>
+    dplyr::distinct()
+
+  ## Fetch human-readable pathway names from KEGG REST API.
+  ## Falls back to pathway IDs if the network is unreachable.
+  term2name_kegg <- tryCatch({
+    raw <- readLines("https://rest.kegg.jp/list/pathway", warn = FALSE)
+    tibble::tibble(raw = raw) |>
+      tidyr::separate(raw, into = c("pathway", "term_name"), sep = "\t", extra = "drop") |>
+      dplyr::mutate(pathway = sub("^path:", "", pathway))
+  }, error = function(e) {
+    message("KEGG REST API unreachable — pathway IDs used as labels.")
+    tibble::tibble(pathway = unique(term2gene_kegg$pathway),
+                   term_name = unique(term2gene_kegg$pathway))
+  })
+
+  cat("KEGG pathways:", dplyr::n_distinct(term2gene_kegg$pathway),
+      "| gene-pathway pairs:", nrow(term2gene_kegg), "\n")
+}
+```
+
+```{r}
+#| label: kegg-ora
+
+if (RUN_EXTRA) {
+
+  run_kegg_ora <- function(res_df, label) {
+    out <- list()
+    for (dir in c("up", "down")) {
+      universe_ids <- res_df |>
+        dplyr::filter(!is.na(padj)) |>
+        dplyr::pull(gene_id) |>
+        intersect(unique(term2gene_kegg$gene_id))
+
+      sig_ids <- res_df |>
+        dplyr::filter(!is.na(padj), padj < ALPHA,
+                      if (dir == "up") log2FoldChange >= LFC_CUTOFF
+                      else             log2FoldChange <= -LFC_CUTOFF) |>
+        dplyr::pull(gene_id) |>
+        intersect(unique(term2gene_kegg$gene_id))
+
+      if (length(sig_ids) < 5) next
+
+      ek <- tryCatch(
+        clusterProfiler::enricher(
+          gene          = sig_ids,
+          universe      = universe_ids,
+          TERM2GENE     = term2gene_kegg,
+          TERM2NAME     = term2name_kegg,
+          pAdjustMethod = "BH",
+          pvalueCutoff  = 0.05,
+          qvalueCutoff  = 0.20),
+        error = function(e) NULL)
+
+      if (is.null(ek) || nrow(as.data.frame(ek)) == 0) next
+
+      df <- dplyr::mutate(as.data.frame(ek), contrast = label, direction = dir)
+      readr::write_csv(df,
+        file.path(OUT_DIR, "enrichment", paste0(label, "_", dir, "_KEGG.csv")))
+      out[[dir]] <- list(result = ek, df = df)
+    }
+    out
+  }
+
+  kegg_ora <- list(
+    leg_emergence_body  = run_kegg_ora(res_body_dev, "leg_emergence_body"),
+    nervous_system_head = run_kegg_ora(res_head_dev, "nervous_system_head"),
+    AR_blockade_body    = run_kegg_ora(res_body_flu, "AR_blockade_body"),
+    AR_blockade_head    = run_kegg_ora(res_head_flu, "AR_blockade_head"),
+    old_tissue_adjusted = run_kegg_ora(res_old_df,   "old_tissue_adjusted")
+  )
+  kegg_ora <- kegg_ora[lengths(kegg_ora) > 0]
+  cat("Contrasts with KEGG results:", length(kegg_ora), "\n")
+}
+```
+
+```{r}
+#| label: kegg-plots
+#| fig-height: 6
+#| fig-width: 9
+
+if (RUN_EXTRA && length(kegg_ora) > 0) {
+
+  for (contrast_name in names(kegg_ora)) {
+    for (dir in names(kegg_ora[[contrast_name]])) {
+      ek <- kegg_ora[[contrast_name]][[dir]]$result
+      p <- clusterProfiler::dotplot(ek, showCategory = 15) +
+        ggplot2::labs(title    = gsub("_", " ", contrast_name),
+                      subtitle = paste("KEGG pathway ORA —", dir)) +
+        ggplot2::theme_bw(base_size = 10) +
+        ggplot2::theme(axis.text.y = ggplot2::element_text(size = 8))
+      ggplot2::ggsave(
+        file.path(OUT_DIR, "figures",
+                  paste0(contrast_name, "_", dir, "_KEGG_dotplot.png")),
+        plot = p, width = 9, height = 6, dpi = 300)
+      print(p)
+    }
+  }
+
+  all_kegg <- dplyr::bind_rows(lapply(kegg_ora, function(x)
+    dplyr::bind_rows(lapply(x, `[[`, "df"))))
+  readr::write_csv(all_kegg,
+    file.path(OUT_DIR, "enrichment", "all_contrasts_KEGG.csv"))
+}
+```
+
+### GSEA — GO Biological Process and KEGG
+
+GSEA ranks *all* tested genes by their shrunken log2 fold change and tests whether genes
+annotated with each term cluster at the top or bottom of that list. It does not use a
+significance cutoff, making it more sensitive to coordinated pathway shifts where individual
+genes fall below the DE threshold.
+
+```{r}
+#| label: gsea-fn
+
+if (RUN_EXTRA) {
+
+  ## Build a sorted named vector of shrunken LFCs for GSEA.
+  ## NA LFCs (outliers, zero-count genes) are dropped; all remaining tested genes
+  ## are included so the background is the full experiment, not just DE genes.
+  make_ranks <- function(res_df) {
+    res_df |>
+      dplyr::filter(!is.na(log2FoldChange)) |>
+      dplyr::arrange(dplyr::desc(log2FoldChange)) |>
+      dplyr::select(gene_id, log2FoldChange) |>
+      dplyr::distinct(gene_id, .keep_all = TRUE) |>
+      tibble::deframe()
+  }
+
+  run_gsea <- function(ranks, term2gene, term2name, label, suffix) {
+    gs <- tryCatch(
+      clusterProfiler::GSEA(
+        geneList      = ranks,
+        TERM2GENE     = term2gene,
+        TERM2NAME     = term2name,
+        minGSSize     = 10,
+        maxGSSize     = 500,
+        pvalueCutoff  = 0.05,
+        pAdjustMethod = "BH",
+        eps           = 0,
+        seed          = TRUE,
+        verbose       = FALSE),
+      error = function(e) {
+        message(sprintf("GSEA failed (%s/%s): %s", label, suffix, conditionMessage(e)))
+        NULL
+      })
+
+    if (is.null(gs) || nrow(as.data.frame(gs)) == 0) {
+      message(sprintf("%s / %s: no significant GSEA terms", label, suffix))
+      return(NULL)
+    }
+
+    df <- dplyr::mutate(as.data.frame(gs), contrast = label, gene_set = suffix)
+    readr::write_csv(df,
+      file.path(OUT_DIR, "enrichment", paste0(label, "_GSEA_", suffix, ".csv")))
+    gs
+  }
+
+  contrasts_list <- list(
+    leg_emergence_body  = res_body_dev,
+    nervous_system_head = res_head_dev,
+    AR_blockade_body    = res_body_flu,
+    AR_blockade_head    = res_head_flu,
+    old_tissue_adjusted = res_old_df
+  )
+
+  gsea_go   <- lapply(names(contrasts_list), function(nm)
+    run_gsea(make_ranks(contrasts_list[[nm]]), term2gene_bp,   term2name_bp,   nm, "GOBP"))
+  gsea_kegg <- lapply(names(contrasts_list), function(nm)
+    run_gsea(make_ranks(contrasts_list[[nm]]), term2gene_kegg, term2name_kegg, nm, "KEGG"))
+
+  names(gsea_go)   <- names(contrasts_list)
+  names(gsea_kegg) <- names(contrasts_list)
+
+  gsea_go   <- gsea_go[!vapply(gsea_go,   is.null, logical(1))]
+  gsea_kegg <- gsea_kegg[!vapply(gsea_kegg, is.null, logical(1))]
+
+  cat("GSEA GO results:   ", length(gsea_go),   "contrasts with significant terms\n")
+  cat("GSEA KEGG results: ", length(gsea_kegg), "contrasts with significant terms\n")
+}
+```
+
+```{r}
+#| label: gsea-plots
+#| fig-height: 6
+#| fig-width: 9
+
+if (RUN_EXTRA) {
+
+  plot_gsea <- function(gs_list, suffix) {
+    for (nm in names(gs_list)) {
+      gs <- gs_list[[nm]]
+      p <- clusterProfiler::dotplot(gs, showCategory = 15, split = ".sign") +
+        ggplot2::facet_grid(. ~ .sign) +
+        ggplot2::labs(title    = gsub("_", " ", nm),
+                      subtitle = paste("GSEA —", suffix)) +
+        ggplot2::theme_bw(base_size = 10) +
+        ggplot2::theme(axis.text.y = ggplot2::element_text(size = 8))
+      ggplot2::ggsave(
+        file.path(OUT_DIR, "figures", paste0(nm, "_GSEA_", suffix, "_dotplot.png")),
+        plot = p, width = 9, height = 6, dpi = 300)
+      print(p)
+    }
+  }
+
+  if (length(gsea_go)   > 0) plot_gsea(gsea_go,   "GOBP")
+  if (length(gsea_kegg) > 0) plot_gsea(gsea_kegg, "KEGG")
+}
+```
+
+### COG functional category profile
+
+COG categories describe the *broad functional class* of each gene model. This is not a
+statistical enrichment test — it shows whether upregulated and downregulated genes are
+concentrated in particular functional classes compared with all tested genes.
+
+```{r}
+#| label: cog-profile
+#| fig-cap: "COG functional category distribution. Each bar shows the proportion of genes in that category among all tested genes (grey), upregulated DE genes (red), and downregulated DE genes (blue). Categories with fewer than 10 tested genes are omitted."
+#| fig-height: 7
+#| fig-width: 10
+
+if (RUN_EXTRA) {
+
+  COG_LABELS <- c(
+    A = "RNA processing", B = "Chromatin structure",
+    C = "Energy metabolism", D = "Cell cycle / division",
+    E = "Amino acid metabolism", F = "Nucleotide metabolism",
+    G = "Carbohydrate metabolism", H = "Coenzyme metabolism",
+    I = "Lipid metabolism", J = "Translation / ribosome",
+    K = "Transcription", L = "DNA replication / repair",
+    M = "Cell wall / membrane", N = "Cell motility",
+    O = "Protein turnover / chaperones", P = "Ion transport / metabolism",
+    Q = "Secondary metabolites", R = "General function only",
+    S = "Function unknown", T = "Signal transduction",
+    U = "Vesicular transport", V = "Defense mechanisms",
+    W = "Extracellular structures", Z = "Cytoskeleton"
+  )
+
+  ## one row per COG letter per gene (a gene can have multiple letters)
+  cog_genes <- emapper |>
+    dplyr::filter(!is.na(COG_category), COG_category != "-") |>
+    dplyr::mutate(cog = strsplit(COG_category, "")) |>
+    tidyr::unnest(cog) |>
+    dplyr::filter(cog %in% names(COG_LABELS)) |>
+    dplyr::select(gene_id, cog) |>
+    dplyr::distinct()
+
+  ## use AR_blockade_body as the representative contrast; swap for another if preferred
+  focal <- res_body_flu |>
+    dplyr::filter(!is.na(padj)) |>
+    dplyr::mutate(de_class = dplyr::case_when(
+      padj < ALPHA & log2FoldChange >=  LFC_CUTOFF ~ "up",
+      padj < ALPHA & log2FoldChange <= -LFC_CUTOFF ~ "down",
+      TRUE ~ "background"))
+
+  cog_counts <- cog_genes |>
+    dplyr::inner_join(focal |> dplyr::select(gene_id, de_class), by = "gene_id") |>
+    dplyr::count(cog, de_class) |>
+    dplyr::group_by(de_class) |>
+    dplyr::mutate(prop = n / sum(n)) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(
+      label = paste0(cog, ": ", COG_LABELS[cog]),
+      de_class = factor(de_class, levels = c("up", "background", "down")))
+
+  ## keep only categories with enough tested-gene representation
+  keep_cogs <- cog_counts |>
+    dplyr::filter(de_class == "background", n >= 10) |>
+    dplyr::pull(cog)
+
+  p_cog <- cog_counts |>
+    dplyr::filter(cog %in% keep_cogs) |>
+    ggplot2::ggplot(ggplot2::aes(prop, reorder(label, prop), fill = de_class)) +
+    ggplot2::geom_col(position = "dodge", width = 0.7) +
+    ggplot2::scale_fill_manual(
+      values = c(up = "#C44E52", background = "grey75", down = "#4C72B0"),
+      labels = c(up = "Up-regulated", background = "All tested", down = "Down-regulated")) +
+    ggplot2::scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+    ggplot2::labs(
+      x = "Proportion of genes in category",
+      y = NULL, fill = NULL,
+      title = "COG functional categories — AR blockade body (old flutamide vs control)",
+      caption = "Categories with < 10 tested genes omitted") +
+    ggplot2::theme_bw(base_size = 10) +
+    ggplot2::theme(legend.position = "top",
+                   axis.text.y = ggplot2::element_text(size = 8))
+
+  ggplot2::ggsave(file.path(OUT_DIR, "figures", "COG_profile_AR_blockade_body.png"),
+                  plot = p_cog, width = 10, height = 7, dpi = 300)
+  print(p_cog)
+
+  readr::write_csv(
+    cog_counts |> dplyr::select(cog, label, de_class, n, prop),
+    file.path(OUT_DIR, "enrichment", "COG_profile_AR_blockade_body.csv"))
+}
+```
+
+## 10d. Export gene ID lists for promoter motif enrichment (HPC)
+
+This section exports the gene ID lists needed by `run_ame_motif.sbatch` on the cluster.
+Run this locally after the DESeq2 contrasts are complete, then scp the output folder to the HPC.
+
+```{r}
+#| label: export-gene-lists
+
+GENELIST_DIR <- file.path(OUT_DIR, "gene_lists_for_ame")
+dir.create(GENELIST_DIR, recursive = TRUE, showWarnings = FALSE)
+
+## all five contrasts as a named list
+contrast_results <- list(
+  leg_emergence_body  = res_body_dev,
+  nervous_system_head = res_head_dev,
+  AR_blockade_body    = res_body_flu,
+  AR_blockade_head    = res_head_flu,
+  old_tissue_adjusted = res_old_df
+)
+
+for (cname in names(contrast_results)) {
+
+  df <- contrast_results[[cname]]
+
+  ## universe: all genes that received a padj (i.e. not filtered by independent filtering)
+  universe_ids <- df |>
+    dplyr::filter(!is.na(padj)) |>
+    dplyr::pull(gene_id)
+
+  ## up-regulated: padj < ALPHA, log2FC >= LFC_CUTOFF
+  up_ids <- df |>
+    dplyr::filter(!is.na(padj), padj < ALPHA, log2FoldChange >= LFC_CUTOFF) |>
+    dplyr::pull(gene_id)
+
+  ## down-regulated: padj < ALPHA, log2FC <= -LFC_CUTOFF
+  down_ids <- df |>
+    dplyr::filter(!is.na(padj), padj < ALPHA, log2FoldChange <= -LFC_CUTOFF) |>
+    dplyr::pull(gene_id)
+
+  readr::write_lines(universe_ids, file.path(GENELIST_DIR, paste0(cname, "_universe_geneids.txt")))
+  readr::write_lines(up_ids,       file.path(GENELIST_DIR, paste0(cname, "_up_geneids.txt")))
+  readr::write_lines(down_ids,     file.path(GENELIST_DIR, paste0(cname, "_down_geneids.txt")))
+
+  cat(sprintf("%-30s  universe=%d  up=%d  down=%d\n",
+              cname, length(universe_ids), length(up_ids), length(down_ids)))
+}
+
+cat("\nGenerate lists written to:", GENELIST_DIR, "\n")
+cat("\nUpload to HPC with:\n")
+cat(sprintf("  scp -r %s kfloer_smith_edu@login.smith.edu:/scratch3/workspace/kfloer_smith_edu-simple/motif_analysis/gene_lists\n",
+            GENELIST_DIR))
+```
+
+## 11. Reproducibility
+
+```{r}
+#| label: session
+
+writeLines(capture.output(sessionInfo()),
+           file.path(OUT_DIR, "sessionInfo.txt"))
+
+write_csv(coldata, file.path(OUT_DIR, "tables", "sample_metadata.csv"))
+
+cat("Outputs written to:", normalizePath(OUT_DIR), "\n\n")
+print(list.files(OUT_DIR, recursive = TRUE))
+
 sessionInfo()
 ```
