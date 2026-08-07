@@ -530,7 +530,7 @@
     "href": "file-types-storage.html#common-file-types",
     "title": "File Types and File Sizes",
     "section": "2 Common file types",
-    "text": "2 Common file types\n\n\n\n\n\n\n\n\nFile type\nExample\nWhat it is\n\n\n\n\nFASTQ\nsample_R1.fastq.gz\nRaw sequencing reads\n\n\nCSV\nsamplesheet.csv\nTable describing samples and input files\n\n\nFASTA\ngenome.fa\nReference genome or transcript sequences\n\n\nGTF/GFF\nannotation.gtf\nGene annotation file\n\n\nBAM\nsample.bam\nAligned reads\n\n\nBAI\nsample.bam.bai\nIndex for a BAM file\n\n\nTSV/CSV\nsalmon.merged.gene_counts.tsv\nCount or expression table\n\n\nHTML\nmultiqc_report.html\nInteractive report opened in a browser\n\n\nLOG/TXT\n.nextflow.log\nLogs and command output",
+    "text": "2 Common file types\n\n\n\n\n\n\n\n\n\n\nFile type\nExample\nWhat it is\nWhere it comes from\nOnce or per dataset?\n\n\n\n\nFASTQ\nsample_R1.fastq.gz\nRaw sequencing reads\nSequencing facility\nEach dataset\n\n\nCSV\nsamplesheet.csv\nTable describing samples and input files\nYou create it\nEach dataset\n\n\nFASTA\ngenome.fa\nReference genome or transcript sequences\nDownloaded\nOnce, reused\n\n\nGTF/GFF\nannotation.gtf\nGene annotation file\nDownloaded\nOnce, reused\n\n\nBAM\nsample.bam\nAligned reads\nPipeline output\nEach dataset\n\n\nBAI\nsample.bam.bai\nIndex for a BAM file\nPipeline output\nEach dataset\n\n\nTSV/CSV\nsalmon.merged.gene_counts.tsv\nCount or expression table\nPipeline output\nEach dataset\n\n\nHTML\nmultiqc_report.html\nInteractive report opened in a browser\nPipeline output\nEach dataset\n\n\nLOG/TXT\n.nextflow.log\nLogs and command output\nPipeline output\nEach dataset",
     "crumbs": [
       "File Types and File Sizes"
     ]

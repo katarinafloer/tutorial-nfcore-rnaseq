@@ -12,17 +12,17 @@ Before running a pipeline, it helps to recognize which files are raw data, which
 
 ## Common file types
 
-| File type | Example | What it is |
-|---|---|---|
-| FASTQ | `sample_R1.fastq.gz` | Raw sequencing reads |
-| CSV | `samplesheet.csv` | Table describing samples and input files |
-| FASTA | `genome.fa` | Reference genome or transcript sequences |
-| GTF/GFF | `annotation.gtf` | Gene annotation file |
-| BAM | `sample.bam` | Aligned reads |
-| BAI | `sample.bam.bai` | Index for a BAM file |
-| TSV/CSV | `salmon.merged.gene_counts.tsv` | Count or expression table |
-| HTML | `multiqc_report.html` | Interactive report opened in a browser |
-| LOG/TXT | `.nextflow.log` | Logs and command output |
+| File type | Example | What it is | Where it comes from | Once or per dataset? |
+|---|---|---|---|---|
+| FASTQ | `sample_R1.fastq.gz` | Raw sequencing reads | Sequencing facility | Each dataset |
+| CSV | `samplesheet.csv` | Table describing samples and input files | You create it | Each dataset |
+| FASTA | `genome.fa` | Reference genome or transcript sequences | Downloaded | Once, reused |
+| GTF/GFF | `annotation.gtf` | Gene annotation file | Downloaded | Once, reused |
+| BAM | `sample.bam` | Aligned reads | Pipeline output | Each dataset |
+| BAI | `sample.bam.bai` | Index for a BAM file | Pipeline output | Each dataset |
+| TSV/CSV | `salmon.merged.gene_counts.tsv` | Count or expression table | Pipeline output | Each dataset |
+| HTML | `multiqc_report.html` | Interactive report opened in a browser | Pipeline output | Each dataset |
+| LOG/TXT | `.nextflow.log` | Logs and command output | Pipeline output | Each dataset |
 
 ## FASTQ files
 

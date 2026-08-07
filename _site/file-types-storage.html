@@ -233,15 +233,19 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="2" class="anchored" data-anchor-id="common-file-types"><span class="header-section-number">2</span> Common file types</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>File type</th>
 <th>Example</th>
 <th>What it is</th>
+<th>Where it comes from</th>
+<th>Once or per dataset?</th>
 </tr>
 </thead>
 <tbody>
@@ -249,46 +253,64 @@ ul.task-list li input[type="checkbox"] {
 <td>FASTQ</td>
 <td><code>sample_R1.fastq.gz</code></td>
 <td>Raw sequencing reads</td>
+<td>Sequencing facility</td>
+<td>Each dataset</td>
 </tr>
 <tr class="even">
 <td>CSV</td>
 <td><code>samplesheet.csv</code></td>
 <td>Table describing samples and input files</td>
+<td>You create it</td>
+<td>Each dataset</td>
 </tr>
 <tr class="odd">
 <td>FASTA</td>
 <td><code>genome.fa</code></td>
 <td>Reference genome or transcript sequences</td>
+<td>Downloaded</td>
+<td>Once, reused</td>
 </tr>
 <tr class="even">
 <td>GTF/GFF</td>
 <td><code>annotation.gtf</code></td>
 <td>Gene annotation file</td>
+<td>Downloaded</td>
+<td>Once, reused</td>
 </tr>
 <tr class="odd">
 <td>BAM</td>
 <td><code>sample.bam</code></td>
 <td>Aligned reads</td>
+<td>Pipeline output</td>
+<td>Each dataset</td>
 </tr>
 <tr class="even">
 <td>BAI</td>
 <td><code>sample.bam.bai</code></td>
 <td>Index for a BAM file</td>
+<td>Pipeline output</td>
+<td>Each dataset</td>
 </tr>
 <tr class="odd">
 <td>TSV/CSV</td>
 <td><code>salmon.merged.gene_counts.tsv</code></td>
 <td>Count or expression table</td>
+<td>Pipeline output</td>
+<td>Each dataset</td>
 </tr>
 <tr class="even">
 <td>HTML</td>
 <td><code>multiqc_report.html</code></td>
 <td>Interactive report opened in a browser</td>
+<td>Pipeline output</td>
+<td>Each dataset</td>
 </tr>
 <tr class="odd">
 <td>LOG/TXT</td>
 <td><code>.nextflow.log</code></td>
 <td>Logs and command output</td>
+<td>Pipeline output</td>
+<td>Each dataset</td>
 </tr>
 </tbody>
 </table>
