@@ -42,6 +42,36 @@ Before jumping into commands, run this one-time setup to add colors and syntax h
 This section is for macOS only. If you are on Windows, skip ahead to the exercise.
 :::
 
+### Color the prompt
+
+The prompt is the line that appears every time the terminal is waiting for a command:
+
+```text
+(base) your_username@your-computer ~ %
+```
+
+By default it is plain white on a dark background or plain black on a light background. This line makes it display in white so it stands out clearly:
+
+```bash
+echo 'PROMPT="%F{white}%n@%m %~ %% %f"' >> ~/.zshrc
+```
+
+What each part means:
+
+| Part | Meaning |
+|---|---|
+| `%F{white}` | Start printing in white |
+| `%n` | Your username |
+| `@` | The literal `@` symbol |
+| `%m` | Your computer name |
+| `%~` | Your current directory (using `~` shorthand for home) |
+| `%%` | The `%` prompt character |
+| `%f` | Stop the color (reset to default) |
+
+::: {.callout-note}
+If conda is installed, it automatically adds `(base)` in front of your prompt when the base environment is active. That prefix will still appear, and the rest of the prompt will be white.
+:::
+
 ### Add colors to ls
 
 By default, `ls` lists everything in plain white text. These two lines turn on color coding so folders, files, and special items each appear in a different color:
