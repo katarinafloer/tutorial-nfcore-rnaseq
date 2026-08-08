@@ -10,7 +10,7 @@ This might feel unfamiliar at first, especially if you are used to R with RStudi
 
 This page is a follow-along exercise. Work through the steps in order and run each command yourself.
 
-{{< video https://youtu.be/TZpUua3Rg28 >}}
+{{< video https://www.youtube.com/watch?v=FUFaVdqcqYU >}}
 
 ::: {.callout-tip}
 Every command on this page is safe to run. You will not break anything by following these steps.
@@ -524,6 +524,8 @@ You have practiced the core terminal commands you will use throughout this tutor
 | Previewed the end of a file | `tail` |
 | Renamed a file | `mv old_name new_name` |
 | Moved a file | `mv /full/path/file /destination/` |
+| Deleted a file | `rm file.txt` |
+| Deleted a folder and everything in it | `rm -rf folder/` |
 | Stopped a running command | `Ctrl+C` |
 | Exited a pager | `q` |
 
@@ -573,6 +575,8 @@ The `.sh` extension is a convention, not a requirement. Both work, the extension
 | Scroll through a large file | `less file.txt` |
 | Rename a file | `mv old_name.txt new_name.txt` |
 | Move a file | `mv /source/file.txt /destination/` |
+| Delete a file | `rm file.txt` |
+| Delete a folder and everything in it | `rm -rf folder/` |
 | Copy a file | `cp source destination` |
 | Copy a folder | `cp -r source/ destination/` |
 | Check folder size | `du -sh folder/` |
