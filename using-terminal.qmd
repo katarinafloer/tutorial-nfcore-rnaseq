@@ -582,6 +582,7 @@ The `.sh` extension is a convention, not a requirement. Both work, the extension
 | Check folder size | `du -sh folder/` |
 | Check disk space | `df -h .` |
 | Cancel a running command | `Ctrl+C` |
+| Delete the entire current line | `Ctrl+K` |
 | Exit a pager | `q` |
 
 ## Tips for beginners
