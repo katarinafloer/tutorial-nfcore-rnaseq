@@ -123,7 +123,7 @@ If the problem persists:
 
 1. Delete the cache folder and try again:
    ```bash
-   rm -rf /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/.nextflow-apptainer-cache
+   rm -rf YOUR_PATH_HERE/.nextflow-apptainer-cache
    ```
 2. Resubmit the job, Nextflow will re-download the containers.
 
@@ -196,7 +196,7 @@ Make sure you are using full absolute paths (starting with `/`) in the sampleshe
 **Fix:** Check how much space is left:
 
 ```bash
-df -h /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/
+df -h YOUR_PATH_HERE/
 ```
 
 The `work/` folder (where Nextflow stores intermediate files) can grow very large. To remove completed intermediate files while keeping final results, run this from inside the workspace directory:

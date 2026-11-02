@@ -134,8 +134,9 @@ Before you start running analyses, think about where your files will live. Unity
 ```text
 /home/kfloer_smith_edu/
   rnaseq_nf_core/
-    job-logs/          ← SLURM output and error files
+    job-logs/          ← SLURM output and error files for the test run
     scripts/           ← Your .sh job scripts, plus the samplesheet and params JSON they generate
+  nov26-frog-manuscript/  ← SLURM output and error files for the real run
 
 /work/pi_lmangiamele_smith_edu/
   03_26_flut_yale_rnaseq_raw/                ← Raw FASTQ files, first sequencing run

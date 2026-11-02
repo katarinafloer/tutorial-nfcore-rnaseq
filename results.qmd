@@ -36,7 +36,7 @@ The most important files for you are:
 The MultiQC report is an HTML file that you open in a browser. Copy it from Unity to your laptop using `scp`. Run this command **from a terminal on your laptop** (not from Unity):
 
 ```bash
-scp kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/multiqc/star_salmon/multiqc_report.html ~/Desktop/
+scp kfloer_smith_edu@unity.rc.umass.edu:YOUR_PATH_HERE/results_all_samples_ncbi_ref/multiqc/star_salmon/multiqc_report.html ~/Desktop/
 ```
 
 Then open it by double-clicking it, or from the terminal:
@@ -48,7 +48,7 @@ open ~/Desktop/multiqc_report.html
 To copy the entire results folder (for archiving):
 
 ```bash
-scp -r kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/ ~/Desktop/rnaseq_results/
+scp -r kfloer_smith_edu@unity.rc.umass.edu:YOUR_PATH_HERE/results_all_samples_ncbi_ref/ ~/Desktop/rnaseq_results/
 ```
 
 ## Reading the MultiQC report
@@ -152,7 +152,7 @@ Copy it to your laptop for use in R:
 
 ```bash
 # Run on your laptop
-scp kfloer_smith_edu@unity.rc.umass.edu:/scratch4/workspace/kfloer_smith_edu-YOUR_WORKSPACE/results/star_salmon/salmon.merged.gene_counts.tsv ~/Desktop/
+scp kfloer_smith_edu@unity.rc.umass.edu:YOUR_PATH_HERE/results_all_samples_ncbi_ref/star_salmon/salmon.merged.gene_counts.tsv ~/Desktop/
 ```
 
 ## Save provenance files
@@ -166,7 +166,7 @@ Before you clean up the workspace or move on, archive these files, they document
 
 ```bash
 # Copy the pipeline_info folder to lab storage
-cp -r results/pipeline_info/ /work/pi_lmangiamele_smith_edu/YOUR_PROJECT_NAME/pipeline_info/
+cp -r YOUR_PATH_HERE/results_all_samples_ncbi_ref/pipeline_info/ /work/pi_lmangiamele_smith_edu/YOUR_PROJECT_NAME/pipeline_info/
 ```
 
 ## What to do next

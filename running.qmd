@@ -63,7 +63,7 @@ On Unity, open a new file with nano:
 nano ~/rnaseq_nf_core/nfcore-rnaseq-test.sh
 ```
 
-Paste in the following. Replace `YOUR_USERNAME` with your Unity username and `YOUR_WORKSPACE` with your scratch workspace name (from `ws_list`):
+Paste in the following. Replace `YOUR_USERNAME` with your Unity username and `YOUR_PATH_HERE` with the full path to your scratch workspace (the `workspace directory` line from `ws_list`):
 
 ```bash
 #!/bin/bash
@@ -79,7 +79,7 @@ Paste in the following. Replace `YOUR_USERNAME` with your Unity username and `YO
 
 set -euo pipefail
 
-SCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE
+SCRATCH_RNASEQ=YOUR_PATH_HERE    # full path from ws_list
 
 cd "$SCRATCH_RNASEQ"
 
@@ -196,11 +196,13 @@ The lab keeps one copy of every Apptainer image that nf-core/rnaseq 3.26.0 needs
 Make a folder for your scripts, then open a new file:
 
 ```bash
-mkdir -p ~/rnaseq_nf_core/scripts ~/rnaseq_nf_core/job-logs
+mkdir -p ~/rnaseq_nf_core/scripts ~/nov26-frog-manuscript
 nano ~/rnaseq_nf_core/scripts/run-nfcore.sh
 ```
 
-Paste in the script below. Replace `YOUR_USERNAME` with your Unity username, `/scratch3/workspace/YOUR_USERNAME-YOUR_WORKSPACE` with your scratch workspace path (from `ws_list`), and `you@email.edu` with your email:
+The job logs for the real run go in `~/nov26-frog-manuscript`, the project folder for the manuscript analysis. SLURM does not create the log folder for you, if it is missing when you submit, the job fails without writing any log, so make sure the `mkdir` above has run first.
+
+Paste in the script below. Replace `YOUR_USERNAME` with your Unity username, `YOUR_PATH_HERE` with the full path to your scratch workspace (the `workspace directory` line from `ws_list`), and `you@email.edu` with your email:
 
 ```bash
 #!/bin/bash
@@ -209,14 +211,14 @@ Paste in the script below. Replace `YOUR_USERNAME` with your Unity username, `/s
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=3-00:00:00
-#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.%j.out
-#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.%j.err
+#SBATCH --output=/home/YOUR_USERNAME/nov26-frog-manuscript/nfcore-ncbi-ref.%j.out
+#SBATCH --error=/home/YOUR_USERNAME/nov26-frog-manuscript/nfcore-ncbi-ref.%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=you@email.edu
 
 set -euo pipefail
 
-SCRATCH_RNASEQ=/scratch3/workspace/YOUR_USERNAME-YOUR_WORKSPACE
+SCRATCH_RNASEQ=YOUR_PATH_HERE    # full path from ws_list
 SHARED_CONTAINER_CACHE=/work/pi_lmangiamele_smith_edu/nfcore_container_cache/rnaseq-3.26.0
 
 # Samples come from both sequencing runs
@@ -251,7 +253,7 @@ module load apptainer/latest
 
 mkdir -p "$SCRATCH_RNASEQ/.apptainer/build-cache"
 mkdir -p "$SCRATCH_RNASEQ/.apptainer/tmp"
-mkdir -p /home/YOUR_USERNAME/rnaseq_nf_core/job-logs
+mkdir -p /home/YOUR_USERNAME/nov26-frog-manuscript
 mkdir -p /home/YOUR_USERNAME/rnaseq_nf_core/scripts
 
 export APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.apptainer/build-cache"
@@ -355,7 +357,7 @@ echo "Finished at: $(date)"
 Save and close nano: `Ctrl + O`, `Enter`, `Ctrl + X`.
 
 ::: {.callout-important}
-Use your own scratch workspace for `SCRATCH_RNASEQ`. Your workspace may be on `/scratch3` or `/scratch4`, copy the exact path from `ws_list`.
+Use your own scratch workspace for `SCRATCH_RNASEQ`. Copy the exact `workspace directory` path from `ws_list`, do not guess it, the filesystem part of the path (for example `/scratch3` or `/scratch4`) differs between workspaces.
 :::
 
 ### What each part of the script does
@@ -418,7 +420,7 @@ sbatch ~/rnaseq_nf_core/scripts/run-nfcore.sh
 Then watch the log (replace `12345678` with your job ID):
 
 ```bash
-tail -f ~/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.12345678.out
+tail -f ~/nov26-frog-manuscript/nfcore-ncbi-ref.12345678.out
 ```
 
 The first lines show the paths, the generated samplesheet, and the sample count. If any check fails you will see a line starting with `ERROR:` and the job will end.
@@ -432,8 +434,8 @@ With all samples, the run takes many hours to a few days. The script reserves up
 | Task | Command |
 |---|---|
 | See your jobs in the queue | `squeue --me` |
-| Watch the output log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.JOBID.out` |
-| Watch the error log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.JOBID.err` |
+| Watch the output log live | `tail -f ~/nov26-frog-manuscript/nfcore-ncbi-ref.JOBID.out` |
+| Watch the error log live | `tail -f ~/nov26-frog-manuscript/nfcore-ncbi-ref.JOBID.err` |
 | Cancel a job | `scancel JOBID` |
 
 Replace `JOBID` with the number that `sbatch` printed when you submitted.
