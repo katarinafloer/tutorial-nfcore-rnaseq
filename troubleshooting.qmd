@@ -166,7 +166,7 @@ ERROR ~ No such file or directory: samplesheet.csv
 ls ~/rnaseq_nf_core/scripts/samplesheet.csv
 ```
 
-If the folder is missing, create it with `mkdir -p ~/rnaseq_nf_core/scripts` and resubmit (see the [Run the Pipeline](running.qmd) page).
+If the folder is missing, create it with `mkdir -p ~/rnaseq_nf_core/scripts` and resubmit (see the [Run the Full Pipeline](running-full.qmd) page).
 
 ---
 

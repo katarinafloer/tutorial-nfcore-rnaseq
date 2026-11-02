@@ -41,7 +41,7 @@ Files are named `SAMPLE_S#_L00#_R1_001.fastq.gz` and `SAMPLE_S#_L00#_R2_001.fast
 
 ### Reference genome (NCBI RefSeq), used for the real run
 
-The NCBI RefSeq *S. parvus* assembly **GCF_062004578.1 (SC_StPar_1.0)**, with annotation release **GCF_062004578.1-RS_2026_10**. This is the reference used in the [Run the Pipeline](running.qmd) script.
+The NCBI RefSeq *S. parvus* assembly **GCF_062004578.1 (SC_StPar_1.0)**, with annotation release **GCF_062004578.1-RS_2026_10**. This is the reference used in the [Run the Full Pipeline](running-full.qmd) script.
 
 **On Unity:**
 

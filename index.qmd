@@ -50,10 +50,11 @@ Throughout the tutorial you will see the username `kfloer_smith_edu` in example 
 | 5 | [Connecting to Unity](connecting-to-unity.qmd) | Log in to the cluster |
 | 6 | [Using Unity](using-unity.qmd) | Learn how Unity is organized |
 | 7 | [Set up your workspace](setup.qmd) | Create a scratch directory for the pipeline |
-| 8 | [Run the pipeline](running.qmd) | Submit the nf-core/rnaseq job |
-| 9 | [Interpret results](results.qmd) | Read the quality reports and count tables |
-| 10 | [Differential expression](DGE.qmd) | Run the DESeq2 analysis in R |
-| 11 | [Troubleshooting](troubleshooting.qmd) | Fix common problems |
+| 8 | [Run a test pipeline](running-test.qmd) | Check that everything works with a tiny built-in dataset |
+| 9 | [Run the full pipeline](running-full.qmd) | Submit the nf-core/rnaseq job for all samples |
+| 10 | [Interpret results](results.qmd) | Read the quality reports and count tables |
+| 11 | [Differential expression](DGE.qmd) | Run the DESeq2 analysis in R |
+| 12 | [Troubleshooting](troubleshooting.qmd) | Fix common problems |
 
 ## What you need before you start
 

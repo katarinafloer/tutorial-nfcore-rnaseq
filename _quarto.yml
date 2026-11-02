@@ -22,7 +22,8 @@ website:
       - connecting-to-unity.qmd
       - using-unity.qmd
       - setup.qmd
-      - running.qmd
+      - running-test.qmd
+      - running-full.qmd
       - results.qmd
       - DGE.qmd
       - troubleshooting.qmd
