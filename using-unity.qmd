@@ -135,17 +135,19 @@ Before you start running analyses, think about where your files will live. Unity
 /home/kfloer_smith_edu/
   rnaseq_nf_core/
     job-logs/          ← SLURM output and error files
-    scripts/           ← Your .sh job scripts
+    scripts/           ← Your .sh job scripts, plus the samplesheet and params JSON they generate
 
 /work/pi_lmangiamele_smith_edu/
-  03_26_flut_yale_rnaseq/     ← Raw FASTQ files (input data)
-  output_tadpole_plus_adult/  ← Reference genome and annotation
-  results_final/              ← Final results you want to keep
+  03_26_flut_yale_rnaseq_raw/                ← Raw FASTQ files, first sequencing run
+  08_26_flut_yale_rnaseq_replication_raw/    ← Raw FASTQ files, replication run
+  ncbi_reference_genome_10_26/               ← NCBI RefSeq genome FASTA and GTF
+  nfcore_container_cache/rnaseq-3.26.0/      ← Shared Apptainer images for the pipeline
+  results_final/                             ← Final results you want to keep
 
-/scratch4/workspace/kfloer_smith_edu-rnaseq/
-  samplesheets/        ← Input samplesheet CSV
-  results/             ← nf-core pipeline output (large, temporary)
-  .nextflow-apptainer-cache/  ← Container image cache
+/scratch3/workspace/kfloer_smith_edu-WORKSPACE/
+  results_all_samples_ncbi_ref/  ← nf-core pipeline output (large, temporary)
+  work/                          ← Nextflow intermediate files (needed for -resume)
+  .apptainer/                    ← Apptainer build cache and temp files
 ```
 
 ::: {.callout-warning}

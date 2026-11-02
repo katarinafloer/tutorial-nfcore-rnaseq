@@ -113,7 +113,7 @@ Failed to pull singularity image
 FATAL:   Unable to pull docker://...
 ```
 
-**Fix:** This usually means the container download was interrupted. The script already includes a line to clean up partial downloads before running:
+**Fix for the test run** (which uses your own cache in scratch): this usually means the container download was interrupted. The test script already includes a line to clean up partial downloads before running:
 
 ```bash
 find "$NXF_APPTAINER_CACHEDIR" -type f -name "*.pulling.*" -delete || true
@@ -127,6 +127,29 @@ If the problem persists:
    ```
 2. Resubmit the job, Nextflow will re-download the containers.
 
+**Fix for the real run** (which uses the lab's shared cache in `/work/pi_lmangiamele_smith_edu/nfcore_container_cache/rnaseq-3.26.0`): do **not** delete anything in the shared cache. Check that `NXF_APPTAINER_CACHEDIR` in your script points to the shared cache, then ask whoever maintains the cache to rebuild the image.
+
+---
+
+### The script stops with an `ERROR:` line before Nextflow starts
+
+**Symptom:** The `.out` log ends with one of these:
+
+```text
+ERROR: Missing directory: ...
+ERROR: Missing or empty genome file: ...
+ERROR: No R1 FASTQ files found in ...
+ERROR: Missing R2 for sample ...
+ERROR: Invalid shared container image: ...
+```
+
+**Fix:** These come from the pre-flight checks in the run script, the message names the exact path that is wrong.
+
+- **Missing directory:** check for typos in the path, and that your scratch workspace has not expired (`ws_list`).
+- **Missing genome file:** check that the reference folder contains the `.fna` and `.gtf` files, `ls -lh /work/pi_lmangiamele_smith_edu/ncbi_reference_genome_10_26/`.
+- **No R1 / missing R2:** FASTQ files must be named `*_R1_001.fastq.gz` and `*_R2_001.fastq.gz`, and each R1 needs a matching R2 in the same folder.
+- **Invalid shared container image:** ask the cache maintainer to rebuild it, do not delete it yourself.
+
 ---
 
 ### The samplesheet is not found
@@ -137,13 +160,13 @@ If the problem persists:
 ERROR ~ No such file or directory: samplesheet.csv
 ```
 
-**Fix:** Check that the path in your `params.json` exactly matches where the file actually is:
+**Fix:** The run script writes the samplesheet itself, so check that the `SAMPLESHEET` path in the script is correct and that its folder exists:
 
 ```bash
-ls /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv
+ls ~/rnaseq_nf_core/scripts/samplesheet.csv
 ```
 
-If the file is missing, create it (see the [Run the Pipeline](running.qmd) page).
+If the folder is missing, create it with `mkdir -p ~/rnaseq_nf_core/scripts` and resubmit (see the [Run the Pipeline](running.qmd) page).
 
 ---
 
@@ -158,7 +181,8 @@ ERROR ~ File does not exist: /path/to/sample_R1.fastq.gz
 **Fix:** Check that the paths in your samplesheet are correct and that the files exist:
 
 ```bash
-ls /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/
+ls /work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw/
+ls /work/pi_lmangiamele_smith_edu/08_26_flut_yale_rnaseq_replication_raw/
 ```
 
 Make sure you are using full absolute paths (starting with `/`) in the samplesheet, not relative paths.

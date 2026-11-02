@@ -161,88 +161,87 @@ A successful test run ends with something like:
 
 If you see `Pipeline completed with errors`, check the `.err` log file for details.
 
-## Step 2: Run with your own samples
+## Step 2: Run with all of the lab's samples
 
-For a real run you need three things:
+The real run uses one SLURM script that does everything itself:
 
-1. A **samplesheet** CSV listing your samples and FASTQ file paths
-2. A **genome FASTA** and **GTF annotation** (see [Frog Data Availability](frog-data-availability.qmd))
-3. A **params JSON** file that points to everything
+1. Checks that the input folders, genome files, and shared container cache exist
+2. **Builds the samplesheet automatically** from every FASTQ pair in both sequencing folders
+3. Writes the params JSON file
+4. Checks that the shared container images are valid
+5. Launches nf-core/rnaseq
 
-### Create the samplesheet
+You do not write the samplesheet or params file by hand, the script regenerates both every time it runs.
 
-The samplesheet is a CSV file with one row per sample. Create it with nano:
+### What the run uses
 
-```bash
-nano /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv
-```
-
-It must have exactly these four columns:
-
-```text
-sample,fastq_1,fastq_2,strandedness
-C45-1B,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1B_S2_L002_R2_001.fastq.gz,reverse
-C45-1H,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq/C45-1H_S1_L002_R2_001.fastq.gz,reverse
-```
-
-Each column:
-
-| Column | What to put |
+| Input | Path on Unity |
 |---|---|
-| `sample` | A short name for the sample, no spaces |
-| `fastq_1` | Full path to the R1 (forward) FASTQ file |
-| `fastq_2` | Full path to the R2 (reverse) FASTQ file |
-| `strandedness` | `reverse`, `forward`, or `unstranded` (use `reverse` for most Illumina RNA kits) |
+| FASTQ folder 1 (first sequencing run) | `/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw` |
+| FASTQ folder 2 (replication run) | `/work/pi_lmangiamele_smith_edu/08_26_flut_yale_rnaseq_replication_raw` |
+| Reference genome folder | `/work/pi_lmangiamele_smith_edu/ncbi_reference_genome_10_26` |
+| Genome FASTA | `GCF_062004578.1_SC_StPar_1.0_genomic.fna` |
+| Genome GTF | `GCF_062004578.1_SC_StPar_1.0_genomic.gtf` |
+| Shared container cache | `/work/pi_lmangiamele_smith_edu/nfcore_container_cache/rnaseq-3.26.0` |
 
-### Create the params file
+The reference is the NCBI RefSeq assembly **GCF_062004578.1 (SC_StPar_1.0)** with annotation release **GCF_062004578.1-RS_2026_10**. See [Frog Data Availability](frog-data-availability.qmd) for more on these files.
 
-Rather than putting all options on the command line, save them in a JSON file. Create it with nano:
+::: {.callout-note}
+## Why a shared container cache?
+The lab keeps one copy of every Apptainer image that nf-core/rnaseq 3.26.0 needs in `/work/`. Pointing `NXF_APPTAINER_CACHEDIR` there means your run does not have to download and build the containers again, which saves hours and avoids most container errors. If the script reports an invalid image, ask whoever maintains the cache to rebuild it rather than deleting files yourself.
+:::
 
-```bash
-nano /scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/params.json
-```
+### Create the script
 
-```json
-{
-  "input": "/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/samplesheet.csv",
-  "outdir": "/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE/results",
-  "fasta": "/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.fna",
-  "gtf": "/work/pi_lmangiamele_smith_edu/output_tadpole_plus_adult/complete.genomic.gtf",
-  "igenomes_ignore": true,
-  "aligner": "star_salmon",
-  "pseudo_aligner": "salmon",
-  "gtf_extra_attributes": "gene",
-  "featurecounts_group_type": "transcript_biotype",
-  "max_cpus": 48,
-  "max_memory": "256.GB",
-  "max_time": "72.h"
-}
-```
-
-Replace `YOUR_USERNAME` and `YOUR_WORKSPACE` with your actual values.
-
-### Create the SLURM script
+Make a folder for your scripts, then open a new file:
 
 ```bash
-nano ~/rnaseq_nf_core/run-rnaseq.sh
+mkdir -p ~/rnaseq_nf_core/scripts ~/rnaseq_nf_core/job-logs
+nano ~/rnaseq_nf_core/scripts/run-nfcore.sh
 ```
+
+Paste in the script below. Replace `YOUR_USERNAME` with your Unity username, `/scratch3/workspace/YOUR_USERNAME-YOUR_WORKSPACE` with your scratch workspace path (from `ws_list`), and `you@email.edu` with your email:
 
 ```bash
 #!/bin/bash
-#SBATCH --job-name=nfcore-rnaseq
+#SBATCH --job-name=nfcore-rnaseq-ncbi-ref
 #SBATCH --partition=cpu
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=3-00:00:00
-#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.out
-#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-rnaseq.%j.err
+#SBATCH --output=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.%j.out
+#SBATCH --error=/home/YOUR_USERNAME/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=you@email.edu
 
 set -euo pipefail
 
-SCRATCH_RNASEQ=/scratch4/workspace/YOUR_USERNAME-YOUR_WORKSPACE
-PARAMS="$SCRATCH_RNASEQ/params.json"
+SCRATCH_RNASEQ=/scratch3/workspace/YOUR_USERNAME-YOUR_WORKSPACE
+SHARED_CONTAINER_CACHE=/work/pi_lmangiamele_smith_edu/nfcore_container_cache/rnaseq-3.26.0
+
+# Samples come from both sequencing runs
+FASTQ_DIR_1=/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw
+FASTQ_DIR_2=/work/pi_lmangiamele_smith_edu/08_26_flut_yale_rnaseq_replication_raw
+
+# NCBI RefSeq reference: GCF_062004578.1 (SC_StPar_1.0), annotation GCF_062004578.1-RS_2026_10
+GENOME_DIR=/work/pi_lmangiamele_smith_edu/ncbi_reference_genome_10_26
+GENOME_FASTA="$GENOME_DIR/GCF_062004578.1_SC_StPar_1.0_genomic.fna"
+GENOME_GTF="$GENOME_DIR/GCF_062004578.1_SC_StPar_1.0_genomic.gtf"
+
+SAMPLESHEET="/home/YOUR_USERNAME/rnaseq_nf_core/scripts/samplesheet.csv"
+PARAMS="/home/YOUR_USERNAME/rnaseq_nf_core/scripts/ncbi_ref_all_samples_params.json"
+
+OUTDIR="$SCRATCH_RNASEQ/results_all_samples_ncbi_ref"
+
+echo "Running on host: $(hostname)"
+echo "Started at: $(date)"
+echo "Scratch workspace: $SCRATCH_RNASEQ"
+echo "Shared container cache: $SHARED_CONTAINER_CACHE"
+echo "FASTQ directory 1: $FASTQ_DIR_1"
+echo "FASTQ directory 2: $FASTQ_DIR_2"
+echo "Genome FASTA: $GENOME_FASTA"
+echo "Genome GTF: $GENOME_GTF"
+echo "Output directory: $OUTDIR"
 
 cd "$SCRATCH_RNASEQ"
 
@@ -252,35 +251,189 @@ module load apptainer/latest
 
 mkdir -p "$SCRATCH_RNASEQ/.apptainer/build-cache"
 mkdir -p "$SCRATCH_RNASEQ/.apptainer/tmp"
+mkdir -p /home/YOUR_USERNAME/rnaseq_nf_core/job-logs
+mkdir -p /home/YOUR_USERNAME/rnaseq_nf_core/scripts
 
 export APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.apptainer/build-cache"
 export APPTAINER_TMPDIR="$SCRATCH_RNASEQ/.apptainer/tmp"
 export PROOT_TMP_DIR="$SCRATCH_RNASEQ/.apptainer/tmp"
 export TMPDIR="$SCRATCH_RNASEQ/.apptainer/tmp"
-export NXF_APPTAINER_CACHEDIR="$SCRATCH_RNASEQ/.nextflow-apptainer-cache"
+export NXF_APPTAINER_CACHEDIR="$SHARED_CONTAINER_CACHE"
 export NXF_OPTS='-Xms1g -Xmx4g'
 export PROOT_NO_SECCOMP=1
 
+echo "Checking required directories..."
+for d in "$SCRATCH_RNASEQ" "$FASTQ_DIR_1" "$FASTQ_DIR_2" "$GENOME_DIR" "$SHARED_CONTAINER_CACHE"; do
+    if [[ ! -d "$d" ]]; then
+        echo "ERROR: Missing directory: $d"
+        exit 1
+    fi
+done
+
+echo "Checking genome files..."
+for f in "$GENOME_FASTA" "$GENOME_GTF"; do
+    if [[ ! -s "$f" ]]; then
+        echo "ERROR: Missing or empty genome file: $f"
+        exit 1
+    fi
+done
+
+echo "Writing samplesheet from all FASTQ pairs..."
+echo "sample,fastq_1,fastq_2,strandedness" > "$SAMPLESHEET"
+
+shopt -s nullglob
+r1_files=("$FASTQ_DIR_1"/*_R1_001.fastq.gz "$FASTQ_DIR_2"/*_R1_001.fastq.gz)
+
+if [[ ${#r1_files[@]} -eq 0 ]]; then
+    echo "ERROR: No R1 FASTQ files found in $FASTQ_DIR_1 or $FASTQ_DIR_2"
+    exit 1
+fi
+
+for r1 in "${r1_files[@]}"; do
+    dir=$(dirname "$r1")
+    sample=$(basename "$r1" _R1_001.fastq.gz)
+    r2="$dir/${sample}_R2_001.fastq.gz"
+
+    if [[ ! -s "$r2" ]]; then
+        echo "ERROR: Missing R2 for sample $sample: $r2"
+        exit 1
+    fi
+
+    echo "${sample},${r1},${r2},auto" >> "$SAMPLESHEET"
+done
+
+echo "Samplesheet:"
+cat "$SAMPLESHEET"
+
+echo "Number of samples:"
+tail -n +2 "$SAMPLESHEET" | wc -l
+
+echo "Writing params file..."
+cat > "$PARAMS" <<EOF
+{
+  "input": "$SAMPLESHEET",
+  "outdir": "$OUTDIR",
+  "fasta": "$GENOME_FASTA",
+  "gtf": "$GENOME_GTF",
+  "igenomes_ignore": true,
+  "aligner": "star_salmon",
+  "pseudo_aligner": "salmon",
+  "gtf_extra_attributes": "gene",
+  "featurecounts_group_type": "transcript_biotype",
+  "save_reference": true,
+  "max_cpus": 48,
+  "max_memory": "256.GB",
+  "max_time": "72.h"
+}
+EOF
+
+echo "Checking shared Apptainer images..."
+find "$NXF_APPTAINER_CACHEDIR" -type f -name "*.img" | while read -r img; do
+    if ! apptainer inspect "$img" > /dev/null 2>&1; then
+        echo "ERROR: Invalid shared container image: $img"
+        echo "Ask the cache owner to rebuild the shared cache."
+        exit 1
+    fi
+done
+
+echo "Nextflow version:"
+nextflow -version
+
+echo "Apptainer version:"
+apptainer --version
+
+echo "Launching nf-core/rnaseq with all samples and NCBI RefSeq genome GCF_062004578.1..."
 nextflow run nf-core/rnaseq \
   -r 3.26.0 \
   -profile unity \
   -params-file "$PARAMS" \
   -resume
+
+echo "Finished at: $(date)"
 ```
+
+Save and close nano: `Ctrl + O`, `Enter`, `Ctrl + X`.
+
+::: {.callout-important}
+Use your own scratch workspace for `SCRATCH_RNASEQ`. Your workspace may be on `/scratch3` or `/scratch4`, copy the exact path from `ws_list`.
+:::
+
+### What each part of the script does
+
+**Pre-flight checks.** Before anything runs, the script confirms that every folder exists and that the genome FASTA and GTF are not empty. If something is missing, the job stops right away with a clear `ERROR:` message in the `.out` log, instead of failing hours later inside Nextflow.
+
+**Building the samplesheet.** The script finds every file ending in `_R1_001.fastq.gz` in both FASTQ folders. For each one it:
+
+- Uses the file name without `_R1_001.fastq.gz` as the sample name (for example `C45-1B_S2_L002`)
+- Finds the matching `_R2_001.fastq.gz` file in the same folder, and stops with an error if it is missing
+- Writes one row to `samplesheet.csv`
+
+The resulting samplesheet looks like this:
+
+```text
+sample,fastq_1,fastq_2,strandedness
+C45-1B_S2_L002,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw/C45-1B_S2_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw/C45-1B_S2_L002_R2_001.fastq.gz,auto
+C45-1H_S1_L002,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw/C45-1H_S1_L002_R1_001.fastq.gz,/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw/C45-1H_S1_L002_R2_001.fastq.gz,auto
+...
+```
+
+| Column | What it contains |
+|---|---|
+| `sample` | Sample name taken from the FASTQ file name |
+| `fastq_1` | Full path to the R1 (forward) FASTQ file |
+| `fastq_2` | Full path to the R2 (reverse) FASTQ file |
+| `strandedness` | `auto`, the pipeline subsamples reads and uses Salmon to detect the library strandedness for each sample |
+
+The job log prints the full samplesheet and the number of samples, check these first to make sure every sample was picked up.
+
+::: {.callout-tip}
+If two rows have the same `sample` name, nf-core/rnaseq treats them as technical replicates and merges their reads. Because the sample names here include the `_S#_L00#` suffix, rows from the two sequencing runs stay separate unless the file names are identical.
+:::
+
+**Writing the params file.** The script writes the pipeline options to a JSON file. Using a JSON file avoids errors where `true`/`false` values passed on the command line are read as text.
+
+| Parameter | What it does |
+|---|---|
+| `input` | The samplesheet the script just wrote |
+| `outdir` | Where results go, inside your scratch workspace |
+| `fasta`, `gtf` | The NCBI RefSeq genome and annotation |
+| `igenomes_ignore` | Do not use nf-core's built-in reference genomes (there is none for *S. parvus*) |
+| `aligner` | `star_salmon`, align reads to the genome with STAR, then quantify with Salmon |
+| `pseudo_aligner` | Also run Salmon directly on the reads as a fast pseudo-alignment |
+| `gtf_extra_attributes` | Carry the GTF `gene` attribute (gene symbols) into the count tables |
+| `featurecounts_group_type` | Summarise biotype QC by the GTF's `transcript_biotype` attribute |
+| `save_reference` | Save the STAR and Salmon indexes it builds, so they can be reused |
+| `max_cpus`, `max_memory`, `max_time` | Upper limits on what any single pipeline step can request |
+
+**Checking the shared containers.** The script runs `apptainer inspect` on every image in the shared cache. If any image is corrupt, the job stops and tells you which one. Do not delete images from the shared cache yourself, other lab members use it too.
+
+**Launching the pipeline.** The final `nextflow run` command is the same as in the test run, except it uses `-profile unity` (no `test`) and reads all options from the params file.
 
 ### Submit
 
 ```bash
-sbatch ~/rnaseq_nf_core/run-rnaseq.sh
+sbatch ~/rnaseq_nf_core/scripts/run-nfcore.sh
 ```
+
+Then watch the log (replace `12345678` with your job ID):
+
+```bash
+tail -f ~/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.12345678.out
+```
+
+The first lines show the paths, the generated samplesheet, and the sample count. If any check fails you will see a line starting with `ERROR:` and the job will end.
+
+::: {.callout-note}
+With all samples, the run takes many hours to a few days. The script reserves up to 3 days (`--time=3-00:00:00`). If it runs out of time, resubmit the same script, `-resume` will pick up where it stopped.
+:::
 
 ## Checking on a running job
 
 | Task | Command |
 |---|---|
 | See your jobs in the queue | `squeue --me` |
-| Watch the output log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.out` |
-| Watch the error log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-rnaseq.JOBID.err` |
+| Watch the output log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.JOBID.out` |
+| Watch the error log live | `tail -f ~/rnaseq_nf_core/job-logs/nfcore-ncbi-ref.JOBID.err` |
 | Cancel a job | `scancel JOBID` |
 
 Replace `JOBID` with the number that `sbatch` printed when you submitted.
@@ -295,4 +448,4 @@ Only resume using the same scratch directory and the same params file. Changing 
 
 ## Record keeping
 
-Keep a copy of your params file and SLURM script alongside your final results. The `pipeline_info/` folder inside the results directory also stores exact parameters, software versions, and execution logs automatically.
+Keep a copy of your SLURM script, the generated `samplesheet.csv`, and the params JSON alongside your final results. The `pipeline_info/` folder inside the results directory also stores exact parameters, software versions, and execution logs automatically.

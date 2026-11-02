@@ -24,21 +24,41 @@ These are the files you need to run the nf-core/rnaseq pipeline and the downstre
 
 ### RNA-seq reads (flutamide experiment)
 
-Raw paired-end FASTQ files from the flutamide treatment experiment (Kate's thesis).
+Raw paired-end FASTQ files from the flutamide treatment experiment (Kate's thesis). The samples were sequenced in two runs, and the real pipeline run uses the files from **both** folders.
 
 **On Unity:**
 
 ```text
-/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq
+/work/pi_lmangiamele_smith_edu/03_26_flut_yale_rnaseq_raw                  # first sequencing run (March 2026)
+/work/pi_lmangiamele_smith_edu/08_26_flut_yale_rnaseq_replication_raw      # replication run (August 2026)
 ```
+
+Files are named `SAMPLE_S#_L00#_R1_001.fastq.gz` and `SAMPLE_S#_L00#_R2_001.fastq.gz`. The run script uses this naming to pair R1 and R2 files automatically.
 
 **Yale server (external):**
 
 <http://fcb.ycga.yale.edu:3010/fTvjY60iTRcfef5EWgR3HlRd5pz98l0/sample_dir_000020575/>
 
-### Genome assembly (EGAPx)
+### Reference genome (NCBI RefSeq), used for the real run
 
-The *S. parvus* genome assembly annotated with EGAPx. Contains FASTA, GTF, and GFF files.
+The NCBI RefSeq *S. parvus* assembly **GCF_062004578.1 (SC_StPar_1.0)**, with annotation release **GCF_062004578.1-RS_2026_10**. This is the reference used in the [Run the Pipeline](running.qmd) script.
+
+**On Unity:**
+
+```text
+/work/pi_lmangiamele_smith_edu/ncbi_reference_genome_10_26
+```
+
+Key files in that directory:
+
+| File | What it is |
+|---|---|
+| `GCF_062004578.1_SC_StPar_1.0_genomic.fna` | Genome FASTA (reference sequence) |
+| `GCF_062004578.1_SC_StPar_1.0_genomic.gtf` | Gene annotation in GTF format |
+
+### Genome assembly (EGAPx), earlier draft annotation
+
+The *S. parvus* genome assembly annotated with EGAPx. Contains FASTA, GTF, and GFF files. This was used for earlier test runs, use the NCBI RefSeq reference above for new analyses.
 
 **On Unity:**
 
@@ -78,12 +98,22 @@ These files are not needed for the main RNA-seq pipeline but are useful context 
 /work/pi_lmangiamele_smith_edu/pacbio_parvus
 ```
 
+### Shared container cache
+
+Apptainer images for nf-core/rnaseq 3.26.0, shared by the whole lab so each run does not have to download them again.
+
+**On Unity:**
+
+```text
+/work/pi_lmangiamele_smith_edu/nfcore_container_cache/rnaseq-3.26.0
+```
+
 ### Public genome resources
 
 | Resource | Link | Notes | Year |
 |---|---|---|---|
 | Old genome assembly | [GCA_951230385.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_951230385.1/) | [Paper](https://academic.oup.com/g3journal/article/13/10/jkad193/7251439) | 2023 |
-| New genome assembly | Add link | Add accession once deposited | 2026 |
+| New genome assembly (RefSeq) | [GCF_062004578.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_062004578.1/) | SC_StPar_1.0, annotation GCF_062004578.1-RS_2026_10 | 2026 |
 
 ## Download notes
 
