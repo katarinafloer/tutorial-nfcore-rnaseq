@@ -52,8 +52,8 @@ Throughout the tutorial you will see the username `kfloer_smith_edu` in example 
 | 7 | [Set up your workspace](setup.qmd) | Create a scratch directory for the pipeline |
 | 8 | [Run a test pipeline](running-test.qmd) | Check that everything works with a tiny built-in dataset |
 | 9 | [Run the full pipeline](running-full.qmd) | Submit the nf-core/rnaseq job for all samples |
-| 10 | [Interpret results](results.qmd) | Read the quality reports and count tables |
-| 11 | [Differential expression](DGE.qmd) | Run the DESeq2 analysis in R |
+| 10 | Interpret results (coming soon) | Read the quality reports and count tables |
+| 11 | Differential expression (coming soon) | Run the DESeq2 analysis in R |
 | 12 | [Troubleshooting](troubleshooting.qmd) | Fix common problems |
 
 ## What you need before you start

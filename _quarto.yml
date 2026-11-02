@@ -1,6 +1,13 @@
 project:
   type: website
   output-dir: _site
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "!README.md"
+    # Drafts, not published yet. Delete these lines (and restore the sidebar entries) to publish.
+    - "!results.qmd"
+    - "!DGE.qmd"
 
 website:
   title: "Mangiamele Lab RNA-seq tutorial"
@@ -24,8 +31,6 @@ website:
       - setup.qmd
       - running-test.qmd
       - running-full.qmd
-      - results.qmd
-      - DGE.qmd
       - troubleshooting.qmd
   page-footer:
     left: "Maintained by Katarina Flöer"
